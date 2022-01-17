@@ -16,20 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "index.h"
+#ifndef INDEX_H
+#define INDEX_H
 
-int main()
-{
-    char* path = getenv("PATH_INFO");
-    // Content type is always HTML
-    fputs("Content-type: text/html\r\n\r\n", stdout);
-    
-    // Default index
-    if (path == NULL || (path && strcmp(path, "/")))
-    {
-        content_index();
-    }
-}
+void content_index();
+
+#endif // INDEX_H

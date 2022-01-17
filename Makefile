@@ -11,13 +11,13 @@ all: $(TARGET)
 $(TARGET): filec $(OBJ)
 	$(CC) -o $(DIST)$(TARGET) $(LDFLAGS) $(OBJ)
 
-$(OBJ): $(SRC)
-	$(CC) $(CFLAGS) -c $< -o $@
-
 filec: src/file-to-c/main.o
 	$(CC) -o file-to-c $<
 
-src/file-to-c/main.o: src/file-to-c/main.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: all
+clean:
+	rm -f $(OBJ) src/file-to-c/main.o
+
+.PHONY: all filec clean

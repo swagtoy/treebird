@@ -17,19 +17,9 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "index.h"
 
-int main()
+void content_index()
 {
-    char* path = getenv("PATH_INFO");
-    // Content type is always HTML
-    fputs("Content-type: text/html\r\n\r\n", stdout);
-    
-    // Default index
-    if (path == NULL || (path && strcmp(path, "/")))
-    {
-        content_index();
-    }
+    printf("Index.html\r\n");
 }
