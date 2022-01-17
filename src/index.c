@@ -17,9 +17,13 @@
  */
 
 #include <stdio.h>
+#include "../config.h"
 #include "index.h"
+
+// Files
+#include "../static/index.chtml"
 
 void content_index()
 {
-    printf("Index.html\r\n");
+    printf(data_index_html, config_canonical_name);
 }

@@ -1,0 +1,136 @@
+body
+{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f2;
+}
+
+#display-wrapper
+{
+    display: flex;
+    justify-content: center;
+
+}
+
+#display
+{
+    overflow: hidden;
+    background-color: #ffffff;
+    width: 1000px;
+    border-radius: 5px;
+    border: 1pxnn solid #bababa;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#navbar
+{
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #cacaca;
+}
+
+#navbar img
+{
+    display: inline-block;
+    margin: 2px 2px 2px 8px;
+}
+
+#navbar span.info
+{
+    margin-left: 15px;
+    color: #202020;
+    font-variant: small-caps;
+    font-size: 28px;
+}
+
+#navbar-right
+{
+    padding-right: 8px;
+}
+
+.alignend
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+div#content
+{
+    display: flex;
+}
+
+div#content main
+{
+    flex: 1;
+}
+
+div#content aside
+{
+    width: 180px;
+    max-width: 200px;
+    background-color: #fcfcfc;
+}
+
+#leftbar
+{
+    border-right: 1px solid #cacaca;
+}
+
+#rightbar
+{
+    border-left: 1px solid #cacaca;
+}
+
+/* Posts */
+.status
+{
+    display: flex;
+    margin: 5px;
+}
+
+.status:not(:last-child)
+{
+    border-bottom: 2px dotted #cacaca;
+}
+
+.status .profile-picture
+{
+    display: inline-block;
+}
+
+.status .status-info
+{
+    flex: 1;
+    display: flex;
+    padding: 5px;
+    flex-direction: column;
+}
+
+.status .instance-info
+{
+    font-style: italic;
+    text-decoration: none;
+    margin: 0 3px;
+}
+
+.status .poster-stats
+{
+    display: flex;
+}
+
+.status .username
+{
+    font-weight: bold;
+}
+
+.status .status-content
+{
+    margin: 2px 0 0 0;
+}
+
+.status-visibility
+{
+    color: #808080;
+}

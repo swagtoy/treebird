@@ -2,10 +2,57 @@
 <html>
   <head>
     <title>%s</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="ratfe.css">
   </head>
   <body>
-    <div class="content">
-      
+    <div id="display-wrapper">
+      <div id="display">
+        <header id="navbar">
+          <a href="/"><img src="ratfe_logo.png" height="42"></a>
+          <span class="info">RatFE</span>
+          <div id="navbar-right" class="alignend">
+            <!-- Searchbox -->
+            <form action="/search" method="get">
+              <input type="textbox" placeholder="Search" id="q" name="q">
+              <input type="submit" value="Search">
+            </form>
+          </div>
+        </header>
+        <div id="content">
+          <!-- Navigation -->
+          <aside id="leftbar">
+            
+          </aside>
+          
+          <!-- Display for posts -->
+          <main>
+            <div class="status">
+              <div class="profile-picture">
+                <img src="ratfe_logo.png" height="64">
+              </div>
+              <div class="status-info">
+                <div class="poster-stats">
+                  <span class="username">Rat user</span>
+                  <a class="instance-info" href="#">@ratlord@cum.desupost.soy</a>
+                  <span class="alignend status-visibility">
+                    public
+                  </span>
+                </div>
+                <span class="status-content">
+                  This is my first post<br><br>
+                  Just landed in L.A.!
+                </span>
+              </div>
+            </div>
+          </main>
+
+          <!-- Notifications and such -->
+          <aside id="rightbar">
+            
+          </aside>
+        </div>
+      </div>
     </div>
   </body>
 </html>
