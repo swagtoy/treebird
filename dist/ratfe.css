@@ -104,7 +104,7 @@ div#content aside
 {
     flex: 1;
     display: flex;
-    padding: 5px;
+    margin: 0 5px 5px;
     flex-direction: column;
 }
 
