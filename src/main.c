@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mastodont.h>
+#include "../config.h"
 #include "index.h"
 
 int main()
@@ -26,10 +28,17 @@ int main()
     char* path = getenv("PATH_INFO");
     // Content type is always HTML
     fputs("Content-type: text/html\r\n\r\n", stdout);
+
+    mastodont_t api;
+    api.url = config_instance_url;
+
+    mastodont_init(&api);
     
     // Default index
     if (path == NULL || (path && strcmp(path, "/")))
     {
         content_index();
     }
+
+    mastodont_free(&api);
 }

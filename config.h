@@ -11,6 +11,26 @@
 #define FALSE 0
 #define TRUE 1
 
+/*
+ * String: config_canonical_name
+ *
+ * The software's recognizable name.
+ *
+ * 
+ * Example: "RatFE"
+ */
+
 static const char* config_canonical_name = "RatFE";
+
+/*
+ * String: config_instance_url
+ *
+ * The instances URL which all API calls will be sent to via mastodont-c.
+ * This MUST include a slash at the end, and the protocol (like https://) at the
+ * beginning
+ *
+ * Example: https://cum.desupost.soy/
+ */
+static const char* config_instance_url = "https://cum.desupost.soy/";
 
 #endif // CONFIG_H

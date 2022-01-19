@@ -1,7 +1,9 @@
 CC ?= cc
 GIT ?= git
-CFLAGS = -Wall
-LDFLAGS = -lcurl
+MASTODONT_DIR = mastodont/
+MASTODONT = $(MASTODONT_DIR)libmastodont.a
+CFLAGS = -Wall -I $(MASTODONT)include/
+LDFLAGS = -L$(MASTODONT_DIR) -lcurl -lmastodont
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 PAGES_DIR = static
@@ -10,28 +12,23 @@ PAGES_CMP = $(patsubst %.html,%.chtml,$(PAGES))
 DIST = dist/
 TARGET = ratfe.cgi
 
-# Mastodont
-MASTODONT = mastodont/
-MASTODONT_REPO = https://git.nekobit.net/repos/mastodont-c.git
-
-all: mastodont $(TARGET)
-mastodont: $(MASTODONT)
+all: $(MASTODONT) $(TARGET)
 
 $(TARGET): filec $(PAGES_CMP) $(OBJ)
 	$(CC) -o $(DIST)$(TARGET) $(LDFLAGS) $(OBJ)
 
 filec: src/file-to-c/main.o
-	$(CC) -o file-to-c $<
+	$(CC) -o filec $<
 
 %.chtml: %.html
-	./file-to-c $< $< > $@
+	./filec $< $< > $@
 
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
-	./file-to-c $< data_index_html > $@
+	./filec $< data_index_html > $@
 
 $(MASTODONT):
-	$(GIT) submodule foreach git pull
-	make -C $(MASTODONT)
+	$(GIT) submodule update --init --recursive
+	make -C $(MASTODONT_DIR)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -39,5 +36,6 @@ $(MASTODONT):
 clean:
 	rm -f $(OBJ) src/file-to-c/main.o
 	rm -f $(PAGES_CMP)
+	rm -f filec
 
 .PHONY: all filec clean
