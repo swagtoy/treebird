@@ -2,7 +2,7 @@ CC ?= cc
 GIT ?= git
 MASTODONT_DIR = mastodont/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
-CFLAGS = -Wall -I $(MASTODONT)include/
+CFLAGS = -Wall -I $(MASTODONT_DIR)include/
 LDFLAGS = -L$(MASTODONT_DIR) -lcurl -lmastodont
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
@@ -15,7 +15,7 @@ TARGET = ratfe.cgi
 all: $(MASTODONT) $(TARGET)
 
 $(TARGET): filec $(PAGES_CMP) $(OBJ)
-	$(CC) -o $(DIST)$(TARGET) $(LDFLAGS) $(OBJ)
+	$(CC) -o $(DIST)$(TARGET) $(OBJ) $(LDFLAGS)
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
@@ -37,5 +37,6 @@ clean:
 	rm -f $(OBJ) src/file-to-c/main.o
 	rm -f $(PAGES_CMP)
 	rm -f filec
+	make -C $(MASTODONT_DIR) clean
 
 .PHONY: all filec clean

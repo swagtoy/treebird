@@ -31,6 +31,6 @@ static const char* config_canonical_name = "RatFE";
  *
  * Example: https://cum.desupost.soy/
  */
-static const char* config_instance_url = "https://cum.desupost.soy/";
+static char* config_instance_url = "https://cum.desupost.soy/";
 
 #endif // CONFIG_H
