@@ -1,4 +1,5 @@
 CC ?= cc
+GIT ?= git
 CFLAGS = -Wall
 LDFLAGS = -lcurl
 SRC = $(wildcard src/*.c)
@@ -9,7 +10,12 @@ PAGES_CMP = $(patsubst %.html,%.chtml,$(PAGES))
 DIST = dist/
 TARGET = ratfe.cgi
 
-all: $(TARGET)
+# Mastodont
+MASTODONT = mastodont/
+MASTODONT_REPO = https://git.nekobit.net/repos/mastodont-c.git
+
+all: mastodont $(TARGET)
+mastodont: $(MASTODONT)
 
 $(TARGET): filec $(PAGES_CMP) $(OBJ)
 	$(CC) -o $(DIST)$(TARGET) $(LDFLAGS) $(OBJ)
@@ -22,6 +28,10 @@ filec: src/file-to-c/main.o
 
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
 	./file-to-c $< data_index_html > $@
+
+$(MASTODONT):
+	$(GIT) submodule foreach git pull
+	make -C $(MASTODONT)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

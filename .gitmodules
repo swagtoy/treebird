@@ -1,0 +1,3 @@
+[submodule "mastodont"]
+	path = mastodont
+	url = https://git.nekobit.net/mastodont-c.git/
