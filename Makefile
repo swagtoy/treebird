@@ -14,7 +14,7 @@ TARGET = ratfe.cgi
 
 MASTODONT_URL = https://git.nekobit.net/repos/mastodont-c.git
 
-all: $(MASTODONT_DIR) $(TARGET)
+all: $(MASTODONT_DIR) dep_build $(TARGET)
 
 $(TARGET): filec $(PAGES_CMP) $(OBJ)
 	$(CC) -o $(DIST)$(TARGET) $(OBJ) $(LDFLAGS)
@@ -28,9 +28,11 @@ filec: src/file-to-c/main.o
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
 	./filec $< data_index_html > $@
 
-$(MASTODONT_DIR):
-	git clone $(MASTODONT_URL)
+$(MASTODONT_DIR): 
+	git clone $(MASTODONT_URL) || true
 	@echo -e "\033[38;5;13mRun 'make update' to update mastodont-c\033[0m"
+
+dep_build:
 	make -C $(MASTODONT_DIR)
 
 update:

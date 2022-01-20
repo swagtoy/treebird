@@ -23,7 +23,9 @@
 // Files
 #include "../static/index.chtml"
 
-void content_index()
+void content_index(mastodont_t* api)
 {
+    struct mstdnt_response response;
+    mastodont_timeline_public(api, NULL, &response);
     printf(data_index_html, config_canonical_name);
 }

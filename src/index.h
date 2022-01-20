@@ -18,7 +18,8 @@
 
 #ifndef INDEX_H
 #define INDEX_H
+#include <mastodont.h>
 
-void content_index();
+void content_index(mastodont_t* api);
 
 #endif // INDEX_H
