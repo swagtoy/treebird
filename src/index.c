@@ -26,6 +26,7 @@
 void content_index(mastodont_t* api)
 {
     struct mstdnt_status* statuses;
-    mastodont_timeline_public(api, NULL, &statuses);
+    struct mstdnt_storage storage;
+    mastodont_timeline_public(api, NULL, &storage, &statuses);
     printf(data_index_html, config_canonical_name);
 }
