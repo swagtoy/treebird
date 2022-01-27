@@ -68,7 +68,7 @@ div#content main
 div#content aside
 {
     width: 180px;
-    min-width: 180bpx;
+    min-width: 180px;
     background-color: #fcfcfc;
 }
 
