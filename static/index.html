@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>%s</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" type="text/css" href="ratfe.css">
+    <link rel="stylesheet" type="text/css" href="../dist/ratfe.css">
   </head>
   <body>
     <div id="display-wrapper">
@@ -22,13 +24,17 @@
         <div id="content">
           <!-- Navigation -->
           <aside id="leftbar">
-            
+            <ul>
+              <li><a class="sidebarbtn" href="#">Home</a></li>
+              <li><a class="sidebarbtn" href="#">Notifications</a></li>
+              <li><a class="sidebarbtn" href="#">Local</a></li>
+              <li><a class="sidebarbtn" href="#">Federated</a></li>
+            </ul>
           </aside>
           
           <!-- Display for posts -->
           <main>
             %s
-
           </main>
 
           <!-- Notifications and such -->

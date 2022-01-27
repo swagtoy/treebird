@@ -63,11 +63,14 @@ div#content
 div#content main
 {
     flex: 1;
+    min-width: 0;
+    min-height: 600px;
 }
 
 div#content aside
 {
     width: 180px;
+    max-width: 180px;
     min-width: 180px;
     background-color: #fcfcfc;
 }
@@ -75,6 +78,51 @@ div#content aside
 #leftbar
 {
     border-right: 1px solid #cacaca;
+}
+
+#leftbar ul
+{
+    margin: 0;
+    padding: 0;
+}
+
+#leftbar ul li
+{
+    list-style-type: none;
+}
+
+input[type=button], input[type=submit], .sidebarbtn
+{ 
+    background: linear-gradient(#fff, #f1f1f1);
+    color: #000;
+}
+
+input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover
+{ 
+    background: linear-gradient(#aa0000, #600000);
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type=button]:active, input[type=submit]:active, .sidebarbtn:active
+{ 
+    background: linear-gradient(#600000, #aa0000);
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type=button], input[type=submit]
+{
+    border: 1px solid #cacaca;
+    padding: 3px 15px;
+}
+
+.sidebarbtn
+{
+    border-bottom: 1px solid #dadada;
+    display: block;
+    padding: 8px 8px 8px 16px;
+    text-decoration: none;
 }
 
 #rightbar
@@ -127,6 +175,7 @@ div#content aside
 .status .status-content
 {
     margin: 2px 0 0 0;
+    overflow-wrap: break-word;
 }
 
 .status-visibility
