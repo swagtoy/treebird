@@ -16,17 +16,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "../config.h"
 #include "index.h"
+#include "easprintf.h"
+#include "status.h"
 
 // Files
 #include "../static/index.chtml"
 
 void content_index(mastodont_t* api)
 {
+    size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage;
-    mastodont_timeline_public(api, NULL, &storage, &statuses);
-    printf(data_index_html, config_canonical_name);
+    char* status_format;
+    mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
+
+    /* Calculate statuses */
+    status_format = construct_statuses(statuses, status_count, &statuses_html_count);
+    if (status_format == NULL)
+        status_format = "Error in malloc! Something has gone terribly wrong...";
+
+    /* Output */
+    printf("Content-Length: %ld\r\n\r\n",
+           data_index_html_size + statuses_html_count + 4);
+    printf(data_index_html, config_canonical_name, status_format);
+
+    /* Cleanup */
+    mastodont_storage_cleanup(&storage);
+    free(status_format);
 }

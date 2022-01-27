@@ -8,7 +8,6 @@ body
 {
     display: flex;
     justify-content: center;
-
 }
 
 #display
@@ -69,7 +68,7 @@ div#content main
 div#content aside
 {
     width: 180px;
-    max-width: 200px;
+    min-width: 180bpx;
     background-color: #fcfcfc;
 }
 

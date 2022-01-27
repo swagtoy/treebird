@@ -27,6 +27,8 @@ filec: src/file-to-c/main.o
 
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
 	./filec $< data_index_html > $@
+$(PAGES_DIR)/status.chtml: $(PAGES_DIR)/status.html
+	./filec $< data_status_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

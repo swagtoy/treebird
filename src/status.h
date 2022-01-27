@@ -16,36 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "easprintf.h"
+#ifndef STATUS_H
+#define STATUS_H
+#include <mastodont.h>
 
-int evasprintf(char** ret, const char* format, va_list ap)
-{
-    va_list ap_copy;
-    va_copy(ap_copy, ap);
+char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 
-    int sz = vsnprintf(NULL, 0, format, ap);
-    va_end(ap);
-
-    *ret = malloc(sz + 1);
-    if(*ret == NULL)
-    {
-        perror("malloc");
-        *ret = NULL;
-        va_end(ap_copy);
-        return -1;
-    }
-
-    vsnprintf(*ret, sz + 1, format, ap_copy);
-
-    va_end(ap_copy);
-    return sz;
-}
-
-int easprintf(char** ret, const char* format, ...)
-{
-    va_list ap;
-    va_start(ap, format);
-    return evasprintf(ret, format, ap);
-}
+#endif // STATUS_H
