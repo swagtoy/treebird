@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 
     printf("#ifndef __%s\n", argv[ARG_VARIABLE]);
     printf("#define __%s\n", argv[ARG_VARIABLE]);
-    printf("static size_t %s_size = %ld;", argv[ARG_VARIABLE], size);
+    printf("static size_t %s_size = %ld;\n", argv[ARG_VARIABLE], size);
     printf("static const char %s[] = {", argv[ARG_VARIABLE]);
     for (size_t i = 0; i < size; ++i)
     {
