@@ -1,4 +1,0 @@
-#ifndef __data_config_html
-#define __data_config_html
-static size_t data_config_html_size = 16;static const char data_config_html[] = {0X3C,0X68,0X31,0X3E,0X43,0X6F,0X6E,0X66,0X69,0X67,0X3C,0X2F,0X68,0X31,0X3E,0XA,0};
-#endif
