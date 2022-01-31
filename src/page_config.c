@@ -17,36 +17,9 @@
  */
 
 #include <stdio.h>
-#include <string.h>
-#include <mastodont.h>
-#include "../config.h"
-#include "index.h"
 #include "page_config.h"
-#include "path.h"
 
-int main(void)
+void content_config(mastodont_t* api)
 {
-    // Content type is always HTML
-    fputs("Content-type: text/html\r\n", stdout);
-
-    // Global init
-    mastodont_global_curl_init();
-
-    // API
-    mastodont_t api;
-    api.url = config_instance_url;
-    mastodont_init(&api);
-
-    /*******************
-     *  Path handling  *
-     ******************/
-    struct path_info paths[] = {
-        { "/config", content_config }
-    };
-
-    handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
-
-    // Cleanup
-    mastodont_free(&api);
-    mastodont_global_curl_cleanup();
+    
 }

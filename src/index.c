@@ -34,10 +34,10 @@ void content_index(mastodont_t* api)
     char* status_format;
     mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
 
-    /* Calculate statuses */
+    /* Construct statuses into HTML */
     status_format = construct_statuses(statuses, status_count, &statuses_html_count);
     if (status_format == NULL)
-        status_format = "Error in malloc! Something has gone terribly wrong...";
+        status_format = "Error in malloc!";
 
     /* Output */
     printf("Content-Length: %ld\r\n\r\n",

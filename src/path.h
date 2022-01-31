@@ -16,37 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <string.h>
+#ifndef PATH_H
+#define PATH_H
 #include <mastodont.h>
-#include "../config.h"
-#include "index.h"
-#include "page_config.h"
-#include "path.h"
+#include <stddef.h>
 
-int main(void)
+struct path_info
 {
-    // Content type is always HTML
-    fputs("Content-type: text/html\r\n", stdout);
+    char* path;
+    void (*callback)(mastodont_t*);
+};
 
-    // Global init
-    mastodont_global_curl_init();
+void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len);
 
-    // API
-    mastodont_t api;
-    api.url = config_instance_url;
-    mastodont_init(&api);
-
-    /*******************
-     *  Path handling  *
-     ******************/
-    struct path_info paths[] = {
-        { "/config", content_config }
-    };
-
-    handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
-
-    // Cleanup
-    mastodont_free(&api);
-    mastodont_global_curl_cleanup();
-}
+#endif // PATH_H

@@ -16,37 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
 #include <string.h>
-#include <mastodont.h>
-#include "../config.h"
-#include "index.h"
-#include "page_config.h"
+#include <stdlib.h>
 #include "path.h"
 
-int main(void)
+void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
 {
-    // Content type is always HTML
-    fputs("Content-type: text/html\r\n", stdout);
-
-    // Global init
-    mastodont_global_curl_init();
-
-    // API
-    mastodont_t api;
-    api.url = config_instance_url;
-    mastodont_init(&api);
-
-    /*******************
-     *  Path handling  *
-     ******************/
-    struct path_info paths[] = {
-        { "/config", content_config }
-    };
-
-    handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
-
-    // Cleanup
-    mastodont_free(&api);
-    mastodont_global_curl_cleanup();
+    char* path = getenv("PATH_INFO");
+    // "default" path
+    if (path == NULL || (path && strcmp(path, "/") == 0))
+    {
+        content_index(api);
+    }
+    else if (path && path[1] == '@')
+    {   // Account path
+        content_index(api);
+    }
+    else if (path)
+    {   // Generic path
+        for (size_t i = 0; i < paths_len; ++i)
+        {
+            if (strcmp(path, paths[i].path) == 0)
+                paths[i].callback(api);
+        }
+    }
 }
