@@ -41,7 +41,7 @@ void content_index(mastodont_t* api)
 
     /* Output */
     printf("Content-Length: %ld\r\n\r\n",
-           data_index_html_size + statuses_html_count + 4);
+           data_index_html_size + statuses_html_count + 1);
     printf(data_index_html, config_canonical_name, status_format);
 
     /* Cleanup */
