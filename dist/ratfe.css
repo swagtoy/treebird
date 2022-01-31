@@ -31,6 +31,7 @@ a
 {
     display: flex;
     align-items: center;
+    padding: 0 5px;
     border-bottom: 2px solid #cacaca;
 }
 
@@ -89,7 +90,7 @@ div#content aside
 
 #leftbar ul
 {
-    margin: 0;
+    margin: 0px 0px 10px 0px;
     padding: 0;
 }
 
@@ -98,6 +99,9 @@ div#content aside
     list-style-type: none;
 }
 
+/*************************************************
+ *                  BUTTONS                      *
+ *************************************************/
 input[type=button], input[type=submit], .sidebarbtn
 { 
     background: linear-gradient(#fff, #f1f1f1);
@@ -126,12 +130,23 @@ input[type=button], input[type=submit]
     padding: 3px 15px;
 }
 
+/* Make first button glue to header */
+#leftbar ul:first-child .sidebarbtn
+{
+    border-top: 0;
+}
+
 .sidebarbtn
 {
     border-bottom: 1px solid #dadada;
     display: block;
     padding: 8px 8px 8px 16px;
     text-decoration: none;
+}
+
+ul li:first-child a.sidebarbtn
+{
+    border-top: 1px solid #dadada;
 }
 
 #rightbar

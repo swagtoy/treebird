@@ -17,9 +17,19 @@
  */
 
 #include <stdio.h>
+#include "../config.h"
 #include "page_config.h"
+
+// Pages
+#include "../static/index.chtml"
+#include "../static/config.chtml"
 
 void content_config(mastodont_t* api)
 {
+    (void)api; // No need to use this
     
+    /* Output */
+    printf("Content-Length: %ld\r\n\r\n",
+           data_index_html_size + data_config_html_size);
+    printf(data_index_html, config_canonical_name, data_config_html);
 }

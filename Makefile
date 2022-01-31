@@ -25,10 +25,13 @@ filec: src/file-to-c/main.o
 %.chtml: %.html
 	./filec $< $< > $@
 
+# PAGES
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
 	./filec $< data_index_html > $@
 $(PAGES_DIR)/status.chtml: $(PAGES_DIR)/status.html
 	./filec $< data_status_html > $@
+$(PAGES_DIR)/config.chtml: $(PAGES_DIR)/config.html
+	./filec $< data_config_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
