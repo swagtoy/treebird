@@ -1,9 +1,16 @@
+/* Basic elements */
 body
 {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f2f2f2;
 }
 
+a
+{
+    color: #aa0000;
+}
+
+/* Divs and wrappers */
 #display-wrapper
 {
     display: flex;
@@ -100,6 +107,7 @@ input[type=button], input[type=submit], .sidebarbtn
 input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover
 { 
     background: linear-gradient(#aa0000, #600000);
+    border-color: #400000;
     color: #fff;
     cursor: pointer;
 }
@@ -107,6 +115,7 @@ input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover
 input[type=button]:active, input[type=submit]:active, .sidebarbtn:active
 { 
     background: linear-gradient(#600000, #aa0000);
+    border-color: #400000;
     color: #fff;
     cursor: pointer;
 }
@@ -134,7 +143,7 @@ input[type=button], input[type=submit]
 .status
 {
     display: flex;
-    margin: 5px;
+    margin: 7px;
 }
 
 .status:not(:last-child)
@@ -145,6 +154,14 @@ input[type=button], input[type=submit]
 .status .profile-picture
 {
     display: inline-block;
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
 }
 
 .status .status-info
@@ -152,6 +169,7 @@ input[type=button], input[type=submit]
     flex: 1;
     display: flex;
     margin: 0 5px 5px;
+    min-width: 0;
     flex-direction: column;
 }
 
@@ -170,12 +188,20 @@ input[type=button], input[type=submit]
 .status .username
 {
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .status .status-content
 {
     margin: 2px 0 0 0;
     overflow-wrap: break-word;
+}
+
+.status .status-content p
+{
+    margin: 2px 0 0 0;
 }
 
 .status-visibility
