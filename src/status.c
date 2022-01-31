@@ -30,8 +30,9 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
     for (size_t i = 0; i < size; ++i)
     {
         parse_size = easprintf(&stat_html, data_status_html,
-                               statuses[i].id, /* Username */
-                               "@who?", /* Account */
+                               statuses[i].account.avatar,
+                               statuses[i].account.display_name, /* Username */
+                               statuses[i].account.acct, /* Account */
                                "Public?", /* visibility */
                                statuses[i].content);
         if (parse_size == -1) /* Malloc error */
