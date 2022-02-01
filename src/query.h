@@ -16,29 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include "path.h"
-#include "index.h"
+#ifndef QUERY_H
+#define QUERY_H
+#include <stddef.h>
 
-void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
+struct http_query_info
 {
-    char* path = getenv("PATH_INFO");
-    // "default" path
-    if (path == NULL || (path && strcmp(path, "/") == 0))
-    {
-        content_index(api);
-    }
-    else if (path[1] == '@')
-    {   // Account path
-        content_index(api);
-    }
-    else
-    {   // Generic path
-        for (size_t i = 0; i < paths_len; ++i)
-        {
-            if (strcmp(path, paths[i].path) == 0)
-                paths[i].callback(api);
-        }
-    }
-}
+    char* key;
+    char* val;
+    size_t val_len; // Val may be large, like CSS property
+};
+
+/* A stupidly quick query parser */
+char* parse_query(char* begin, struct http_query_info* info);
+
+#endif // QUERY_H

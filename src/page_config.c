@@ -17,8 +17,12 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include "../config.h"
 #include "page_config.h"
+#include "query.h"
 
 // Pages
 #include "../static/index.chtml"
@@ -27,9 +31,45 @@
 void content_config(mastodont_t* api)
 {
     (void)api; // No need to use this
-    
-    /* Output */
+    char* request_method = getenv("REQUEST_METHOD");
+    char* post_query, * p_query_read;
+    struct http_query_info info;
+
+    // Output
     printf("Content-Length: %ld\r\n\r\n",
            data_index_html_size + data_config_html_size);
+
+    
+    // Handle POST
+    if (request_method && (strcmp("POST", request_method) == 0))
+    {
+        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        post_query = malloc(content_length + 1);
+        if (!post_query)
+        {
+            puts("Malloc error!");
+            return;
+        }
+        read(STDIN_FILENO, post_query, content_length);
+        post_query[content_length] = '\0';
+
+        // For parse_query to shift through, so we can still free the original
+        p_query_read = post_query;
+
+        // Parse
+        while (1)
+        {
+            p_query_read = parse_query(p_query_read, &info);
+            
+            printf("%.*s,", (int)info.val_len, info.val);
+
+            if (p_query_read == NULL)
+                break;
+        }
+
+        // Cleanup
+        free(post_query);
+    }
+
     printf(data_index_html, config_canonical_name, data_config_html);
 }
