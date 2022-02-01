@@ -154,7 +154,9 @@ ul li:first-child a.sidebarbtn
     border-left: 1px solid #cacaca;
 }
 
-/* Posts */
+/***************************
+ *      Statuses           *
+ **************************/
 .status
 {
     display: flex;
@@ -224,6 +226,9 @@ ul li:first-child a.sidebarbtn
     color: #808080;
 }
 
+/***************************
+ *    Element Grouping     *
+ **************************/
 .group
 {
     padding: 0;
@@ -251,4 +256,30 @@ ul li:first-child a.sidebarbtn
 {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+/*************************
+ *     Config            *
+ ************************/
+#config-page
+{
+    padding: 0 12px;
+}
+
+#config-page h1
+{
+    padding-left: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #cacaca;
+}
+
+#config-page h3
+{
+    margin-left: 15px;
+}
+
+#config-page ul
+{
+    list-style-type: none;
+    padding-left: 15px;
 }
