@@ -32,7 +32,7 @@ void content_index(mastodont_t* api)
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage;
     char* status_format;
-    mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
+    int res = mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
 
     /* Construct statuses into HTML */
     status_format = construct_statuses(statuses, status_count, &statuses_html_count);
