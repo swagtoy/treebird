@@ -18,9 +18,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "base_page.h"
 #include "../config.h"
 #include "index.h"
-#include "easprintf.h"
 #include "status.h"
 
 // Files
@@ -32,17 +32,21 @@ void content_index(mastodont_t* api)
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage;
     char* status_format;
-    int res = mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
+    mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
 
     /* Construct statuses into HTML */
     status_format = construct_statuses(statuses, status_count, &statuses_html_count);
     if (status_format == NULL)
         status_format = "Error in malloc!";
 
+    struct base_page b = {
+        .locale = L10N_ES_ES,
+        .content = status_format,
+        .sidebar_right = NULL
+    };
+
     /* Output */
-    printf("Content-Length: %ld\r\n\r\n",
-           data_index_html_size + statuses_html_count + 1);
-    printf(data_index_html, config_canonical_name, status_format);
+    render_base_page(&b);
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
