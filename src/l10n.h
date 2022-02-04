@@ -22,6 +22,7 @@
 enum l10n_locale
 {
     L10N_EN_US = 0,
+    L10N_ES_ES,
 };
 
 enum l10n_string
@@ -52,9 +53,10 @@ enum l10n_string
     L10N_LIGHT,
     L10N_DARK,
     L10N_SAVE,
+    _L10N_LEN,
 };
 
-static const char* L10N[][] = {
+static const char* const L10N[][_L10N_LEN] = {
     // EN_US
     {
         /* GENERAL */
@@ -83,6 +85,36 @@ static const char* L10N[][] = {
         "Light",
         "Dark",
         "Save",
+    },
+
+    // ES_ES
+    {
+        /* GENERAL */
+        "RataFE :D", // L10N_APP_NAME
+        "Casa",
+        "Local",
+        "Federado",
+        "Notificaciones",
+        "Liza",
+        "Directo",
+        "Configuración",
+        "Búsqueda",
+        "Búsqueda",
+
+        /* CONFIG */
+        "General",
+        "JavaScript",
+        "Acciones rápidas - Me gusta, Impulsos, etc. hechos en segundo plano",
+        "Respuesta rápidas - Replies don't require redirects",
+        "Estados en vivo - los estados se obtienen sobre la marcha",
+        "Apariencia",
+        "Variante de tema",
+        "RatFE 2.0 - Tema simple predeterminado",
+        "RatFE 3.0 - Tema plano y moderno",
+        "Esquema de colores",
+        "Clara",
+        "Oscura",
+        "Guardar",
     },
 };
 

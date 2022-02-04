@@ -20,7 +20,7 @@
  * Example: "RatFE"
  */
 
-static const char* config_canonical_name = "RatFE";
+static char* const config_canonical_name = "RatFE";
 
 /*
  * String: config_instance_url
@@ -31,6 +31,6 @@ static const char* config_canonical_name = "RatFE";
  *
  * Example: https://cum.desupost.soy/
  */
-static char* config_instance_url = "https://desuposter.club/";
+static char* const config_instance_url = "https://desuposter.club/";
 
 #endif // CONFIG_H
