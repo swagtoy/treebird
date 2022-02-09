@@ -16,29 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include "path.h"
-#include "index.h"
-#include "account.h"
-void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
-{
-    char* path = getenv("PATH_INFO");
-    // "default" path
-    if (path == NULL || (path && strcmp(path, "/") == 0))
-    {
-        content_index(api);
-    }
-    else if (path[1] == '@')
-    {   // Account path
-        content_account(api);
-    }
-    else
-    {   // Generic path
-        for (size_t i = 0; i < paths_len; ++i)
-        {
-            if (strcmp(path, paths[i].path) == 0)
-                paths[i].callback(api);
-        }
-    }
-}
+#ifndef ACCOUNT_H
+#define ACCOUNT_H
+#include <mastodont.h>
+
+char* construct_account_page(struct mstdnt_account* acct, size_t* res_size);
+void content_account(mastodont_t* api);
+
+#endif // ACCOUNT_H

@@ -20,35 +20,47 @@
 #include <stdio.h>
 #include "base_page.h"
 #include "../config.h"
-#include "index.h"
-#include "status.h"
+#include "account.h"
+#include "easprintf.h"
 
 // Files
 #include "../static/index.chtml"
+#include "../static/account.chtml"
 
-void content_index(mastodont_t* api)
+char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
 {
-    size_t status_count, statuses_html_count;
-    struct mstdnt_status* statuses;
-    struct mstdnt_storage storage;
-    char* status_format;
-    mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
+    int result_size;
+    char* result;
+    result_size = easprintf(&result, data_account_html,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+    if (result_size == -1)
+        result = NULL;
 
-    /* Construct statuses into HTML */
-    status_format = construct_statuses(statuses, status_count, &statuses_html_count);
-    if (status_format == NULL)
-        status_format = "Error in malloc!";
+    if (res_size) *res_size = result_size;
+    return result;
+}
 
+void content_account(mastodont_t* api)
+{
+    char* account_page;
+    account_page = construct_account_page(NULL, NULL);
+    
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = status_format,
+        .content = account_page,
         .sidebar_right = NULL
     };
 
     /* Output */
     render_base_page(&b);
-
-    /* Cleanup */
-    mastodont_storage_cleanup(&storage);
-    free(status_format);
 }

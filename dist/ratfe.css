@@ -102,13 +102,14 @@ div#content aside
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
-input[type=button], input[type=submit], .sidebarbtn
+input[type=button], input[type=submit], .sidebarbtn, .btn
 { 
     background: linear-gradient(#fff, #f1f1f1);
     color: #000;
+    text-decoration: none;    
 }
 
-input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover
+input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover, .btn:hover
 { 
     background: linear-gradient(#aa0000, #600000);
     border-color: #400000;
@@ -116,7 +117,7 @@ input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover
     cursor: pointer;
 }
 
-input[type=button]:active, input[type=submit]:active, .sidebarbtn:active
+input[type=button]:active, input[type=submit]:active, .sidebarbtn:active, .btn:active
 { 
     background: linear-gradient(#600000, #aa0000);
     border-color: #400000;
@@ -141,7 +142,6 @@ input[type=button], input[type=submit]
     border-bottom: 1px solid #dadada;
     display: block;
     padding: 8px 8px 8px 16px;
-    text-decoration: none;
 }
 
 ul li:first-child a.sidebarbtn
@@ -282,4 +282,99 @@ ul li:first-child a.sidebarbtn
 {
     list-style-type: none;
     padding-left: 15px;
+}
+
+
+/**********************
+ *    Profiles        *
+ **********************/
+.header-btn
+{
+    text-decoration: none;
+    color: #606060;
+    font-size: 14px;
+}
+
+.header-btn .btn-content
+{
+    color: #000;
+}
+
+.btn.header-btn:hover span
+{
+    color: #fff;
+}
+
+.header-btn span
+{
+    display: block;
+    text-align: center;
+}
+
+.acct-banner
+{
+    width: 100%;
+    display: flex;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 256px;
+    align-items: end;
+}
+
+.acct-pfp
+{
+    position: relative;
+    z-index: 1;
+    border: 3px solid #cacaca;
+    background-color: #fff;
+    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    top: 38px;
+    left: 150px;
+    margin-top: -108px;
+    margin-left: -108px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.acct-header
+{
+    display: flex;
+    padding-left: 160px;
+    background: linear-gradient(#fff, #f1f1f1);
+    border-bottom: 1px solid #cacaca;
+    background-color: #e8e8e8;
+}
+
+.acct-info-data
+{
+    position: relative;
+    left: 160px;
+    top: -10px;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.acct-displayname
+{
+    font-size: 26px;
+    display: block;
+    color: #fff;
+}
+
+.acct-username
+{
+    font-size: 14px;
+    color: #cacaca;
+    display: block;
+}
+
+.header-btn
+{
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0;
+    
 }
