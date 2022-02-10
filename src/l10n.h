@@ -90,12 +90,12 @@ static const char* const L10N[][_L10N_LEN] = {
     // ES_ES
     {
         /* GENERAL */
-        "RataFE :D", // L10N_APP_NAME
-        "Casa",
+        "RataFE", // L10N_APP_NAME
+        "Inicio",
         "Local",
         "Federado",
         "Notificaciones",
-        "Liza",
+        "Listas",
         "Directo",
         "Configuración",
         "Búsqueda",
@@ -104,16 +104,16 @@ static const char* const L10N[][_L10N_LEN] = {
         /* CONFIG */
         "General",
         "JavaScript",
-        "Acciones rápidas - Me gusta, Impulsos, etc. hechos en segundo plano",
-        "Respuesta rápidas - Replies don't require redirects",
-        "Estados en vivo - los estados se obtienen sobre la marcha",
+        "Acciones rápidas - Me gusta, Impulsos, etc. se hacen en segundo plano",
+        "Respuesta rápidas - Las respuestas no requieren redirección",
+        "Estados en vivo - Los estados se obtienen sobre la marcha",
         "Apariencia",
         "Variante de tema",
         "RatFE 2.0 - Tema simple predeterminado",
         "RatFE 3.0 - Tema plano y moderno",
         "Esquema de colores",
-        "Clara",
-        "Oscura",
+        "Claro",
+        "Oscuro",
         "Guardar",
     },
 };
