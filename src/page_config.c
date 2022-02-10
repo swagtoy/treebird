@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "base_page.h"
 #include "../config.h"
 #include "page_config.h"
 #include "query.h"
@@ -28,16 +29,12 @@
 #include "../static/index.chtml"
 #include "../static/config.chtml"
 
-void content_config(mastodont_t* api)
+void content_config(mastodont_t* api, char** data, size_t size)
 {
     (void)api; // No need to use this
     char* request_method = getenv("REQUEST_METHOD");
     char* post_query, * p_query_read;
     struct http_query_info info;
-
-    // Output
-    printf("Content-Length: %ld\r\n\r\n",
-           data_index_html_size + data_config_html_size);
 
     
     // Handle POST
@@ -70,6 +67,14 @@ void content_config(mastodont_t* api)
         // Cleanup
         free(post_query);
     }
+
+    struct base_page b = {
+        .locale = L10N_EN_US,
+        .content = data_config_html,
+        .sidebar_right = NULL
+    };
+
+    render_base_page(&b);
 
     printf(data_index_html, config_canonical_name, data_config_html);
 }

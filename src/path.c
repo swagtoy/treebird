@@ -22,6 +22,91 @@
 #include "index.h"
 #include "account.h"
 
+enum path_state
+{
+    PARSE_NEUTRAL,
+    PARSE_READ,
+};
+
+void parse_path(mastodont_t* api, struct path_info* path_info)
+{
+    int fail = 0, fin = 0;
+    enum path_state state = PARSE_NEUTRAL;
+    char* p = path_info->path + 1;
+    char* p2 = getenv("PATH_INFO") + 1;
+
+    // Stored into data
+    int str_size = 0;
+    char* tmp = NULL;
+    char** data = NULL;
+    size_t size = 0;
+    
+    for (int i = 0, j = 0;;)
+    {
+        switch (p[j])
+        {
+        case '\0':
+            fin = 1;
+            // fall
+        case '/':
+            if (state == PARSE_READ)
+            {
+                state = PARSE_NEUTRAL;
+
+                // Set value and move on
+                data = realloc(data, ++size * sizeof(tmp));
+                data[size-1] = tmp;
+                tmp = NULL;
+                str_size = 0;
+            }
+            
+            if (fin) goto breakpt;
+            break;
+        case ':':
+            state = PARSE_READ;
+            // fall
+        default:
+            if (state == PARSE_NEUTRAL)
+            {
+                if (p[j] == p2[i])
+                    break;
+                else {
+                    fail = 1;
+                    goto breakpt;
+                }
+            }
+            else {
+                // Don't realloc, we already have a space for our final character
+                if (p2[i] == '\0')
+                {
+                    tmp[str_size] = '\0';
+                    ++j;
+                }
+                tmp = realloc(tmp, ++str_size + 1);
+                tmp[str_size-1] = p2[i];
+            }
+                    
+                
+            break;
+        }
+
+        if (state == PARSE_NEUTRAL) ++j; // Used for p
+        ++i; // Used for p2
+    }
+breakpt:
+    if (fail)
+        return;
+
+    path_info->callback(api, data, size);
+
+    // Cleanup
+    for (size_t i = 0; i < size; ++i)
+    {
+        free(data[i]);
+    }
+    if (data) free(data);
+}
+
 void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
 {
     char* path = getenv("PATH_INFO");
@@ -30,16 +115,10 @@ void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
     {
         content_index(api);
     }
-    else if (path[1] == '@')
-    {   // Account path
-        content_account(api);
-    }
-    else
-    {   // Generic path
+    else {   // Generic path
         for (size_t i = 0; i < paths_len; ++i)
         {
-            if (strcmp(path, paths[i].path) == 0)
-                paths[i].callback(api);
+            parse_path(api, paths + i);
         }
     }
 }

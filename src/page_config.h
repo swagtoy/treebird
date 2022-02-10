@@ -18,8 +18,9 @@
 
 #ifndef PAGE_CONFIG_H
 #define PAGE_CONFIG_H
+#include <stddef.h>
 #include <mastodont.h>
 
-void content_config(mastodont_t* api);
+void content_config(mastodont_t* api, char** data, size_t data_size);
 
 #endif // PAGE_CONFIG_H

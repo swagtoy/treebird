@@ -18,9 +18,10 @@
 
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
+#include <stddef.h>
 #include <mastodont.h>
 
 char* construct_account_page(struct mstdnt_account* acct, size_t* res_size);
-void content_account(mastodont_t* api);
+void content_account(mastodont_t* api, char** data, size_t data_size);
 
 #endif // ACCOUNT_H

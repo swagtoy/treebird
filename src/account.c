@@ -22,7 +22,6 @@
 #include "../config.h"
 #include "account.h"
 #include "easprintf.h"
-#include "uri.h"
 
 // Files
 #include "../static/index.chtml"
@@ -51,25 +50,23 @@ char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
     return result;
 }
 
-void content_account(mastodont_t* api)
+void content_account(mastodont_t* api, char** data, size_t size)
 {
+    int cleanup = 0;
     char* account_page;
     struct mstdnt_account acct;
     struct mstdnt_storage storage;
-    char uri[MSTDNT_URISIZE];
 
-    if (parse_uri(uri, MSTDNT_URISIZE,  getenv("PATH_INFO")+2))
-    {
-        return;
-    }
-    if (mastodont_account(api, MSTDNT_LOOKUP_ACCT, uri,
+    if (mastodont_account(api, MSTDNT_LOOKUP_ACCT, data[0],
                           &acct, &storage, NULL))
-        account_page = "An error occured";
+        account_page = "Couldn't load account info";
     else
+    {
+        cleanup = 1;
         account_page = construct_account_page(&acct, NULL);
-    
-    if (!account_page)
-        account_page = "Malloc error";
+        if (!account_page)
+            account_page = "Malloc error";
+    }
     
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -82,5 +79,5 @@ void content_account(mastodont_t* api)
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
-    free(account_page);
+    if (cleanup) free(account_page);
 }

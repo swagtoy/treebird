@@ -28,16 +28,23 @@
 
 void content_index(mastodont_t* api)
 {
+    int cleanup = 0;
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage;
     char* status_format;
-    mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count);
-
-    /* Construct statuses into HTML */
-    status_format = construct_statuses(statuses, status_count, &statuses_html_count);
-    if (status_format == NULL)
-        status_format = "Error in malloc!";
+    if (mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count))
+    {
+        status_format = "An error occured loading the timeline";
+    }
+    else
+    {
+        /* Construct statuses into HTML */
+        status_format = construct_statuses(statuses, status_count, &statuses_html_count);
+        if (status_format == NULL)
+            status_format = "Error in malloc!";
+        cleanup = 1;
+    }
 
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -50,5 +57,5 @@ void content_index(mastodont_t* api)
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
-    free(status_format);
+    if (cleanup) free(status_format);
 }

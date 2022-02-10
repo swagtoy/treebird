@@ -23,6 +23,7 @@
 #include "index.h"
 #include "page_config.h"
 #include "path.h"
+#include "account.h"
 
 int main(void)
 {
@@ -41,7 +42,8 @@ int main(void)
      *  Path handling  *
      ******************/
     struct path_info paths[] = {
-        { "/config", content_config }
+        { "/config", content_config },
+        { "/@:", content_account },
     };
 
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
