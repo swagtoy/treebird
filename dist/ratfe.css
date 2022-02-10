@@ -354,7 +354,8 @@ ul li:first-child a.sidebarbtn
     position: relative;
     left: 160px;
     top: -10px;
-    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    text-shadow: 0px 2px 6px #000;
 }
 
 .acct-displayname
@@ -367,8 +368,10 @@ ul li:first-child a.sidebarbtn
 .acct-username
 {
     font-size: 14px;
-    color: #cacaca;
+    color: #dadada;
     display: block;
+    font-weight: bold;
+    text-shadow: 0px 0px 5px #000;
 }
 
 .header-btn

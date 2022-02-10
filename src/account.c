@@ -22,6 +22,7 @@
 #include "../config.h"
 #include "account.h"
 #include "easprintf.h"
+#include "uri.h"
 
 // Files
 #include "../static/index.chtml"
@@ -32,17 +33,17 @@ char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
     int result_size;
     char* result;
     result_size = easprintf(&result, data_account_html,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL,
-                            NULL);
+                            acct->header,
+                            acct->display_name,
+                            acct->username,
+                            acct->avatar,
+                            "Statuses",
+                            0,
+                            "Following",
+                            0,
+                            "Followers",
+                            0,
+                            "Content");
     if (result_size == -1)
         result = NULL;
 
@@ -53,7 +54,22 @@ char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
 void content_account(mastodont_t* api)
 {
     char* account_page;
-    account_page = construct_account_page(NULL, NULL);
+    struct mstdnt_account acct;
+    struct mstdnt_storage storage;
+    char uri[MSTDNT_URISIZE];
+
+    if (parse_uri(uri, MSTDNT_URISIZE,  getenv("PATH_INFO")+2))
+    {
+        return;
+    }
+    if (mastodont_account(api, MSTDNT_LOOKUP_ACCT, uri,
+                          &acct, &storage, NULL))
+        account_page = "An error occured";
+    else
+        account_page = construct_account_page(&acct, NULL);
+    
+    if (!account_page)
+        account_page = "Malloc error";
     
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -63,4 +79,8 @@ void content_account(mastodont_t* api)
 
     /* Output */
     render_base_page(&b);
+
+    /* Cleanup */
+    mastodont_storage_cleanup(&storage);
+    free(account_page);
 }
