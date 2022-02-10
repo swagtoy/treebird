@@ -35,7 +35,7 @@ char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
     result_size = easprintf(&result, data_account_html,
                             acct->header,
                             acct->display_name,
-                            acct->username,
+                            acct->acct,
                             acct->avatar,
                             "Statuses",
                             0,
