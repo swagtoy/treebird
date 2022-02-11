@@ -22,15 +22,29 @@
 #include "../config.h"
 #include "account.h"
 #include "easprintf.h"
+#include "status.h"
 
 // Files
 #include "../static/index.chtml"
 #include "../static/account.chtml"
 
-char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
+char* construct_account_page(struct mstdnt_account* acct,
+                             struct mstdnt_status* statuses,
+                             size_t statuses_len,
+                             size_t* res_size)
 {
+    int cleanup = 0;
     int result_size;
+    char* statuses_html;
     char* result;
+
+    // Load statuses html
+    statuses_html = construct_statuses(statuses, statuses_len, NULL);
+    if (!statuses_html)
+        statuses_html = "Error in malloc!";
+    else
+        cleanup = 1;
+    
     result_size = easprintf(&result, data_account_html,
                             acct->header,
                             acct->display_name,
@@ -42,11 +56,13 @@ char* construct_account_page(struct mstdnt_account* acct, size_t* res_size)
                             0,
                             "Followers",
                             0,
-                            "Content");
+                            statuses_html);
+    
     if (result_size == -1)
         result = NULL;
 
     if (res_size) *res_size = result_size;
+    if (cleanup) free(statuses_html);
     return result;
 }
 
@@ -55,15 +71,24 @@ void content_account(mastodont_t* api, char** data, size_t size)
     int cleanup = 0;
     char* account_page;
     struct mstdnt_account acct;
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage, status_storage;
+    struct mstdnt_status* statuses;
+    size_t status_len;
+    int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
-    if (mastodont_account(api, MSTDNT_LOOKUP_ACCT, data[0],
-                          &acct, &storage, NULL))
-        account_page = "Couldn't load account info";
-    else
+    if (mastodont_account(api, lookup_type, data[0],
+                          &acct, &storage, NULL) ||
+        mastodont_account_statuses(api, acct.id, NULL,
+                                   &status_storage, &statuses, &status_len))
     {
+        account_page = "Couldn't load account info";
+    }
+    else {
         cleanup = 1;
-        account_page = construct_account_page(&acct, NULL);
+        account_page = construct_account_page(&acct,
+                                              statuses,
+                                              status_len,
+                                              NULL);
         if (!account_page)
             account_page = "Malloc error";
     }
@@ -79,5 +104,6 @@ void content_account(mastodont_t* api, char** data, size_t size)
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&status_storage);
     if (cleanup) free(account_page);
 }

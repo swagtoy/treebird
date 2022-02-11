@@ -33,4 +33,17 @@ static char* const config_canonical_name = "RatFE";
  */
 static char* const config_instance_url = "https://desuposter.club/";
 
+/*
+ * Bool: experimental_lookup
+ *
+ * Uses experimental acct lookup (@user@domain)
+ * This allows for the new lookup feature, which can get
+ * information for local and federated accounts regardless if signed in.
+ *
+ * This feature is new and was introduced in the develop branch in 2022.
+ * Keep this disabled if running an older pleroma build, or because you just
+ * don't want it.
+ */
+static const int config_experimental_lookup = FALSE;
+
 #endif // CONFIG_H

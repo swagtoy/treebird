@@ -21,7 +21,10 @@
 #include <stddef.h>
 #include <mastodont.h>
 
-char* construct_account_page(struct mstdnt_account* acct, size_t* res_size);
+char* construct_account_page(struct mstdnt_account* acct,
+                             struct mstdnt_status* statuses,
+                             size_t statuses_len,
+                             size_t* res_size);
 void content_account(mastodont_t* api, char** data, size_t data_size);
 
 #endif // ACCOUNT_H

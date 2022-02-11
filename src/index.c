@@ -41,7 +41,7 @@ void content_index(mastodont_t* api)
     {
         /* Construct statuses into HTML */
         status_format = construct_statuses(statuses, status_count, &statuses_html_count);
-        if (status_format == NULL)
+        if (!status_format)
             status_format = "Error in malloc!";
         cleanup = 1;
     }
