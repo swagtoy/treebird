@@ -44,6 +44,6 @@ static char* const config_instance_url = "https://desuposter.club/";
  * Keep this disabled if running an older pleroma build, or because you just
  * don't want it.
  */
-static const int config_experimental_lookup = FALSE;
+static const int config_experimental_lookup = TRUE;
 
 #endif // CONFIG_H
