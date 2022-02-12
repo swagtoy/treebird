@@ -18,5 +18,16 @@
 
 #ifndef COOKIE_H
 #define COOKIE_H
+#include <stddef.h>
+
+struct http_cookie_info
+{
+    char* key;
+    char* val;
+    size_t val_len; // Val may be large, like CSS property
+};
+
+// Stupidly fast simple cookie parser
+char* parse_cookies(char* begin, struct http_cookie_info* info);
 
 #endif // COOKIE_H

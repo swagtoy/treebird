@@ -1,0 +1,74 @@
+/*
+ * RatFE - Lightweight frontend for Pleroma
+ * Copyright (C) 2022 Nekobit
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <stdio.h>
+#include "cookie.h"
+
+enum cookie_state
+{
+    STATE_C_NEUTRAL,
+    STATE_C_STARTSP,
+    STATE_K_START,
+    STATE_V_START,
+};
+
+char* parse_cookies(char* begin, struct http_cookie_info* info)
+{
+    int keydone = 0;
+    enum cookie_state state = STATE_C_STARTSP;
+    int end = 0;
+    size_t val_s = 0;
+    
+    for (; *begin != ';' && *begin != '\0'; ++begin)
+    {
+        switch (*begin)
+        {
+        case '=':
+            if (state == STATE_K_START) keydone = 1;
+            state = STATE_C_STARTSP;
+            *begin = '\0'; // Null ptr
+            break;
+        case ' ':
+            // longkeyval = res;
+            //           ^ ^
+            if (state == STATE_C_STARTSP ||
+                state == STATE_K_START)
+                break;
+            // fall
+        default:
+            if (state == STATE_C_STARTSP)
+            {
+                if (keydone) info->val = begin;
+                else info->key = begin;
+                state = keydone ? STATE_V_START : STATE_K_START;
+            }
+            if (keydone) ++val_s;
+        }
+    }
+
+    // Which character did we stop at?
+    if (*begin == '\0')
+        end = 1;
+    else if (*begin == ';')
+        *begin = '\0';
+    
+    // The val length may be large, so strlen can waste time
+    info->val_len = val_s;
+    
+    return end ? NULL : begin+1;
+}

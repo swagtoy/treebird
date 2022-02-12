@@ -20,17 +20,37 @@
 #include <stdlib.h>
 #include "base_page.h"
 #include "easprintf.h"
+#include "cookie.h"
+
 
 // Files
 #include "../static/index.chtml"
 
 void render_base_page(struct base_page* page)
 {
+    char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = page->locale;
+    char* cookie_read = cookie;
+    struct http_cookie_info info = { 0 };
+
+    /*while (1)
+    {
+        cookie_read = parse_cookies(cookie_read, &info);
+        
+        if (!(info.key && info.val)) break;
+        if (strcmp(info.key, "theme") == 0)
+        {
+            g_config.theme = info.val;
+        }
+
+        if (!cookie_read) break;
+        }*/
     
     char* data;
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
+                        g_config.theme,
+                        g_config.theme,
                         L10N[locale][L10N_APP_NAME],
                         L10N[locale][L10N_SEARCH_PLACEHOLDER],
                         L10N[locale][L10N_SEARCH_BUTTON],

@@ -24,6 +24,8 @@
 #include "../config.h"
 #include "page_config.h"
 #include "query.h"
+#include "cookie.h"
+#include "local_config.h"
 
 // Pages
 #include "../static/index.chtml"
@@ -33,9 +35,8 @@ void content_config(mastodont_t* api, char** data, size_t size)
 {
     (void)api; // No need to use this
     char* request_method = getenv("REQUEST_METHOD");
-    char* post_query, * p_query_read;
+    char* post_query = NULL, * p_query_read;
     struct http_query_info info;
-
     
     // Handle POST
     if (request_method && (strcmp("POST", request_method) == 0))
@@ -57,15 +58,16 @@ void content_config(mastodont_t* api, char** data, size_t size)
         while (1)
         {
             p_query_read = parse_query(p_query_read, &info);
-            
-            printf("%.*s,", (int)info.val_len, info.val);
+            if (!(info.key && info.val)) break;
+            if (strcmp(info.key, "theme") == 0)
+            {
+                g_config.theme = info.val;
+                printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
+                       "theme", info.val);
+            }
 
-            if (p_query_read == NULL)
-                break;
+            if (!p_query_read) break;
         }
-
-        // Cleanup
-        free(post_query);
     }
 
     struct base_page b = {
@@ -75,6 +77,7 @@ void content_config(mastodont_t* api, char** data, size_t size)
     };
 
     render_base_page(&b);
-
-    printf(data_index_html, config_canonical_name, data_config_html);
+    
+    // Cleanup
+    if (post_query) free(post_query);
 }

@@ -24,6 +24,7 @@
 #include "page_config.h"
 #include "path.h"
 #include "account.h"
+#include "local_config.h"
 
 int main(void)
 {
@@ -37,6 +38,9 @@ int main(void)
     mastodont_t api;
     api.url = config_instance_url;
     mastodont_init(&api);
+
+    // Config defaults
+    g_config.theme = "ratfe20";
 
     /*******************
      *  Path handling  *

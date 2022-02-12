@@ -16,18 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef BASE_PAGE_H
-#define BASE_PAGE_H
-#include "l10n.h"
-#include "local_config.h"
+#ifndef LOCAL_CONFIG_H
+#define LOCAL_CONFIG_H
 
-struct base_page
+struct local_config
 {
-    enum l10n_locale locale;
-    char* content;
-    char* sidebar_right;
+    char* theme;
 };
 
-void render_base_page(struct base_page* page);
+static struct local_config g_config;
 
-#endif // BASE_PAGE_H
+#endif // LOCAL_CONFIG_H
