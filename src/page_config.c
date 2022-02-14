@@ -64,10 +64,12 @@ void content_config(mastodont_t* api, char** data, size_t size)
                 g_config.theme = info.val;
                 printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
                        "theme", info.val);
+                g_config.changed = 1;
             }
 
             if (!p_query_read) break;
         }
+
     }
 
     struct base_page b = {

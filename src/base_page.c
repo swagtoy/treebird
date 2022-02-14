@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "base_page.h"
@@ -33,7 +34,7 @@ void render_base_page(struct base_page* page)
     char* cookie_read = cookie;
     struct http_cookie_info info = { 0 };
 
-    /*while (1)
+    while (!g_config.changed)
     {
         cookie_read = parse_cookies(cookie_read, &info);
         
@@ -44,12 +45,11 @@ void render_base_page(struct base_page* page)
         }
 
         if (!cookie_read) break;
-        }*/
+    }
     
     char* data;
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
-                        g_config.theme,
                         g_config.theme,
                         L10N[locale][L10N_APP_NAME],
                         L10N[locale][L10N_SEARCH_PLACEHOLDER],

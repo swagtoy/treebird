@@ -16,15 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCAL_CONFIG_H
-#define LOCAL_CONFIG_H
+#include "local_config.h"
 
-struct local_config
-{
-    int changed;
-    char* theme;
+struct local_config g_config = {
+    .changed = 0,
+    .theme = "ratfe20"
 };
-
-extern struct local_config g_config;
-
-#endif // LOCAL_CONFIG_H
