@@ -34,18 +34,19 @@ void render_base_page(struct base_page* page)
     char* cookie_read = cookie;
     struct http_cookie_info info = { 0 };
 
-    while (!g_config.changed)
-    {
-        cookie_read = parse_cookies(cookie_read, &info);
-        
-        if (!(info.key && info.val)) break;
-        if (strcmp(info.key, "theme") == 0)
+    if (!g_config.changed && cookie)
+        while (1)
         {
-            g_config.theme = info.val;
-        }
+            cookie_read = parse_cookies(cookie_read, &info);
+        
+            if (!(info.key && info.val)) break;
+            if (strcmp(info.key, "theme") == 0)
+            {
+                g_config.theme = info.val;
+            }
 
-        if (!cookie_read) break;
-    }
+            if (!cookie_read) break;
+        }
     
     char* data;
     int len = easprintf(&data, data_index_html,
