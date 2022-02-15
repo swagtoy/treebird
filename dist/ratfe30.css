@@ -110,7 +110,7 @@ input[type=button], input[type=submit], .sidebarbtn, .btn
 { 
     margin: 4px;
     border-radius: 3px;
-    border: 1px solid #fcfcfc;
+    border: 1px solid #fcfcfc00;
     color: #000;
     text-decoration: none;
     transition: .2s;

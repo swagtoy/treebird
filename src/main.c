@@ -24,6 +24,7 @@
 #include "page_config.h"
 #include "path.h"
 #include "account.h"
+#include "login.h"
 #include "local_config.h"
 
 int main(void)
@@ -47,6 +48,7 @@ int main(void)
      ******************/
     struct path_info paths[] = {
         { "/config", content_config },
+        { "/login", content_login },
         { "/@:", content_account },
     };
 

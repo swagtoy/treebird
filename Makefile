@@ -34,6 +34,8 @@ $(PAGES_DIR)/config.chtml: $(PAGES_DIR)/config.html
 	./filec $< data_config_html > $@
 $(PAGES_DIR)/account.chtml: $(PAGES_DIR)/account.html
 	./filec $< data_account_html > $@
+$(PAGES_DIR)/login.chtml: $(PAGES_DIR)/login.html
+	./filec $< data_login_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
