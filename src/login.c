@@ -27,10 +27,19 @@
 
 void content_login(mastodont_t* api, char** data, size_t data_size)
 {
-
+    struct mstdnt_storage storage;
+    struct mstdnt_app app;
+    struct mstdnt_app_register_args args = {
+        .client_name = "RatFE",
+        .redirect_uris = "http://localhost/",
+        .scopes = "read+write",
+        .website = NULL
+    };
+    mastodont_register_app(api, &args, &storage, &app);
+    
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = data_login_html,
+        .content = app.client_id,
         .sidebar_right = NULL
     };
 
