@@ -27,19 +27,34 @@
 
 void content_login(mastodont_t* api, char** data, size_t data_size)
 {
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage, oauth_store;
     struct mstdnt_app app;
-    struct mstdnt_app_register_args args = {
+    struct mstdnt_oauth_token token;
+
+    // Getting the client id/secret
+    struct mstdnt_app_register_args args_app = {
         .client_name = "RatFE",
         .redirect_uris = "http://localhost/",
         .scopes = "read+write",
         .website = NULL
     };
-    mastodont_register_app(api, &args, &storage, &app);
+
+    struct mstdnt_oauth_token_args args_token = {
+        .grant_type = "password",
+        .client_id = app.client_id,
+        .client_secret = app.client_secret,
+        .username = "testuser",
+        .password = "password",
+    };
+ 
+    mastodont_register_app(api, &args_app, &storage, &app);
     
+    mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
+                                 &token);
+
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = app.client_id,
+        .content = data_login_html,
         .sidebar_right = NULL
     };
 
