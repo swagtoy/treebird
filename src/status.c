@@ -20,7 +20,24 @@
 #include <string.h>
 #include "status.h"
 #include "easprintf.h"
+#include "query.h"
 #include "../static/status.chtml"
+
+static void status_post(struct http_query_info* info, void* arg)
+{
+    mastodont_t* api = arg;
+
+    if (strcmp(info->key, "content") == 0)
+    {
+        
+    }
+}
+
+int try_post_status(mastodont_t* api)
+{
+    char* post_query = try_handle_post(status_post, api);
+    return 0;
+}
 
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
 {

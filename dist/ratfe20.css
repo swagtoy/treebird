@@ -52,6 +52,15 @@ a
 #navbar-right
 {
     padding-right: 8px;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+#login-header
+{
+    margin-right: 15px;
+    text-decoration: none;
 }
 
 .alignend
@@ -380,4 +389,33 @@ ul li:first-child a.sidebarbtn
     padding: 8px 15px;
     margin: 0;
     
+}
+
+/****************
+ *   Statusbox  *
+ ****************/
+.statusbox
+{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.statusbox textarea
+{
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    margin-bottom: 5px;
+}
+
+.statusbox .statusfooter
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.statusbox .statusfooter-left
+{
+    flex: 1;
 }

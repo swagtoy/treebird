@@ -29,5 +29,6 @@ struct http_cookie_info
 
 // Stupidly fast simple cookie parser
 char* parse_cookies(char* begin, struct http_cookie_info* info);
+int cookie_get_val(char* src, char* key, struct http_cookie_info* info);
 
 #endif // COOKIE_H

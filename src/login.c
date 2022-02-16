@@ -75,7 +75,9 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
         mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
                                      &token);
         // TODO checking, also ^ returns non-zero
-        printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;", token.access_token);
+        printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;\r\n", token.access_token);
+        printf("Set-Cookie: logged_in=t; SameSite=Strict");
+//        cookie_get_val(cookies, key, http_cookie_info* &info)
     }
 
     struct base_page b = {

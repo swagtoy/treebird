@@ -72,3 +72,27 @@ char* parse_cookies(char* begin, struct http_cookie_info* info)
     
     return end ? NULL : begin+1;
 }
+
+int cookie_get_val(char* src, char* key, struct http_cookie_info* info)
+{
+    struct http_cookie_info read_info;
+    char* src_read;
+    
+    while (1)
+    {
+        src_read = parse_cookies(src_read, &read_info);
+
+        if (!(read_info.key && read_info.val)) break;
+        if (strcmp(read_info.key, key) == 0)
+        {
+            info->key = read_info.key;
+            info->val = read_info.val;
+            info->val_len = read_info.val_len;
+            return 0;
+        }
+
+        if (!src_read) break;
+    }
+
+    return 1;
+}

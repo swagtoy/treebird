@@ -33,6 +33,7 @@ void render_base_page(struct base_page* page)
     enum l10n_locale locale = page->locale;
     char* cookie_read = cookie;
     struct http_cookie_info info = { 0 };
+    char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
 
     if (!g_config.changed && cookie)
         while (1)
@@ -44,6 +45,11 @@ void render_base_page(struct base_page* page)
             {
                 g_config.theme = info.val;
             }
+            else if (strcmp(info.key, "logged_in") == 0)
+            {
+                if (strcmp(info.val, "t") == 0)
+                    login_string = "";
+            }
 
             if (!cookie_read) break;
         }
@@ -53,6 +59,7 @@ void render_base_page(struct base_page* page)
                         L10N[locale][L10N_APP_NAME],
                         g_config.theme,
                         L10N[locale][L10N_APP_NAME],
+                        login_string,
                         L10N[locale][L10N_SEARCH_PLACEHOLDER],
                         L10N[locale][L10N_SEARCH_BUTTON],
                         L10N[locale][L10N_HOME],
