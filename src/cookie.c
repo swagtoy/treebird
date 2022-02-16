@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdio.h>
 #include "cookie.h"
 
@@ -76,7 +77,7 @@ char* parse_cookies(char* begin, struct http_cookie_info* info)
 int cookie_get_val(char* src, char* key, struct http_cookie_info* info)
 {
     struct http_cookie_info read_info;
-    char* src_read;
+    char* src_read = src;
     
     while (1)
     {

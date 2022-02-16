@@ -58,7 +58,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
         struct mstdnt_app_register_args args_app = {
             .client_name = "RatFE",
             .redirect_uris = "http://localhost/",
-            .scopes = "read+write",
+            .scopes = "read+write+follow+push",
             .website = NULL
         };
 

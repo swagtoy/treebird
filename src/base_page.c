@@ -35,6 +35,12 @@ void render_base_page(struct base_page* page)
     struct http_cookie_info info = { 0 };
     char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
 
+    /*
+     * Since getenv() returns a pointer to the env variables,
+     * we're going to overwrite that data. It saves us some copying
+     * time, since this is /very likely/ the last time we will ever
+     * read HTTP_COOKIE
+     */
     if (!g_config.changed && cookie)
         while (1)
         {
