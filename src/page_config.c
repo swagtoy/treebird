@@ -18,7 +18,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include "base_page.h"
 #include "../config.h"
@@ -31,46 +30,25 @@
 #include "../static/index.chtml"
 #include "../static/config.chtml"
 
+static void config_post(struct http_query_info* info, void* args)
+{
+    (void)args;
+    
+    if (strcmp(info->key, "theme") == 0)
+    {
+        g_config.theme = info->val;
+        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
+               "theme", info->val);
+        g_config.changed = 1;
+    }
+}
+
 void content_config(mastodont_t* api, char** data, size_t size)
 {
+    char* post_query;
     (void)api; // No need to use this
-    char* request_method = getenv("REQUEST_METHOD");
-    char* post_query = NULL, * p_query_read;
-    struct http_query_info info;
     
-    // Handle POST
-    if (request_method && (strcmp("POST", request_method) == 0))
-    {
-        int content_length = atoi(getenv("CONTENT_LENGTH"));
-        post_query = malloc(content_length + 1);
-        if (!post_query)
-        {
-            puts("Malloc error!");
-            return;
-        }
-        read(STDIN_FILENO, post_query, content_length);
-        post_query[content_length] = '\0';
-
-        // For parse_query to shift through, so we can still free the original
-        p_query_read = post_query;
-
-        // Parse
-        while (1)
-        {
-            p_query_read = parse_query(p_query_read, &info);
-            if (!(info.key && info.val)) break;
-            if (strcmp(info.key, "theme") == 0)
-            {
-                g_config.theme = info.val;
-                printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
-                       "theme", info.val);
-                g_config.changed = 1;
-            }
-
-            if (!p_query_read) break;
-        }
-
-    }
+    post_query = try_handle_post(config_post, NULL);
 
     struct base_page b = {
         .locale = L10N_EN_US,

@@ -29,5 +29,6 @@ struct http_query_info
 
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
+char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg);
 
 #endif // QUERY_H

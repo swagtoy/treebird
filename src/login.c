@@ -17,7 +17,9 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include "query.h"
 #include "base_page.h"
 #include "login.h"
 #include "../config.h"
@@ -25,32 +27,56 @@
 // Files
 #include "../static/login.chtml"
 
+struct login_info
+{
+    char* username;
+    char* password;
+};
+
+static void authenticate(struct http_query_info* info, void* _args)
+{
+    struct login_info* login = _args;
+
+    if (strcmp(info->key, "username") == 0)
+        login->username = info->val;
+    else if (strcmp(info->key, "password") == 0)
+        login->password = info->val;
+}
+
 void content_login(mastodont_t* api, char** data, size_t data_size)
 {
+    char* post_query;
     struct mstdnt_storage storage, oauth_store;
     struct mstdnt_app app;
     struct mstdnt_oauth_token token;
+    struct login_info info = { 0 };
 
-    // Getting the client id/secret
-    struct mstdnt_app_register_args args_app = {
-        .client_name = "RatFE",
-        .redirect_uris = "http://localhost/",
-        .scopes = "read+write",
-        .website = NULL
-    };
+    post_query = try_handle_post(authenticate, &info);
+    if (post_query)
+    {
+        // Getting the client id/secret
+        struct mstdnt_app_register_args args_app = {
+            .client_name = "RatFE",
+            .redirect_uris = "http://localhost/",
+            .scopes = "read+write",
+            .website = NULL
+        };
 
-    struct mstdnt_oauth_token_args args_token = {
-        .grant_type = "password",
-        .client_id = app.client_id,
-        .client_secret = app.client_secret,
-        .username = "testuser",
-        .password = "password",
-    };
- 
-    mastodont_register_app(api, &args_app, &storage, &app);
+        mastodont_register_app(api, &args_app, &storage, &app);
     
-    mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
-                                 &token);
+        struct mstdnt_oauth_token_args args_token = {
+            .grant_type = "password",
+            .client_id = app.client_id,
+            .client_secret = app.client_secret,
+            .username = info.username,
+            .password = info.password
+        };
+    
+        mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
+                                     &token);
+        // TODO checking, also ^ returns non-zero
+        printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;", token.access_token);
+    }
 
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -60,4 +86,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
 
     // Output
     render_base_page(&b);
+
+    // Cleanup
+    if (post_query) free(post_query);
 }

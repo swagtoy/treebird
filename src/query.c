@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 #include "query.h"
 
 char* parse_query(char* begin, struct http_query_info* info)
@@ -39,4 +43,40 @@ char* parse_query(char* begin, struct http_query_info* info)
     info->val_len = (size_t)(begin - val_begin);
         
     return end ? NULL : begin+1;
+}
+
+char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg)
+{
+    char* request_method = getenv("REQUEST_METHOD");
+    char* post_query = NULL, * p_query_read;
+    struct http_query_info info;
+    
+    // Handle POST
+    if (request_method && (strcmp("POST", request_method) == 0))
+    {
+        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        post_query = malloc(content_length + 1);
+        if (!post_query)
+        {
+            puts("Malloc error!");
+            return NULL;
+        }
+        read(STDIN_FILENO, post_query, content_length);
+        post_query[content_length] = '\0';
+
+        // For parse_query to shift through, so we can still free the original
+        p_query_read = post_query;
+
+        // Parse
+        while (1)
+        {
+            p_query_read = parse_query(p_query_read, &info);
+            if (!(info.key && info.val)) break;
+            call(&info, arg);
+
+            if (!p_query_read) break;
+        }
+    }
+
+    return post_query;
 }
