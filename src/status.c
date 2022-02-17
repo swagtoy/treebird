@@ -81,8 +81,11 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
                                statuses[i].account.avatar,
                                statuses[i].account.display_name, /* Username */
                                statuses[i].account.acct, /* Account */
-                               "Public?", /* visibility */
-                               statuses[i].content);
+                               "Public", /* visibility */
+                               statuses[i].content,
+                               statuses[i].reblogged ? "nobutton-active" : "",
+                               statuses[i].id,
+                               statuses[i].favourited ? "nobutton-active" : "");
         if (parse_size == -1) /* Malloc error */
         {
             if (result) free(result);

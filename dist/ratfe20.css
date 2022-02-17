@@ -239,7 +239,6 @@ ul li:first-child a.sidebarbtn
 {
     margin: 8px 0 2px 0;
     display: flex;
-    
 }
 
 
@@ -443,6 +442,7 @@ ul li:first-child a.sidebarbtn
     border-radius: 3px;
 }
 
+.status-interact .nobutton-active,
 .nobutton:hover
 {
     background-color: #aa0000 !important;

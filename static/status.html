@@ -17,10 +17,12 @@
         <input class="nobutton" type="submit" value="Reply">
       </form>
       <form action="./" method="post">
-        <input class="nobutton" type="submit" value="Repeat">
+        <input class="nobutton %s" type="submit" value="Repeat">
       </form>
       <form action="./" method="post">
-        <input class="nobutton" type="submit" value="Like">
+        <input type="hidden" name="itype" value="like">
+        <input type="hidden" name="id" value="%s">
+        <input class="nobutton %s" type="submit" value="Like">
       </form>
       <form action="./" method="post">
         <input class="nobutton" type="submit" value="Quick">
