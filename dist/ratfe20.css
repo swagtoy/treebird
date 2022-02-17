@@ -235,6 +235,14 @@ ul li:first-child a.sidebarbtn
     color: #808080;
 }
 
+.status-interact
+{
+    margin: 8px 0 2px 0;
+    display: flex;
+    
+}
+
+
 /***************************
  *    Element Grouping     *
  **************************/
@@ -388,7 +396,6 @@ ul li:first-child a.sidebarbtn
     display: inline-block;
     padding: 8px 15px;
     margin: 0;
-    
 }
 
 /****************
@@ -418,4 +425,27 @@ ul li:first-child a.sidebarbtn
 .statusbox .statusfooter-left
 {
     flex: 1;
+}
+
+
+/* Special cases */
+.nobutton
+{
+    background: none !important;
+    background-color: #eaeaea !important;
+    color: #aa0000 !important;
+    padding: 0 7px !important;
+    margin: 0 5px;
+    cursor: pointer !important;
+    outline: inherit !important;
+    font-size: 14px;
+    border: 1px solid #dadada !important;
+    border-radius: 3px;
+}
+
+.nobutton:hover
+{
+    background-color: #aa0000 !important;
+    color: #eaeaea !important;
+    border: 1px solid #770000 !important;
 }
