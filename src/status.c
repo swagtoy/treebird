@@ -34,32 +34,24 @@ static void status_post(struct http_query_info* info, void* arg)
         struct mstdnt_storage storage;
 
         // Cookie copy and read
-        char* http_cookie = getenv("HTTP_COOKIE");
-        char* cookie = malloc(strlen(http_cookie));
-        strcpy(cookie, http_cookie);
-        char* cookie_read = cookie;
-        
-        if (cookie_get_val(cookie_read, "access_token", &ck) == 0)
-        {
-            struct mstdnt_create_status_args args = {
-                .content_type = "text/plain",
-                .expires_in = 0,
-                .in_reply_to_conversation_id = NULL,
-                .in_reply_to_id = NULL,
-                .language = NULL,
-                .media_ids = NULL,
-                .poll = NULL,
-                .preview = 0,
-                .scheduled_at = NULL,
-                .sensitive = 0,
-                .spoiler_text = NULL,
-                .status = info->val,
-                .visibility = "public",
-            };
-            mastodont_create_status(api, &args, &storage);
-        }
+        struct mstdnt_create_status_args args = {
+            .content_type = "text/plain",
+            .expires_in = 0,
+            .in_reply_to_conversation_id = NULL,
+            .in_reply_to_id = NULL,
+            .language = NULL,
+            .media_ids = NULL,
+            .poll = NULL,
+            .preview = 0,
+            .scheduled_at = NULL,
+            .sensitive = 0,
+            .spoiler_text = NULL,
+            .status = info->val,
+            .visibility = "public",
+        };
+        mastodont_create_status(api, &args, &storage);
 //        mastodont_storage_cleanup(&storage);
-        free(cookie);
+
     }
 }
 
