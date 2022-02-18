@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <mastodont.h>
+#include <stdlib.h>
 #include "../config.h"
 #include "index.h"
 #include "page_config.h"
@@ -26,6 +27,30 @@
 #include "account.h"
 #include "login.h"
 #include "local_config.h"
+#include "cookie.h"
+
+void load_auth_token(mastodont_t* api)
+{
+    struct http_cookie_info ck;
+    char* http_cookie = getenv("HTTP_COOKIE");
+    
+    if (http_cookie)
+    {
+        char* cookie = malloc(strlen(http_cookie));
+        if (!cookie)
+        {
+            perror("malloc");
+            exit(1);
+        }
+        strcpy(cookie, http_cookie);
+        char* cookie_read = cookie;
+        if (cookie_get_val(cookie_read, "access_token", &ck) == 0)
+        {
+            mastodont_set_token(api, ck.val);
+        }
+        free(cookie);        
+    }
+}
 
 int main(void)
 {
@@ -39,6 +64,9 @@ int main(void)
     mastodont_t api;
     api.url = config_instance_url;
     mastodont_init(&api);
+
+    // Used if the user is authenticated
+    load_auth_token(&api);
 
     // Config defaults
     g_config.theme = "ratfe20";

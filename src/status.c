@@ -33,7 +33,7 @@ static void status_post(struct http_query_info* info, void* arg)
         struct http_cookie_info ck;
         struct mstdnt_storage storage;
 
-        // Cookie copy
+        // Cookie copy and read
         char* http_cookie = getenv("HTTP_COOKIE");
         char* cookie = malloc(strlen(http_cookie));
         strcpy(cookie, http_cookie);
@@ -41,7 +41,6 @@ static void status_post(struct http_query_info* info, void* arg)
         
         if (cookie_get_val(cookie_read, "access_token", &ck) == 0)
         {
-            api->token = ck.val;
             struct mstdnt_create_status_args args = {
                 .content_type = "text/plain",
                 .expires_in = 0,
