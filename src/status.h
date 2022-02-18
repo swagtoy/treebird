@@ -21,6 +21,7 @@
 #include <mastodont.h>
 
 int try_post_status(mastodont_t* api);
+int try_interact_status(mastodont_t* api);
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 
 #endif // STATUS_H

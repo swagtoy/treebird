@@ -63,6 +63,7 @@ char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg)
         }
         read(STDIN_FILENO, post_query, content_length);
         post_query[content_length] = '\0';
+        
 
         // For parse_query to shift through, so we can still free the original
         p_query_read = post_query;

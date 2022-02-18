@@ -50,6 +50,7 @@ void content_index(mastodont_t* api)
     }
 
     try_post_status(api);
+    try_interact_status(api);
 
     easprintf(&output, "%s %s", data_post_html, status_format);
 
