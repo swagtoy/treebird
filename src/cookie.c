@@ -28,6 +28,8 @@ enum cookie_state
     STATE_V_START,
 };
 
+struct cookie_values cookies = { 0 };
+
 char* parse_cookies(char* begin, struct http_cookie_info* info)
 {
     int keydone = 0;

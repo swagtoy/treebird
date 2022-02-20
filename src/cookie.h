@@ -20,12 +20,21 @@
 #define COOKIE_H
 #include <stddef.h>
 
+struct cookie_values
+{
+    char* access_token;
+    char* logged_in;
+    char* theme;
+};
+
 struct http_cookie_info
 {
     char* key;
     char* val;
     size_t val_len; // Val may be large, like CSS property
 };
+
+extern struct cookie_values cookies;
 
 // Stupidly fast simple cookie parser
 char* parse_cookies(char* begin, struct http_cookie_info* info);
