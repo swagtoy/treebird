@@ -65,8 +65,9 @@ int main(void)
     api.url = config_instance_url;
     mastodont_init(&api);
 
-    // Used if the user is authenticated
-    load_auth_token(&api);
+    // Load cookies
+    char* cookies_str = read_cookies_env();
+    api.token = cookies.access_token; // Load token now
 
     // Config defaults
     g_config.theme = "ratfe20";
@@ -83,6 +84,7 @@ int main(void)
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
 
     // Cleanup
+    if (cookies_str) free(cookies_str);
     mastodont_free(&api);
     mastodont_global_curl_cleanup();
 }

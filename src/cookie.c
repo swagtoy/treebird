@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "cookie.h"
+#include <stdlib.h>
 
 enum cookie_state
 {
@@ -28,7 +29,55 @@ enum cookie_state
     STATE_V_START,
 };
 
+struct cookie_value_refs
+{
+    char* key;
+    char** val;
+};
+
 struct cookie_values cookies = { 0 };
+
+char* read_cookies_env()
+{
+    struct http_cookie_info info;
+    char* cookies_env = getenv("HTTP_COOKIE");
+
+    // Is it even work bothering with?
+    if (!cookies_env)
+        return NULL;
+    
+    char* cookies_str = malloc(strlen(cookies_env));
+    if (!cookies_str)
+    {
+        perror("malloc");
+        return NULL;
+    }
+    strcpy(cookies_str, cookies_env);
+    char* cookies_read = cookies_str;
+
+    // Will loop through these
+    struct cookie_value_refs refs[] = {
+        { "access_token", &(cookies.access_token) },
+        { "logged_in", &(cookies.logged_in) },
+        { "theme", &(cookies.theme) }
+    };
+
+    do
+    {
+        cookies_read = parse_cookies(cookies_read, &info);
+
+        if (!(info.key && info.val)) break;
+        for (int i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
+        {
+            if (strcmp(info.key, refs[i].key) == 0)
+                *(refs[i].val) = info.val;
+        }
+    }
+    while (cookies_read);
+
+    // User is responsible for freeing when done!
+    return cookies_str;
+}
 
 char* parse_cookies(char* begin, struct http_cookie_info* info)
 {
