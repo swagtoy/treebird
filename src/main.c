@@ -29,6 +29,7 @@
 #include "local_config.h"
 #include "cookie.h"
 #include "query.h"
+#include "status.h"
 
 int main(void)
 {
@@ -58,6 +59,7 @@ int main(void)
         { "/config", content_config },
         { "/login", content_login },
         { "/@:", content_account },
+        { "/status/:", content_status }
     };
 
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));

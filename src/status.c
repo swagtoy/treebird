@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "base_page.h"
 #include "status.h"
 #include "easprintf.h"
 #include "query.h"
@@ -73,6 +74,22 @@ int try_interact_status(mastodont_t* api)
     return 0;
 }
 
+char* construct_status(struct mstdnt_status* status, int* size)
+{
+    char* stat_html;
+    size_t s = easprintf(&stat_html, data_status_html,
+                         status->account.avatar,
+                         status->account.display_name, /* Username */
+                         status->account.acct, /* Account */
+                         "Public", /* visibility */
+                         status->content,
+                         status->reblogged ? "nobutton-active" : "",
+                         status->id,
+                         status->favourited ? "nobutton-active" : "");
+    if (size) *size = s;
+    return stat_html;
+}
+
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
 {
     char* stat_html, *result = NULL;
@@ -80,15 +97,8 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
 
     for (size_t i = 0; i < size; ++i)
     {
-        parse_size = easprintf(&stat_html, data_status_html,
-                               statuses[i].account.avatar,
-                               statuses[i].account.display_name, /* Username */
-                               statuses[i].account.acct, /* Account */
-                               "Public", /* visibility */
-                               statuses[i].content,
-                               statuses[i].reblogged ? "nobutton-active" : "",
-                               statuses[i].id,
-                               statuses[i].favourited ? "nobutton-active" : "");
+        stat_html = construct_status(statuses + i, &parse_size);
+        
         if (parse_size == -1) /* Malloc error */
         {
             if (result) free(result);
@@ -118,3 +128,29 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
     return result;
 }
 
+void content_status(mastodont_t* api, char** data, size_t data_size)
+{
+    struct mstdnt_storage storage;
+    struct mstdnt_status* statuses_before, *statuses_after;
+    size_t stat_before_len, stat_after_len;
+    char* before_html = NULL, *after_html = NULL;
+
+    mastodont_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
+                             &stat_before_len, &stat_after_len);
+    before_html = construct_statuses(statuses_before, stat_before_len, NULL);
+//    after_html = construct_statuses(statuses_after, stat_after_len, NULL);
+    
+    struct base_page b = {
+        .locale = L10N_EN_US,
+        .content = before_html,
+        .sidebar_right = NULL
+    };
+
+    // Output
+    render_base_page(&b);
+
+    // Cleanup
+    if (before_html) free(before_html);
+    if (after_html) free(after_html);
+    mastodont_storage_cleanup(&storage);
+}
