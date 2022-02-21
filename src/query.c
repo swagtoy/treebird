@@ -21,6 +21,55 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "query.h"
+#include "key.h"
+
+struct query_values post = { 0 };
+
+char* read_post_data()
+{
+    struct http_query_info info;
+    char* request_method = getenv("REQUEST_METHOD");
+    char* post_query = NULL, *p_query_read;
+
+    // BEGIN Query references
+    struct key_value_refs refs[] = {
+        { "content", &(post.content) },
+        { "itype", &(post.itype) },
+        { "id", &(post.id) },
+        { "theme", &(post.theme) }
+    };
+    // END Query references
+
+    if (request_method && (strcmp("POST", request_method) == 0))
+    {
+        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        post_query = malloc(content_length + 1);
+        if (!post_query)
+        {
+            perror("malloc");
+            return NULL;
+        }
+        // Read in data
+        read(STDIN_FILENO, post_query, content_length);
+        post_query[content_length] = '\0';
+
+        // For shifting through
+        p_query_read = post_query;
+
+        do
+        {
+            p_query_read = parse_query(p_query_read, &info);
+            if (!(info.key && info.val)) break;
+            for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
+                if (strcmp(info.key, refs[i].key) == 0)
+                    *(refs[i].val) = info.val;
+        }
+        while (p_query_read);
+    }
+
+    // Free me afterwards!
+    return post_query;
+}
 
 char* parse_query(char* begin, struct http_query_info* info)
 {
@@ -39,8 +88,6 @@ char* parse_query(char* begin, struct http_query_info* info)
     if (*begin == '\0') end = 1;
     if (*begin == '&') *begin = '\0';
     info->val = val_begin;
-    // The val length may be large, so strlen can waste time
-    info->val_len = (size_t)(begin - val_begin);
         
     return end ? NULL : begin+1;
 }

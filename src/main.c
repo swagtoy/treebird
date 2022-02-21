@@ -29,29 +29,6 @@
 #include "local_config.h"
 #include "cookie.h"
 
-void load_auth_token(mastodont_t* api)
-{
-    struct http_cookie_info ck;
-    char* http_cookie = getenv("HTTP_COOKIE");
-    
-    if (http_cookie)
-    {
-        char* cookie = malloc(strlen(http_cookie));
-        if (!cookie)
-        {
-            perror("malloc");
-            exit(1);
-        }
-        strcpy(cookie, http_cookie);
-        char* cookie_read = cookie;
-        if (cookie_get_val(cookie_read, "access_token", &ck) == 0)
-        {
-            mastodont_set_token(api, ck.val);
-        }
-        free(cookie);        
-    }
-}
-
 int main(void)
 {
     // Content type is always HTML
@@ -68,6 +45,7 @@ int main(void)
     // Load cookies
     char* cookies_str = read_cookies_env();
     api.token = cookies.access_token; // Load token now
+    char* post_str = read_post_data();
 
     // Config defaults
     g_config.theme = "ratfe20";
@@ -85,6 +63,7 @@ int main(void)
 
     // Cleanup
     if (cookies_str) free(cookies_str);
+    if (post_str) free(post_str);
     mastodont_free(&api);
     mastodont_global_curl_cleanup();
 }

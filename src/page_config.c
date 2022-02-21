@@ -37,8 +37,7 @@ static void config_post(struct http_query_info* info, void* args)
     if (strcmp(info->key, "theme") == 0)
     {
         g_config.theme = info->val;
-        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
-               "theme", info->val);
+
         g_config.changed = 1;
     }
 }
@@ -47,8 +46,14 @@ void content_config(mastodont_t* api, char** data, size_t size)
 {
     char* post_query;
     (void)api; // No need to use this
-    
-    post_query = try_handle_post(config_post, NULL);
+
+    if (post.theme)
+    {
+        g_config.theme = post.theme;
+        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
+               "theme", post.theme);
+        g_config.changed = 1;
+    }
 
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -57,7 +62,4 @@ void content_config(mastodont_t* api, char** data, size_t size)
     };
 
     render_base_page(&b);
-    
-    // Cleanup
-    if (post_query) free(post_query);
 }

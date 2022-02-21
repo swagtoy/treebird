@@ -16,29 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef QUERY_H
-#define QUERY_H
-#include <stddef.h>
+#ifndef KEY_H
+#define KEY_H
 
-struct http_query_info
+struct key_value_refs
 {
     char* key;
-    char* val;
+    char** val;
 };
 
-struct query_values
-{
-    char* theme;
-    char* content;
-    char* itype;
-    char* id;
-};
-
-extern struct query_values post;
-
-char* read_post_data();
-/* A stupidly quick query parser */
-char* parse_query(char* begin, struct http_query_info* info);
-char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg);
-
-#endif // QUERY_H
+#endif // KEY_H

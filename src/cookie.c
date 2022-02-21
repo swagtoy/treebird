@@ -18,8 +18,9 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "cookie.h"
 #include <stdlib.h>
+#include "cookie.h"
+#include "key.h"
 
 enum cookie_state
 {
@@ -27,12 +28,6 @@ enum cookie_state
     STATE_C_STARTSP,
     STATE_K_START,
     STATE_V_START,
-};
-
-struct cookie_value_refs
-{
-    char* key;
-    char** val;
 };
 
 struct cookie_values cookies = { 0 };
@@ -56,7 +51,7 @@ char* read_cookies_env()
     char* cookies_read = cookies_str;
 
     // Will loop through these
-    struct cookie_value_refs refs[] = {
+    struct key_value_refs refs[] = {
         { "access_token", &(cookies.access_token) },
         { "logged_in", &(cookies.logged_in) },
         { "theme", &(cookies.theme) }

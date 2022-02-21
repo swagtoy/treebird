@@ -24,89 +24,52 @@
 #include "cookie.h"
 #include "../static/status.chtml"
 
-enum post_interact_type
-{
-    POST_INTERACT_NONE,
-    POST_INTERACT_LIKE,
-    POST_INTERACT_REBLOG
-};
-
-struct interact_args
-{
-    mastodont_t* api;
-    enum post_interact_type type;
-};
-
-static void status_interact(struct http_query_info* info, void* _arg)
-{
-    struct interact_args* arg = _arg;
-
-    if (strcmp(info->key, "itype") == 0)
-    {
-        if (strcmp(info->val, "like") == 0)
-        {
-            arg->type = POST_INTERACT_LIKE;
-        }
-    }
-    else if (strcmp(info->key, "id") == 0)
-    {
-        struct mstdnt_storage storage;
-        switch (arg->type)
-        {
-        case POST_INTERACT_LIKE:
-            mastodont_favourite_status(arg->api,
-                                       info->val,
-                                       &storage);
-//            mastodont_storage_cleanup(&storage);
-            return;
-        default:
-            return;
-        }
-    }
-}
-
-static void status_post(struct http_query_info* info, void* arg)
-{
-    mastodont_t* api = arg;
-
-    if (strcmp(info->key, "content") == 0)
-    {
-        struct mstdnt_storage storage;
-
-        // Cookie copy and read
-        struct mstdnt_create_status_args args = {
-            .content_type = "text/plain",
-            .expires_in = 0,
-            .in_reply_to_conversation_id = NULL,
-            .in_reply_to_id = NULL,
-            .language = NULL,
-            .media_ids = NULL,
-            .poll = NULL,
-            .preview = 0,
-            .scheduled_at = NULL,
-            .sensitive = 0,
-            .spoiler_text = NULL,
-            .status = info->val,
-            .visibility = "public",
-        };
-        mastodont_create_status(api, &args, &storage);
-//        mastodont_storage_cleanup(&storage);
-
-    }
-}
-
 int try_post_status(mastodont_t* api)
 {
-    char* post_query = try_handle_post(status_post, api);
+    if (!post.content) return 1;
+
+    struct mstdnt_storage storage;
+
+    // Cookie copy and read
+    struct mstdnt_create_status_args args = {
+        .content_type = "text/plain",
+        .expires_in = 0,
+        .in_reply_to_conversation_id = NULL,
+        .in_reply_to_id = NULL,
+        .language = NULL,
+        .media_ids = NULL,
+        .poll = NULL,
+        .preview = 0,
+        .scheduled_at = NULL,
+        .sensitive = 0,
+        .spoiler_text = NULL,
+        .status = post.content,
+        .visibility = "public",
+    };
+    
+    mastodont_create_status(api, &args, &storage);
+
+    // TODO cleanup when errors are properly implemented
+    // mastodont_storage_cleanup(&storage);
+    
     return 0;
 }
 
 int try_interact_status(mastodont_t* api)
 {
-    struct interact_args args;
-    args.api = api;
-    
-    char* post_query = try_handle_post(status_interact, &args);
+    struct mstdnt_storage storage;
+    if (!(post.itype && post.id)) return 1;
+
+    // Pretty up the type
+    if (strcmp(post.itype, "like") == 0)
+    {
+        mastodont_favourite_status(api,
+                                   post.id,
+                                   &storage);
+        // TODO Cleanup when errors handled
+        // mastodont_storage_cleanup(&storage);
+    }
+
     return 0;
 }
 
