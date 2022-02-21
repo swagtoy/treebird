@@ -27,32 +27,13 @@
 // Files
 #include "../static/login.chtml"
 
-struct login_info
-{
-    char* username;
-    char* password;
-};
-
-static void authenticate(struct http_query_info* info, void* _args)
-{
-    struct login_info* login = _args;
-
-    if (strcmp(info->key, "username") == 0)
-        login->username = info->val;
-    else if (strcmp(info->key, "password") == 0)
-        login->password = info->val;
-}
-
 void content_login(mastodont_t* api, char** data, size_t data_size)
 {
-    char* post_query;
     struct mstdnt_storage storage, oauth_store;
     struct mstdnt_app app;
     struct mstdnt_oauth_token token;
-    struct login_info info = { 0 };
 
-    post_query = try_handle_post(authenticate, &info);
-    if (post_query)
+    if (post.username && post.password)
     {
         // Getting the client id/secret
         struct mstdnt_app_register_args args_app = {
@@ -68,16 +49,15 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
             .grant_type = "password",
             .client_id = app.client_id,
             .client_secret = app.client_secret,
-            .username = info.username,
-            .password = info.password
+            .username = post.username,
+            .password = post.password
         };
     
         mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
                                      &token);
         // TODO checking, also ^ returns non-zero
         printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;\r\n", token.access_token);
-        printf("Set-Cookie: logged_in=t; SameSite=Strict");
-//        cookie_get_val(cookies, key, http_cookie_info* &info)
+        printf("Set-Cookie: logged_in=t; SameSite=Strict\r\n");
     }
 
     struct base_page b = {
@@ -88,7 +68,4 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
 
     // Output
     render_base_page(&b);
-
-    // Cleanup
-    if (post_query) free(post_query);
 }

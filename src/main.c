@@ -28,6 +28,7 @@
 #include "login.h"
 #include "local_config.h"
 #include "cookie.h"
+#include "query.h"
 
 int main(void)
 {

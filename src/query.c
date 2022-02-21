@@ -36,7 +36,9 @@ char* read_post_data()
         { "content", &(post.content) },
         { "itype", &(post.itype) },
         { "id", &(post.id) },
-        { "theme", &(post.theme) }
+        { "theme", &(post.theme) },
+        { "username", &(post.username) },
+        { "password", &(post.password) },
     };
     // END Query references
 

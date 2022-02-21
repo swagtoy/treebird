@@ -30,21 +30,8 @@
 #include "../static/index.chtml"
 #include "../static/config.chtml"
 
-static void config_post(struct http_query_info* info, void* args)
-{
-    (void)args;
-    
-    if (strcmp(info->key, "theme") == 0)
-    {
-        g_config.theme = info->val;
-
-        g_config.changed = 1;
-    }
-}
-
 void content_config(mastodont_t* api, char** data, size_t size)
 {
-    char* post_query;
     (void)api; // No need to use this
 
     if (post.theme)

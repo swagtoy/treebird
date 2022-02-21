@@ -35,7 +35,6 @@ void render_base_page(struct base_page* page)
 
     if (!g_config.changed && cookie)
     {
-        
         if (cookies.theme)
             g_config.theme = cookies.theme;
         if (cookies.logged_in && strcmp(cookies.logged_in, "t") == 0)
@@ -65,7 +64,7 @@ void render_base_page(struct base_page* page)
         return;
     }
 
-    printf("Content-Length: %d\r\n\r\n%s", len + 1, data);
+    printf("Content-Length: %d\r\n\r\n", len + 1);
     puts(data);
 
     free(data);
