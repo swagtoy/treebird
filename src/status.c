@@ -85,7 +85,8 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          status->content,
                          status->reblogged ? "nobutton-active" : "",
                          status->id,
-                         status->favourited ? "nobutton-active" : "");
+                         status->favourited ? "nobutton-active" : "",
+                         status->id);
     if (size) *size = s;
     return stat_html;
 }
@@ -94,6 +95,8 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
 {
     char* stat_html, *result = NULL;
     int curr_parse_size = 0, last_parse_size, parse_size;
+
+    if (size <= 0) return NULL;
 
     for (size_t i = 0; i < size; ++i)
     {
@@ -130,19 +133,28 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
 
 void content_status(mastodont_t* api, char** data, size_t data_size)
 {
-    struct mstdnt_storage storage;
-    struct mstdnt_status* statuses_before, *statuses_after;
+    char* output;
+    // Status context
+    struct mstdnt_storage storage, status_storage;
+    struct mstdnt_status* statuses_before, *statuses_after, status;
     size_t stat_before_len, stat_after_len;
-    char* before_html = NULL, *after_html = NULL;
+    char* before_html = NULL, *stat_html = NULL, *after_html = NULL;
 
     mastodont_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
                              &stat_before_len, &stat_after_len);
+    mastodont_view_status(api, data[0], &status_storage, &status);
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
-//    after_html = construct_statuses(statuses_after, stat_after_len, NULL);
+    stat_html = construct_status(&status, NULL);
+    after_html = construct_statuses(statuses_after, stat_after_len, NULL);
+
+    easprintf(&output, "%s%s%s",
+              before_html != NULL ? before_html : "",
+              stat_html != NULL ? stat_html : "",
+              after_html != NULL ? after_html : "");
     
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = before_html,
+        .content = output,
         .sidebar_right = NULL
     };
 
@@ -151,6 +163,8 @@ void content_status(mastodont_t* api, char** data, size_t data_size)
 
     // Cleanup
     if (before_html) free(before_html);
+    if (stat_html) free(stat_html);
     if (after_html) free(after_html);
+    if (output) free(output);
     mastodont_storage_cleanup(&storage);
 }

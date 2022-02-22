@@ -36,6 +36,10 @@ void content_index(mastodont_t* api)
     struct mstdnt_storage storage;
     char* status_format;
     char* output = NULL;
+    
+    try_post_status(api);
+    try_interact_status(api);
+    
     if (mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count))
     {
         status_format = "An error occured loading the timeline";
@@ -48,9 +52,6 @@ void content_index(mastodont_t* api)
             status_format = "Error in malloc!";
         cleanup = 1;
     }
-
-    try_post_status(api);
-    try_interact_status(api);
 
     easprintf(&output, "%s %s", data_post_html, status_format);
 

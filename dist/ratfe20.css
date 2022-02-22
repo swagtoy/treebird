@@ -435,6 +435,7 @@ ul li:first-child a.sidebarbtn
     color: #aa0000 !important;
     padding: 0 7px !important;
     margin: 0 5px;
+    text-decoration: none;
     cursor: pointer !important;
     outline: inherit !important;
     font-size: 14px;
