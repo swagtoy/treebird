@@ -22,7 +22,7 @@
 #include "base_page.h"
 #include "easprintf.h"
 #include "cookie.h"
-
+#include "../config.h"
 
 // Files
 #include "../static/index.chtml"
@@ -45,16 +45,25 @@ void render_base_page(struct base_page* page)
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
                         g_config.theme,
+                        config_url_prefix,
                         L10N[locale][L10N_APP_NAME],
                         login_string,
+                        config_url_prefix,
                         L10N[locale][L10N_SEARCH_PLACEHOLDER],
                         L10N[locale][L10N_SEARCH_BUTTON],
+                        config_url_prefix,
                         L10N[locale][L10N_HOME],
+                        config_url_prefix,
                         L10N[locale][L10N_LOCAL],
+                        config_url_prefix,
                         L10N[locale][L10N_FEDERATED],
+                        config_url_prefix,
                         L10N[locale][L10N_NOTIFICATIONS],
+                        config_url_prefix,
                         L10N[locale][L10N_LISTS],
+                        config_url_prefix,
                         L10N[locale][L10N_DIRECT],
+                        config_url_prefix,
                         L10N[locale][L10N_CONFIG],
                         page->content);
     

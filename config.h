@@ -29,9 +29,19 @@ static char* const config_canonical_name = "RatFE";
  * This MUST include a slash at the end, and the protocol (like https://) at the
  * beginning
  *
- * Example: https://cum.desupost.soy/
+ * Example: "https://cum.desupost.soy/
  */
 static char* const config_instance_url = "https://desuposter.club/";
+
+/*
+ * String: config_url_prefix
+ *
+ * The prefix for all urls.
+ * For most cases, when you are proxying the CGI paths to root, this will be left blank.
+ *
+ * Example: "/ratfe.cgi"
+ */
+static char* const config_url_prefix = "/ratfe.cgi";
 
 /*
  * Bool: experimental_lookup

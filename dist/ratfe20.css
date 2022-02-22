@@ -1,15 +1,3 @@
-/* Basic elements */
-body
-{
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f2f2f2;
-}
-
-a
-{
-    color: #aa0000;
-}
-
 /* Divs and wrappers */
 #display-wrapper
 {
@@ -23,7 +11,7 @@ a
     background-color: #ffffff;
     width: 1000px;
     border-radius: 5px;
-    border: 1pxnn solid #bababa;
+    border: 1px solid #bababa;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 

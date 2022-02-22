@@ -23,6 +23,7 @@
 #include "easprintf.h"
 #include "query.h"
 #include "cookie.h"
+#include "../config.h"
 #include "../static/status.chtml"
 
 int try_post_status(mastodont_t* api)
@@ -80,12 +81,22 @@ char* construct_status(struct mstdnt_status* status, int* size)
     size_t s = easprintf(&stat_html, data_status_html,
                          status->account.avatar,
                          status->account.display_name, /* Username */
+                         config_url_prefix,
+                         status->account.acct,
+                         
                          status->account.acct, /* Account */
                          "Public", /* visibility */
                          status->content,
+                         config_url_prefix,
+                         status->id,
+                         config_url_prefix,
+                         status->id,
                          status->reblogged ? "nobutton-active" : "",
+                         config_url_prefix,
                          status->id,
                          status->favourited ? "nobutton-active" : "",
+                         config_url_prefix,
+                         status->id,
                          status->id);
     if (size) *size = s;
     return stat_html;

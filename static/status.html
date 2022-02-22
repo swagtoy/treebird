@@ -4,7 +4,7 @@
   <div class="status-info">
     <div class="poster-stats">
       <span class="username">%s</span>
-      <a class="instance-info" href="#">%s</a>
+      <a class="instance-info" href="%s/@%s">%s</a>
       <span class="alignend status-visibility">
         %s
       </span>
@@ -13,21 +13,21 @@
       %s
     </span>
     <div class="status-interact">
-      <form action="./" method="post">
+      <form action="%s/status/%s/reply" method="post">
         <input class="nobutton" type="submit" value="Reply">
       </form>
-      <form action="./" method="post">
+      <form action="%s/status/%s/interact" method="post">
+        <input type="hidden" name="itype" value="repeat">
         <input class="nobutton %s" type="submit" value="Repeat">
       </form>
-      <form action="./" method="post">
+      <form action="%s/status/%s/interact" method="post">
         <input type="hidden" name="itype" value="like">
-        <input type="hidden" name="id" value="%s">
         <input class="nobutton %s" type="submit" value="Like">
       </form>
-      <form action="./" method="post">
+      <form action="%s/status/%s/quick" method="post">
         <input class="nobutton" type="submit" value="Quick">
       </form>
-      <a class="nobutton" href="/ratfe.cgi/status/%s">View</a>
+      <a class="nobutton" href="%s/status/%s">View</a>
     </div>
   </div>
 </div>

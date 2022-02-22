@@ -53,6 +53,14 @@ enum l10n_string
     L10N_LIGHT,
     L10N_DARK,
     L10N_SAVE,
+
+    /* STATUS */
+    L10N_REPLY,
+    L10N_REPEAT,
+    L10N_LIKE,
+    L10N_QUICK,
+    L10N_VIEW,
+
     _L10N_LEN,
 };
 
@@ -85,6 +93,13 @@ static const char* const L10N[][_L10N_LEN] = {
         "Light",
         "Dark",
         "Save",
+
+        /* STATUS */
+        "Reply",
+        "Repeat",
+        "Like",
+        "Quick",
+        "View"
     },
 
     // ES_ES
@@ -115,6 +130,13 @@ static const char* const L10N[][_L10N_LEN] = {
         "Claro",
         "Oscuro",
         "Guardar",
+
+        /* STATUS */
+        "Respuesta",
+        "Impulso",
+        "Me gusta",
+        "Rápido",
+        "View (Untranslated)"
     },
 };
 
