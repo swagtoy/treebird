@@ -342,10 +342,10 @@ input[type=button], input[type=submit]
 
 .statusbox textarea
 {
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
+    background-color: #fff;
+    display: block;
     margin-bottom: 5px;
+    z-index: 3;
 }
 
 .statusbox .statusfooter
@@ -412,4 +412,3 @@ input[type=button], input[type=submit]
     list-style-type: none;
     padding-left: 15px;
 }
-
