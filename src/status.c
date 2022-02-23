@@ -97,6 +97,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          status->favourited ? "nobutton-active" : "",
                          config_url_prefix,
                          status->id,
+                         config_url_prefix,
                          status->id);
     if (size) *size = s;
     return stat_html;
@@ -150,13 +151,17 @@ void content_status(mastodont_t* api, char** data, size_t data_size)
     struct mstdnt_status* statuses_before, *statuses_after, status;
     size_t stat_before_len, stat_after_len;
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL;
-
+    
+#ifdef _TEST_
+#include "test/status_test.h"
+#else
     mastodont_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
                              &stat_before_len, &stat_after_len);
     mastodont_view_status(api, data[0], &status_storage, &status);
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
     stat_html = construct_status(&status, NULL);
     after_html = construct_statuses(statuses_after, stat_after_len, NULL);
+#endif
 
     easprintf(&output, "%s%s%s",
               before_html != NULL ? before_html : "",

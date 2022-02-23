@@ -30,6 +30,7 @@
 #include "cookie.h"
 #include "query.h"
 #include "status.h"
+#include "lists.h"
 
 int main(void)
 {
@@ -59,7 +60,8 @@ int main(void)
         { "/config", content_config },
         { "/login", content_login },
         { "/@:", content_account },
-        { "/status/:", content_status }
+        { "/status/:", content_status },
+        { "/lists", content_lists }
     };
 
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));

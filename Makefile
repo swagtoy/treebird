@@ -38,6 +38,10 @@ $(PAGES_DIR)/login.chtml: $(PAGES_DIR)/login.html
 	./filec $< data_login_html > $@
 $(PAGES_DIR)/post.chtml: $(PAGES_DIR)/post.html
 	./filec $< data_post_html > $@
+$(PAGES_DIR)/list.chtml: $(PAGES_DIR)/list.html
+	./filec $< data_list_html > $@
+$(PAGES_DIR)/lists.chtml: $(PAGES_DIR)/lists.html
+	./filec $< data_lists_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
