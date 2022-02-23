@@ -165,11 +165,7 @@ ul li:first-child a.sidebarbtn
 {
     display: flex;
     margin: 7px;
-}
-
-.status:not(:last-child)
-{
-    border-bottom: 2px dotted #cacaca;
+    border-bottom: 1px solid #cacaca !important;
 }
 
 .status .profile-picture
@@ -189,7 +185,7 @@ ul li:first-child a.sidebarbtn
 {
     flex: 1;
     display: flex;
-    margin: 0 5px 5px;
+    margin: 0 5px 0px;
     min-width: 0;
     flex-direction: column;
 }
@@ -232,7 +228,7 @@ ul li:first-child a.sidebarbtn
 
 .status-interact
 {
-    margin: 8px 0 2px 0;
+    margin: 8px 0 0 0;
     display: flex;
 }
 
@@ -423,22 +419,31 @@ ul li:first-child a.sidebarbtn
 .nobutton
 {
     background: none !important;
-    background-color: #eaeaea !important;
+    background-color: transparent !important;
     color: #aa0000 !important;
-    padding: 0 7px !important;
-    margin: 0 5px;
+    padding: 6px 9px !important;
+    margin: 0 !important;
     text-decoration: none;
     cursor: pointer !important;
     outline: inherit !important;
     font-size: 14px;
-    border: 1px solid #dadada !important;
-    border-radius: 3px;
+    border: 0 !important;
+}
+
+.status-interact form:not(:last-child) .nobutton
+{
+    border-right: 1px solid #cacaca !important;
+
 }
 
 .status-interact .nobutton-active,
-.nobutton:hover
+.nobutton:hover,
+.nobutton:active,
+.nobutton:focus
 {
-    background-color: #aa0000 !important;
-    color: #eaeaea !important;
-    border: 1px solid #770000 !important;
+    background: linear-gradient(#fff, #aa3333, #aa2222, #aa0000) !important;
+    border: 0 !important;
+    border-right: 1px solid #cacaca !important;
+    color: #fff !important;
+    text-shadow: 0px 0px 5px #cc4444cc !important;
 }

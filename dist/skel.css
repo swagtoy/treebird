@@ -11,6 +11,13 @@ body
     justify-content: center;
 }
 
+.center
+{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #display
 {
     overflow: hidden;
@@ -91,6 +98,32 @@ div#content aside
 }
 
 /*************************************************
+ *                   LISTS                       *
+ *************************************************/
+ul.large-list
+{
+    width: 500px;
+    border-radius: 15px;
+    background-color: #f8f8f8;
+    border: 1px solid #cacaca;
+    padding: 0;
+    overflow: hidden;
+}
+
+ul.large-list li
+{
+    list-style-type: none;
+    margin: 0;
+}
+
+ul.large-list li a
+{
+    display: block;
+    padding: 15px;
+}
+
+
+/*************************************************
  *                  BUTTONS                      *
  *************************************************/
 input[type=button], input[type=submit], .sidebarbtn, .btn
@@ -130,6 +163,12 @@ input[type=button], input[type=submit]
     border-left: 1px solid #cacaca;
 }
 
+ul li:not(:last-child) .split,
+.status:not(:last-child)
+{
+    border-bottom: 1px solid #cacaca;
+}
+
 /***************************
  *      Statuses           *
  **************************/
@@ -137,11 +176,6 @@ input[type=button], input[type=submit]
 {
     display: flex;
     margin: 7px;
-}
-
-.status:not(:last-child)
-{
-    border-bottom: 2px dotted #cacaca;
 }
 
 .status .profile-picture
@@ -363,8 +397,7 @@ input[type=button], input[type=submit]
 /* Special cases */
 .nobutton
 {
-    background: none !important;
-    background-color: #eaeaea !important;
+    background: #eaeaea !important;
     color: #aa0000 !important;
     padding: 0 7px !important;
     margin: 0 5px;

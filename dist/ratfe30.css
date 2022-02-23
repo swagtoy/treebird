@@ -115,23 +115,15 @@ input[type=button], input[type=submit], .sidebarbtn, .btn
     border: 1px solid #fcfcfc00;
     color: #000;
     text-decoration: none;
-    transition: .2s;
 }
 
-input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover, .btn:hover
+input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover, .btn:hover,
+input[type=button]:active, input[type=submit]:active, .sidebarbtn:active, .btn:active,
+input[type=button]:focus, input[type=submit]:focus, .sidebarbtn:focus, .btn:focus
 {
-    transform: translate(0px, -2px);
     background: #ececec;
     border: 1px solid #dadada;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-}
-
-input[type=button]:active, input[type=submit]:active, .sidebarbtn:active, .btn:active
-{
-    background: #e7e7e7;
-    border: 1px solid #dadada;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
 }
 
@@ -143,8 +135,16 @@ input[type=button], input[type=submit]
 
 .sidebarbtn
 {
+    transition: .2s;
     display: block;
     padding: 8px 8px 8px 16px;
+}
+
+.sidebarbtn:hover,
+.sidebarbtn:focus,
+.sidebarbtn:active
+{
+    transform: translate(0px, -2px);
 }
 
 #rightbar
@@ -378,4 +378,55 @@ input[type=button], input[type=submit]
     padding: 8px 15px;
     margin: 0;
     
+}
+
+.nobutton
+{
+    background-color: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 8px 14px !important;
+    transition: .05s background-color, .05s color;
+    border-top-right-radius: 8px !important;
+}
+
+.status-interact form:not(:last-child) .nobutton
+{
+    border-right: 1px solid #cacaca !important;
+    border-top-right-radius: 0px !important;
+
+}
+
+.status-interact form:first-child .nobutton
+{
+    border-top-left-radius: 8px !important;
+}
+
+
+.nobutton:hover,
+.nobutton:active,
+.nobutton:focus
+{
+    background-color: #cc5555 !important;
+    border: 0 !important;
+    color: #fff !important;
+    border-right: 1px solid #cacaca !important;
+    
+}
+
+.status:not(:last-child)
+{
+    border-bottom: 1px solid #cacaca;
+}
+
+.status .status-info
+{
+    margin-bottom: 0;
+}
+
+.status-interact
+{
+    margin-top: 8px;
+    margin-bottom: 0;
 }
