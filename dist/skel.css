@@ -13,9 +13,18 @@ body
 
 .center
 {
-    text-align: center;
     margin-left: auto;
     margin-right: auto;
+}
+
+.center-text
+{
+    text-align: center;
+}
+
+.bold-text
+{
+    font-weight: bold;
 }
 
 #display

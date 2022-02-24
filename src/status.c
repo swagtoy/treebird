@@ -23,6 +23,7 @@
 #include "easprintf.h"
 #include "query.h"
 #include "cookie.h"
+#include "string_helpers.h"
 #include "../config.h"
 #include "../static/status.chtml"
 
@@ -103,44 +104,21 @@ char* construct_status(struct mstdnt_status* status, int* size)
     return stat_html;
 }
 
+static char* construct_status_voidwrap(void* passed, size_t index, int* res)
+{
+    return construct_status((struct mstdnt_status*)passed + index, res);
+}
+
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
 {
-    char* stat_html, *result = NULL;
-    int curr_parse_size = 0, last_parse_size, parse_size;
+    return construct_func_strings(construct_status_voidwrap, statuses, size, ret_size);
+}
 
-    if (size <= 0) return NULL;
-
-    for (size_t i = 0; i < size; ++i)
-    {
-        stat_html = construct_status(statuses + i, &parse_size);
-        
-        if (parse_size == -1) /* Malloc error */
-        {
-            if (result) free(result);
-            return NULL;
-        }
-        last_parse_size = curr_parse_size;
-        curr_parse_size += parse_size;
-        
-        result = realloc(result, curr_parse_size + 1);
-        if (result == NULL)
-        {
-            perror("malloc");
-            free(stat_html);
-            return NULL;
-        }
-
-        /* Copy stat_html to result in correct position */
-        strncpy(result + last_parse_size, stat_html, parse_size);
-        /* Cleanup */
-        free(stat_html);
-    }
-    
-    result[curr_parse_size] = '\0';
-
-    if (ret_size) *ret_size = curr_parse_size;
-
-    return result;
+void status_interact(mastodont_t* api, char** data, size_t data_size)
+{
+    char* referer = getenv("HTTP_REFERER");
+    printf("Location: %s\r\n\r\nRedirecting...",
+           referer ? referer : "/");
 }
 
 void content_status(mastodont_t* api, char** data, size_t data_size)

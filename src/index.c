@@ -44,8 +44,7 @@ void content_index(mastodont_t* api)
     {
         status_format = "An error occured loading the timeline";
     }
-    else
-    {
+    else {
         /* Construct statuses into HTML */
         status_format = construct_statuses(statuses, status_count, &statuses_html_count);
         if (!status_format)

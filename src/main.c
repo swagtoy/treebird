@@ -60,6 +60,7 @@ int main(void)
         { "/config", content_config },
         { "/login", content_login },
         { "/@:", content_account },
+        { "/status/:/interact", status_interact },
         { "/status/:", content_status },
         { "/lists", content_lists }
     };

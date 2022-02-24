@@ -16,15 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef STATUS_H
-#define STATUS_H
-#include <mastodont.h>
+#ifndef STRING_HELPERS_H
+#define STRING_HELPERS_H
 
-int try_post_status(mastodont_t* api);
-int try_interact_status(mastodont_t* api);
-char* construct_status(struct mstdnt_status* status, int* size);
-char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
-void content_status(mastodont_t* api, char** data, size_t data_size);
-void status_interact(mastodont_t* api, char** data, size_t data_size);
+/**
+ * Constructs a string based on a function
+ *
+ * @param func A function, with void* being the string,
+ *  size_t being an index, and int* being the returned parse size
+ * @param strings The array of strings
+ * @param strings_len len of `strings`
+ * @param ret_size Set to the full result string size, useful for large
+ *  results
+ * @return The result, this MUST be free'd when finished and checked for NULL.
+ */
+char* construct_func_strings(char* (*func)(void*, size_t, int*),
+                             void* strings,
+                             size_t strings_len,
+                             size_t* ret_size);
 
-#endif // STATUS_H
+#endif // STRING_HELPERS_H
