@@ -28,7 +28,7 @@ enum path_state
     PARSE_READ,
 };
 
-void parse_path(mastodont_t* api, struct path_info* path_info)
+int parse_path(mastodont_t* api, struct path_info* path_info)
 {
     int fail = 0, fin = 0;
     enum path_state state = PARSE_NEUTRAL;
@@ -77,13 +77,18 @@ void parse_path(mastodont_t* api, struct path_info* path_info)
             }
             else {
                 // Don't realloc, we already have a space for our final character
-                if (p2[i] == '\0')
+                if (p2[i] == '\0' || p2[i] == '/')
                 {
                     tmp[str_size] = '\0';
                     ++j;
+                    // Move --i back one to counter the upcoming ++i
+                    // If we don't, then we are one step too far
+                    --i;
                 }
-                tmp = realloc(tmp, ++str_size + 1);
-                tmp[str_size-1] = p2[i];
+                else {
+                    tmp = realloc(tmp, ++str_size + 1);
+                    tmp[str_size-1] = p2[i];
+                }
             }
                     
                 
@@ -95,7 +100,7 @@ void parse_path(mastodont_t* api, struct path_info* path_info)
     }
 breakpt:
     if (fail)
-        return;
+        return 1;
 
     path_info->callback(api, data, size);
 
@@ -105,6 +110,7 @@ breakpt:
         free(data[i]);
     }
     if (data) free(data);
+    return 0;
 }
 
 void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
@@ -118,7 +124,8 @@ void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
     else {   // Generic path
         for (size_t i = 0; i < paths_len; ++i)
         {
-            parse_path(api, paths + i);
+            if (parse_path(api, paths + i) == 0)
+                return;
         }
     }
 }

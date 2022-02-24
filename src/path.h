@@ -28,6 +28,6 @@ struct path_info
 };
 
 void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len);
-void parse_path(mastodont_t* api, struct path_info* path_info);
+int parse_path(mastodont_t* api, struct path_info* path_info);
 
 #endif // PATH_H
