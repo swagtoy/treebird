@@ -25,7 +25,10 @@
 #include "cookie.h"
 #include "string_helpers.h"
 #include "../config.h"
+
+// Pages
 #include "../static/status.chtml"
+#include "../static/post.chtml"
 
 int try_post_status(mastodont_t* api)
 {
@@ -124,14 +127,24 @@ void status_interact(mastodont_t* api, char** data, size_t data_size)
            referer ? referer : "/");
 }
 
-void content_status(mastodont_t* api, char** data, size_t data_size)
+void status_view(mastodont_t* api, char** data, size_t data_size)
+{
+    content_status(api, data, data_size, 0);
+}
+
+void status_reply(mastodont_t* api, char** data, size_t data_size)
+{
+    content_status(api, data, data_size, 1);
+}
+
+void content_status(mastodont_t* api, char** data, size_t data_size, int is_reply)
 {
     char* output;
     // Status context
     struct mstdnt_storage storage, status_storage;
     struct mstdnt_status* statuses_before, *statuses_after, status;
     size_t stat_before_len, stat_after_len;
-    char* before_html = NULL, *stat_html = NULL, *after_html = NULL;
+    char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply;
     
 #ifdef _TEST_
 #include "test/status_test.h"
@@ -141,13 +154,15 @@ void content_status(mastodont_t* api, char** data, size_t data_size)
     mastodont_view_status(api, data[0], &status_storage, &status);
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
     stat_html = construct_status(&status, NULL);
+    stat_reply = data_post_html;
     after_html = construct_statuses(statuses_after, stat_after_len, NULL);
 #endif
 
-    easprintf(&output, "%s%s%s",
-              before_html != NULL ? before_html : "",
-              stat_html != NULL ? stat_html : "",
-              after_html != NULL ? after_html : "");
+    easprintf(&output, "%s%s%s%s",
+              before_html ? before_html : "",
+              stat_html ? stat_html : "",
+              stat_reply ? stat_reply : "",
+              after_html ? after_html : "");
     
     struct base_page b = {
         .locale = L10N_EN_US,

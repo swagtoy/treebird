@@ -22,9 +22,16 @@
 
 int try_post_status(mastodont_t* api);
 int try_interact_status(mastodont_t* api, char* id);
+
+// HTML Builders
 char* construct_status(struct mstdnt_status* status, int* size);
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
-void content_status(mastodont_t* api, char** data, size_t data_size);
+
+// Status frontends
+void status_view(mastodont_t* api, char** data, size_t data_size);
+void status_reply(mastodont_t* api, char** data, size_t data_size);
 void status_interact(mastodont_t* api, char** data, size_t data_size);
+// Above wraps to the below function
+void content_status(mastodont_t* api, char** data, size_t data_size, int is_reply);
 
 #endif // STATUS_H

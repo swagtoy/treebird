@@ -61,7 +61,8 @@ int main(void)
         { "/login", content_login },
         { "/@:", content_account },
         { "/status/:/interact", status_interact },
-        { "/status/:", content_status },
+        { "/status/:/reply", status_reply },
+        { "/status/:", status_view },
         { "/lists", content_lists }
     };
 
