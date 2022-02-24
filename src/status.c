@@ -24,14 +24,11 @@
 #include "query.h"
 #include "cookie.h"
 #include "string_helpers.h"
+#include "reply.h"
 #include "../config.h"
 
 // Pages
 #include "../static/status.chtml"
-#include "../static/post.chtml"
-
-#define ID_REPLY_SIZE 256
-#define ID_RESPONSE "<input type=\"hidden\" name=\"replyid\" value=\"%s\">"
 
 int try_post_status(mastodont_t* api)
 {
@@ -80,23 +77,6 @@ int try_interact_status(mastodont_t* api, char* id)
     }
 
     return 0;
-}
-
-char* construct_post_box(char* reply_id,
-                         char* default_content,
-                         int* size)
-{
-    char* reply_html;
-    char id_reply[ID_REPLY_SIZE];
-    
-    // Put hidden post request
-    snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_id);
-
-    // Construct box
-    size_t s = easprintf(&reply_html, data_post_html, reply_id ? id_reply : "",
-                         default_content);
-    if (size) *size = s;
-    return reply_html;
 }
 
 char* construct_status(struct mstdnt_status* status, int* size)
@@ -181,7 +161,13 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
 
     // Current status
     stat_html = construct_status(&status, NULL);
-    if (is_reply) stat_reply = construct_post_box(data[0], "", NULL);
+    if (is_reply)
+    {
+        stat_reply = reply_status(data[0],
+                                  statuses_before,
+                                  stat_before_len,
+                                  &status);
+    }
 
     // After...
     after_html = construct_statuses(statuses_after, stat_after_len, NULL);
