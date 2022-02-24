@@ -24,6 +24,9 @@ int try_post_status(mastodont_t* api);
 int try_interact_status(mastodont_t* api, char* id);
 
 // HTML Builders
+char* construct_post_box(char* reply_id,
+                         char* default_content,
+                         int* size);
 char* construct_status(struct mstdnt_status* status, int* size);
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 

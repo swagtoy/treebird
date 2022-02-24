@@ -30,6 +30,9 @@
 #include "../static/status.chtml"
 #include "../static/post.chtml"
 
+#define ID_REPLY_SIZE 256
+#define ID_RESPONSE "<input type=\"hidden\" name=\"replyid\" value=\"%s\">"
+
 int try_post_status(mastodont_t* api)
 {
     if (!post.content) return 1;
@@ -41,7 +44,7 @@ int try_post_status(mastodont_t* api)
         .content_type = "text/plain",
         .expires_in = 0,
         .in_reply_to_conversation_id = NULL,
-        .in_reply_to_id = NULL,
+        .in_reply_to_id = post.replyid,
         .language = NULL,
         .media_ids = NULL,
         .poll = NULL,
@@ -77,6 +80,23 @@ int try_interact_status(mastodont_t* api, char* id)
     }
 
     return 0;
+}
+
+char* construct_post_box(char* reply_id,
+                         char* default_content,
+                         int* size)
+{
+    char* reply_html;
+    char id_reply[ID_REPLY_SIZE];
+    
+    // Put hidden post request
+    snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_id);
+
+    // Construct box
+    size_t s = easprintf(&reply_html, data_post_html, reply_id ? id_reply : "",
+                         default_content);
+    if (size) *size = s;
+    return reply_html;
 }
 
 char* construct_status(struct mstdnt_status* status, int* size)
@@ -145,16 +165,25 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     struct mstdnt_status* statuses_before, *statuses_after, status;
     size_t stat_before_len, stat_after_len;
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply;
+
+    try_post_status(api);
     
 #ifdef _TEST_
 #include "test/status_test.h"
 #else
+    // Get information
     mastodont_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
                              &stat_before_len, &stat_after_len);
     mastodont_view_status(api, data[0], &status_storage, &status);
+
+    // Before...
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
+
+    // Current status
     stat_html = construct_status(&status, NULL);
-    stat_reply = data_post_html;
+    if (is_reply) stat_reply = construct_post_box(data[0], "", NULL);
+
+    // After...
     after_html = construct_statuses(statuses_after, stat_after_len, NULL);
 #endif
 
@@ -178,5 +207,6 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     if (stat_html) free(stat_html);
     if (after_html) free(after_html);
     if (output) free(output);
+    if (is_reply) free(stat_reply);
     mastodont_storage_cleanup(&storage);
 }

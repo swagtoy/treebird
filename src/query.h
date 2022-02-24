@@ -34,6 +34,7 @@ struct query_values
     char* id;
     char* username;
     char* password;
+    char* replyid;
 };
 
 extern struct query_values post;

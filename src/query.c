@@ -39,6 +39,7 @@ char* read_post_data()
         { "theme", &(post.theme) },
         { "username", &(post.username) },
         { "password", &(post.password) },
+        { "replyid", &(post.replyid) },
     };
     // END Query references
 

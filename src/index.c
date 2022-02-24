@@ -38,7 +38,6 @@ void content_index(mastodont_t* api)
     char* output = NULL;
     
     try_post_status(api);
-    try_interact_status(api);
     
     if (mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count))
     {
