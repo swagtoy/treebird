@@ -58,16 +58,16 @@ int try_post_status(mastodont_t* api)
     return 0;
 }
 
-int try_interact_status(mastodont_t* api)
+int try_interact_status(mastodont_t* api, char* id)
 {
     struct mstdnt_storage storage;
-    if (!(post.itype && post.id)) return 1;
+    if (!(post.itype && id)) return 1;
 
     // Pretty up the type
     if (strcmp(post.itype, "like") == 0)
     {
         mastodont_favourite_status(api,
-                                   post.id,
+                                   id,
                                    &storage);
         // TODO Cleanup when errors handled
         // mastodont_storage_cleanup(&storage);
@@ -117,6 +117,9 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
 void status_interact(mastodont_t* api, char** data, size_t data_size)
 {
     char* referer = getenv("HTTP_REFERER");
+    
+    try_interact_status(api, data[0]);
+    
     printf("Location: %s\r\n\r\nRedirecting...",
            referer ? referer : "/");
 }
