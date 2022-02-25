@@ -164,8 +164,6 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     if (is_reply)
     {
         stat_reply = reply_status(data[0],
-                                  statuses_before,
-                                  stat_before_len,
                                   &status);
     }
 

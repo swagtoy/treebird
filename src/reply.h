@@ -24,10 +24,7 @@ char* construct_post_box(char* reply_id,
                          char* default_content,
                          int* size);
 
-char* reply_status(char* id,
-                   struct mstdnt_status* statuses_before,
-                   size_t before_len,
-                   struct mstdnt_status* status);
+char* reply_status(char* id, struct mstdnt_status* status);
 
 
 #endif // REPLY_H
