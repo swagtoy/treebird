@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <regex.h>
+#include <pcre.h>
 #include <stdlib.h>
 #include <string.h>
 #include "reply.h"
@@ -45,18 +45,21 @@ char* construct_post_box(char* reply_id,
     return reply_html;
 }
 
-#define REGEX_REPLY "<a class=\"u-url mention\".*href=\"https:\\/\\/(.*)\\/.*\".*>@<span>(.*)<\\/span>"
-//#define REGEX_REPLY "<a class=\"u-url mention\".*href=\"https:\\/\\/(.*)\\/.*\".*>@<span>(.*)<\\/span>"
+#define REGEX_REPLY "<a class=\"u-url mention\".*?href=\"https:\\/\\/(.*?)\\/.*?\".*?>@<span>(.*?)<\\/span>"
+#define REGEX_RESULTS_LEN 9
 
 char* reply_status(char* id, struct mstdnt_status* status)
 {
     char* content = status->content;
+    size_t content_len = strlen(status->content);
     char* stat_reply;
     // Regex
-    regex_t regex;
-    regmatch_t pmatch[2];
-    regoff_t off_url, len_url, off_name, len_name;
-    
+    pcre* re;
+    int re_results[REGEX_RESULTS_LEN];
+    int rc;
+    const char* error;
+    int erroffset;
+    int url_off, url_len, name_off, name_len;
     // Replies
     size_t replies_size, replies_size_orig;
     char* replies = malloc(replies_size = strlen(status->account.acct)+2);
@@ -67,38 +70,42 @@ char* reply_status(char* id, struct mstdnt_status* status)
     replies[replies_size-1] = ' ';
 
     // Compile regex
-    if (regcomp(&regex, REGEX_REPLY, REG_EXTENDED))
+    re = pcre_compile(REGEX_REPLY, 0, &error, &erroffset, NULL);
+    if (re == NULL)
     {
-        fputs("Invalid regex!", stderr);
+        fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
         free(replies);
     }
 
-    int j = 0;
-    
-    for (int i = 0;; ++i)
+    for (int ind = 0;;)
     {
-        if (regexec(&regex, content + j, 2, pmatch, 0))
+        rc = pcre_exec(re, NULL, content, content_len, ind, 0, re_results, REGEX_RESULTS_LEN);
+        if (rc < 0)
             break;
 
-        off_url = pmatch[0].rm_so + j;
-        len_url = pmatch[0].rm_eo - pmatch[0].rm_so;
-
-        off_name = pmatch[1].rm_so + j;
-        len_name = pmatch[1].rm_eo - pmatch[1].rm_so;
+        // Read out
+        url_off = re_results[2];
+        url_len = re_results[3] - url_off;
+        name_off = re_results[4];
+        name_len = re_results[5] - name_off;
 
         replies_size_orig = replies_size;
-        replies_size += len_url+2;
+        replies_size += url_len+name_len+3;
 
         // Realloc string
         replies = realloc(replies, replies_size+1);
 
-        j += off_url + len_url + off_name + len_name;
-        
         replies[replies_size_orig] = '@';
-        memcpy(replies + replies_size_orig + 1, content + off_url, len_url);
+        memcpy(replies + replies_size_orig + 1, content + name_off, name_len);
+        replies[replies_size_orig+1+name_len] = '@';
+        memcpy(replies + replies_size_orig + 1 + name_len + 1, content + url_off, url_len);
         replies[replies_size-1] = ' ';
 
+        // Store to last result
+        ind = re_results[5];
     }
+
+    replies[replies_size] = '\0';
     
     stat_reply = construct_post_box(id, replies, NULL);
     if (replies) free(replies);
