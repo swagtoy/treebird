@@ -23,6 +23,7 @@
 #include "index.h"
 #include "status.h"
 #include "easprintf.h"
+#include "reply.h"
 
 // Files
 #include "../static/index.chtml"
@@ -34,7 +35,7 @@ void content_index(mastodont_t* api)
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage;
-    char* status_format;
+    char* status_format, *post_box;
     char* output = NULL;
     
     try_post_status(api);
@@ -44,14 +45,16 @@ void content_index(mastodont_t* api)
         status_format = "An error occured loading the timeline";
     }
     else {
-        /* Construct statuses into HTML */
+        // Construct statuses into HTML
         status_format = construct_statuses(statuses, status_count, &statuses_html_count);
         if (!status_format)
             status_format = "Error in malloc!";
         cleanup = 1;
     }
 
-    easprintf(&output, "%s %s", data_post_html, status_format);
+    // Create post box
+    post_box = construct_post_box(NULL, "", NULL);
+    easprintf(&output, "%s %s", post_box, status_format);
 
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -59,11 +62,12 @@ void content_index(mastodont_t* api)
         .sidebar_right = NULL
     };
 
-    /* Output */
+    // Output
     render_base_page(&b);
 
-    /* Cleanup */
+    // Cleanup
     mastodont_storage_cleanup(&storage);
     if (cleanup) free(status_format);
+    if (post_box) free(post_box);
     if (output) free(output);
 }

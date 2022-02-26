@@ -75,6 +75,7 @@ char* reply_status(char* id, struct mstdnt_status* status)
     {
         fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
         free(replies);
+        pcre_free(re);
     }
 
     for (int ind = 0;;)
@@ -109,5 +110,6 @@ char* reply_status(char* id, struct mstdnt_status* status)
     
     stat_reply = construct_post_box(id, replies, NULL);
     if (replies) free(replies);
+    pcre_free(re);
     return stat_reply;
 }
