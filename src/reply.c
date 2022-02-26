@@ -84,11 +84,16 @@ char* reply_status(char* id, struct mstdnt_status* status)
         if (rc < 0)
             break;
 
+        // Store to last result
+        ind = re_results[5];
+
         // Read out
         url_off = re_results[2];
         url_len = re_results[3] - url_off;
         name_off = re_results[4];
         name_len = re_results[5] - name_off;
+
+        // Is this the same as us?
 
         replies_size_orig = replies_size;
         replies_size += url_len+name_len+3;
@@ -101,9 +106,6 @@ char* reply_status(char* id, struct mstdnt_status* status)
         replies[replies_size_orig+1+name_len] = '@';
         memcpy(replies + replies_size_orig + 1 + name_len + 1, content + url_off, url_len);
         replies[replies_size-1] = ' ';
-
-        // Store to last result
-        ind = re_results[5];
     }
 
     replies[replies_size] = '\0';
