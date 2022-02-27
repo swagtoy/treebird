@@ -28,6 +28,7 @@ struct query_values post = { 0 };
 char* read_post_data()
 {
     struct http_query_info info;
+    char* post_env = getenv("POST");
     char* request_method = getenv("REQUEST_METHOD");
     char* post_query = NULL, *p_query_read;
 
@@ -43,18 +44,22 @@ char* read_post_data()
     };
     // END Query references
 
-    if (request_method && (strcmp("POST", request_method) == 0))
+    if ((request_method && (strcmp("POST", request_method) == 0)) || post_env)
     {
-        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        int content_length = post_env ? strlen(post_env) : atoi(getenv("CONTENT_LENGTH"));
         post_query = malloc(content_length + 1);
         if (!post_query)
         {
             perror("malloc");
             return NULL;
         }
-        // Read in data
-        read(STDIN_FILENO, post_query, content_length);
-        post_query[content_length] = '\0';
+        if (post_env)
+            strcpy(post_query, post_env);
+        else {
+            // Read in data
+            read(STDIN_FILENO, post_query, content_length);
+            post_query[content_length] = '\0';
+        }
 
         // For shifting through
         p_query_read = post_query;
