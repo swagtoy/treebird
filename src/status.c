@@ -30,6 +30,8 @@
 // Pages
 #include "../static/status.chtml"
 
+#define NUM_STR " (%u)"
+
 int try_post_status(mastodont_t* api)
 {
     if (!post.content) return 1;
@@ -82,6 +84,18 @@ int try_interact_status(mastodont_t* api, char* id)
 char* construct_status(struct mstdnt_status* status, int* size)
 {
     char* stat_html;
+
+    // Counts
+    char* reply_count = NULL;
+    char* repeat_count = NULL;
+    char* favourites_count = NULL;
+    if (status->replies_count)
+        easprintf(&reply_count, NUM_STR, status->replies_count);
+    if (status->reblogs_count)
+        easprintf(&repeat_count, NUM_STR, status->reblogs_count);
+    if (status->favourites_count)
+        easprintf(&favourites_count, NUM_STR, status->favourites_count);
+    
     size_t s = easprintf(&stat_html, data_status_html,
                          status->account.avatar,
                          status->account.display_name, /* Username */
@@ -93,17 +107,24 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          status->content,
                          config_url_prefix,
                          status->id,
+                         reply_count ? reply_count : "",
                          config_url_prefix,
                          status->id,
                          status->reblogged ? "nobutton-active" : "",
+                         repeat_count ? repeat_count : "",
                          config_url_prefix,
                          status->id,
                          status->favourited ? "nobutton-active" : "",
+                         favourites_count ? favourites_count : "",
                          config_url_prefix,
                          status->id,
                          config_url_prefix,
                          status->id);
     if (size) *size = s;
+    // Cleanup
+    if (reply_count) free(reply_count);
+    if (repeat_count) free(repeat_count);
+    if (favourites_count) free(favourites_count);
     return stat_html;
 }
 
