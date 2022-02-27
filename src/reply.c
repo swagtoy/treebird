@@ -45,7 +45,7 @@ char* construct_post_box(char* reply_id,
     return reply_html;
 }
 
-#define REGEX_REPLY "<a class=\"u-url mention\".*?href=\"https:\\/\\/(.*?)\\/.*?\".*?>@<span>(.*?)<\\/span>"
+#define REGEX_REPLY "<a (?:class=\"u-url mention\"|href=\"https:\\/\\/(.*?)\\/.*?\".*?).*?(?:href=\"https:\\/\\/(.*?)\\/.*?\".*?|class=\"u-url mention\")>@<span>(.*?)<\\/span>"
 #define REGEX_RESULTS_LEN 9
 
 char* reply_status(char* id, struct mstdnt_status* status)
