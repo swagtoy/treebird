@@ -66,7 +66,7 @@ void content_lists(mastodont_t* api, char** data, size_t size)
     int cleanup = 0;
     struct mstdnt_list* lists;
     size_t size_list;
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage = { 0 };
     char* lists_format;
     char* lists_page = NULL;
 

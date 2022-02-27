@@ -22,6 +22,8 @@
 #include "query.h"
 #include "base_page.h"
 #include "login.h"
+#include "error.h"
+#include "easprintf.h"
 #include "../config.h"
 
 // Files
@@ -29,9 +31,11 @@
 
 void content_login(mastodont_t* api, char** data, size_t data_size)
 {
-    struct mstdnt_storage storage, oauth_store;
+    struct mstdnt_storage storage = { 0 }, oauth_store = { 0 };
     struct mstdnt_app app;
     struct mstdnt_oauth_token token;
+    char* error = NULL;
+    char* page;
 
     if (post.username && post.password)
     {
@@ -49,23 +53,39 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
             .grant_type = "password",
             .client_id = app.client_id,
             .client_secret = app.client_secret,
+            .redirect_uri = NULL,
+            .scope = NULL,
+            .code = NULL,
             .username = post.username,
             .password = post.password
         };
-    
-        mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
-                                     &token);
-        // TODO checking, also ^ returns non-zero
-        printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;\r\n", token.access_token);
-        printf("Set-Cookie: logged_in=t; SameSite=Strict\r\n");
+
+        if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
+                                         &token) == 1)
+        {
+            error = construct_error(oauth_store.error, NULL);
+        }
+        else {
+            // TODO checking, also ^ returns non-zero
+            printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;\r\n", token.access_token);
+            printf("Set-Cookie: logged_in=t; SameSite=Strict\r\n");
+            printf("Location: %s/\r\n", config_url_prefix);
+        }
     }
+    easprintf(&page, "%s%s", error ? error : "", data_login_html);
 
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = data_login_html,
+        .content = page,
         .sidebar_right = NULL
     };
 
     // Output
     render_base_page(&b);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&oauth_store);
+    if (error) free(error);
+    if (page) free(page);
 }

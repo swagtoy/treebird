@@ -34,10 +34,10 @@ void content_index(mastodont_t* api)
     int cleanup = 0;
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage = { 0 };
     char* status_format, *post_box;
     char* output = NULL;
-    
+
     try_post_status(api);
     
     if (mastodont_timeline_public(api, NULL, &storage, &statuses, &status_count))

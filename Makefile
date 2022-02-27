@@ -42,6 +42,8 @@ $(PAGES_DIR)/list.chtml: $(PAGES_DIR)/list.html
 	./filec $< data_list_html > $@
 $(PAGES_DIR)/lists.chtml: $(PAGES_DIR)/lists.html
 	./filec $< data_lists_html > $@
+$(PAGES_DIR)/error.chtml: $(PAGES_DIR)/error.html
+	./filec $< data_error_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
