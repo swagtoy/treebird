@@ -51,11 +51,11 @@ char* construct_account_page(struct mstdnt_account* acct,
                             acct->acct,
                             acct->avatar,
                             "Statuses",
-                            0,
+                            acct->statuses_count,
                             "Following",
-                            0,
+                            acct->following_count,
                             "Followers",
-                            0,
+                            acct->followers_count,
                             statuses_html);
     
     if (result_size == -1)

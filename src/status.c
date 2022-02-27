@@ -101,7 +101,6 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          status->account.display_name, /* Username */
                          config_url_prefix,
                          status->account.acct,
-                         
                          status->account.acct, /* Account */
                          "Public", /* visibility */
                          status->content,
