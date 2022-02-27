@@ -13,21 +13,36 @@
       %s
     </span>
     <div class="status-interact">
-      <form action="%s/status/%s/reply" method="post">
-        <input class="nobutton" type="submit" value="Reply">
-      </form>
-      <form action="%s/status/%s/interact" method="post">
-        <input type="hidden" name="itype" value="repeat">
-        <input class="nobutton %s" type="submit" value="Repeat">
-      </form>
-      <form action="%s/status/%s/interact" method="post">
-        <input type="hidden" name="itype" value="like">
-        <input class="nobutton %s" type="submit" value="Like">
-      </form>
-      <form action="%s/status/%s/quick" method="post">
-        <input class="nobutton" type="submit" value="Quick">
-      </form>
-      <a class="nobutton" href="%s/status/%s">View</a>
+      <ul>
+        <li>
+          <form action="%s/status/%s/reply" method="post">
+            <input class="nobutton" type="submit" value="Reply">
+          </form>
+        </li>
+        <li>
+          <form action="%s/status/%s/interact" method="post">
+            <input type="hidden" name="itype" value="repeat">
+            <input class="nobutton %s" type="submit" value="Repeat">
+          </form>
+        </li>
+        <li>
+          <form action="%s/status/%s/interact" method="post">
+            <input type="hidden" name="itype" value="like">
+            <input class="nobutton %s" type="submit" value="Like">
+          </form>
+        </li>
+        <li>
+          <form action="%s/status/%s/quick" method="post">
+            <input class="nobutton" type="submit" value="Quick">
+          </form>
+        </li>
+        <li>
+          <a class="nobutton" href="%s/status/%s">View</a>
+        </li>
+        <li>
+          <a class="nobutton" onclick="alert('hi');" href="#">Emoji</a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
