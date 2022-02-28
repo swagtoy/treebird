@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdlib.h>
-#include "timeline.h"
+#ifndef ATTACHMENTS_H
+#define ATTACHMENTS_H
+#include <mastodont.h>
 
-void content_index(mastodont_t* api)
-{
-    // Check logins
-    tl_public(api, 0);
-}
+char* construct_attachment(struct mstdnt_attachment* att, int* str_size);
+char* construct_attachments(struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size);
+
+#endif // ATTACHMENTS_H

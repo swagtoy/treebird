@@ -16,11 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdlib.h>
-#include "timeline.h"
+#ifndef TIMELINE_H
+#define TIMELINE_H
+#include <stddef.h>
+#include <mastodont.h>
 
-void content_index(mastodont_t* api)
-{
-    // Check logins
-    tl_public(api, 0);
-}
+// Federated and local are here
+void tl_public(mastodont_t* api, int local);
+void tl_list(mastodont_t* api, char* list_id);
+
+void content_tl_federated(mastodont_t* api, char** data, size_t data_size);
+void content_tl_local(mastodont_t* api, char** data, size_t data_size);
+void content_tl_list(mastodont_t* api, char** data, size_t data_size);
+
+#endif // TIMELINE_H

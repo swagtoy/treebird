@@ -25,6 +25,7 @@
 #include "cookie.h"
 #include "string_helpers.h"
 #include "reply.h"
+#include "attachments.h"
 #include "../config.h"
 
 // Pages
@@ -89,13 +90,16 @@ char* construct_status(struct mstdnt_status* status, int* size)
     char* reply_count = NULL;
     char* repeat_count = NULL;
     char* favourites_count = NULL;
+    char* attachments = NULL;
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
         easprintf(&repeat_count, NUM_STR, status->reblogs_count);
     if (status->favourites_count)
         easprintf(&favourites_count, NUM_STR, status->favourites_count);
-    
+    if (status->media_attachments_len)
+        attachments = construct_attachments(status->media_attachments, status->media_attachments_len, NULL);
+
     size_t s = easprintf(&stat_html, data_status_html,
                          status->account.avatar,
                          status->account.display_name, /* Username */
@@ -104,6 +108,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          status->account.acct, /* Account */
                          "Public", /* visibility */
                          status->content,
+                         attachments ? attachments : "",
                          config_url_prefix,
                          status->id,
                          reply_count ? reply_count : "",
@@ -124,6 +129,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
     if (reply_count) free(reply_count);
     if (repeat_count) free(repeat_count);
     if (favourites_count) free(favourites_count);
+    if (attachments) free(attachments);
     return stat_html;
 }
 
@@ -164,7 +170,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     struct mstdnt_storage storage, status_storage;
     struct mstdnt_status* statuses_before, *statuses_after, status;
     size_t stat_before_len, stat_after_len;
-    char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply;
+    char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
 
     try_post_status(api);
     

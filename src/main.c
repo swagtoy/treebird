@@ -31,6 +31,7 @@
 #include "query.h"
 #include "status.h"
 #include "lists.h"
+#include "timeline.h"
 
 int main(void)
 {
@@ -63,7 +64,10 @@ int main(void)
         { "/status/:/interact", status_interact },
         { "/status/:/reply", status_reply },
         { "/status/:", status_view },
-        { "/lists", content_lists }
+        { "/lists/for/:", content_tl_list },
+        { "/lists", content_lists },
+        { "/federated", content_tl_federated },
+        { "/local", content_tl_local },
     };
 
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));

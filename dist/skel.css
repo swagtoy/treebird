@@ -454,3 +454,33 @@ ul li:not(:last-child) .split,
     list-style-type: none;
     padding-left: 15px;
 }
+
+/* Attachments */
+.attachments img
+{
+    min-width: 100px;
+    max-width: 300px;
+    min-height: 100px;
+    max-height: 300px;
+}
+
+.attachments
+{
+    margin: 10px 0 3px 0;
+}
+
+.zoom
+{
+    transition: transform .1s;
+    transition-timing-function: cubic-bezier(0, 1, 1, 1);
+}
+
+.zoom:hover
+{
+    transform: scaleX(1.8) scaleY(1.8);
+}
+
+.statusbox textarea
+{
+    border: 1px solid #cacaca;
+}
