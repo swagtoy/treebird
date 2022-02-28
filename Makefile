@@ -44,6 +44,10 @@ $(PAGES_DIR)/lists.chtml: $(PAGES_DIR)/lists.html
 	./filec $< data_lists_html > $@
 $(PAGES_DIR)/error.chtml: $(PAGES_DIR)/error.html
 	./filec $< data_error_html > $@
+$(PAGES_DIR)/attachments.chtml: $(PAGES_DIR)/attachments.html
+	./filec $< data_attachments_html > $@
+$(PAGES_DIR)/attachment_image.chtml: $(PAGES_DIR)/attachment_image.html
+	./filec $< data_attachment_image_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
