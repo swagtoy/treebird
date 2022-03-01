@@ -72,7 +72,8 @@ void render_base_page(struct base_page* page)
         perror("malloc");
         return;
     }
-
+    
+    fputs("Content-type: text/html\r\n", stdout);
     printf("Content-Length: %d\r\n\r\n", len + 1);
     puts(data);
 

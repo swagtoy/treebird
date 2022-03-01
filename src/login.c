@@ -67,8 +67,9 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
         }
         else {
             // TODO checking, also ^ returns non-zero
-            printf("Set-Cookie: access_token=%s; HttpOnly; SameSite=Strict;\r\n", token.access_token);
-            printf("Set-Cookie: logged_in=t; SameSite=Strict\r\n");
+            fputs("Status: 302 Found\r\n", stdout);
+            printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
+            printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
             printf("Location: %s/\r\n", config_url_prefix);
         }
     }

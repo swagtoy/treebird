@@ -56,7 +56,7 @@ int try_post_status(mastodont_t* api)
         .status = post.content,
         .visibility = "public",
     };
-    
+
     mastodont_create_status(api, &args, &storage);
 
     // TODO cleanup when errors are properly implemented
@@ -156,6 +156,7 @@ void status_interact(mastodont_t* api, char** data, size_t data_size)
     
     try_interact_status(api, data[0]);
     
+    fputs("Status: 302 Found\r\n", stdout);
     printf("Location: %s\r\n\r\nRedirecting...",
            referer ? referer : "/");
 }

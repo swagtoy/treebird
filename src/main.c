@@ -36,7 +36,6 @@
 int main(void)
 {
     // Content type is always HTML
-    fputs("Content-type: text/html\r\n", stdout);
 
     // Global init
     mastodont_global_curl_init();
