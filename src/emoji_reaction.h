@@ -16,24 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef STRING_HELPERS_H
-#define STRING_HELPERS_H
-#include <stddef.h>
+#ifndef EMOJI_REACTION_H
+#define EMOJI_REACTION_H
+#include <mastodont.h>
 
-/**
- * Constructs a string based on a function
- *
- * @param func A function, with void* being the string,
- *  size_t being an index, and int* being the returned parse size
- * @param strings The array of strings
- * @param strings_len len of `strings`
- * @param ret_size Set to the full result string size, useful for large
- *  results
- * @return The result, this MUST be free'd when finished and checked for NULL.
- */
-char* construct_func_strings(char* (*func)(void*, size_t, int*),
-                             void* strings,
-                             size_t strings_len,
-                             size_t* ret_size);
+char* construct_emoji_reaction(struct mstdnt_emoji_reaction* emo, int* str_len);
+char* construct_emoji_reactions(struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_len);
 
-#endif // STRING_HELPERS_H
+#endif // EMOJI_REACTION_H

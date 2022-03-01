@@ -484,3 +484,17 @@ ul li:not(:last-child) .split,
 {
     border: 1px solid #cacaca;
 }
+
+/* Emoji reacts */
+.emoji-reactions
+{
+    display: flex;
+    margin-top: 8px;
+}
+
+.emoji-react-box
+{
+    padding: 3px 7px;
+    margin: 0 4px;
+}
+

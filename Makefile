@@ -48,6 +48,10 @@ $(PAGES_DIR)/attachments.chtml: $(PAGES_DIR)/attachments.html
 	./filec $< data_attachments_html > $@
 $(PAGES_DIR)/attachment_image.chtml: $(PAGES_DIR)/attachment_image.html
 	./filec $< data_attachment_image_html > $@
+$(PAGES_DIR)/emoji_reactions.chtml: $(PAGES_DIR)/emoji_reactions.html
+	./filec $< data_emoji_reactions_html > $@
+$(PAGES_DIR)/emoji_reaction.chtml: $(PAGES_DIR)/emoji_reaction.html
+	./filec $< data_emoji_reaction_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

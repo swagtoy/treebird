@@ -463,3 +463,10 @@ ul li:first-child a.sidebarbtn
     color: #fff !important;
     text-shadow: 0px 0px 5px #cc4444cc !important;
 }
+
+/* Emoji reacts */
+.emoji-react-box
+{
+    border-radius: 4px;
+    border: 1px solid #cacaca;
+}

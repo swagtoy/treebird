@@ -26,6 +26,7 @@
 #include "string_helpers.h"
 #include "reply.h"
 #include "attachments.h"
+#include "emoji_reaction.h"
 #include "../config.h"
 
 // Pages
@@ -91,6 +92,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
     char* repeat_count = NULL;
     char* favourites_count = NULL;
     char* attachments = NULL;
+    char* emoji_reactions = NULL;
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
@@ -99,6 +101,9 @@ char* construct_status(struct mstdnt_status* status, int* size)
         easprintf(&favourites_count, NUM_STR, status->favourites_count);
     if (status->media_attachments_len)
         attachments = construct_attachments(status->media_attachments, status->media_attachments_len, NULL);
+    if (status->pleroma.emoji_reactions_len)
+        emoji_reactions = construct_emoji_reactions(status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
+        
 
     size_t s = easprintf(&stat_html, data_status_html,
                          status->account.avatar,
@@ -109,6 +114,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          "Public", /* visibility */
                          status->content,
                          attachments ? attachments : "",
+                         emoji_reactions ? emoji_reactions : "",
                          config_url_prefix,
                          status->id,
                          reply_count ? reply_count : "",
@@ -130,6 +136,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
     if (repeat_count) free(repeat_count);
     if (favourites_count) free(favourites_count);
     if (attachments) free(attachments);
+    if (emoji_reactions) free(emoji_reactions);
     return stat_html;
 }
 
