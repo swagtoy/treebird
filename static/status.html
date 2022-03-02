@@ -20,36 +20,38 @@
             %s
             %s
             <div class="status-interact">
-              <ul>
-                <li>
-                  <form action="%s/status/%s/reply" method="post">
-                    <input class="nobutton" type="submit" value="Reply%s">
-                  </form>
-                </li>
-                <li>
-                  <form action="%s/status/%s/interact" method="post">
-                    <input type="hidden" name="itype" value="repeat">
-                    <input class="nobutton %s" type="submit" value="Repeat%s">
-                  </form>
-                </li>
-                <li>
-                  <form action="%s/status/%s/interact" method="post">
-                    <input type="hidden" name="itype" value="like">
-                    <input class="nobutton %s" type="submit" value="Yeah!%s">
-                  </form>
-                </li>
-                <li>
-                  <form action="%s/status/%s/quick" method="post">
-                    <input class="nobutton" type="submit" value="Quick">
-                  </form>
-                </li>
-                <li>
-                  <a class="nobutton" href="%s/status/%s">View</a>
-                </li>
-                <li>
-                  <a class="nobutton" onclick="alert('hi');" href="#">Emoji</a>
-                </li>
-              </ul>
+              <table>
+                <tr>
+                  <td>
+                    <form action="%s/status/%s/reply" method="post">
+                      <input class="nobutton" type="submit" value="Reply%s">
+                    </form>
+                  </td>
+                  <td>
+                    <form action="%s/status/%s/interact" method="post">
+                      <input type="hidden" name="itype" value="repeat">
+                      <input class="nobutton %s" type="submit" value="Repeat%s">
+                    </form>
+                  </td>
+                  <td>
+                    <form action="%s/status/%s/interact" method="post">
+                      <input type="hidden" name="itype" value="like">
+                      <input class="nobutton %s" type="submit" value="Yeah!%s">
+                    </form>
+                  </td>
+                  <td>
+                    <form action="%s/status/%s/quick" method="post">
+                      <input class="nobutton" type="submit" value="Quick">
+                    </form>
+                  </td>
+                  <td>
+                    <a class="nobutton" href="%s/status/%s">View</a>
+                  </td>
+                  <td>
+                    <a class="nobutton" onclick="alert('hi');" href="#">Emoji</a>
+                  </td>
+                </tr>
+              </table>
             </div>
           </td>
         </tr>
