@@ -226,5 +226,8 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     if (after_html) free(after_html);
     if (output) free(output);
     if (is_reply) free(stat_reply);
+    cleanup_statuses(statuses_before, stat_before_len);
+    cleanup_statuses(statuses_after, stat_after_len);
+    cleanup_status(&status);
     mastodont_storage_cleanup(&storage);
 }

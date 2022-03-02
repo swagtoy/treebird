@@ -74,6 +74,7 @@ void tl_public(mastodont_t* api, int local)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
+    cleanup_statuses(statuses, status_count);
     if (cleanup) free(status_format);
     if (post_box) free(post_box);
     if (output) free(output);
