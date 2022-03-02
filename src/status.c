@@ -73,10 +73,12 @@ int try_interact_status(mastodont_t* api, char* id)
     // Pretty up the type
     if (strcmp(post.itype, "like") == 0)
     {
-        mastodont_favourite_status(api,
-                                   id,
-                                   &storage);
+        mastodont_favourite_status(api, id, &storage);
         // TODO Cleanup when errors handled
+        // mastodont_storage_cleanup(&storage);
+    }
+    else if (strcmp(post.itype, "repeat") == 0) {
+        mastodont_reblog_status(api, id, &storage);
         // mastodont_storage_cleanup(&storage);
     }
 
