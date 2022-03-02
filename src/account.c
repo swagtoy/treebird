@@ -49,13 +49,13 @@ char* construct_account_page(struct mstdnt_account* acct,
                             acct->header,
                             acct->display_name,
                             acct->acct,
-                            acct->avatar,
                             "Statuses",
                             acct->statuses_count,
                             "Following",
                             acct->following_count,
                             "Followers",
                             acct->followers_count,
+                            acct->avatar,
                             statuses_html);
     
     if (result_size == -1)
