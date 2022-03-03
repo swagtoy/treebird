@@ -40,7 +40,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     if (post.username && post.password)
     {
         // Getting the client id/secret
-        struct mstdnt_app_register_args args_app = {
+        struct mstdnt_args args_app = {
             .client_name = "RatFE",
             .redirect_uris = "http://localhost/",
             .scopes = "read+write+follow+push",
@@ -49,7 +49,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
 
         mastodont_register_app(api, &args_app, &storage, &app);
     
-        struct mstdnt_oauth_token_args args_token = {
+        struct mstdnt_args args_token = {
             .grant_type = "password",
             .client_id = app.client_id,
             .client_secret = app.client_secret,

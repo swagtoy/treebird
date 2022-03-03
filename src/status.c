@@ -41,7 +41,7 @@ int try_post_status(mastodont_t* api)
     struct mstdnt_storage storage;
 
     // Cookie copy and read
-    struct mstdnt_create_status_args args = {
+    struct mstdnt_args args = {
         .content_type = "text/plain",
         .expires_in = 0,
         .in_reply_to_conversation_id = NULL,

@@ -71,9 +71,11 @@ body
     min-width: 640px;
     overflow: hidden;
     min-height: 600px;
+    border-collapse: collapse !important;
+    padding: 0;
 }
 
-#content, tr, td
+#content
 {
     border-collapse: collapse !important;
 }
@@ -170,6 +172,10 @@ ul li:first-child a.sidebarbtn
     padding: 4px 2px 0 4px;
     border-bottom: 1px solid #cacaca !important;
     width: 100%;
+    border-collapse: collapse !important;
+    border-spacing: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 .status .profile-picture
@@ -188,12 +194,15 @@ ul li:first-child a.sidebarbtn
 .pfp-td
 {
     width: 56px;
+    border-collapse: collapse !important;
+    padding: 0;
 }
 
 .status tr
 {
     width: auto;
 }
+
 
 .status .status-info
 {
@@ -202,6 +211,14 @@ ul li:first-child a.sidebarbtn
     min-width: 0;
     flex-direction: column;
     width: auto;
+    padding: 0;
+}
+
+.status .status-info table, .status .status-info td, .status .status-info tr
+{
+    border-collapse: collapse !important;
+    padding: 0;
+    margin: 0;
 }
 
 .status .instance-info
@@ -248,21 +265,17 @@ ul li:first-child a.sidebarbtn
     display: flex;
 }
 
-.status-interact ul
+.status-interact table
 {
-    display: flex;
+    border-collapse: collapse !important;
     padding: 0;
-    margin: 0;
 }
 
-.status-interact ul li
+.status-interact table tr
 {
-    display: inline-block;
-    margin: 0;
+    border-collapse: collapse !important;
     padding: 0;
-    list-style-type: none;
 }
-
 
 /***************************
  *    Element Grouping     *
@@ -462,7 +475,7 @@ ul li:first-child a.sidebarbtn
     border: 0 !important;
 }
 
-.status-interact ul li:not(:last-child) .nobutton
+.status-interact tr td:not(:last-child) .nobutton
 {
     border-right: 1px solid #cacaca !important;
 

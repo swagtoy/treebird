@@ -35,7 +35,7 @@ void tl_public(mastodont_t* api, int local)
     char* status_format, *post_box;
     char* output = NULL;
 
-    struct mstdnt_timeline_public_args args = {
+    struct mstdnt_args args = {
         .local = local,
         .remote = 0,
         .only_media = 0,
@@ -89,7 +89,7 @@ void tl_list(mastodont_t* api, char* list_id)
     char* status_format, *post_box;
     char* output = NULL;
 
-    struct mstdnt_timeline_list_args args = {
+    struct mstdnt_args args = {
         .max_id = NULL,
         .since_id = NULL,
         .min_id = NULL,
