@@ -43,7 +43,7 @@ int main(void)
     // API
     mastodont_t api;
     api.url = config_instance_url;
-    mastodont_init(&api);
+    mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE);
 
     // Load cookies
     char* cookies_str = read_cookies_env();
