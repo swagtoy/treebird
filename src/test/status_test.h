@@ -2,7 +2,7 @@
 
 struct mstdnt_status status_test = {
     .account = {
-        .avatar = "/ratfe_logo.png",
+        .avatar = "/treebird_logo.png",
         .display_name = "Test user",
         .acct = "user@test.com",
     },

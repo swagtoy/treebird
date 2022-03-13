@@ -1,5 +1,5 @@
 /*
- * RatFE - Lightweight frontend for Pleroma
+ * Treebird - Lightweight frontend for Pleroma
  * Copyright (C) 2022 Nekobit
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ int main(void)
     char* post_str = read_post_data();
 
     // Config defaults
-    g_config.theme = "ratfe20";
+    g_config.theme = "treebird20";
 
     /*******************
      *  Path handling  *

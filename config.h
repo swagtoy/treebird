@@ -1,6 +1,6 @@
 /*
- * This is the config file for RatFE. Any changes you make here requires
- * a recompile, but RatFE shouldn't take long to compile ;)
+ * This is the config file for treebird. Any changes you make here requires
+ * a recompile, but treebird shouldn't take long to compile ;)
  *
  * You don't need to understand C, I've created simple types to represent
  * what you need to set without any C knowledge.
@@ -17,10 +17,10 @@
  * The software's recognizable name.
  *
  * 
- * Example: "RatFE"
+ * Example: "treebird"
  */
 
-static char* const config_canonical_name = "RatFE";
+static char* const config_canonical_name = "treebird";
 
 /*
  * String: config_instance_url
@@ -39,9 +39,9 @@ static char* const config_instance_url = "https://desuposter.club/";
  * The prefix for all urls.
  * For most cases, when you are proxying the CGI paths to root, this will be left blank.
  *
- * Example: "/ratfe.cgi"
+ * Example: "/treebird.cgi"
  */
-static char* const config_url_prefix = "/ratfe.cgi";
+static char* const config_url_prefix = "/treebird.cgi";
 
 /*
  * Bool: experimental_lookup

@@ -10,7 +10,7 @@ PAGES_DIR = static
 PAGES = $(wildcard $(PAGES_DIR)/*.html)
 PAGES_CMP = $(patsubst %.html,%.chtml,$(PAGES))
 DIST = dist/
-TARGET = ratfe.cgi
+TARGET = treebird.cgi
 
 MASTODONT_URL = https://git.nekobit.net/repos/mastodont-c.git
 

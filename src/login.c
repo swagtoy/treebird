@@ -1,5 +1,5 @@
 /*
- * RatFE - Lightweight frontend for Pleroma
+ * Treebird - Lightweight frontend for Pleroma
  * Copyright (C) 2022 Nekobit
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     {
         // Getting the client id/secret
         struct mstdnt_args args_app = {
-            .client_name = "RatFE",
+            .client_name = "treebird",
             .redirect_uris = "http://localhost/",
             .scopes = "read+write+follow+push",
             .website = NULL

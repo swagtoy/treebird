@@ -1,5 +1,5 @@
 /*
- * RatFE - Lightweight frontend for Pleroma
+ * Treebird - Lightweight frontend for Pleroma
  * Copyright (C) 2022 Nekobit
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RATFE_L10N_H
-#define RATFE_L10N_H
+#ifndef TREEBIRD_L10N_H
+#define TREEBIRD_L10N_H
 
 enum l10n_locale
 {
@@ -47,8 +47,8 @@ enum l10n_string
     L10N_CFG_LIVE_STATUSES,
     L10N_APPEARANCE,
     L10N_THEME_VARIANT,
-    L10N_THEME_RATFE20,
-    L10N_THEME_RATFE30,
+    L10N_THEME_TREEBIRD20,
+    L10N_THEME_TREEBIRD30,
     L10N_COLOR_SCHEME,
     L10N_LIGHT,
     L10N_DARK,
@@ -68,7 +68,7 @@ static const char* const L10N[][_L10N_LEN] = {
     // EN_US
     {
         /* GENERAL */
-        "RatFE", // L10N_APP_NAME
+        "Treebird", // L10N_APP_NAME
         "Home",
         "Local",
         "Federated",
@@ -87,8 +87,8 @@ static const char* const L10N[][_L10N_LEN] = {
         "Live statuses - Statuses fetch on the fly",
         "Appearance",
         "Theme variant",
-        "RatFE 2.0 - Default, simple theme",
-        "RatFE 3.0 - Flat, modern theme",
+        "Treebird 2.0 - Default, simple theme",
+        "Treebird 3.0 - Flat, modern theme",
         "Color Scheme",
         "Light",
         "Dark",
@@ -105,7 +105,7 @@ static const char* const L10N[][_L10N_LEN] = {
     // ES_ES
     {
         /* GENERAL */
-        "RataFE", // L10N_APP_NAME
+        "Treebird", // L10N_APP_NAME
         "Inicio",
         "Local",
         "Federado",
@@ -124,8 +124,8 @@ static const char* const L10N[][_L10N_LEN] = {
         "Estados en vivo - Los estados se obtienen sobre la marcha",
         "Apariencia",
         "Variante de tema",
-        "RatFE 2.0 - Tema simple predeterminado",
-        "RatFE 3.0 - Tema plano y moderno",
+        "Treebird 2.0 - Tema simple predeterminado",
+        "Treebird 3.0 - Tema plano y moderno",
         "Esquema de colores",
         "Claro",
         "Oscuro",
@@ -140,4 +140,4 @@ static const char* const L10N[][_L10N_LEN] = {
     },
 };
 
-#endif // RATFE_L10N_H
+#endif // TREEBIRD_L10N_H
