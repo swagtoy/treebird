@@ -86,7 +86,6 @@ td
     width: 640px;
     max-width: 640px !important;
     min-width: 640px;
-    overflow: hidden;
     border-collapse: collapse !important;
     padding: 0;
 }
