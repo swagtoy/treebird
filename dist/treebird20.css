@@ -638,3 +638,8 @@ ul.large-list li a
     margin-left: auto;
     margin-right: auto;   
 }
+
+.lists-view-container ul li:not(:last-child)
+{
+    border-bottom: 1px solid #dadada;
+}
