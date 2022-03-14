@@ -602,3 +602,39 @@ ul li:first-child a.sidebarbtn
     margin: 0 4px;
 }
 
+/*************************************************
+ *                   LISTS                       *
+ *************************************************/
+ul.large-list
+{
+    width: 500px;
+    border-radius: 15px;
+    background-color: #f8f8f8;
+    border: 1px solid #cacaca;
+    padding: 0;
+    overflow: hidden;
+}
+
+ul.large-list li
+{
+    list-style-type: none;
+    margin: 0;
+}
+
+ul.large-list li a
+{
+    display: block;
+    padding: 15px;
+    list-style-type: none;
+}
+
+.lists-view-header
+{
+    text-align: center;
+}
+
+.lists-view-container ul
+{
+    margin-left: auto;
+    margin-right: auto;   
+}
