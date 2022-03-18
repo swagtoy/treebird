@@ -1,0 +1,52 @@
+<div class="simple-page">
+  <h1>Test page</h1>
+  <p>Test your nginx/apache and browser here</p>
+  <form action="test" method="get">
+    <input name="value" type="text">
+    <input type="submit" value="GET">
+  </form>
+
+  <form action="test" method="post">
+    <input name="value" type="text">
+    <input type="submit" value="POST">
+  </form>
+  
+  <table id="env-table" class="present">
+    <tr>
+      <th><b>ENV</b></th>
+      <th><b>Value</b></th>
+    </tr>
+    <tr>
+      <td>HTTP_COOKIES</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>CONTEXT_PATH</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>QUERY_STRING</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>REQUEST_METHOD</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>SCRIPT_NAME</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>HTTP_REFERER</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>HTTP_USER_AGENT</td>
+      <td>%s</td>
+    </tr>
+    <tr>
+      <td>CONTEXT_PATH</td>
+      <td>%s</td>
+    </tr>
+  </table>
+</div>

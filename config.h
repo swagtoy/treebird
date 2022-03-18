@@ -12,7 +12,7 @@
 #define TRUE 1
 
 /*
- * String: config_canonical_name
+ * String: canonical_name
  *
  * The software's recognizable name.
  *
@@ -23,7 +23,7 @@
 static char* const config_canonical_name = "treebird";
 
 /*
- * String: config_instance_url
+ * String: instance_url
  *
  * The instances URL which all API calls will be sent to via mastodont-c.
  * This MUST include a slash at the end, and the protocol (like https://) at the
@@ -34,7 +34,7 @@ static char* const config_canonical_name = "treebird";
 static char* const config_instance_url = "https://desuposter.club/";
 
 /*
- * String: config_url_prefix
+ * String: url_prefix
  *
  * The prefix for all urls.
  * For most cases, when you are proxying the CGI paths to root, this will be left blank.
@@ -55,5 +55,13 @@ static char* const config_url_prefix = "/treebird.cgi";
  * don't want it.
  */
 static const int config_experimental_lookup = TRUE;
+
+/*
+ * Bool: test_page
+ *
+ * Enables the test page which dumps all CGI cookies, useful when
+ * setting up a reverse proxy
+ */
+static const unsigned config_test_page = TRUE;
 
 #endif // CONFIG_H

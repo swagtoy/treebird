@@ -32,6 +32,7 @@
 #include "status.h"
 #include "lists.h"
 #include "timeline.h"
+#include "test.h"
 
 int main(void)
 {
@@ -59,6 +60,7 @@ int main(void)
     struct path_info paths[] = {
         { "/config", content_config },
         { "/login", content_login },
+        { "/test", content_test },
         { "/@:", content_account },
         { "/status/:/interact", status_interact },
         { "/status/:/reply", status_reply },

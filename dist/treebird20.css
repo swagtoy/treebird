@@ -14,7 +14,7 @@ body
 }
 
 /* Cleans up most of the tables */
-td
+table.ui-table td
 {
     padding: 0;
     margin: 0;
@@ -119,6 +119,25 @@ td
 #leftbar ul li
 {
     list-style-type: none;
+}
+
+/*************************************************
+ *               COMMON ELEMENTS                 *
+ *************************************************/
+
+table.present
+{
+    border: 1px solid #cacaca;
+}
+
+table.present th, table.present td
+{
+    padding: 2px 5px;
+}
+
+#env-table
+{
+    margin-top: 5px;
 }
 
 /*************************************************
@@ -231,12 +250,12 @@ ul li:first-child a.sidebarbtn
     display: flex;
 }
 
-.status .status-info > table
+.status .status-info > table.ui-table
 {
     width: 100%;
 }
 
-.status .status-info table, .status .status-info td, .status .status-info tr
+.status .status-info table.ui-table, .status .status-info table.ui-table td, .status .status-info table.ui-table tr
 {
     border-collapse: collapse !important;
     padding: 0;
@@ -293,13 +312,13 @@ ul li:first-child a.sidebarbtn
     margin: 8px 0 0 0;
 }
 
-.status-interact table
+.status-interact table.ui-table
 {
     border-collapse: collapse !important;
     padding: 0;
 }
 
-.status-interact table tr
+.status-interact table.ui-table tr
 {
     border-collapse: collapse !important;
     padding: 0;
