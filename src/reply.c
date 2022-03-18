@@ -45,7 +45,13 @@ char* construct_post_box(char* reply_id,
     return reply_html;
 }
 
-#define REGEX_REPLY "<a .*?href=\"https:\\/\\/(.*?)\\/.*?\".*?>@<span>(.*?)<\\/span>"
+/* Some comments:
+ *  - Misskey does not return <span>, but we still regex to make sure it's a highlight
+ *  - The order of parameters in a tag can be changed (mastodon does this),
+ *    so we just grep for regex href
+ *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users
+ */
+#define REGEX_REPLY "<a .*?href=\"https:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
 #define REGEX_RESULTS_LEN 9
 
 char* reply_status(char* id, struct mstdnt_status* status)
