@@ -14,5 +14,8 @@ No.
 
 ## Credits
 
-Please view the `CREDITS` file.
+Please view the [`CREDITS`](./CREDITS) file.
 
+## Installing
+
+See [INSTALL.md](./INSTALL.md)
