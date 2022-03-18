@@ -51,7 +51,7 @@ char* construct_post_box(char* reply_id,
  *    so we just grep for regex href
  *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users
  */
-#define REGEX_REPLY "<a .*?href=\"https:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
+#define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
 #define REGEX_RESULTS_LEN 9
 
 char* reply_status(char* id, struct mstdnt_status* status)
