@@ -188,9 +188,9 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
 #include "test/status_test.h"
 #else
     // Get information
-    mastodont_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
+    mastodont_get_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
                              &stat_before_len, &stat_after_len);
-    mastodont_view_status(api, data[0], &status_storage, &status);
+    mastodont_get_status(api, data[0], &status_storage, &status);
 
     // Before...
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);

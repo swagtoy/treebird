@@ -76,10 +76,10 @@ void content_account(mastodont_t* api, char** data, size_t size)
     size_t status_len;
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
-    if (mastodont_account(api, lookup_type, data[0],
-                          &acct, &storage, NULL) ||
-        mastodont_account_statuses(api, acct.id, NULL,
-                                   &status_storage, &statuses, &status_len))
+    if (mastodont_get_account(api, lookup_type, data[0],
+                              &acct, &storage, NULL) ||
+        mastodont_get_account_statuses(api, acct.id, NULL,
+                                       &status_storage, &statuses, &status_len))
     {
         account_page = "Couldn't load account info";
     }
