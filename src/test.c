@@ -31,7 +31,7 @@
 enum env_tbl_index
 {
     ENV_HTTP_COOKIES = 0,
-    ENV_CONTEXT_PATH,
+    ENV_PATH_INFO,
     ENV_QUERY_STRING,
     ENV_REQUEST_METHOD,
     ENV_SCRIPT_NAME,
@@ -46,7 +46,7 @@ void content_test(mastodont_t* api, char** data, size_t data_size)
 {
     char* env_tbl[] = {
         getenv("HTTP_COOKIES"),
-        getenv("CONTEXT_PATH"),
+        getenv("PATH_INFO"),
         getenv("QUERY_STRING"),
         getenv("REQUEST_METHOD"),
         getenv("SCRIPT_NAME"),
@@ -59,13 +59,13 @@ void content_test(mastodont_t* api, char** data, size_t data_size)
     easprintf(&page,
               data_test_html,
               ENV_TBL_GET(ENV_HTTP_COOKIES),
-              ENV_TBL_GET(ENV_CONTEXT_PATH),
+              ENV_TBL_GET(ENV_PATH_INFO),
               ENV_TBL_GET(ENV_QUERY_STRING),
               ENV_TBL_GET(ENV_REQUEST_METHOD),
               ENV_TBL_GET(ENV_SCRIPT_NAME),
               ENV_TBL_GET(ENV_HTTP_REFERER),
               ENV_TBL_GET(ENV_HTTP_USER_AGENT),
-              ENV_TBL_GET(ENV_CONTEXT_PATH));
+              ENV_TBL_GET(ENV_CONTEXT_LENGTH));
     
     struct base_page b = {
         .locale = L10N_EN_US,
