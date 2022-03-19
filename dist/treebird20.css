@@ -200,13 +200,11 @@ ul li:first-child a.sidebarbtn
  **************************/
 .status
 {
-    padding: 4px 2px 0 4px;
+    padding: 6px 2px 0 6px;
     border-bottom: 1px solid #cacaca !important;
     width: 100%;
-    border-collapse: collapse !important;
+    /* border-collapse: collapse !important; */
     border-spacing: 0px;
-    margin: 0;
-    padding: 0;
 }
 
 .status .profile-picture
