@@ -54,6 +54,14 @@ $(PAGES_DIR)/emoji_reaction.chtml: $(PAGES_DIR)/emoji_reaction.html
 	./filec $< data_emoji_reaction_html > $@
 $(PAGES_DIR)/test.chtml: $(PAGES_DIR)/test.html
 	./filec $< data_test_html > $@
+$(PAGES_DIR)/notifications_page.chtml: $(PAGES_DIR)/notifications_page.html
+	./filec $< data_notifications_page_html > $@
+$(PAGES_DIR)/notifications.chtml: $(PAGES_DIR)/notifications.html
+	./filec $< data_notifications_html > $@
+$(PAGES_DIR)/notification.chtml: $(PAGES_DIR)/notification.html
+	./filec $< data_notification_html > $@
+$(PAGES_DIR)/notification_compact.chtml: $(PAGES_DIR)/notification_compact.html
+	./filec $< data_notification_compact_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

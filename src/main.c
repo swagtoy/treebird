@@ -32,12 +32,11 @@
 #include "status.h"
 #include "lists.h"
 #include "timeline.h"
+#include "notifications.h"
 #include "test.h"
 
 int main(void)
 {
-    // Content type is always HTML
-
     // Global init
     mastodont_global_curl_init();
 
@@ -69,6 +68,7 @@ int main(void)
         { "/lists", content_lists },
         { "/federated", content_tl_federated },
         { "/local", content_tl_local },
+        { "/notifications", content_notifications },
     };
 
     handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
