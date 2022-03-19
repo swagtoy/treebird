@@ -67,20 +67,19 @@ int try_post_status(mastodont_t* api)
 
 int try_interact_status(mastodont_t* api, char* id)
 {
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage = { 0 };
     if (!(post.itype && id)) return 1;
 
     // Pretty up the type
     if (strcmp(post.itype, "like") == 0)
     {
         mastodont_favourite_status(api, id, &storage);
-        // TODO Cleanup when errors handled
-        // mastodont_storage_cleanup(&storage);
     }
     else if (strcmp(post.itype, "repeat") == 0) {
         mastodont_reblog_status(api, id, &storage);
-        // mastodont_storage_cleanup(&storage);
     }
+
+    mastodont_storage_cleanup(&storage);
 
     return 0;
 }
@@ -158,8 +157,10 @@ void status_interact(mastodont_t* api, char** data, size_t data_size)
     
     try_interact_status(api, data[0]);
     
-    fputs("Status: 302 Found\r\n", stdout);
-    printf("Location: %s\r\n\r\nRedirecting...",
+    printf("Status: 302 Found\r\n"
+           "Location: %s\r\n"
+           "Content-Length: 14\r\n\r\n"
+           "Redirecting...",
            referer ? referer : "/");
 }
 
