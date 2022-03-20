@@ -23,21 +23,57 @@
 
 // Pages
 #include "../static/notifications_page.chtml"
+#include "../static/notifications.chtml"
+#include "../static/notification.chtml"
+#include "../static/notification_compact.chtml"
 
-static char* construct_notifications_voidwrap(void* passed, size_t index, int* res)
+char* construct_notification(struct mstdnt_notification* notif, int* size)
 {
-    return construct_notifications((struct mstdnt_notification*)passed + index, res);
+    char* notif_html;
+    return notif_html;
 }
 
-char* construct_notifications(struct mstdnt_notification* notifs, size_t size, size_t* ret_size)
+char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
-    return construct_func_strings(construct_notifications_voidwrap, notifs, size, ret_size);
+    char* notif_html;
+
+    size_t s = easprintf(&notif_html, data_notification_compact_html,
+                         notif->id);
+
+    if (size) *size = s;
+    
+    return notif_html;
+}
+
+static char* construct_notification_voidwrap(void* passed, size_t index, int* res)
+{
+    return construct_notification((struct mstdnt_notification*)passed + index, res);
+}
+
+static char* construct_notification_compact_voidwrap(void* passed, size_t index, int* res)
+{
+    return construct_notification_compact((struct mstdnt_notification*)passed + index, res);
+}
+
+char* construct_notifications(struct mstdnt_notification* notifs,
+                              size_t size,
+                              size_t* ret_size)
+{
+    return construct_func_strings(construct_notification_voidwrap, notifs, size, ret_size);
+}
+
+char* construct_notifications_compact(struct mstdnt_notification* notifs,
+                                      size_t size,
+                                      size_t* ret_size)
+{
+    return construct_func_strings(construct_notification_compact_voidwrap,
+                                  notifs,
+                                  size,
+                                  ret_size);
 }
 
 void content_notifications(mastodont_t* api, char** data, size_t data_size)
 {
-    
-    
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = data_notifications_page_html,
@@ -45,6 +81,6 @@ void content_notifications(mastodont_t* api, char** data, size_t data_size)
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
 }
 

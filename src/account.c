@@ -100,11 +100,11 @@ void content_account(mastodont_t* api, char** data, size_t size)
     };
 
     /* Output */
-    render_base_page(&b);
+    render_base_page(&b, api);
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
-    cleanup_statuses(statuses, status_len);
+    mstdnt_cleanup_statuses(statuses, status_len);
     if (cleanup) free(account_page);
 }

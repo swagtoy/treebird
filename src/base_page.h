@@ -18,6 +18,7 @@
 
 #ifndef BASE_PAGE_H
 #define BASE_PAGE_H
+#include <mastodont.h>
 #include "l10n.h"
 #include "local_config.h"
 
@@ -28,6 +29,6 @@ struct base_page
     char* sidebar_right;
 };
 
-void render_base_page(struct base_page* page);
+void render_base_page(struct base_page* page, mastodont_t* api);
 
 #endif // BASE_PAGE_H

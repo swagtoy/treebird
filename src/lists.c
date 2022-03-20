@@ -90,7 +90,7 @@ void content_lists(mastodont_t* api, char** data, size_t size)
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);

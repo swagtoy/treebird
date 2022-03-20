@@ -70,11 +70,11 @@ void tl_public(mastodont_t* api, int local)
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    cleanup_statuses(statuses, status_count);
+    mstdnt_cleanup_statuses(statuses, status_count);
     if (cleanup) free(status_format);
     if (post_box) free(post_box);
     if (output) free(output);
@@ -121,12 +121,14 @@ void tl_list(mastodont_t* api, char* list_id)
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_statuses(statuses, status_count);
     if (cleanup) free(status_format);
     if (post_box) free(post_box);
+    if (output) free(output);
 }
 
 

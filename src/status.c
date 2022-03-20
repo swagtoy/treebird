@@ -221,7 +221,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
 
     // Cleanup
     if (before_html) free(before_html);
@@ -229,8 +229,8 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     if (after_html) free(after_html);
     if (output) free(output);
     if (is_reply) free(stat_reply);
-    cleanup_statuses(statuses_before, stat_before_len);
-    cleanup_statuses(statuses_after, stat_after_len);
-    cleanup_status(&status);
+    mstdnt_cleanup_statuses(statuses_before, stat_before_len);
+    mstdnt_cleanup_statuses(statuses_after, stat_after_len);
+    mstdnt_cleanup_status(&status);
     mastodont_storage_cleanup(&storage);
 }

@@ -74,6 +74,6 @@ void content_test(mastodont_t* api, char** data, size_t data_size)
     };
 
     // Output
-    render_base_page(&b);
+    render_base_page(&b, api);
     if (page) free(page);
 }

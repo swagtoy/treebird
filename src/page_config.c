@@ -48,5 +48,5 @@ void content_config(mastodont_t* api, char** data, size_t size)
         .sidebar_right = NULL
     };
 
-    render_base_page(&b);
+    render_base_page(&b, api);
 }

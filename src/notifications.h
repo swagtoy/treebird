@@ -20,6 +20,17 @@
 #define NOTIFICATIONS_H
 #include <mastodont.h>
 
+
+char* construct_notification(struct mstdnt_notification* notif, int* size);
+char* construct_notification_compact(struct mstdnt_notification* notif, int* size);
+char* construct_notifications(struct mstdnt_notification* notifs,
+                              size_t size,
+                              size_t* ret_size);
+char* construct_notifications_compact(struct mstdnt_notification* notifs,
+                                      size_t size,
+                                      size_t* ret_size);
+
+// Page contents
 void content_notifications(mastodont_t* api, char** data, size_t data_size);
 
 #endif // NOTIFICATION_H

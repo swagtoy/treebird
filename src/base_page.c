@@ -22,23 +22,51 @@
 #include "base_page.h"
 #include "easprintf.h"
 #include "cookie.h"
+#include "notifications.h"
 #include "../config.h"
 
 // Files
 #include "../static/index.chtml"
 
-void render_base_page(struct base_page* page)
+void render_base_page(struct base_page* page, mastodont_t* api)
 {
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = page->locale;
     char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
+    char* sidebar_str = NULL;
+    // Mastodont, used for notifications sidebar
+    struct mstdnt_storage storage;
+    struct mstdnt_notification* notifs;
+    size_t notifs_len;
 
     if (!g_config.changed && cookie)
     {
         if (cookies.theme)
             g_config.theme = cookies.theme;
-        if (cookies.logged_in && strcmp(cookies.logged_in, "t") == 0)
+        if (cookies.logged_in)
             login_string = "";
+    }
+
+    // Get / Show notifications on sidebar
+    if (cookies.logged_in)
+    {
+        struct mstdnt_get_notifications_args args = {
+            .exclude_types = 0,
+            .account_id = NULL,
+            .exclude_visibilities = 0,
+            .include_types = 0,
+            .with_muted = 1,
+            .max_id = NULL,
+            .min_id = NULL,
+            .since_id = NULL,
+            .offset = 2,
+            .limit = 15,
+        };
+        
+        mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len);
+        sidebar_str = construct_notifications_compact(notifs, notifs_len, NULL);
+
+        //mstdnt_cleanup_notifications(notifs, notifs_len);
     }
     
     char* data;
@@ -65,17 +93,22 @@ void render_base_page(struct base_page* page)
                         L10N[locale][L10N_DIRECT],
                         config_url_prefix,
                         L10N[locale][L10N_CONFIG],
-                        page->content);
+                        page->content,
+                        sidebar_str ? sidebar_str : "<p>Not logged in</p>");
     
     if (!data)
     {
         perror("malloc");
-        return;
+        goto cleanup;
     }
     
     fputs("Content-type: text/html\r\n", stdout);
     printf("Content-Length: %d\r\n\r\n", len + 1);
     puts(data);
 
+    // Cleanup
+/* cleanup_all: */
     free(data);
+cleanup:
+    if (sidebar_str) free(sidebar_str);
 }
