@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include "notifications.h"
 #include "base_page.h"
 #include "string_helpers.h"
@@ -36,12 +37,24 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
     char* notif_html;
+    char* notif_stats;
+
+    easprintf(&notif_stats, "%d - %d - %d",
+              notif->status->replies_count,
+              notif->status->reblogs_count,
+              notif->status->favourites_count);
+    
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
-                         notif->id);
+                         notif->account->avatar,
+                         notif->account->display_name,
+                         "interacted",
+                         notif->status->content,
+                         notif_stats);
 
     if (size) *size = s;
-    
+
+    if (notif_stats) free(notif_stats);
     return notif_html;
 }
 

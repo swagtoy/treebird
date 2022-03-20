@@ -59,14 +59,14 @@ void render_base_page(struct base_page* page, mastodont_t* api)
             .max_id = NULL,
             .min_id = NULL,
             .since_id = NULL,
-            .offset = 2,
-            .limit = 15,
+            .offset = 0,
+            .limit = 20,
         };
         
-        mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len);
-        sidebar_str = construct_notifications_compact(notifs, notifs_len, NULL);
+        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+            sidebar_str = construct_notifications_compact(notifs, notifs_len, NULL);
 
-        //mstdnt_cleanup_notifications(notifs, notifs_len);
+        mstdnt_cleanup_notifications(notifs, notifs_len);
     }
     
     char* data;

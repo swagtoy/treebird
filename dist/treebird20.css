@@ -195,6 +195,39 @@ ul li:first-child a.sidebarbtn
     border-left: 1px solid #cacaca;
 }
 
+/****************************
+ *      Notifications       *
+ ***************************/
+.notification
+{
+    border-bottom: 1px solid #dadada;
+}
+
+.pfp-compact-td img
+{
+    border-radius: 3px;
+}
+
+.notification-compact .notification-info
+{
+    font-size: 12px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.notification-compact .notification-content
+{
+    color: #808080;
+    font-size: 12px;
+    padding: 2px 0 2px 0;
+}
+
+.notification-compact .notification-stats
+{
+    color: #500000;
+    font-size: 10px;
+}
+
 /***************************
  *      Statuses           *
  **************************/
@@ -244,7 +277,7 @@ ul li:first-child a.sidebarbtn
     margin: 0 5px 0px;
     min-width: 0;
     width: auto;
-    padding: 5px 5px 0 5px;
+    padding: 0 5px 0 5px;
     display: flex;
 }
 
