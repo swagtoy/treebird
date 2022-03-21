@@ -40,7 +40,7 @@ int main(void)
     // Global init
     mastodont_global_curl_init();
 
-    unsigned run_count = 0;
+    unsigned run_count = 1;
 
     // API
     for (;FCGI_Accept() >= 0; ++run_count)
@@ -75,8 +75,6 @@ int main(void)
             { "/notifications", content_notifications },
         };
 
-        printf("Run: %d\r\n", run_count);
-
         handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
 
         // Cleanup
@@ -88,6 +86,8 @@ int main(void)
         // can't even think reading them
         memset(&cookies, 0, sizeof(cookies));
         memset(&post, 0, sizeof(post));
+
+        ++run_count;
     }
 
     mastodont_global_curl_cleanup();

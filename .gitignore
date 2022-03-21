@@ -3,3 +3,4 @@ filec
 **/*.o
 **/*.chtml
 mastodont-c
+config.h

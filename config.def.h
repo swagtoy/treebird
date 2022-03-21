@@ -16,7 +16,6 @@
  *
  * The software's recognizable name.
  *
- * 
  * Example: "treebird"
  */
 
@@ -29,9 +28,9 @@ static char* const config_canonical_name = "treebird";
  * This MUST include a slash at the end, and the protocol (like https://) at the
  * beginning
  *
- * Example: "https://cum.desupost.soy/
+ * Example: "https://shitposter.club/"
  */
-static char* const config_instance_url = "https://desuposter.club/";
+static char* const config_instance_url = "https://my-instace.social/";
 
 /*
  * String: url_prefix
@@ -41,7 +40,7 @@ static char* const config_instance_url = "https://desuposter.club/";
  *
  * Example: "/treebird.cgi"
  */
-static char* const config_url_prefix = "/treebird.cgi";
+static char* const config_url_prefix = "";
 
 /*
  * Bool: experimental_lookup
@@ -62,6 +61,6 @@ static const int config_experimental_lookup = TRUE;
  * Enables the test page which dumps all CGI cookies, useful when
  * setting up a reverse proxy
  */
-static const unsigned config_test_page = TRUE;
+static const unsigned config_test_page = FALSE;
 
 #endif // CONFIG_H
