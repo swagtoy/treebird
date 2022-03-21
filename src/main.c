@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <fcgi_stdio.h>
 #include <mastodont.h>
 #include <stdlib.h>
 #include "../config.h"
@@ -41,41 +42,49 @@ int main(void)
     mastodont_global_curl_init();
 
     // API
-    mastodont_t api;
-    api.url = config_instance_url;
-    mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE);
+    while (FCGI_Accept() >= 0)
+    {
+        mastodont_t api;
+        api.url = config_instance_url;
+        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE);
 
-    // Load cookies
-    char* cookies_str = read_cookies_env();
-    api.token = cookies.access_token; // Load token now
-    char* post_str = read_post_data();
+        // Load cookies
+        char* cookies_str = read_cookies_env();
+        api.token = cookies.access_token; // Load token now
+        char* post_str = read_post_data();
 
-    // Config defaults
-    g_config.theme = "treebird20";
+        // Config defaults
+        g_config.theme = "treebird20";
 
-    /*******************
-     *  Path handling  *
-     ******************/
-    struct path_info paths[] = {
-        { "/config", content_config },
-        { "/login", content_login },
-        { "/test", content_test },
-        { "/@:", content_account },
-        { "/status/:/interact", status_interact },
-        { "/status/:/reply", status_reply },
-        { "/status/:", status_view },
-        { "/lists/for/:", content_tl_list },
-        { "/lists", content_lists },
-        { "/federated", content_tl_federated },
-        { "/local", content_tl_local },
-        { "/notifications", content_notifications },
-    };
+        /*******************
+         *  Path handling  *
+         ******************/
+        struct path_info paths[] = {
+            { "/config", content_config },
+            { "/login", content_login },
+            { "/test", content_test },
+            { "/@:", content_account },
+            { "/status/:/interact", status_interact },
+            { "/status/:/reply", status_reply },
+            { "/status/:", status_view },
+            { "/lists/for/:", content_tl_list },
+            { "/lists", content_lists },
+            { "/federated", content_tl_federated },
+            { "/local", content_tl_local },
+            { "/notifications", content_notifications },
+        };
 
-    handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
+        handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
 
-    // Cleanup
-    if (cookies_str) free(cookies_str);
-    if (post_str) free(post_str);
-    mastodont_free(&api);
+        // Cleanup
+        if (cookies_str) free(cookies_str);
+        if (post_str) free(post_str);
+        mastodont_free(&api);
+
+        // Obliterate all global values, so the next client
+        // can't even consider reading them
+        memset(&cookies, 0, sizeof(cookies));
+    }
+
     mastodont_global_curl_cleanup();
 }
