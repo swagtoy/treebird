@@ -18,7 +18,6 @@
 
 #include "timeline.h"
 #include <stdlib.h>
-#include <stdio.h>
 #include "base_page.h"
 #include "../config.h"
 #include "index.h"

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fcgi_stdio.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "base_page.h"
 #include "easprintf.h"

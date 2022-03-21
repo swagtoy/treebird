@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fcgi_stdio.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "cookie.h"
 #include "key.h"
@@ -44,7 +44,7 @@ char* read_cookies_env()
     char* cookies_str = malloc(strlen(cookies_env));
     if (!cookies_str)
     {
-        perror("malloc");
+        printf("malloc");
         return NULL;
     }
     strcpy(cookies_str, cookies_env);

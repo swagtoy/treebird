@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
+#include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "string_helpers.h"

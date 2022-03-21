@@ -16,9 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <string.h>
 #include <fcgi_stdio.h>
+#include <string.h>
 #include <mastodont.h>
 #include <stdlib.h>
 #include "../config.h"
@@ -41,8 +40,10 @@ int main(void)
     // Global init
     mastodont_global_curl_init();
 
+    unsigned run_count = 0;
+
     // API
-    while (FCGI_Accept() >= 0)
+    for (;FCGI_Accept() >= 0; ++run_count)
     {
         mastodont_t api;
         api.url = config_instance_url;
@@ -74,6 +75,8 @@ int main(void)
             { "/notifications", content_notifications },
         };
 
+        printf("Run: %d\r\n", run_count);
+
         handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
 
         // Cleanup
@@ -82,8 +85,9 @@ int main(void)
         mastodont_free(&api);
 
         // Obliterate all global values, so the next client
-        // can't even consider reading them
+        // can't even think reading them
         memset(&cookies, 0, sizeof(cookies));
+        memset(&post, 0, sizeof(post));
     }
 
     mastodont_global_curl_cleanup();
