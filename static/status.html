@@ -24,31 +24,40 @@
                 <tr>
                   <td>
                     <form action="%s/status/%s/reply" method="post">
-                      <input class="nobutton" type="submit" value="Reply%s">
+                      <label class="pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg>
+                        <span class="count">%s</span>
+                        <input class="hidden" type="submit">
+                      </label>
                     </form>
                   </td>
                   <td>
                     <form action="%s/status/%s/interact" method="post">
                       <input type="hidden" name="itype" value="repeat">
-                      <input class="nobutton %s" type="submit" value="Repeat%s">
+                      <label class="pointer">
+                        <svg class="repeat %s" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12.2v-2a4 4 0 0 1 4-4h12.8M7 21.9l-4-4 4-4"/><path d="M21 11.8v2a4 4 0 0 1-4 4H4.2"/></svg>
+                        <span class="count">%s</span>
+                        <input class="hidden" type="submit">
+                      </label>
                     </form>
                   </td>
                   <td>
                     <form action="%s/status/%s/interact" method="post">
                       <input type="hidden" name="itype" value="like">
-                      <input class="nobutton %s" type="submit" value="Yeah!%s">
+                      <label class="pointer">
+                        <svg class="like %s" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span class="count">%s</span>
+                        <input class="hidden" type="submit">
+                      </label>
                     </form>
                   </td>
                   <td>
-                    <form action="%s/status/%s/quick" method="post">
-                      <input class="nobutton" type="submit" value="Quick">
+                    <form action="%s/status/%s" method="get">
+                      <label class="pointer">
+                        <svg class="%s" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg>
+                        <input class="hidden" type="submit">
+                      </label>
                     </form>
-                  </td>
-                  <td>
-                    <a class="nobutton" href="%s/status/%s">View</a>
-                  </td>
-                  <td>
-                    <a class="nobutton" onclick="alert('hi');" href="#">Emoji</a>
                   </td>
                 </tr>
               </table>

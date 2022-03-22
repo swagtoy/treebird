@@ -13,6 +13,16 @@ body
     background-color: #f6f6f6;
 }
 
+.hidden
+{
+    display: none;
+}
+
+.pointer
+{
+    cursor: pointer;
+}
+
 /* Cleans up most of the tables */
 table.ui-table td
 {
@@ -536,39 +546,47 @@ ul li:first-child a.sidebarbtn
     flex: 1;
 }
 
-
-/* Special cases */
-.nobutton
+.status-interact label
 {
-    display: block !important;
-    background: none !important;
-    background-color: transparent !important;
-    color: #aa0000 !important;
-    padding: 4px 9px !important;
-    margin: 0 !important;
-    text-decoration: none;
-    cursor: pointer !important;
-    outline: inherit !important;
+    display: block;
+    padding: 3px 8px;
+}
+
+.status-interact svg.repeat.active
+{
+    stroke: #08d345;
+}
+
+.status-interact svg.like.active
+{
+    fill: #fcd202;
+    stroke: #fcd202;
+}
+
+.status-interact svg.like:hover,
+.status-interact svg.like:active,
+.statis-interact svg.like:focus
+{
+    stroke: #fcd202;
+    pointer: select;
+}
+
+.status-interact svg.repeat:hover,
+.status-interact svg.repeat:active,
+.statis-interact svg.repeat:focus
+{
+    stroke: #08d345;
+}
+
+.status-interact .count
+{
     font-size: 14px;
-    border: 0 !important;
-}
+    padding-bottom: 3px;
 
-.status-interact tr td:not(:last-child) .nobutton
-{
-    border-right: 1px solid #cacaca !important;
-
-}
-
-.status-interact .nobutton-active,
-.nobutton:hover,
-.nobutton:active,
-.nobutton:focus
-{
-    background: linear-gradient(#fff, #aa3333, #aa2222, #aa0000) !important;
-    border: 0 !important;
-    border-right: 1px solid #cacaca !important;
-    color: #fff !important;
-    text-shadow: 0px 0px 5px #cc4444cc !important;
+    /* Move up */
+    position: relative;
+    top: -5px;
+    margin-bottom: -5px;
 }
 
 /* Emoji reacts */

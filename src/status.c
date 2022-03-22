@@ -32,7 +32,7 @@
 // Pages
 #include "../static/status.chtml"
 
-#define NUM_STR " (%u)"
+#define NUM_STR "%u"
 
 int try_post_status(mastodont_t* api)
 {
@@ -121,11 +121,11 @@ char* construct_status(struct mstdnt_status* status, int* size)
                          reply_count ? reply_count : "",
                          config_url_prefix,
                          status->id,
-                         status->reblogged ? "nobutton-active" : "",
+                         status->reblogged ? "active" : "",
                          repeat_count ? repeat_count : "",
                          config_url_prefix,
                          status->id,
-                         status->favourited ? "nobutton-active" : "",
+                         status->favourited ? "active" : "",
                          favourites_count ? favourites_count : "",
                          config_url_prefix,
                          status->id,
