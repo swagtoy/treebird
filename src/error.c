@@ -15,11 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+#include <stdlib.h>
+#include "base_page.h"
 #include "error.h"
 #include "easprintf.h"
+#include "l10n.h"
 
 // Pages
+#include "../static/error_404.chtml"
 #include "../static/error.chtml"
 
 char* construct_error(char* error, size_t* size)
@@ -29,4 +32,21 @@ char* construct_error(char* error, size_t* size)
                          error);
     if (size) *size = s;
     return error_html;
+}
+
+void content_not_found(mastodont_t* api, char* path)
+{
+    char* page;
+    easprintf(&page,
+              data_error_404_html,
+              L10N[L10N_EN_US][L10N_PAGE_NOT_FOUND]);
+    
+    struct base_page b = {
+        .locale = L10N_EN_US,
+        .content = page,
+        .sidebar_right = NULL
+    };
+
+    render_base_page(&b, api);
+    free(page);
 }

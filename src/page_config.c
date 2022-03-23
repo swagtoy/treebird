@@ -32,8 +32,6 @@
 
 void content_config(mastodont_t* api, char** data, size_t size)
 {
-    (void)api; // No need to use this
-
     if (post.theme)
     {
         g_config.theme = post.theme;

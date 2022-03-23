@@ -21,6 +21,7 @@
 #include "path.h"
 #include "index.h"
 #include "account.h"
+#include "error.h"
 
 enum path_state
 {
@@ -127,5 +128,8 @@ void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
             if (parse_path(api, paths + i) == 0)
                 return;
         }
+
+        // Fell out, return 404
+        content_not_found(api, path);
     }
 }

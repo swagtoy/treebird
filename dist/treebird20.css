@@ -626,6 +626,12 @@ ul li:first-child a.sidebarbtn
     padding-left: 15px;
 }
 
+.simple-page p
+{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 /* Attachments */
 .attachments img
 {
