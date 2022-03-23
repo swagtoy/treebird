@@ -70,11 +70,23 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
             fputs("Status: 302 Found\r\n", stdout);
             printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
             printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
-            printf("Location: %s/\r\n", config_url_prefix);
+            // if config_url_prefix is empty, make it root
+            printf("Location: %s/\r\n",
+                   config_url_prefix[0] == '\0' ?
+                   "/" : config_url_prefix);
+            return;
         }
     }
-    easprintf(&page, "%s%s", error ? error : "", data_login_html);
 
+    // Concat
+    easprintf(&page, data_login_html,
+              L10N[L10N_EN_US][L10N_LOGIN],
+              error ? error : "",
+              config_url_prefix,
+              L10N[L10N_EN_US][L10N_USERNAME],
+              L10N[L10N_EN_US][L10N_PASSWORD],
+              L10N[L10N_EN_US][L10N_LOGIN_BTN]);
+    
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = page,

@@ -74,6 +74,11 @@ enum l10n_string
     L10N_VIS_LOCAL,
 
     /* LOGIN */
+    L10N_LOGIN,
+    L10N_REGISTER,
+    L10N_USERNAME,
+    L10N_PASSWORD,
+    L10N_LOGIN_BTN,
     L10N_LOGIN_HEADER,
     L10N_LOGIN_FAIL,
 
@@ -143,6 +148,11 @@ static const char* const L10N[][_L10N_LEN] = {
         "Local",
 
         /* LOGIN */
+        "Login",
+        "Register"
+        "Username",
+        "Password",
+        "Login",
         "Login / Register",
         "Couldn't login",
 
@@ -209,6 +219,11 @@ static const char* const L10N[][_L10N_LEN] = {
         "Local",
 
         /* LOGIN */
+        "Login",
+        "Register"
+        "Username",
+        "Password",
+        "Login",
         "Login / Register",
         "Couldn't login",
         

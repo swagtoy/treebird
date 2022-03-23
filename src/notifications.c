@@ -37,20 +37,21 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
     char* notif_html;
-    char* notif_stats;
+    char* notif_stats = NULL;
 
-    easprintf(&notif_stats, "%d - %d - %d",
-              notif->status->replies_count,
-              notif->status->reblogs_count,
-              notif->status->favourites_count);
+    if (notif->status)
+        easprintf(&notif_stats, "%d - %d - %d",
+                  notif->status->replies_count,
+                  notif->status->reblogs_count,
+                  notif->status->favourites_count);
     
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
                          notif->account->avatar,
                          notif->account->display_name,
                          "interacted",
-                         notif->status->content,
-                         notif_stats);
+                         notif->status ? notif->status->content : "",
+                         notif_stats ? notif_stats : "");
 
     if (size) *size = s;
 
