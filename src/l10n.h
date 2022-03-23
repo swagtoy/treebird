@@ -61,6 +61,35 @@ enum l10n_string
     L10N_QUICK,
     L10N_VIEW,
 
+    /* ERRORS */
+    L10N_PAGE_NOT_FOUND,
+    L10N_STATUS_NOT_FOUND,
+    L10N_ACCOUNT_NOT_FOUND,
+
+    /* VISIBILITIES */
+    L10N_VIS_PUBLIC,
+    L10N_VIS_UNLISTED,
+    L10N_VIS_PRIVATE,
+    L10N_VIS_DIRECT,
+    L10N_VIS_LOCAL,
+
+    /* LOGIN */
+    L10N_LOGIN_HEADER,
+    L10N_LOGIN_FAIL,
+
+    /* NOTIFICATIONS */
+    L10N_NOTIF_LIKED,
+    L10N_NOTIF_REACTED_WITH,
+    L10N_NOTIF_REPEATED,
+    L10N_NOTIF_FOLLOW,
+    L10N_NOTIF_FOLLOW_REQUEST,
+
+    L10N_NOTIF_COMPACT_LIKED,
+    L10N_NOTIF_COMPACT_REACTED_WITH,
+    L10N_NOTIF_COMPACT_REPEATED,
+    L10N_NOTIF_COMPACT_FOLLOW,
+    L10N_NOTIF_COMPACT_FOLLOW_REQUEST,
+
     _L10N_LEN,
 };
 
@@ -99,7 +128,36 @@ static const char* const L10N[][_L10N_LEN] = {
         "Repeat",
         "Like",
         "Quick",
-        "View"
+        "View",
+
+        /* ERRORS */
+        "Content not found",
+        "Status not found",
+        "Account not found",
+
+        /* VISIBILITIES */
+        "Public",
+        "Unlisted",
+        "Private",
+        "Direct",
+        "Local",
+
+        /* LOGIN */
+        "Login / Register",
+        "Couldn't login",
+
+        /* NOTIFICATIONS */
+        "liked your status",
+        "reacted with",
+        "repeated your status",
+        "followed you",
+        "wants to follow you",
+
+        "liked",
+        "reacted",
+        "repeated",
+        "followed",
+        "follows?"
     },
 
     // ES_ES
@@ -136,7 +194,36 @@ static const char* const L10N[][_L10N_LEN] = {
         "Impulso",
         "Me gusta",
         "Rápido",
-        "View (Untranslated)"
+        "View (Translate me)",
+        
+        /* ERRORS */
+        "Content not found",
+        "Status not found",
+        "Account not found",
+        
+        /* VISIBILITIES */
+        "Public",
+        "Unlisted",
+        "Private",
+        "Direct",
+        "Local",
+
+        /* LOGIN */
+        "Login / Register",
+        "Couldn't login",
+        
+        /* NOTIFICATIONS */
+        "liked your status",
+        "reacted with",
+        "repeated your status",
+        "followed you",
+        "wants to follow you",
+
+        "liked",
+        "reacted",
+        "repeated",
+        "followed",
+        "follows?",
     },
 };
 
