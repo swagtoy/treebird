@@ -217,7 +217,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = output,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output

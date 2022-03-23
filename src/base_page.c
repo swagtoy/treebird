@@ -93,6 +93,8 @@ void render_base_page(struct base_page* page, mastodont_t* api)
                         L10N[locale][L10N_DIRECT],
                         config_url_prefix,
                         L10N[locale][L10N_CONFIG],
+                        page->sidebar_left ?
+                        page->sidebar_left : "",
                         page->content,
                         sidebar_str ? sidebar_str : "<p>Not logged in</p>");
     

@@ -26,7 +26,7 @@ struct base_page
 {
     enum l10n_locale locale;
     char* content;
-    char* sidebar_right;
+    char* sidebar_left;
 };
 
 void render_base_page(struct base_page* page, mastodont_t* api);

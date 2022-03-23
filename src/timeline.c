@@ -65,7 +65,7 @@ void tl_public(mastodont_t* api, int local)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = output,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output
@@ -116,7 +116,7 @@ void tl_list(mastodont_t* api, char* list_id)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = output,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output

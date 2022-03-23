@@ -37,6 +37,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     char* error = NULL;
     char* page;
 
+    printf("%s: %s\r\n", post.username ? post.username:  "none", post.password ? post.password : "none");
     if (post.username && post.password)
     {
         // Getting the client id/secret
@@ -71,7 +72,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
             printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
             printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
             // if config_url_prefix is empty, make it root
-            printf("Location: %s/\r\n",
+            printf("Location: %s\r\n\r\nRedirecting...",
                    config_url_prefix[0] == '\0' ?
                    "/" : config_url_prefix);
             return;
@@ -90,7 +91,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = page,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output

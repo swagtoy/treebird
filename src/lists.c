@@ -85,7 +85,7 @@ void content_lists(mastodont_t* api, char** data, size_t size)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = lists_page,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output

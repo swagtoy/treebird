@@ -18,6 +18,7 @@
 
 #ifndef QUERY_H
 #define QUERY_H
+#include <fcgi_stdio.h>
 #include <stddef.h>
 
 struct http_query_info

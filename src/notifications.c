@@ -91,7 +91,7 @@ void content_notifications(mastodont_t* api, char** data, size_t data_size)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = data_notifications_page_html,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     // Output

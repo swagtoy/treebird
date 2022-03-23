@@ -95,7 +95,7 @@ void content_account(mastodont_t* api, char** data, size_t size)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = account_page,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     /* Output */

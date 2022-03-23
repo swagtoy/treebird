@@ -43,7 +43,7 @@ int main(void)
     unsigned run_count = 1;
 
     // API
-    for (;FCGI_Accept() >= 0; ++run_count)
+    while (FCGI_Accept() >= 0)
     {
         mastodont_t api;
         api.url = config_instance_url;

@@ -44,7 +44,7 @@ void content_not_found(mastodont_t* api, char* path)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = page,
-        .sidebar_right = NULL
+        .sidebar_left = NULL
     };
 
     render_base_page(&b, api);
