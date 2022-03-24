@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdint.h>
 #include <stdlib.h>
 #include "notifications.h"
 #include "base_page.h"
@@ -34,10 +35,51 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
     return notif_html;
 }
 
+/* https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightLinear */
+static unsigned trail_bits(unsigned int v)
+{
+    unsigned int c;  // output: c will count v's trailing zero bits,
+    // so if v is 1101000 (base 2), then c will be 3
+    if (v)
+    {
+        v = (v ^ (v - 1)) >> 1;  // Set v's trailing 0s to 1s and zero rest
+        for (c = 0; v; c++)
+        {
+            v >>= 1;
+        }
+    }
+    else
+    {
+        c = CHAR_BIT * sizeof(v);
+    }
+    return c;
+}
+
+const char* notification_type_str(mstdnt_notification_t type)
+{
+    /* Taking advantage of the bitshift in the definitions,
+     * we create a table based on the index
+     * See: mastodont_c/include/mastodont_notif_types.h */
+    char* notif_type_table[] = {
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_FOLLOW],
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_FOLLOW_REQUEST],
+        "",
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_REPEATED],
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_LIKED],
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_POLL],
+        "",
+        L10N[L10N_EN_US][L10N_NOTIF_COMPACT_REACTED_WITH],
+    };
+
+    return notif_type_table[trail_bits((unsigned)type)];
+}
+
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
     char* notif_html;
     char* notif_stats = NULL;
+
+    const char* type_str = notification_type_str(notif->type);
 
     if (notif->status)
         easprintf(&notif_stats, "%d - %d - %d",
@@ -49,7 +91,7 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
     size_t s = easprintf(&notif_html, data_notification_compact_html,
                          notif->account->avatar,
                          notif->account->display_name,
-                         "interacted",
+                         type_str,
                          notif->status ? notif->status->content : "",
                          notif_stats ? notif_stats : "");
 

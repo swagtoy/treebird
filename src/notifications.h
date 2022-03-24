@@ -20,6 +20,7 @@
 #define NOTIFICATIONS_H
 #include <mastodont.h>
 
+const char* notification_type_str(mstdnt_notification_t type);
 
 char* construct_notification(struct mstdnt_notification* notif, int* size);
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size);

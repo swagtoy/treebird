@@ -213,11 +213,25 @@ ul li:first-child a.sidebarbtn
     border-bottom: 1px solid #dadada;
 }
 
+.pfp-compact-td
+{
+    width: 16px;
+}
+
 .pfp-compact-td img
 {
     border-radius: 3px;
 }
 
+.notification-compact
+{
+    min-width: 100%;
+}
+
+.notification-compact p
+{
+    margin: 0;
+}
 .notification-compact .notification-info
 {
     font-size: 12px;

@@ -88,12 +88,14 @@ enum l10n_string
     L10N_NOTIF_REPEATED,
     L10N_NOTIF_FOLLOW,
     L10N_NOTIF_FOLLOW_REQUEST,
+    L10N_NOTIF_POLL,
 
     L10N_NOTIF_COMPACT_LIKED,
     L10N_NOTIF_COMPACT_REACTED_WITH,
     L10N_NOTIF_COMPACT_REPEATED,
     L10N_NOTIF_COMPACT_FOLLOW,
     L10N_NOTIF_COMPACT_FOLLOW_REQUEST,
+    L10N_NOTIF_COMPACT_POLL,
 
     _L10N_LEN,
 };
@@ -149,7 +151,7 @@ static const char* const L10N[][_L10N_LEN] = {
 
         /* LOGIN */
         "Login",
-        "Register"
+        "Register",
         "Username",
         "Password",
         "Login",
@@ -162,12 +164,14 @@ static const char* const L10N[][_L10N_LEN] = {
         "repeated your status",
         "followed you",
         "wants to follow you",
+        "poll results",
 
         "liked",
         "reacted",
         "repeated",
         "followed",
-        "follows?"
+        "follows?",
+        "poll",
     },
 
     // ES_ES
@@ -220,7 +224,7 @@ static const char* const L10N[][_L10N_LEN] = {
 
         /* LOGIN */
         "Login",
-        "Register"
+        "Register",
         "Username",
         "Password",
         "Login",
@@ -233,12 +237,14 @@ static const char* const L10N[][_L10N_LEN] = {
         "repeated your status",
         "followed you",
         "wants to follow you",
+        "poll results",
 
         "liked",
         "reacted",
         "repeated",
         "followed",
         "follows?",
+        "poll",
     },
 };
 
