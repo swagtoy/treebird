@@ -22,6 +22,7 @@
 
 int try_post_status(mastodont_t* api);
 int try_interact_status(mastodont_t* api, char* id);
+void content_status_create(mastodont_t* api, char** data, size_t data_size);
 
 // HTML Builders
 char* construct_post_box(char* reply_id,

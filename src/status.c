@@ -65,6 +65,19 @@ int try_post_status(mastodont_t* api)
     return 0;
 }
 
+void content_status_create(mastodont_t* api, char** data, size_t data_size)
+{
+    char* referer = getenv("HTTP_REFERER");
+
+    try_post_status(api);
+
+    printf("Status: 303 See Other\r\n"
+           "Location: %s\r\n"
+           "Content-Length: 14\r\n\r\n"
+           "Redirecting...",
+           referer ? referer : "/");
+}
+
 int try_interact_status(mastodont_t* api, char* id)
 {
     struct mstdnt_storage storage = { 0 };
@@ -157,7 +170,7 @@ void status_interact(mastodont_t* api, char** data, size_t data_size)
     
     try_interact_status(api, data[0]);
     
-    printf("Status: 302 Found\r\n"
+    printf("Status: 303 See Other\r\n"
            "Location: %s\r\n"
            "Content-Length: 14\r\n\r\n"
            "Redirecting...",

@@ -21,6 +21,7 @@
 #include <string.h>
 #include "reply.h"
 #include "easprintf.h"
+#include "../config.h"
 
 // Pages
 #include "../static/post.chtml"
@@ -39,7 +40,9 @@ char* construct_post_box(char* reply_id,
     snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_id);
 
     // Construct box
-    size_t s = easprintf(&reply_html, data_post_html, reply_id ? id_reply : "",
+    size_t s = easprintf(&reply_html, data_post_html,
+                         config_url_prefix,
+                         reply_id ? id_reply : "",
                          default_content);
     if (size) *size = s;
     return reply_html;

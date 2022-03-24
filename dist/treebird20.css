@@ -336,7 +336,7 @@ ul li:first-child a.sidebarbtn
     display: flex;
     /* To maintain compatibility while keeping it a flexbox, we have to 
      * hardcode the width, sorry! Tables are just weird and I hate CSS */
-    max-width: 550px;
+    max-width: 520px;
 }
 
 .status .username
