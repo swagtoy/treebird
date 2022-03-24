@@ -64,6 +64,8 @@ $(PAGES_DIR)/notification_compact.chtml: $(PAGES_DIR)/notification_compact.html
 	./filec $< data_notification_compact_html > $@
 $(PAGES_DIR)/error_404.chtml: $(PAGES_DIR)/error_404.html
 	./filec $< data_error_404_html > $@
+$(PAGES_DIR)/navigation.chtml: $(PAGES_DIR)/navigation.html
+	./filec $< data_navigation_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
