@@ -93,9 +93,9 @@ table.ui-table td
 
 #main
 {
-    width: 640px;
-    max-width: 640px !important;
-    min-width: 640px;
+    width: 610px;
+    max-width: 610px !important;
+    min-width: 610px;
     border-collapse: collapse !important;
     padding: 0;
 }
@@ -130,6 +130,15 @@ table.ui-table td
 {
     list-style-type: none;
 }
+
+
+#rightbar
+{
+    border-left: 1px solid #cacaca;
+    min-width: 210px;
+    max-width: 210px;
+}
+
 
 /*************************************************
  *               COMMON ELEMENTS                 *
@@ -200,10 +209,6 @@ ul li:first-child a.sidebarbtn
     border-top: 1px solid #dadada;
 }
 
-#rightbar
-{
-    border-left: 1px solid #cacaca;
-}
 
 /****************************
  *      Notifications       *

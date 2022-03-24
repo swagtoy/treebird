@@ -67,7 +67,11 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
                          notif->account->avatar,
                          notif->account->display_name,
                          type_str,
+                         /* Might show follower address */
+                         notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
+                         notif->account->acct :
                          notif->status ? notif->status->content : "",
+                         /* end */
                          notif_stats ? notif_stats : "");
 
     if (size) *size = s;
