@@ -33,7 +33,7 @@ void tl_public(mastodont_t* api, int local)
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage = { 0 };
-    char* status_format, *post_box;
+    char* status_format, *post_box, *navigation_box;
     char* output = NULL;
 
     struct mstdnt_args args = {
@@ -43,7 +43,7 @@ void tl_public(mastodont_t* api, int local)
         .max_id = NULL,
         .since_id = NULL,
         .min_id = NULL,
-        .limit = 20,
+        .limit = 20
     };
 
     try_post_status(api);
@@ -62,6 +62,7 @@ void tl_public(mastodont_t* api, int local)
 
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
+    navigation_box = construct_navigation_box();
     easprintf(&output, "%s%s%s", post_box, status_format, data_navigation_html);
 
     struct base_page b = {
@@ -78,6 +79,7 @@ void tl_public(mastodont_t* api, int local)
     mstdnt_cleanup_statuses(statuses, status_count);
     if (cleanup) free(status_format);
     if (post_box) free(post_box);
+    if (navigation_box) free(navigation_box);
     if (output) free(output);
 }
 

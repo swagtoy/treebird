@@ -756,13 +756,9 @@ ul.large-list li a
     box-shadow: 0px 1px 0px #dadada;
 }
 
-.navigation tr
+.navigation .nav-btn
 {
-    padding: 0;
-}
-
-.navigation td
-{
+    display: block;
     padding: 8px !important;
 }
 
