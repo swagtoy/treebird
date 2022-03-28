@@ -114,7 +114,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
     if (status->favourites_count)
         easprintf(&favourites_count, NUM_STR, status->favourites_count);
     if (status->media_attachments_len)
-        attachments = construct_attachments(status->media_attachments, status->media_attachments_len, NULL);
+        attachments = construct_attachments(status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
         emoji_reactions = construct_emoji_reactions(status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
         

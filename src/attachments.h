@@ -20,7 +20,7 @@
 #define ATTACHMENTS_H
 #include <mastodont.h>
 
-char* construct_attachment(struct mstdnt_attachment* att, int* str_size);
-char* construct_attachments(struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size);
+char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size);
+char* construct_attachments(mstdnt_bool sensitive, struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size);
 
 #endif // ATTACHMENTS_H

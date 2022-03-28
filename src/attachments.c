@@ -25,11 +25,18 @@
 #include "../static/attachments.chtml"
 #include "../static/attachment_image.chtml"
 
-char* construct_attachment(struct mstdnt_attachment* att, int* str_size)
+struct attachments_args
+{
+    struct mstdnt_attachment* atts;
+    mstdnt_bool sensitive;
+};
+
+char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size)
 {
     char* att_html;
 
     size_t s = easprintf(&att_html, data_attachment_image_html,
+                         sensitive ? "sensitive" : "",
                          att->url);
     if (str_size) *str_size = s;
     return att_html;
@@ -37,13 +44,15 @@ char* construct_attachment(struct mstdnt_attachment* att, int* str_size)
 
 static char* construct_attachments_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_attachment((struct mstdnt_attachment*)passed + index, res);
+    struct attachments_args* args = passed;
+    return construct_attachment(args->sensitive, args->atts + index, res);
 }
 
-char* construct_attachments(struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size)
+char* construct_attachments(mstdnt_bool sensitive, struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size)
 {
     size_t elements_size;
-    char* elements = construct_func_strings(construct_attachments_voidwrap, atts, atts_len, &elements_size);
+    struct attachments_args args = { atts, sensitive };
+    char* elements = construct_func_strings(construct_attachments_voidwrap, &args, atts_len, &elements_size);
     char* att_view;
 
     size_t s = easprintf(&att_view, data_attachments_html, elements);
