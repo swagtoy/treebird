@@ -24,6 +24,47 @@
 #include "key.h"
 
 struct query_values post = { 0 };
+struct get_values query = { 0 };
+
+char* read_query_data()
+{
+    struct http_query_info info;
+    char* query_string = getenv("QUERY_STRING");
+    char* get_query = NULL, *g_query_read;
+
+    // BEGIN Query references
+    struct key_value_refs refs[] = {
+        { "offset", &(query.offset) },
+        { "id", &(query.id) },
+    };
+    // END Query references
+    
+    if (query_string)
+    {
+        get_query = malloc(strlen(query_string) + 1);
+        if (!get_query)
+        {
+            perror("malloc");
+            return NULL;
+        }
+        strcpy(get_query, query_string);
+        
+        // For shifting through
+        g_query_read = get_query;
+
+        do
+        {
+            g_query_read = parse_query(g_query_read, &info);
+            if (!(info.key && info.val)) break;
+            for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
+                if (strcmp(info.key, refs[i].key) == 0)
+                    *(refs[i].val) = info.val;
+        }
+        while (g_query_read);
+    }
+
+    return get_query;
+}
 
 char* read_post_data()
 {

@@ -38,8 +38,16 @@ struct query_values
     char* replyid;
 };
 
-extern struct query_values post;
+struct get_values
+{
+    char* offset;
+    char* id;
+};
 
+extern struct query_values post;
+extern struct get_values query;
+
+char* read_query_data();
 char* read_post_data();
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);

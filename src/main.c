@@ -53,7 +53,8 @@ int main(void)
         char* cookies_str = read_cookies_env();
         api.token = cookies.access_token; // Load token now
         char* post_str = read_post_data();
-
+        char* get_str = read_query_data();
+        
         // Config defaults
         g_config.theme = "treebird20";
 
@@ -81,6 +82,7 @@ int main(void)
         // Cleanup
         if (cookies_str) free(cookies_str);
         if (post_str) free(post_str);
+        if (get_str) free(get_str);
         mastodont_free(&api);
 
         // Obliterate all global values, so the next client
