@@ -25,6 +25,8 @@
 #include "easprintf.h"
 #include "reply.h"
 
+#include "../static/navigation.chtml"
+
 void tl_public(mastodont_t* api, int local)
 {
     int cleanup = 0;
@@ -60,7 +62,7 @@ void tl_public(mastodont_t* api, int local)
 
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    easprintf(&output, "%s %s", post_box, status_format);
+    easprintf(&output, "%s%s%s", post_box, status_format, data_navigation_html);
 
     struct base_page b = {
         .locale = L10N_EN_US,
@@ -111,7 +113,9 @@ void tl_list(mastodont_t* api, char* list_id)
 
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    easprintf(&output, "%s %s", post_box, status_format);
+    easprintf(&output, "%s%s%s", post_box,
+              status_format,
+              data_navigation_html);
 
     struct base_page b = {
         .locale = L10N_EN_US,
