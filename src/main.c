@@ -47,7 +47,7 @@ int main(void)
     {
         mastodont_t api;
         api.url = config_instance_url;
-        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE);
+        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
 
         // Load cookies
         char* cookies_str = read_cookies_env();

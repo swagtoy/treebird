@@ -86,10 +86,10 @@ int try_interact_status(mastodont_t* api, char* id)
     // Pretty up the type
     if (strcmp(post.itype, "like") == 0)
     {
-        mastodont_favourite_status(api, id, &storage);
+        mastodont_favourite_status(api, id, &storage, NULL);
     }
     else if (strcmp(post.itype, "repeat") == 0) {
-        mastodont_reblog_status(api, id, &storage);
+        mastodont_reblog_status(api, id, &storage, NULL);
     }
 
     mastodont_storage_cleanup(&storage);

@@ -8,6 +8,7 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
+#include <mastodont.h>
 #define FALSE 0
 #define TRUE 1
 
@@ -31,6 +32,19 @@ static char* const config_canonical_name = "treebird";
  * Example: "https://shitposter.club/"
  */
 static char* const config_instance_url = "https://my-instace.social/";
+
+/* [[ IF YOU DON'T UNDERSTAND THIS, LEAVE IT ALONE ]]
+ * Flag: library_flags
+ *
+ * The flags to pass into the mastodont library. If this value is zero, it is not
+ * set. To set multiple flags, use the `|` operator, like `FLAG_1 | FLAG_2`
+ *
+ * Note: Since Treebird is a HTTP frontend, MSTDNT_FLAG_NO_URI_SANITIZE is already
+ *       set by default, setting it here is redundant.
+ *
+ * Example: MSTDNT_FLAG_SSL_UNVERIFIED
+ */
+static uint16_t config_library_flags = 0;
 
 /*
  * String: url_prefix
