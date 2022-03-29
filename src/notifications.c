@@ -22,6 +22,7 @@
 #include "base_page.h"
 #include "string_helpers.h"
 #include "easprintf.h"
+#include "status.h"
 
 // Pages
 #include "../static/notifications_page.chtml"
@@ -32,22 +33,21 @@
 char* construct_notification(struct mstdnt_notification* notif, int* size)
 {
     char* notif_html;
+    int s = 0;
+
+    if (notif->status)
+    {
+        // Construct status with notification_info
+        notif_html = construct_status(notif->status, &s, notif);
+    }
+    else {
+        notif_html = NULL;
+    }
+
+    if (size) *size = s;
     return notif_html;
 }
 
-const char* notification_type_str(mstdnt_notification_t type)
-{
-    switch (type)
-    {
-    case MSTDNT_NOTIFICATION_FOLLOW: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_FOLLOW];
-    case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_FOLLOW_REQUEST];
-    case MSTDNT_NOTIFICATION_REBLOG: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_REPEATED];
-    case MSTDNT_NOTIFICATION_FAVOURITE: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_LIKED];
-    case MSTDNT_NOTIFICATION_POLL: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_POLL];
-    case MSTDNT_NOTIFICATION_EMOJI_REACT: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_REACTED_WITH];
-    default: return "";
-    }
-}
 
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
@@ -109,13 +109,44 @@ char* construct_notifications_compact(struct mstdnt_notification* notifs,
 
 void content_notifications(mastodont_t* api, char** data, size_t data_size)
 {
+    char* page, *notif_html = NULL;
+    struct mstdnt_storage storage;
+    struct mstdnt_notification* notifs;
+    size_t notifs_len;
+
+    if (cookies.logged_in)
+    {
+        struct mstdnt_get_notifications_args args = {
+            .exclude_types = 0,
+            .account_id = NULL,
+            .exclude_visibilities = 0,
+            .include_types = 0,
+            .with_muted = 1,
+            .max_id = NULL,
+            .min_id = NULL,
+            .since_id = NULL,
+            .offset = 0,
+            .limit = 20,
+        };
+
+        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+            notif_html = construct_notifications(notifs, notifs_len, NULL);
+
+        mstdnt_cleanup_notifications(notifs, notifs_len);
+    }
+ 
+    easprintf(&page, data_notifications_page_html,
+              notif_html ? notif_html : "Not logged in");
+    
     struct base_page b = {
         .locale = L10N_EN_US,
-        .content = data_notifications_page_html,
+        .content = page,
         .sidebar_left = NULL
     };
 
     // Output
     render_base_page(&b, api);
+    if (notif_html) free(notif_html);
+    if (page) free(page);
 }
 

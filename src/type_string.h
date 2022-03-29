@@ -16,22 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NOTIFICATIONS_H
-#define NOTIFICATIONS_H
+#ifndef TYPE_STRING_H
+#define TYPE_STRING_H
 #include <mastodont.h>
-#include "cookie.h"
-#include "type_string.h"
+#include "l10n.h"
 
-char* construct_notification(struct mstdnt_notification* notif, int* size);
-char* construct_notification_compact(struct mstdnt_notification* notif, int* size);
-char* construct_notifications(struct mstdnt_notification* notifs,
-                              size_t size,
-                              size_t* ret_size);
-char* construct_notifications_compact(struct mstdnt_notification* notifs,
-                                      size_t size,
-                                      size_t* ret_size);
+const char* notification_type_str(mstdnt_notification_t type);
 
-// Page contents
-void content_notifications(mastodont_t* api, char** data, size_t data_size);
-
-#endif // NOTIFICATION_H
+#endif // TYPE_STRING_H

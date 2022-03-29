@@ -35,6 +35,10 @@ char* construct_func_strings(char* (*func)(void*, size_t, int*),
     for (size_t i = 0; i < strings_len; ++i)
     {
         res_html = func(strings, i, &parse_size);
+
+        // Don't bother if it returns null
+        // Null is equivalent to ""
+        if (!res_html) continue;
         
         if (parse_size == -1) /* Malloc error */
         {
@@ -52,9 +56,9 @@ char* construct_func_strings(char* (*func)(void*, size_t, int*),
             return NULL;
         }
 
-        /* Copy res_html to result in correct position */
+        // Copy res_html to result in correct position
         strncpy(result + last_parse_size, res_html, parse_size);
-        /* Cleanup */
+        // Cleanup
         free(res_html);
     }
     

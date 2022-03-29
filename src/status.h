@@ -28,7 +28,7 @@ void content_status_create(mastodont_t* api, char** data, size_t data_size);
 char* construct_post_box(char* reply_id,
                          char* default_content,
                          int* size);
-char* construct_status(struct mstdnt_status* status, int* size);
+char* construct_status(struct mstdnt_status* status, int* size, struct mstdnt_notification* notif);
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 
 // Status frontends

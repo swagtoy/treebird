@@ -257,6 +257,24 @@ ul li:first-child a.sidebarbtn
     font-size: 10px;
 }
 
+.notification-info
+{
+    margin-top: 7px;
+}
+
+.notification-info img
+{
+    margin-left: 36px;
+    width: 24px;
+}
+
+.notification-info .notification-user
+{
+    display: inline;
+    position: relative;
+    top: -8px;
+}
+
 /***************************
  *      Statuses           *
  **************************/
@@ -266,6 +284,11 @@ ul li:first-child a.sidebarbtn
     border-bottom: 1px solid #cacaca !important;
     width: 100%;
     border-spacing: 0px;
+}
+
+.notification-info + .status
+{
+    padding-top: 0;
 }
 
 .status .profile-picture
@@ -692,6 +715,7 @@ ul li:first-child a.sidebarbtn
     display: block;
     padding: 0;
     margin-top: 8px;
+    padding-left: 0px !important;
     margin-bottom: 6px;
 }
 
@@ -701,6 +725,11 @@ ul li:first-child a.sidebarbtn
     list-style-type: none;    
     padding: 3px 7px;
     margin: 0 4px;
+}
+
+.emoji
+{
+    font-family: Emoji;
 }
 
 /*************************************************

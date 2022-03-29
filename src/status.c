@@ -28,9 +28,11 @@
 #include "attachments.h"
 #include "emoji_reaction.h"
 #include "../config.h"
+#include "type_string.h"
 
 // Pages
 #include "../static/status.chtml"
+#include "../static/notification.chtml"
 
 #define NUM_STR "%u"
 
@@ -97,7 +99,9 @@ int try_interact_status(mastodont_t* api, char* id)
     return 0;
 }
 
-char* construct_status(struct mstdnt_status* status, int* size)
+char* construct_status(struct mstdnt_status* status,
+                       int* size,
+                       struct mstdnt_notification* notif)
 {
     char* stat_html;
 
@@ -107,6 +111,7 @@ char* construct_status(struct mstdnt_status* status, int* size)
     char* favourites_count = NULL;
     char* attachments = NULL;
     char* emoji_reactions = NULL;
+    char* notif_info = NULL;
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
@@ -117,9 +122,15 @@ char* construct_status(struct mstdnt_status* status, int* size)
         attachments = construct_attachments(status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
         emoji_reactions = construct_emoji_reactions(status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
+    if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
+        easprintf(&notif_info, data_notification_html,
+                  notif->account->avatar,
+                  notif->account->display_name,
+                  notification_type_str(notif->type));
         
 
     size_t s = easprintf(&stat_html, data_status_html,
+                         notif_info ? notif_info : "",
                          status->account.avatar,
                          status->account.display_name, /* Username */
                          config_url_prefix,
@@ -151,12 +162,13 @@ char* construct_status(struct mstdnt_status* status, int* size)
     if (favourites_count) free(favourites_count);
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
+    if (notif) free(notif_info);
     return stat_html;
 }
 
 static char* construct_status_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_status((struct mstdnt_status*)passed + index, res);
+    return construct_status((struct mstdnt_status*)passed + index, res, NULL);
 }
 
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
@@ -210,7 +222,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
 
     // Current status
-    stat_html = construct_status(&status, NULL);
+    stat_html = construct_status(&status, NULL, NULL);
     if (is_reply)
     {
         stat_reply = reply_status(data[0],
