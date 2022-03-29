@@ -21,6 +21,9 @@
 #include <stddef.h>
 #include <mastodont.h>
 
-char* construct_navigation_box(char* prev_id, char* next_id, size_t* size);
+char* construct_navigation_box(char* start_id,
+                               char* prev_id,
+                               char* next_id,
+                               size_t* size);
 
 #endif // NAVIGATION_H

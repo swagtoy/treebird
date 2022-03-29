@@ -25,6 +25,7 @@
 #include "easprintf.h"
 #include "reply.h"
 #include "navigation.h"
+#include "query.h"
 
 #include "../static/navigation.chtml"
 
@@ -36,14 +37,15 @@ void tl_public(mastodont_t* api, int local)
     struct mstdnt_storage storage = { 0 };
     char* status_format, *post_box, *navigation_box;
     char* output = NULL;
+    char* start_id;
 
     struct mstdnt_args args = {
         .local = local,
         .remote = 0,
         .only_media = 0,
-        .max_id = NULL,
+        .max_id = post.max_id,
         .since_id = NULL,
-        .min_id = NULL,
+        .min_id = post.min_id,
         .limit = 20
     };
 
@@ -61,10 +63,15 @@ void tl_public(mastodont_t* api, int local)
         cleanup = 1;
     }
 
+    // If not set, set it
+    start_id = post.start_id ? post.start_id : statuses[0].id;
+
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    navigation_box = construct_navigation_box(
-        statuses[0].id, statuses[status_count].id, NULL);
+    navigation_box = construct_navigation_box(start_id,
+                                              statuses[0].id,
+                                              statuses[status_count-1].id,
+                                              NULL);
     easprintf(&output, "%s%s%s", post_box, status_format, navigation_box);
 
     struct base_page b = {

@@ -35,7 +35,6 @@ char* read_query_data()
     // BEGIN Query references
     struct key_value_refs refs[] = {
         { "offset", &(query.offset) },
-        { "id", &(query.id) },
     };
     // END Query references
     
@@ -81,6 +80,10 @@ char* read_post_data()
         { "username", &(post.username) },
         { "password", &(post.password) },
         { "replyid", &(post.replyid) },
+        { "min_id", &(post.min_id) },
+        { "max_id", &(post.max_id) },
+        { "start_id", &(post.start_id) },
+
     };
     // END Query references
 

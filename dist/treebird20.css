@@ -185,6 +185,23 @@ input[type=button]:active, input[type=submit]:active, .sidebarbtn:active, .btn:a
     cursor: pointer;
 }
 
+.btn-disabled
+{
+    color: #cacaca !important;
+    background: #f3f3f3 !important;
+}
+
+.btn-disabled:hover
+{
+    background: #f3f3f3;
+}
+
+.btn-disabled:active
+{
+    background: #f3f3f3;
+}
+
+
 input[type=button], input[type=submit]
 {
     border: 1px solid #cacaca;

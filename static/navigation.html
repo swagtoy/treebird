@@ -1,7 +1,7 @@
 <table class="navigation ui-table">
   <tr>
     <td class="nav-up btn">
-      <form action="." method="get">
+      <form action="." method="post">
         <label class="pointer">
           <span class="nav-btn">Up</span>
           <input type="submit" class="hidden">
@@ -9,18 +9,20 @@
       </form>
     </td>
     <td class="nav-prev btn">
-      <form action="." method="get">
+      <form action="." method="post">
         <label class="pointer">
-          <input type="hidden" name="max_id" value="%s">
-          <span class="nav-btn">Previous</span>
-          <input type="submit" class="hidden">
+          <input type="hidden" name="start_id" value="%s">
+          <input type="hidden" name="min_id" value="%s">
+          <span class="nav-btn %s">Previous</span>
+          %s
         </label>
       </form>
     </td>
     <td class="nav-next btn">
-      <form action="." method="get">
+      <form action="." method="post">
         <label class="pointer">
-          <input type="hidden" name="min_id" value="%s">
+          <input type="hidden" name="start_id" value="%s">
+          <input type="hidden" name="max_id" value="%s">
           <span class="nav-btn">Next</span>
           <input type="submit" class="hidden">
         </label>

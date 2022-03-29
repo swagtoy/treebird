@@ -36,12 +36,14 @@ struct query_values
     char* username;
     char* password;
     char* replyid;
+    char* min_id;
+    char* max_id;
+    char* start_id;
 };
 
 struct get_values
 {
     char* offset;
-    char* id;
 };
 
 extern struct query_values post;

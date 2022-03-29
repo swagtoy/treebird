@@ -16,19 +16,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include "navigation.h"
-
 #include "easprintf.h"
 
 // Pages
 #include "../static/navigation.chtml"
 
-char* construct_navigation_box(char* prev_id, char* next_id, size_t* size)
+#define SUBMIT_HTML "<input type=\"submit\" class=\"hidden\">"
+
+char* construct_navigation_box(char* start_id,
+                               char* prev_id,
+                               char* next_id,
+                               size_t* size)
 {
     char* nav_html;
+    int is_start = strcmp(start_id, prev_id) == 0;
 
     size_t s = easprintf(&nav_html, data_navigation_html,
+                         start_id,
                          prev_id,
+                         // Disable button if at start
+                         is_start ? "btn-disabled" : "",
+                         is_start ? "" : SUBMIT_HTML,
+                         // If user pressed next, reserve start state
+                         start_id,
                          next_id);
     if (size) *size = s;
     return nav_html;
