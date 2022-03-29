@@ -92,7 +92,8 @@ void content_account(mastodont_t* api, char** data, size_t size)
             account_page = "Malloc error";
     }
     
-    struct base_page b = {
+    struct base_page b = {        
+        .category = BASE_CAT_NONE,
         .locale = L10N_EN_US,
         .content = account_page,
         .sidebar_left = NULL

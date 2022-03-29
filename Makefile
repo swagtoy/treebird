@@ -66,6 +66,8 @@ $(PAGES_DIR)/error_404.chtml: $(PAGES_DIR)/error_404.html
 	./filec $< data_error_404_html > $@
 $(PAGES_DIR)/navigation.chtml: $(PAGES_DIR)/navigation.html
 	./filec $< data_navigation_html > $@
+$(PAGES_DIR)/config_sidebar.chtml: $(PAGES_DIR)/config_sidebar.html
+	./filec $< data_config_sidebar_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

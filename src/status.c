@@ -243,6 +243,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
               after_html ? after_html : "");
     
     struct base_page b = {
+        .category = BASE_CAT_NONE,
         .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL

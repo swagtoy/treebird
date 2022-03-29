@@ -23,6 +23,7 @@
 #include "easprintf.h"
 #include "cookie.h"
 #include "notifications.h"
+#include "string_helpers.h"
 #include "../config.h"
 
 // Files
@@ -79,18 +80,25 @@ void render_base_page(struct base_page* page, mastodont_t* api)
                         config_url_prefix,
                         L10N[locale][L10N_SEARCH_PLACEHOLDER],
                         L10N[locale][L10N_SEARCH_BUTTON],
+                        CAT_TEXT(page->category, BASE_CAT_HOME),
                         config_url_prefix,
                         L10N[locale][L10N_HOME],
+                        CAT_TEXT(page->category, BASE_CAT_LOCAL),
                         config_url_prefix,
                         L10N[locale][L10N_LOCAL],
+                        CAT_TEXT(page->category, BASE_CAT_FEDERATED),
                         config_url_prefix,
                         L10N[locale][L10N_FEDERATED],
+                        CAT_TEXT(page->category, BASE_CAT_NOTIFICATIONS),
                         config_url_prefix,
                         L10N[locale][L10N_NOTIFICATIONS],
+                        CAT_TEXT(page->category, BASE_CAT_LISTS),
                         config_url_prefix,
                         L10N[locale][L10N_LISTS],
+                        CAT_TEXT(page->category, BASE_CAT_DIRECT),
                         config_url_prefix,
                         L10N[locale][L10N_DIRECT],
+                        CAT_TEXT(page->category, BASE_CAT_CONFIG),
                         config_url_prefix,
                         L10N[locale][L10N_CONFIG],
                         page->sidebar_left ?

@@ -23,6 +23,9 @@
 /** Returns str. If NULL, returns empty string */
 #define STR_NULL_EMPTY(str) ((str) ? (str) : "")
 
+#define CAT_TEXT(cat, cfg_cat) ((cat) == (cfg_cat)) ? "focused" : ""
+
+
 /**
  * Constructs a string based on a function
  *

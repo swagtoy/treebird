@@ -89,6 +89,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
               L10N[L10N_EN_US][L10N_LOGIN_BTN]);
     
     struct base_page b = {
+        .category = BASE_CAT_NONE,
         .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL

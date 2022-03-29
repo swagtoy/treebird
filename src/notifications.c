@@ -139,6 +139,7 @@ void content_notifications(mastodont_t* api, char** data, size_t data_size)
               notif_html ? notif_html : "Not logged in");
     
     struct base_page b = {
+        .category = BASE_CAT_NOTIFICATIONS,
         .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL

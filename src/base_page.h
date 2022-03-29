@@ -22,8 +22,21 @@
 #include "l10n.h"
 #include "local_config.h"
 
+enum base_category
+{
+    BASE_CAT_NONE,
+    BASE_CAT_HOME,
+    BASE_CAT_LOCAL,
+    BASE_CAT_FEDERATED,
+    BASE_CAT_NOTIFICATIONS,
+    BASE_CAT_LISTS,
+    BASE_CAT_DIRECT,
+    BASE_CAT_CONFIG,
+};
+
 struct base_page
 {
+    enum base_category category;
     enum l10n_locale locale;
     char* content;
     char* sidebar_left;

@@ -68,6 +68,7 @@ void content_test(mastodont_t* api, char** data, size_t data_size)
               ENV_TBL_GET(ENV_CONTENT_LENGTH));
     
     struct base_page b = {
+        .category = BASE_CAT_NONE,
         .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL

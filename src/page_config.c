@@ -21,17 +21,42 @@
 #include <string.h>
 #include "base_page.h"
 #include "../config.h"
+#include "easprintf.h"
 #include "page_config.h"
 #include "query.h"
 #include "cookie.h"
 #include "local_config.h"
+#include "string_helpers.h"
+#include "l10n.h"
 
 // Pages
 #include "../static/index.chtml"
 #include "../static/config.chtml"
+#include "../static/config_sidebar.chtml"
+
+enum config_category
+{
+    CONFIG_CAT_GENERAL,
+    CONFIG_CAT_APPEARANCE
+};
+
+static char* construct_config_sidebar(enum config_category cat, size_t* size)
+{
+    char* sidebar_html;
+    size_t s = easprintf(&sidebar_html, data_config_sidebar_html,
+                         CAT_TEXT(cat, CONFIG_CAT_GENERAL),
+                         config_url_prefix,
+                         L10N[L10N_EN_US][L10N_GENERAL],
+                         CAT_TEXT(cat, CONFIG_CAT_APPEARANCE),
+                         config_url_prefix,
+                         L10N[L10N_EN_US][L10N_APPEARANCE]);
+    if (size) *size = s;
+    return sidebar_html;
+}
 
 void content_config(mastodont_t* api, char** data, size_t size)
 {
+    char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
     if (post.theme)
     {
         g_config.theme = post.theme;
@@ -41,10 +66,13 @@ void content_config(mastodont_t* api, char** data, size_t size)
     }
 
     struct base_page b = {
+        .category = BASE_CAT_CONFIG,
         .locale = L10N_EN_US,
         .content = data_config_html,
-        .sidebar_left = data_config_sidebar_html
+        .sidebar_left = sidebar_html
     };
 
     render_base_page(&b, api);
+    // Cleanup
+    free(sidebar_html);
 }

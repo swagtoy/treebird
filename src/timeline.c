@@ -83,6 +83,7 @@ void tl_public(mastodont_t* api, int local)
               STR_NULL_EMPTY(navigation_box));
 
     struct base_page b = {
+        .category = BASE_CAT_HOME,
         .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
@@ -137,6 +138,7 @@ void tl_list(mastodont_t* api, char* list_id)
               data_navigation_html);
 
     struct base_page b = {
+        .category = BASE_CAT_LISTS,
         .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
