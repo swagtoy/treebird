@@ -41,6 +41,7 @@ enum l10n_string
 
     /* CONFIG */
     L10N_GENERAL,
+    L10N_ACCOUNT,
     L10N_JAVASCRIPT,
     L10N_CFG_QUICK_ACTIONS,
     L10N_CFG_QUICK_REPLY,
@@ -117,6 +118,7 @@ static const char* const L10N[][_L10N_LEN] = {
 
         /* CONFIG */
         "General",
+        "Account",
         "JavaScript",
         "Quick actions - Likes, Boosts, etc done in background",
         "Quick reply - Replies don't require redirects",
@@ -190,6 +192,7 @@ static const char* const L10N[][_L10N_LEN] = {
 
         /* CONFIG */
         "General",
+        "Account",
         "JavaScript",
         "Acciones rápidas - Me gusta, Impulsos, etc. se hacen en segundo plano",
         "Respuesta rápidas - Las respuestas no requieren redirección",

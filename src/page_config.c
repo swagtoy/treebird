@@ -37,7 +37,8 @@
 enum config_category
 {
     CONFIG_CAT_GENERAL,
-    CONFIG_CAT_APPEARANCE
+    CONFIG_CAT_APPEARANCE,
+    CONFIG_CAT_ACCOUNT
 };
 
 static char* construct_config_sidebar(enum config_category cat, size_t* size)
@@ -49,7 +50,10 @@ static char* construct_config_sidebar(enum config_category cat, size_t* size)
                          L10N[L10N_EN_US][L10N_GENERAL],
                          CAT_TEXT(cat, CONFIG_CAT_APPEARANCE),
                          config_url_prefix,
-                         L10N[L10N_EN_US][L10N_APPEARANCE]);
+                         L10N[L10N_EN_US][L10N_APPEARANCE],
+                         CAT_TEXT(cat, CONFIG_CAT_ACCOUNT),
+                         config_url_prefix,
+                         L10N[L10N_EN_US][L10N_ACCOUNT]);
     if (size) *size = s;
     return sidebar_html;
 }
