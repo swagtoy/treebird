@@ -24,6 +24,7 @@
 #include "status.h"
 #include "easprintf.h"
 #include "reply.h"
+#include "navigation.h"
 
 #include "../static/navigation.chtml"
 
@@ -62,8 +63,9 @@ void tl_public(mastodont_t* api, int local)
 
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    navigation_box = construct_navigation_box();
-    easprintf(&output, "%s%s%s", post_box, status_format, data_navigation_html);
+    navigation_box = construct_navigation_box(
+        statuses[0].id, statuses[status_count].id, NULL);
+    easprintf(&output, "%s%s%s", post_box, status_format, navigation_box);
 
     struct base_page b = {
         .locale = L10N_EN_US,
