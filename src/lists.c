@@ -21,6 +21,7 @@
 #include "../config.h"
 #include "account.h"
 #include "easprintf.h"
+#include "error.h"
 #include "status.h"
 #include "lists.h"
 #include "string_helpers.h"
@@ -71,16 +72,15 @@ void content_lists(mastodont_t* api, char** data, size_t size)
 
     if (mastodont_get_lists(api, &lists, &storage, &size_list))
     {
-        lists_format = "An error occured while fetching lists";
+        lists_page = construct_error(storage.error, NULL);
     }
     else {
         lists_format = construct_lists(lists, size_list, NULL);
         if (!lists_format)
             lists_format = "Error in malloc!";
         cleanup = 1;
+        lists_page = construct_lists_view(lists_format, NULL);
     }
-
-    lists_page = construct_lists_view(lists_format, NULL);
 
     struct base_page b = {
         .locale = L10N_EN_US,

@@ -26,6 +26,7 @@
 #include "reply.h"
 #include "navigation.h"
 #include "query.h"
+#include "string_helpers.h"
 
 #include "../static/navigation.chtml"
 
@@ -33,10 +34,12 @@ void tl_public(mastodont_t* api, int local)
 {
     int cleanup = 0;
     size_t status_count, statuses_html_count;
-    struct mstdnt_status* statuses;
+    struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format, *post_box, *navigation_box;
-    char* output = NULL;
+    char* status_format = NULL,
+        *post_box,
+        *navigation_box = NULL,
+        *output = NULL;
     char* start_id;
 
     struct mstdnt_args args = {
@@ -63,16 +66,21 @@ void tl_public(mastodont_t* api, int local)
         cleanup = 1;
     }
 
-    // If not set, set it
-    start_id = post.start_id ? post.start_id : statuses[0].id;
-
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    navigation_box = construct_navigation_box(start_id,
-                                              statuses[0].id,
-                                              statuses[status_count-1].id,
-                                              NULL);
-    easprintf(&output, "%s%s%s", post_box, status_format, navigation_box);
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = post.start_id ? post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, "%s%s%s",
+              post_box,
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
 
     struct base_page b = {
         .locale = L10N_EN_US,

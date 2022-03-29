@@ -43,7 +43,7 @@ void content_config(mastodont_t* api, char** data, size_t size)
     struct base_page b = {
         .locale = L10N_EN_US,
         .content = data_config_html,
-        .sidebar_left = NULL
+        .sidebar_left = data_config_sidebar_html
     };
 
     render_base_page(&b, api);

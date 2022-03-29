@@ -20,6 +20,9 @@
 #define STRING_HELPERS_H
 #include <stddef.h>
 
+/** Returns str. If NULL, returns empty string */
+#define STR_NULL_EMPTY(str) ((str) ? (str) : "")
+
 /**
  * Constructs a string based on a function
  *

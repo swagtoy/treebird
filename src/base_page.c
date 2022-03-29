@@ -35,8 +35,8 @@ void render_base_page(struct base_page* page, mastodont_t* api)
     char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
     char* sidebar_str = NULL;
     // Mastodont, used for notifications sidebar
-    struct mstdnt_storage storage;
-    struct mstdnt_notification* notifs;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_notification* notifs = NULL;
     size_t notifs_len;
 
     if (!g_config.changed && cookie)
@@ -48,7 +48,7 @@ void render_base_page(struct base_page* page, mastodont_t* api)
     }
 
     // Get / Show notifications on sidebar
-    if (cookies.logged_in)
+    if (cookies.logged_in && cookies.access_token)
     {
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
