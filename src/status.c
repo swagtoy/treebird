@@ -87,12 +87,13 @@ int try_interact_status(mastodont_t* api, char* id)
 
     // Pretty up the type
     if (strcmp(post.itype, "like") == 0)
-    {
         mastodont_favourite_status(api, id, &storage, NULL);
-    }
-    else if (strcmp(post.itype, "repeat") == 0) {
+    else if (strcmp(post.itype, "repeat") == 0)
         mastodont_reblog_status(api, id, &storage, NULL);
-    }
+    else if (strcmp(post.itype, "unlike") == 0)
+        mastodont_unfavourite_status(api, id, &storage, NULL);
+    else if (strcmp(post.itype, "repeat") == 0)
+        mastodont_unreblog_status(api, id, &storage, NULL);
 
     mastodont_storage_cleanup(&storage);
 
@@ -145,10 +146,12 @@ char* construct_status(struct mstdnt_status* status,
                          reply_count ? reply_count : "",
                          config_url_prefix,
                          status->id,
+                         status->reblogged ? "un" : "",
                          status->reblogged ? "active" : "",
                          repeat_count ? repeat_count : "",
                          config_url_prefix,
                          status->id,
+                         status->favourited ? "un" : "",
                          status->favourited ? "active" : "",
                          favourites_count ? favourites_count : "",
                          config_url_prefix,
