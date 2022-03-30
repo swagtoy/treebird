@@ -308,6 +308,18 @@ ul li:first-child a.sidebarbtn
     font-weight: bold;
 }
 
+.notification-info svg
+{
+    width: 16px;
+    height: 16px;
+    stroke: #aa0000;
+}
+
+.notification-info svg.like
+{
+    fill: #aa0000;
+}
+
 .notification-compact .notification-content
 {
     color: #808080;

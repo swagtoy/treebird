@@ -29,6 +29,8 @@
 #include "../static/notifications.chtml"
 #include "../static/notification.chtml"
 #include "../static/notification_compact.chtml"
+#include "../static/like_svg.chtml"
+#include "../static/repeat_svg.chtml"
 
 char* construct_notification(struct mstdnt_notification* notif, int* size)
 {
@@ -55,6 +57,7 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
     char* notif_stats = NULL;
 
     const char* type_str = notification_type_str(notif->type);
+    const char* type_svg = notification_type_svg(notif->type);
 
     if (notif->status)
         easprintf(&notif_stats, "%d - %d - %d",
@@ -67,6 +70,7 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
                          notif->account->avatar,
                          notif->account->display_name,
                          type_str,
+                         type_svg,
                          /* Might show follower address */
                          notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
                          notif->account->acct :

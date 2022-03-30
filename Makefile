@@ -68,6 +68,11 @@ $(PAGES_DIR)/navigation.chtml: $(PAGES_DIR)/navigation.html
 	./filec $< data_navigation_html > $@
 $(PAGES_DIR)/config_sidebar.chtml: $(PAGES_DIR)/config_sidebar.html
 	./filec $< data_config_sidebar_html > $@
+$(PAGES_DIR)/like_svg.chtml: $(PAGES_DIR)/like_svg.html
+	./filec $< data_like_svg_html > $@
+$(PAGES_DIR)/repeat_svg.chtml: $(PAGES_DIR)/repeat_svg.html
+	./filec $< data_repeat_svg_html > $@
+
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

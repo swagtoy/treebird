@@ -17,6 +17,8 @@
  */
 
 #include "type_string.h"
+#include "../static/like_svg.chtml"
+#include "../static/repeat_svg.chtml"
 
 const char* notification_type_str(mstdnt_notification_t type)
 {
@@ -28,6 +30,21 @@ const char* notification_type_str(mstdnt_notification_t type)
     case MSTDNT_NOTIFICATION_FAVOURITE: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_LIKED];
     case MSTDNT_NOTIFICATION_POLL: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_POLL];
     case MSTDNT_NOTIFICATION_EMOJI_REACT: return L10N[L10N_EN_US][L10N_NOTIF_COMPACT_REACTED_WITH];
+    default: return "";
+    }
+}
+
+
+const char* notification_type_svg(mstdnt_notification_t type)
+{
+    switch (type)
+    {
+    case MSTDNT_NOTIFICATION_FOLLOW: return "";
+    case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return "";
+    case MSTDNT_NOTIFICATION_REBLOG: return data_repeat_svg_html;
+    case MSTDNT_NOTIFICATION_FAVOURITE: return data_like_svg_html;
+    case MSTDNT_NOTIFICATION_POLL: return "";
+    case MSTDNT_NOTIFICATION_EMOJI_REACT: return "";
     default: return "";
     }
 }
