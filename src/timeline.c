@@ -30,7 +30,7 @@
 
 #include "../static/navigation.chtml"
 
-void tl_public(mastodont_t* api, int local)
+void tl_public(struct session* ssn, mastodont_t* api, int local)
 {
     int cleanup = 0;
     size_t status_count, statuses_html_count;
@@ -46,13 +46,13 @@ void tl_public(mastodont_t* api, int local)
         .local = local,
         .remote = 0,
         .only_media = 0,
-        .max_id = post.max_id,
+        .max_id = ssn->post.max_id,
         .since_id = NULL,
-        .min_id = post.min_id,
+        .min_id = ssn->post.min_id,
         .limit = 20
     };
 
-    try_post_status(api);
+    try_post_status(ssn, api);
     
     if (mastodont_timeline_public(api, &args, &storage, &statuses, &status_count))
     {
@@ -71,7 +71,7 @@ void tl_public(mastodont_t* api, int local)
     if (statuses)
     {
         // If not set, set it
-        start_id = post.start_id ? post.start_id : statuses[0].id;
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -90,7 +90,7 @@ void tl_public(mastodont_t* api, int local)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
@@ -101,7 +101,7 @@ void tl_public(mastodont_t* api, int local)
     if (output) free(output);
 }
 
-void tl_list(mastodont_t* api, char* list_id)
+void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 {
     int cleanup = 0;
     size_t status_count, statuses_html_count;
@@ -117,7 +117,7 @@ void tl_list(mastodont_t* api, char* list_id)
         .limit = 20,
     };
 
-    try_post_status(api);
+    try_post_status(ssn, api);
     
     if (mastodont_timeline_list(api, list_id, &args, &storage, &statuses, &status_count))
     {
@@ -145,7 +145,7 @@ void tl_list(mastodont_t* api, char* list_id)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
@@ -156,23 +156,19 @@ void tl_list(mastodont_t* api, char* list_id)
 }
 
 
-void content_tl_federated(mastodont_t* api, char** data, size_t data_size)
+void content_tl_federated(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
-    (void)data_size;
-    tl_public(api, 0);
+    tl_public(ssn, api, 0);
 }
 
-void content_tl_local(mastodont_t* api, char** data, size_t data_size)
+void content_tl_local(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
-    (void)data_size;
-    tl_public(api, 1);
+    tl_public(ssn, api, 1);
 }
 
-void content_tl_list(mastodont_t* api, char** data, size_t data_size)
+void content_tl_list(struct session* ssn, mastodont_t* api, char** data)
 {
-    (void)data;
-    (void)data_size;
-    tl_list(api, data[0]);
+    tl_list(ssn, api, data[0]);
 }

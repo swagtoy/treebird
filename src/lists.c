@@ -61,7 +61,7 @@ char* construct_lists_view(char* lists_string, int* size)
     return list_string;
 }
 
-void content_lists(mastodont_t* api, char** data, size_t size)
+void content_lists(struct session* ssn, mastodont_t* api, char** data)
 {
     int cleanup = 0;
     struct mstdnt_list* lists;
@@ -90,7 +90,7 @@ void content_lists(mastodont_t* api, char** data, size_t size)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);

@@ -58,15 +58,15 @@ static char* construct_config_sidebar(enum config_category cat, size_t* size)
     return sidebar_html;
 }
 
-void content_config(mastodont_t* api, char** data, size_t size)
+void content_config(struct session* ssn, mastodont_t* api, char** data)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
-    if (post.theme)
+    if (ssn->post.theme)
     {
-        g_config.theme = post.theme;
+        ssn->config.theme = ssn->post.theme;
         printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
-               "theme", post.theme);
-        g_config.changed = 1;
+               "theme", ssn->post.theme);
+        ssn->config.changed = 1;
     }
 
     struct base_page b = {
@@ -76,7 +76,7 @@ void content_config(mastodont_t* api, char** data, size_t size)
         .sidebar_left = sidebar_html
     };
 
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
     // Cleanup
     free(sidebar_html);
 }

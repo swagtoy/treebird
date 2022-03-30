@@ -20,8 +20,9 @@
 #define ERROR_H
 #include <mastodont.h>
 #include <stddef.h>
+#include "session.h"
 
 char* construct_error(char* message, size_t* size);
-void content_not_found(mastodont_t* api, char* path);
+void content_not_found(struct session* ssn, mastodont_t* api, char* path);
 
 #endif // ERROR_H

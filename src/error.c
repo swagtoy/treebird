@@ -34,7 +34,7 @@ char* construct_error(char* error, size_t* size)
     return error_html;
 }
 
-void content_not_found(mastodont_t* api, char* path)
+void content_not_found(struct session* ssn, mastodont_t* api, char* path)
 {
     char* page;
     easprintf(&page,
@@ -47,6 +47,6 @@ void content_not_found(mastodont_t* api, char* path)
         .sidebar_left = NULL
     };
 
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
     free(page);
 }

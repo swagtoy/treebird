@@ -29,7 +29,7 @@
 // Files
 #include "../static/index.chtml"
 
-void render_base_page(struct base_page* page, mastodont_t* api)
+void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api)
 {
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = page->locale;
@@ -40,16 +40,16 @@ void render_base_page(struct base_page* page, mastodont_t* api)
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len;
 
-    if (!g_config.changed && cookie)
+    if (!ssn->config.changed && cookie)
     {
-        if (cookies.theme)
-            g_config.theme = cookies.theme;
-        if (cookies.logged_in)
+        if (ssn->cookies.theme)
+            ssn->config.theme = ssn->cookies.theme;
+        if (ssn->cookies.logged_in)
             login_string = "";
     }
 
     // Get / Show notifications on sidebar
-    if (cookies.logged_in && cookies.access_token)
+    if (ssn->cookies.logged_in && ssn->cookies.access_token)
     {
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
@@ -73,7 +73,7 @@ void render_base_page(struct base_page* page, mastodont_t* api)
     char* data;
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
-                        g_config.theme,
+                        ssn->config.theme,
                         config_url_prefix,
                         L10N[locale][L10N_APP_NAME],
                         login_string,

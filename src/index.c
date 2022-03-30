@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include "timeline.h"
 
-void content_index(mastodont_t* api)
+void content_index(struct session* ssn, mastodont_t* api)
 {
     // Check logins
-    tl_public(api, 0);
+    tl_public(ssn, api, 0);
 }

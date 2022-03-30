@@ -107,14 +107,14 @@ char* construct_notifications_compact(struct mstdnt_notification* notifs,
                                   ret_size);
 }
 
-void content_notifications(mastodont_t* api, char** data, size_t data_size)
+void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 {
     char* page, *notif_html = NULL;
     struct mstdnt_storage storage;
     struct mstdnt_notification* notifs;
     size_t notifs_len;
 
-    if (cookies.logged_in)
+    if (ssn->cookies.logged_in)
     {
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
@@ -146,7 +146,7 @@ void content_notifications(mastodont_t* api, char** data, size_t data_size)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
     if (notif_html) free(notif_html);
     if (page) free(page);
 }

@@ -19,10 +19,10 @@
 #ifndef STATUS_H
 #define STATUS_H
 #include <mastodont.h>
-
-int try_post_status(mastodont_t* api);
-int try_interact_status(mastodont_t* api, char* id);
-void content_status_create(mastodont_t* api, char** data, size_t data_size);
+#include "session.h"
+int try_post_status(struct session* ssn, mastodont_t* api);
+int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
+void content_status_create(struct session* ssn, mastodont_t* api, char** data);
 
 // HTML Builders
 char* construct_post_box(char* reply_id,
@@ -32,10 +32,10 @@ char* construct_status(struct mstdnt_status* status, int* size, struct mstdnt_no
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 
 // Status frontends
-void status_view(mastodont_t* api, char** data, size_t data_size);
-void status_reply(mastodont_t* api, char** data, size_t data_size);
-void status_interact(mastodont_t* api, char** data, size_t data_size);
+void status_view(struct session* ssn, mastodont_t* api, char** data);
+void status_reply(struct session* ssn, mastodont_t* api, char** data);
+void status_interact(struct session* ssn, mastodont_t* api, char** data);
 // Above wraps to the below function
-void content_status(mastodont_t* api, char** data, size_t data_size, int is_reply);
+void content_status(struct session* ssn, mastodont_t* api, char** data, int is_reply);
 
 #endif // STATUS_H

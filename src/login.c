@@ -29,7 +29,7 @@
 // Files
 #include "../static/login.chtml"
 
-void content_login(mastodont_t* api, char** data, size_t data_size)
+void content_login(struct session* ssn, mastodont_t* api, char** data)
 {
     struct mstdnt_storage storage = { 0 }, oauth_store = { 0 };
     struct mstdnt_app app;
@@ -37,8 +37,8 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     char* error = NULL;
     char* page;
 
-    printf("%s: %s\r\n", post.username ? post.username:  "none", post.password ? post.password : "none");
-    if (post.username && post.password)
+    printf("%s: %s\r\n", ssn->post.username ? ssn->post.username:  "none", ssn->post.password ? ssn->post.password : "none");
+    if (ssn->post.username && ssn->post.password)
     {
         // Getting the client id/secret
         struct mstdnt_args args_app = {
@@ -57,8 +57,8 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
             .redirect_uri = NULL,
             .scope = NULL,
             .code = NULL,
-            .username = post.username,
-            .password = post.password
+            .username = ssn->post.username,
+            .password = ssn->post.password
         };
 
         if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
@@ -96,7 +96,7 @@ void content_login(mastodont_t* api, char** data, size_t data_size)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);

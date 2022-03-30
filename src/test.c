@@ -42,7 +42,7 @@ enum env_tbl_index
 
 #define ENV_TBL_GET(index) (env_tbl[(index)] ? env_tbl[(index)] : ENV_NOT_FOUND)
 
-void content_test(mastodont_t* api, char** data, size_t data_size)
+void content_test(struct session* ssn, mastodont_t* api, char** data)
 {
     char* env_tbl[] = {
         getenv("HTTP_COOKIES"),
@@ -75,6 +75,6 @@ void content_test(mastodont_t* api, char** data, size_t data_size)
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
     if (page) free(page);
 }

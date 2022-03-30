@@ -19,7 +19,8 @@
 #ifndef INDEX_H
 #define INDEX_H
 #include <mastodont.h>
+#include "session.h"
 
-void content_index(mastodont_t* api);
+void content_index(struct session* ssn, mastodont_t* api);
 
 #endif // INDEX_H

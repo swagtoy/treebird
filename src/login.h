@@ -20,7 +20,8 @@
 #define LOGIN_H
 #include <stddef.h>
 #include <mastodont.h>
+#include "session.h"
 
-void content_login(mastodont_t* api, char** data, size_t data_size);
+void content_login(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // LOGIN_H

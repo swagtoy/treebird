@@ -32,6 +32,7 @@
 #include "status.h"
 #include "lists.h"
 #include "timeline.h"
+#include "session.h"
 #include "notifications.h"
 #include "test.h"
 
@@ -49,15 +50,19 @@ int main(void)
         api.url = config_instance_url;
         mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
 
-        // Load cookies
-        char* cookies_str = read_cookies_env();
-        api.token = cookies.access_token; // Load token now
-        char* post_str = read_post_data();
-        char* get_str = read_query_data();
-        
-        // Config defaults
-        g_config.theme = "treebird20";
+        struct session ssn = {
+            .config = {
+                .changed = 0,
+                .theme = "treebird20"
+            }
+        };
 
+        // Load cookies
+        char* cookies_str = read_cookies_env(&(ssn.cookies));
+        api.token = ssn.cookies.access_token; // Load token now
+        char* post_str = read_post_data(&(ssn.post));
+        char* get_str = read_query_data(&(ssn.query));
+        
         /*******************
          *  Path handling  *
          ******************/
@@ -77,18 +82,13 @@ int main(void)
             { "/notifications", content_notifications },
         };
 
-        handle_paths(&api, paths, sizeof(paths)/sizeof(paths[0]));
+        handle_paths(&ssn, &api, paths, sizeof(paths)/sizeof(paths[0]));
 
         // Cleanup
         if (cookies_str) free(cookies_str);
         if (post_str) free(post_str);
         if (get_str) free(get_str);
         mastodont_free(&api);
-
-        // Obliterate all global values, so the next client
-        // can't even think reading them
-        memset(&cookies, 0, sizeof(cookies));
-        memset(&post, 0, sizeof(post));
 
         ++run_count;
     }

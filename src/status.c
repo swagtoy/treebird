@@ -36,9 +36,9 @@
 
 #define NUM_STR "%u"
 
-int try_post_status(mastodont_t* api)
+int try_post_status(struct session* ssn, mastodont_t* api)
 {
-    if (!post.content) return 1;
+    if (!(ssn->post.content)) return 1;
 
     struct mstdnt_storage storage;
 
@@ -47,7 +47,7 @@ int try_post_status(mastodont_t* api)
         .content_type = "text/plain",
         .expires_in = 0,
         .in_reply_to_conversation_id = NULL,
-        .in_reply_to_id = post.replyid,
+        .in_reply_to_id = ssn->post.replyid,
         .language = NULL,
         .media_ids = NULL,
         .poll = NULL,
@@ -55,7 +55,7 @@ int try_post_status(mastodont_t* api)
         .scheduled_at = NULL,
         .sensitive = 0,
         .spoiler_text = NULL,
-        .status = post.content,
+        .status = ssn->post.content,
         .visibility = "public",
     };
 
@@ -67,11 +67,11 @@ int try_post_status(mastodont_t* api)
     return 0;
 }
 
-void content_status_create(mastodont_t* api, char** data, size_t data_size)
+void content_status_create(struct session* ssn, mastodont_t* api, char** data)
 {
     char* referer = getenv("HTTP_REFERER");
 
-    try_post_status(api);
+    try_post_status(ssn, api);
 
     printf("Status: 303 See Other\r\n"
            "Location: %s\r\n"
@@ -80,19 +80,19 @@ void content_status_create(mastodont_t* api, char** data, size_t data_size)
            referer ? referer : "/");
 }
 
-int try_interact_status(mastodont_t* api, char* id)
+int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 {
     struct mstdnt_storage storage = { 0 };
-    if (!(post.itype && id)) return 1;
+    if (!(ssn->post.itype && id)) return 1;
 
     // Pretty up the type
-    if (strcmp(post.itype, "like") == 0)
+    if (strcmp(ssn->post.itype, "like") == 0)
         mastodont_favourite_status(api, id, &storage, NULL);
-    else if (strcmp(post.itype, "repeat") == 0)
+    else if (strcmp(ssn->post.itype, "repeat") == 0)
         mastodont_reblog_status(api, id, &storage, NULL);
-    else if (strcmp(post.itype, "unlike") == 0)
+    else if (strcmp(ssn->post.itype, "unlike") == 0)
         mastodont_unfavourite_status(api, id, &storage, NULL);
-    else if (strcmp(post.itype, "repeat") == 0)
+    else if (strcmp(ssn->post.itype, "unrepeat") == 0)
         mastodont_unreblog_status(api, id, &storage, NULL);
 
     mastodont_storage_cleanup(&storage);
@@ -179,11 +179,11 @@ char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* re
     return construct_func_strings(construct_status_voidwrap, statuses, size, ret_size);
 }
 
-void status_interact(mastodont_t* api, char** data, size_t data_size)
+void status_interact(struct session* ssn, mastodont_t* api, char** data)
 {
     char* referer = getenv("HTTP_REFERER");
     
-    try_interact_status(api, data[0]);
+    try_interact_status(ssn, api, data[0]);
     
     printf("Status: 303 See Other\r\n"
            "Location: %s\r\n"
@@ -192,17 +192,17 @@ void status_interact(mastodont_t* api, char** data, size_t data_size)
            referer ? referer : "/");
 }
 
-void status_view(mastodont_t* api, char** data, size_t data_size)
+void status_view(struct session* ssn, mastodont_t* api, char** data)
 {
-    content_status(api, data, data_size, 0);
+    content_status(ssn, api, data, 0);
 }
 
-void status_reply(mastodont_t* api, char** data, size_t data_size)
+void status_reply(struct session* ssn, mastodont_t* api, char** data)
 {
-    content_status(api, data, data_size, 1);
+    content_status(ssn, api, data, 1);
 }
 
-void content_status(mastodont_t* api, char** data, size_t data_size, int is_reply)
+void content_status(struct session* ssn, mastodont_t* api, char** data, int is_reply)
 {
     char* output;
     // Status context
@@ -211,11 +211,8 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     size_t stat_before_len, stat_after_len;
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
 
-    try_post_status(api);
+    try_post_status(ssn, api);
     
-#ifdef _TEST_
-#include "test/status_test.h"
-#else
     // Get information
     mastodont_get_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
                              &stat_before_len, &stat_after_len);
@@ -234,7 +231,6 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
 
     // After...
     after_html = construct_statuses(statuses_after, stat_after_len, NULL);
-#endif
 
     easprintf(&output, "%s%s%s%s",
               before_html ? before_html : "",
@@ -250,7 +246,7 @@ void content_status(mastodont_t* api, char** data, size_t data_size, int is_repl
     };
 
     // Output
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     // Cleanup
     if (before_html) free(before_html);

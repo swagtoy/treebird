@@ -25,6 +25,4 @@ struct local_config
     char* theme;
 };
 
-extern struct local_config g_config;
-
 #endif // LOCAL_CONFIG_H

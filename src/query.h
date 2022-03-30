@@ -46,11 +46,8 @@ struct get_values
     char* offset;
 };
 
-extern struct query_values post;
-extern struct get_values query;
-
-char* read_query_data();
-char* read_post_data();
+char* read_query_data(struct get_values* query);
+char* read_post_data(struct query_values* post);
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
 char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg);

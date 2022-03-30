@@ -19,7 +19,7 @@
 #ifndef NOTIFICATIONS_H
 #define NOTIFICATIONS_H
 #include <mastodont.h>
-#include "cookie.h"
+#include "session.h"
 #include "type_string.h"
 
 char* construct_notification(struct mstdnt_notification* notif, int* size);
@@ -32,6 +32,6 @@ char* construct_notifications_compact(struct mstdnt_notification* notifs,
                                       size_t* ret_size);
 
 // Page contents
-void content_notifications(mastodont_t* api, char** data, size_t data_size);
+void content_notifications(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // NOTIFICATION_H

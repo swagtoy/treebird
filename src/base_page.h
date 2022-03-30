@@ -21,7 +21,7 @@
 #include <mastodont.h>
 #include "l10n.h"
 #include "local_config.h"
-
+#include "session.h"
 enum base_category
 {
     BASE_CAT_NONE,
@@ -42,6 +42,6 @@ struct base_page
     char* sidebar_left;
 };
 
-void render_base_page(struct base_page* page, mastodont_t* api);
+void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api);
 
 #endif // BASE_PAGE_H

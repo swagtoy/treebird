@@ -20,11 +20,12 @@
 #define ACCOUNT_H
 #include <stddef.h>
 #include <mastodont.h>
+#include "session.h"
 
 char* construct_account_page(struct mstdnt_account* acct,
                              struct mstdnt_status* statuses,
                              size_t statuses_len,
                              size_t* res_size);
-void content_account(mastodont_t* api, char** data, size_t data_size);
+void content_account(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // ACCOUNT_H

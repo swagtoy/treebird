@@ -20,7 +20,8 @@
 #define PAGE_CONFIG_H
 #include <stddef.h>
 #include <mastodont.h>
+#include "session.h"
 
-void content_config(mastodont_t* api, char** data, size_t data_size);
+void content_config(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // PAGE_CONFIG_H

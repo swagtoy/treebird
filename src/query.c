@@ -26,7 +26,7 @@
 struct query_values post = { 0 };
 struct get_values query = { 0 };
 
-char* read_query_data()
+char* read_query_data(struct get_values* query)
 {
     struct http_query_info info;
     char* query_string = getenv("QUERY_STRING");
@@ -34,7 +34,7 @@ char* read_query_data()
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "offset", &(query.offset) },
+        { "offset", &(query->offset) },
     };
     // END Query references
     
@@ -65,7 +65,7 @@ char* read_query_data()
     return get_query;
 }
 
-char* read_post_data()
+char* read_post_data(struct query_values* post)
 {
     struct http_query_info info;
     char* request_method = getenv("REQUEST_METHOD");
@@ -73,16 +73,16 @@ char* read_post_data()
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "content", &(post.content) },
-        { "itype", &(post.itype) },
-        { "id", &(post.id) },
-        { "theme", &(post.theme) },
-        { "username", &(post.username) },
-        { "password", &(post.password) },
-        { "replyid", &(post.replyid) },
-        { "min_id", &(post.min_id) },
-        { "max_id", &(post.max_id) },
-        { "start_id", &(post.start_id) },
+        { "content", &(post->content) },
+        { "itype", &(post->itype) },
+        { "id", &(post->id) },
+        { "theme", &(post->theme) },
+        { "username", &(post->username) },
+        { "password", &(post->password) },
+        { "replyid", &(post->replyid) },
+        { "min_id", &(post->min_id) },
+        { "max_id", &(post->max_id) },
+        { "start_id", &(post->start_id) },
 
     };
     // END Query references

@@ -29,7 +29,9 @@ enum path_state
     PARSE_READ,
 };
 
-int parse_path(mastodont_t* api, struct path_info* path_info)
+int parse_path(struct session* ssn,
+               mastodont_t* api,
+               struct path_info* path_info)
 {
     int fail = 0, fin = 0;
     enum path_state state = PARSE_NEUTRAL;
@@ -103,7 +105,7 @@ breakpt:
     if (fail)
         return 1;
 
-    path_info->callback(api, data, size);
+    path_info->callback(ssn, api, data);
 
     // Cleanup
     for (size_t i = 0; i < size; ++i)
@@ -114,22 +116,25 @@ breakpt:
     return 0;
 }
 
-void handle_paths(mastodont_t* api, struct path_info* paths, size_t paths_len)
+void handle_paths(struct session* ssn,
+                  mastodont_t* api,
+                  struct path_info* paths,
+                  size_t paths_len)
 {
     char* path = getenv("PATH_INFO");
     // "default" path
     if (path == NULL || (path && strcmp(path, "/") == 0))
     {
-        content_index(api);
+        content_index(ssn, api);
     }
     else {   // Generic path
         for (size_t i = 0; i < paths_len; ++i)
         {
-            if (parse_path(api, paths + i) == 0)
+            if (parse_path(ssn, api, paths + i) == 0)
                 return;
         }
 
         // Fell out, return 404
-        content_not_found(api, path);
+        content_not_found(ssn, api, path);
     }
 }

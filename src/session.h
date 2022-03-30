@@ -16,9 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef SESSION_H
+#define SESSION_H
+#include "query.h"
 #include "local_config.h"
+#include "cookie.h"
 
-struct local_config g_config = {
-    .changed = 0,
-    .theme = "treebird20"
+struct session
+{
+    struct query_values post;
+    struct get_values query;
+    struct cookie_values cookies;
+    struct local_config config;
 };
+
+#endif // SESSION_H

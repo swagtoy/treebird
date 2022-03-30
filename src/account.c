@@ -65,7 +65,7 @@ char* construct_account_page(struct mstdnt_account* acct,
     return result;
 }
 
-void content_account(mastodont_t* api, char** data, size_t size)
+void content_account(struct session* ssn, mastodont_t* api, char** data)
 {
     int cleanup = 0;
     char* account_page;
@@ -100,7 +100,7 @@ void content_account(mastodont_t* api, char** data, size_t size)
     };
 
     /* Output */
-    render_base_page(&b, api);
+    render_base_page(&b, ssn, api);
 
     /* Cleanup */
     mastodont_storage_cleanup(&storage);

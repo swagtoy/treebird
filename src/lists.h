@@ -20,10 +20,11 @@
 #define LISTS_H
 #include <stddef.h>
 #include <mastodont.h>
+#include "session.h"
 
 char* construct_list(struct mstdnt_list* list, int* size);
 char* construct_lists(struct mstdnt_list* lists, size_t size, size_t* ret_size);
 char* construct_lists_view(char* lists_string, int* size);
-void content_lists(mastodont_t* api, char** data, size_t size);
+void content_lists(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // LISTS_H

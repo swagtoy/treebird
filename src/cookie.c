@@ -30,9 +30,7 @@ enum cookie_state
     STATE_V_START,
 };
 
-struct cookie_values cookies = { 0 };
-
-char* read_cookies_env()
+char* read_cookies_env(struct cookie_values* cookies)
 {
     struct http_cookie_info info;
     char* cookies_env = getenv("HTTP_COOKIE");
@@ -52,9 +50,9 @@ char* read_cookies_env()
 
     // Will loop through these
     struct key_value_refs refs[] = {
-        { "access_token", &(cookies.access_token) },
-        { "logged_in", &(cookies.logged_in) },
-        { "theme", &(cookies.theme) }
+        { "access_token", &(cookies->access_token) },
+        { "logged_in", &(cookies->logged_in) },
+        { "theme", &(cookies->theme) }
     };
 
     do

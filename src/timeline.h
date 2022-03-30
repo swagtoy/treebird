@@ -20,13 +20,14 @@
 #define TIMELINE_H
 #include <stddef.h>
 #include <mastodont.h>
+#include "session.h"
 
 // Federated and local are here
-void tl_public(mastodont_t* api, int local);
-void tl_list(mastodont_t* api, char* list_id);
+void tl_public(struct session* ssn, mastodont_t* api, int local);
+void tl_list(struct session* ssn, mastodont_t* api, char* list_id);
 
-void content_tl_federated(mastodont_t* api, char** data, size_t data_size);
-void content_tl_local(mastodont_t* api, char** data, size_t data_size);
-void content_tl_list(mastodont_t* api, char** data, size_t data_size);
+void content_tl_federated(struct session* ssn, mastodont_t* api, char** data);
+void content_tl_local(struct session* ssn, mastodont_t* api, char** data);
+void content_tl_list(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // TIMELINE_H
