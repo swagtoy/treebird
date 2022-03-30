@@ -38,7 +38,7 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
     if (notif->status)
     {
         // Construct status with notification_info
-        notif_html = construct_status(notif->status, &s, notif);
+        notif_html = construct_status(notif->status, &s, notif, 0);
     }
     else {
         notif_html = NULL;

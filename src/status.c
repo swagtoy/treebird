@@ -102,7 +102,8 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 
 char* construct_status(struct mstdnt_status* status,
                        int* size,
-                       struct mstdnt_notification* notif)
+                       struct mstdnt_notification* notif,
+                       uint8_t flags)
 {
     char* stat_html;
 
@@ -131,6 +132,9 @@ char* construct_status(struct mstdnt_status* status,
         
 
     size_t s = easprintf(&stat_html, data_status_html,
+                         status->id,
+                         (flags & STATUS_FOCUSED) == STATUS_FOCUSED ?
+                         "focused" : "",
                          notif_info ? notif_info : "",
                          status->account.avatar,
                          status->account.display_name, /* Username */
@@ -156,8 +160,8 @@ char* construct_status(struct mstdnt_status* status,
                          favourites_count ? favourites_count : "",
                          config_url_prefix,
                          status->id,
-                         config_url_prefix,
                          status->id);
+    
     if (size) *size = s;
     // Cleanup
     if (reply_count) free(reply_count);
@@ -171,7 +175,7 @@ char* construct_status(struct mstdnt_status* status,
 
 static char* construct_status_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_status((struct mstdnt_status*)passed + index, res, NULL);
+    return construct_status((struct mstdnt_status*)passed + index, res, NULL, 0);
 }
 
 char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
@@ -222,7 +226,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     before_html = construct_statuses(statuses_before, stat_before_len, NULL);
 
     // Current status
-    stat_html = construct_status(&status, NULL, NULL);
+    stat_html = construct_status(&status, NULL, NULL, STATUS_FOCUSED);
     if (is_reply)
     {
         stat_reply = reply_status(data[0],

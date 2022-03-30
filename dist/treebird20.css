@@ -285,6 +285,9 @@ ul li:first-child a.sidebarbtn
 .pfp-compact-td img
 {
     border-radius: 3px;
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
 }
 
 .notification-compact
@@ -301,6 +304,8 @@ ul li:first-child a.sidebarbtn
     font-size: 12px;
     padding-left: 2px;
     padding-right: 2px;
+    margin-top: 0;
+    font-weight: bold;
 }
 
 .notification-compact .notification-content
@@ -325,6 +330,8 @@ ul li:first-child a.sidebarbtn
 {
     margin-left: 36px;
     width: 24px;
+    height: 24px;
+    object-fit: cover;
 }
 
 .notification-info .notification-user
@@ -343,6 +350,12 @@ ul li:first-child a.sidebarbtn
     border-bottom: 1px solid #cacaca !important;
     width: 100%;
     border-spacing: 0px;
+}
+
+.status.focused
+{
+    background-color: #ffdddd;
+    border-left: 3px solid #aa0000;
 }
 
 .notification-info + .status
@@ -373,7 +386,9 @@ ul li:first-child a.sidebarbtn
 .pfp-td img
 {
     border-radius: 3px;
-
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
 }
 
 .status tr
@@ -434,6 +449,8 @@ ul li:first-child a.sidebarbtn
 {
     margin: 2px 0 0 0;
     overflow-wrap: break-word;
+    width: 520px;
+    display: block;
 }
 
 .status .status-content p
@@ -571,6 +588,7 @@ ul li:first-child a.sidebarbtn
     height: 100px;
     top: -8px;
     left: 150px;
+    object-fit: cover;
     margin-top: -108px;
     margin-left: -108px;
     background-position: center center;
