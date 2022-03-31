@@ -26,13 +26,13 @@
 #include "reply.h"
 #include "navigation.h"
 #include "query.h"
+#include "error.h"
 #include "string_helpers.h"
 
 #include "../static/navigation.chtml"
 
 void tl_public(struct session* ssn, mastodont_t* api, int local)
 {
-    int cleanup = 0;
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -56,14 +56,13 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
     
     if (mastodont_timeline_public(api, &args, &storage, &statuses, &status_count))
     {
-        status_format = "An error occured loading the timeline";
+        status_format = construct_error("An error occured loading the timeline", NULL);
     }
     else {
         // Construct statuses into HTML
         status_format = construct_statuses(statuses, status_count, &statuses_html_count);
         if (!status_format)
             status_format = "Error in malloc!";
-        cleanup = 1;
     }
 
     // Create post box
@@ -95,7 +94,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
     // Cleanup
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, status_count);
-    if (cleanup) free(status_format);
+    if (status_format) free(status_format);
     if (post_box) free(post_box);
     if (navigation_box) free(navigation_box);
     if (output) free(output);

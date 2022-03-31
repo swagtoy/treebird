@@ -23,6 +23,7 @@
 #include "string_helpers.h"
 #include "easprintf.h"
 #include "status.h"
+#include "error.h"
 
 // Pages
 #include "../static/notifications_page.chtml"
@@ -134,9 +135,13 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
         };
 
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        {
             notif_html = construct_notifications(notifs, notifs_len, NULL);
+            mstdnt_cleanup_notifications(notifs, notifs_len);
+        }
+        else
+            notif_html = construct_error("Couldn't load notifications", NULL);
 
-        mstdnt_cleanup_notifications(notifs, notifs_len);
     }
  
     easprintf(&page, data_notifications_page_html,
