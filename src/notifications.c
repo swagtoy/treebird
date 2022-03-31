@@ -140,7 +140,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
             mstdnt_cleanup_notifications(notifs, notifs_len);
         }
         else
-            notif_html = construct_error("Couldn't load notifications", NULL);
+            notif_html = construct_error(storage.error, NULL);
 
     }
  
