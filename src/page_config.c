@@ -31,7 +31,8 @@
 
 // Pages
 #include "../static/index.chtml"
-#include "../static/config.chtml"
+#include "../static/config_general.chtml"
+#include "../static/config_appearance.chtml"
 #include "../static/config_sidebar.chtml"
 
 enum config_category
@@ -40,6 +41,17 @@ enum config_category
     CONFIG_CAT_APPEARANCE,
     CONFIG_CAT_ACCOUNT
 };
+
+static void load_config(struct session* ssn)
+{
+    if (ssn->post.theme)
+    {
+        ssn->config.theme = ssn->post.theme;
+        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
+               "theme", ssn->post.theme);
+        ssn->config.changed = 1;
+    }
+}
 
 static char* construct_config_sidebar(enum config_category cat, size_t* size)
 {
@@ -58,25 +70,45 @@ static char* construct_config_sidebar(enum config_category cat, size_t* size)
     return sidebar_html;
 }
 
-void content_config(struct session* ssn, mastodont_t* api, char** data)
+
+void content_config_general(struct session* ssn, mastodont_t* api, char** data)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
-    if (ssn->post.theme)
-    {
-        ssn->config.theme = ssn->post.theme;
-        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
-               "theme", ssn->post.theme);
-        ssn->config.changed = 1;
-    }
 
+    load_config(ssn);
+    
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
         .locale = L10N_EN_US,
-        .content = data_config_html,
+        .content = data_config_general_html,
         .sidebar_left = sidebar_html
     };
 
     render_base_page(&b, ssn, api);
     // Cleanup
     free(sidebar_html);
+}
+
+
+void content_config_appearance(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* sidebar_html = construct_config_sidebar(CONFIG_CAT_APPEARANCE, NULL);
+
+    load_config(ssn);
+
+    struct base_page b = {
+        .category = BASE_CAT_CONFIG,
+        .locale = L10N_EN_US,
+        .content = data_config_appearance_html,
+        .sidebar_left = sidebar_html
+    };
+
+    render_base_page(&b, ssn, api);
+    // Cleanup
+    free(sidebar_html);
+}
+
+void content_config(struct session* ssn, mastodont_t* api, char** data)
+{
+    
 }

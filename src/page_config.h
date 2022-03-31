@@ -22,6 +22,9 @@
 #include <mastodont.h>
 #include "session.h"
 
+void content_config_appearance(struct session* ssn, mastodont_t* api, char** data);
+void content_config_general(struct session* ssn, mastodont_t* api, char** data);
+void content_config_account(struct session* ssn, mastodont_t* api, char** data);
 void content_config(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // PAGE_CONFIG_H

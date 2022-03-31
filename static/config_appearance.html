@@ -1,0 +1,30 @@
+<div class="simple-page">
+  <form action="../config" method="post">
+    <!-- Appearance -->
+    <h1>Appearance</h1>
+    <h3>Theme variant</h3>
+    <ul>
+      <li>
+        <label for="cfgthemevar">Theme variant</label>
+        <select name="theme" id="cfgthemevar">
+          <option value="treebird20">treebird 2.0 - Default, simple theme</option>
+          <option value="treebird30">treebird 3.0 - Flat, modern theme</option>
+          <option value="treebird10">treebird Minimal - For netsurf, old browsers, minimal styling</option>
+        </select>
+      </li>
+    </ul>
+    <h3>Color Scheme</h3>
+    <ul>
+      <li>
+        <input type="radio" id="cfglight" name="themeclr" value="light" checked>
+        <label for="cfglight">Light</label>
+      </li>
+      <li>
+        <input type="radio" id="cfgdark" name="themeclr" value="dark">
+        <label for="cfgdark">Dark</label>
+      </li>
+    </ul>
+    
+    <input type="submit" value="Save">
+  </form>
+</div>

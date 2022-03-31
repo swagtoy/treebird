@@ -76,6 +76,11 @@ $(PAGES_DIR)/follow_svg.chtml: $(PAGES_DIR)/follow_svg.html
 	./filec $< data_follow_svg_html > $@
 $(PAGES_DIR)/notification_action.chtml: $(PAGES_DIR)/notification_action.html
 	./filec $< data_notification_action_html > $@
+$(PAGES_DIR)/config_general.chtml: $(PAGES_DIR)/config_general.html
+	./filec $< data_config_general_html > $@
+$(PAGES_DIR)/config_appearance.chtml: $(PAGES_DIR)/config_appearance.html
+	./filec $< data_config_appearance_html > $@
+
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

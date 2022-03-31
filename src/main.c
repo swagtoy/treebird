@@ -67,7 +67,10 @@ int main(void)
          *  Path handling  *
          ******************/
         struct path_info paths[] = {
+            { "/config/general", content_config_general },
+            { "/config/appearance", content_config_appearance },
             { "/config", content_config },
+            /* { "/config/account", content_config_account }, */
             { "/login", content_login },
             { "/test", content_test },
             { "/@:", content_account },
