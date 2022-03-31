@@ -17,10 +17,27 @@
  */
 
 #include "type_string.h"
+
+// Icons
 #include "../static/like_svg.chtml"
 #include "../static/repeat_svg.chtml"
+#include "../static/follow_svg.chtml"
 
 const char* notification_type_str(mstdnt_notification_t type)
+{
+    switch (type)
+    {
+    case MSTDNT_NOTIFICATION_FOLLOW: return L10N[L10N_EN_US][L10N_NOTIF_FOLLOW];
+    case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return L10N[L10N_EN_US][L10N_NOTIF_FOLLOW_REQUEST];
+    case MSTDNT_NOTIFICATION_REBLOG: return L10N[L10N_EN_US][L10N_NOTIF_REPEATED];
+    case MSTDNT_NOTIFICATION_FAVOURITE: return L10N[L10N_EN_US][L10N_NOTIF_LIKED];
+    case MSTDNT_NOTIFICATION_POLL: return L10N[L10N_EN_US][L10N_NOTIF_POLL];
+    case MSTDNT_NOTIFICATION_EMOJI_REACT: return L10N[L10N_EN_US][L10N_NOTIF_REACTED_WITH];
+    default: return "";
+    }
+}
+
+const char* notification_type_compact_str(mstdnt_notification_t type)
 {
     switch (type)
     {
@@ -39,7 +56,7 @@ const char* notification_type_svg(mstdnt_notification_t type)
 {
     switch (type)
     {
-    case MSTDNT_NOTIFICATION_FOLLOW: return "";
+    case MSTDNT_NOTIFICATION_FOLLOW: return data_follow_svg_html;
     case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return "";
     case MSTDNT_NOTIFICATION_REBLOG: return data_repeat_svg_html;
     case MSTDNT_NOTIFICATION_FAVOURITE: return data_like_svg_html;

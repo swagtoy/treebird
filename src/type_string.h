@@ -23,5 +23,6 @@
 
 const char* notification_type_svg(mstdnt_notification_t type);
 const char* notification_type_str(mstdnt_notification_t type);
+const char* notification_type_compact_str(mstdnt_notification_t type);
 
 #endif // TYPE_STRING_H

@@ -72,7 +72,10 @@ $(PAGES_DIR)/like_svg.chtml: $(PAGES_DIR)/like_svg.html
 	./filec $< data_like_svg_html > $@
 $(PAGES_DIR)/repeat_svg.chtml: $(PAGES_DIR)/repeat_svg.html
 	./filec $< data_repeat_svg_html > $@
-
+$(PAGES_DIR)/follow_svg.chtml: $(PAGES_DIR)/follow_svg.html
+	./filec $< data_follow_svg_html > $@
+$(PAGES_DIR)/notification_action.chtml: $(PAGES_DIR)/notification_action.html
+	./filec $< data_notification_action_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

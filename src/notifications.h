@@ -23,6 +23,7 @@
 #include "type_string.h"
 
 char* construct_notification(struct mstdnt_notification* notif, int* size);
+char* construct_notification_action(struct mstdnt_notification* notif, int* size);
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size);
 char* construct_notifications(struct mstdnt_notification* notifs,
                               size_t size,

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include "notifications.h"
@@ -24,10 +25,12 @@
 #include "easprintf.h"
 #include "status.h"
 #include "error.h"
+#include "../config.h"
 
 // Pages
 #include "../static/notifications_page.chtml"
 #include "../static/notifications.chtml"
+#include "../static/notification_action.chtml"
 #include "../static/notification.chtml"
 #include "../static/notification_compact.chtml"
 #include "../static/like_svg.chtml"
@@ -44,20 +47,37 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
         notif_html = construct_status(notif->status, &s, notif, 0);
     }
     else {
-        notif_html = NULL;
+        notif_html = construct_notification_action(notif, &s);
     }
 
     if (size) *size = s;
     return notif_html;
 }
 
+char* construct_notification_action(struct mstdnt_notification* notif, int* size)
+{
+    char* notif_html;
+    int s;
+
+    s = easprintf(&notif_html, data_notification_action_html,
+                  notif->account->avatar,
+                  notif->account->display_name,
+                  notification_type_compact_str(notif->type),
+                  notification_type_svg(notif->type),
+                  config_url_prefix,
+                  notif->account->acct,
+                  notif->account->acct);
+
+    if (size) *size = s;
+    return notif_html;
+}
 
 char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
 {
     char* notif_html;
     char* notif_stats = NULL;
 
-    const char* type_str = notification_type_str(notif->type);
+    const char* type_str = notification_type_compact_str(notif->type);
     const char* type_svg = notification_type_svg(notif->type);
 
     if (notif->status)
@@ -69,6 +89,8 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
                          notif->account->avatar,
+                         /* If there is an icon, the text doesn't shift up relative to the SVG, this is a hack on the CSS side */
+                         strlen(type_svg) == 0 ? "" : "-with-icon",
                          notif->account->display_name,
                          type_str,
                          type_svg,

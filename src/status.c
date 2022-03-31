@@ -106,7 +106,6 @@ char* construct_status(struct mstdnt_status* status,
                        uint8_t flags)
 {
     char* stat_html;
-    const char* type_svg = notification_type_svg(notif->type);
 
     // Counts
     char* reply_count = NULL;
@@ -130,7 +129,7 @@ char* construct_status(struct mstdnt_status* status,
                   notif->account->avatar,
                   notif->account->display_name,
                   notification_type_str(notif->type),
-                  type_svg);
+                  notification_type_svg(notif->type));
         
 
     size_t s = easprintf(&stat_html, data_status_html,

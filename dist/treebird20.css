@@ -275,6 +275,7 @@ ul li:first-child a.sidebarbtn
 .notification
 {
     border-bottom: 1px solid #dadada;
+    width: 100%;
 }
 
 .pfp-compact-td
@@ -308,14 +309,28 @@ ul li:first-child a.sidebarbtn
     font-weight: bold;
 }
 
-.notification-info svg
+.notification-info svg,
+.notification-info-format svg
 {
     width: 16px;
     height: 16px;
     stroke: #aa0000;
 }
 
-.notification-info svg.like
+.notification-table-bit
+{
+    width: auto;
+}
+
+/* Only move up if SVG is next to it, the SVG moves the text */
+.notification .notification-text-group-with-icon
+{
+    position: relative;
+    top: -2px;
+}
+
+.notification-info svg.like,
+.notification-info-format svg.like
 {
     fill: #aa0000;
 }
@@ -338,7 +353,8 @@ ul li:first-child a.sidebarbtn
     margin-top: 7px;
 }
 
-.notification-info img
+.notification-info img,
+.notification-info-format img
 {
     margin-left: 36px;
     width: 24px;
@@ -346,7 +362,8 @@ ul li:first-child a.sidebarbtn
     object-fit: cover;
 }
 
-.notification-info .notification-user
+.notification-info .notification-user,
+.ntoification-info-format .notification-user
 {
     display: inline;
     position: relative;
@@ -356,7 +373,8 @@ ul li:first-child a.sidebarbtn
 /***************************
  *      Statuses           *
  **************************/
-.status
+.status,
+.notification-regular
 {
     padding: 6px 2px 0 6px;
     border-bottom: 1px solid #cacaca !important;
@@ -370,7 +388,8 @@ ul li:first-child a.sidebarbtn
     border-left: 3px solid #aa0000;
 }
 
-.notification-info + .status
+.notification-info + .status,
+.notification-info-format + .status
 {
     padding-top: 0;
 }
@@ -409,13 +428,13 @@ ul li:first-child a.sidebarbtn
 }
 
 
-.status .status-info
+.status .status-info,
+.notification-info-format,
+.notification-content
 {
-    margin: 0 5px 0px;
     min-width: 0;
     width: auto;
-    padding: 0 5px 0 5px;
-    display: flex;
+    padding: 0 0 0 10px;
 }
 
 .status .status-info > table.ui-table
@@ -448,7 +467,8 @@ ul li:first-child a.sidebarbtn
     max-width: 520px;
 }
 
-.status .username
+.status .username,
+.notification-regular .username
 {
     font-weight: bold;
     text-overflow: ellipsis;
