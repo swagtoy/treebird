@@ -87,10 +87,22 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
         mastodont_favourite_status(api, id, &storage, NULL);
     else if (strcmp(ssn->post.itype, "repeat") == 0)
         mastodont_reblog_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "bookmark") == 0)
+        mastodont_bookmark_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "pin") == 0)
+        mastodont_pin_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "mute") == 0)
+        mastodont_mute_conversation(api, id, &storage, NULL);
     else if (strcmp(ssn->post.itype, "unlike") == 0)
         mastodont_unfavourite_status(api, id, &storage, NULL);
     else if (strcmp(ssn->post.itype, "unrepeat") == 0)
         mastodont_unreblog_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "unbookmark") == 0)
+        mastodont_unbookmark_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "unpin") == 0)
+        mastodont_unpin_status(api, id, &storage, NULL);
+    else if (strcmp(ssn->post.itype, "unmute") == 0)
+        mastodont_unmute_conversation(api, id, &storage, NULL);
 
     mastodont_storage_cleanup(&storage);
 
