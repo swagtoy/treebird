@@ -53,7 +53,11 @@ int main(void)
         struct session ssn = {
             .config = {
                 .changed = 0,
-                .theme = "treebird20"
+                .theme = "treebird20",
+                .themeclr = 0,
+                .jsactions = 0,
+                .jsreply = 0,
+                .jslive = 0
             }
         };
 

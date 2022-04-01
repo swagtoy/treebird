@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include "base_page.h"
+#include "error.h"
 #include "../config.h"
 #include "account.h"
 #include "easprintf.h"
@@ -67,12 +68,11 @@ char* construct_account_page(struct mstdnt_account* acct,
 
 void content_account(struct session* ssn, mastodont_t* api, char** data)
 {
-    int cleanup = 0;
     char* account_page;
-    struct mstdnt_account acct;
-    struct mstdnt_storage storage, status_storage;
-    struct mstdnt_status* statuses;
-    size_t status_len;
+    struct mstdnt_account acct = { 0 };
+    struct mstdnt_storage storage = { 0 }, status_storage = { 0 };
+    struct mstdnt_status* statuses = NULL;
+    size_t status_len = 0;
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
     if (mastodont_get_account(api, lookup_type, data[0],
@@ -80,16 +80,15 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
         mastodont_get_account_statuses(api, acct.id, NULL,
                                        &status_storage, &statuses, &status_len))
     {
-        account_page = "Couldn't load account info";
+        account_page = construct_error("Couldn't load account info", NULL);
     }
     else {
-        cleanup = 1;
         account_page = construct_account_page(&acct,
                                               statuses,
                                               status_len,
                                               NULL);
         if (!account_page)
-            account_page = "Malloc error";
+            exit(EXIT_FAILURE);
     }
     
     struct base_page b = {        
@@ -106,5 +105,5 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
     mstdnt_cleanup_statuses(statuses, status_len);
-    if (cleanup) free(account_page);
+    free(account_page);
 }
