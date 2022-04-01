@@ -61,6 +61,7 @@ char* construct_notification_action(struct mstdnt_notification* notif, int* size
 
     s = easprintf(&notif_html, data_notification_action_html,
                   notif->account->avatar,
+                  notif->account->acct,
                   notif->account->display_name,
                   notification_type_compact_str(notif->type),
                   notification_type_svg(notif->type),
@@ -85,12 +86,12 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
                   notif->status->replies_count,
                   notif->status->reblogs_count,
                   notif->status->favourites_count);
-    
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
                          notif->account->avatar,
                          /* If there is an icon, the text doesn't shift up relative to the SVG, this is a hack on the CSS side */
                          strlen(type_svg) == 0 ? "" : "-with-icon",
+                         notif->account->acct,
                          notif->account->display_name,
                          type_str,
                          type_svg,
