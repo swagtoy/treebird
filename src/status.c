@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "http.h"
 #include "base_page.h"
 #include "status.h"
 #include "easprintf.h"
@@ -73,11 +74,7 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data)
 
     try_post_status(ssn, api);
 
-    printf("Status: 303 See Other\r\n"
-           "Location: %s\r\n"
-           "Content-Length: 14\r\n\r\n"
-           "Redirecting...",
-           referer ? referer : "/");
+    redirect(REDIRECT_303, referer);
 }
 
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id)

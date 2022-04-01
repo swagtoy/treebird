@@ -19,6 +19,7 @@
 #include <fcgi_stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "http.h"
 #include "base_page.h"
 #include "../config.h"
 #include "easprintf.h"
@@ -110,5 +111,5 @@ void content_config_appearance(struct session* ssn, mastodont_t* api, char** dat
 
 void content_config(struct session* ssn, mastodont_t* api, char** data)
 {
-    
+    redirect(REDIRECT_303, "/config/general");
 }
