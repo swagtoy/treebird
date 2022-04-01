@@ -16,18 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCAL_CONFIG_H
-#define LOCAL_CONFIG_H
-#include "query.h"
+#ifndef LOCAL_CONFIG_SET_H
+#define LOCAL_CONFIG_SET_H
+#include "local_config.h"
+#include "session.h"
 
-struct local_config
-{
-    int changed;
-    char* theme;
-    int themeclr;
-    int jsactions;
-    int jsreply;
-    int jslive;
-};
+int set_config_str(char** ssn,
+                   char* cookie_name,
+                   char* value);
 
-#endif // LOCAL_CONFIG_H
+int set_config_int(int* ssn,
+                   char* cookie_name,
+                   char* value);
+
+void load_config(struct session* ssn);
+
+#endif // LOCAL_CONFIG_SET_H

@@ -29,7 +29,13 @@ struct http_query_info
 
 struct query_values
 {
+    // Config
     char* theme;
+    char* themeclr;
+    char* jsactions;
+    char* jsreply;
+    char* jslive;
+    
     char* content;
     char* itype;
     char* id;

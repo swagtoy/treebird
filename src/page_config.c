@@ -26,7 +26,7 @@
 #include "page_config.h"
 #include "query.h"
 #include "cookie.h"
-#include "local_config.h"
+#include "local_config_set.h"
 #include "string_helpers.h"
 #include "l10n.h"
 
@@ -42,17 +42,6 @@ enum config_category
     CONFIG_CAT_APPEARANCE,
     CONFIG_CAT_ACCOUNT
 };
-
-static void load_config(struct session* ssn)
-{
-    if (ssn->post.theme)
-    {
-        ssn->config.theme = ssn->post.theme;
-        printf("Set-Cookie: %s=%s; HttpOnly; SameSite=Strict;",
-               "theme", ssn->post.theme);
-        ssn->config.changed = 1;
-    }
-}
 
 static char* construct_config_sidebar(enum config_category cat, size_t* size)
 {
