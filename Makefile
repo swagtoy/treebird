@@ -6,6 +6,7 @@ CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-discarded-
 LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
+HEADERS = $(wildcard src/*.h)
 PAGES_DIR = static
 PAGES = $(wildcard $(PAGES_DIR)/*.html)
 PAGES_CMP = $(patsubst %.html,%.chtml,$(PAGES))
@@ -15,15 +16,13 @@ TARGET = treebird.cgi
 MASTODONT_URL = https://git.nekobit.net/repos/mastodont-c.git
 
 all: $(MASTODONT_DIR) dep_build $(TARGET)
+apache: all apache_start
 
-$(TARGET): filec $(PAGES_CMP) $(OBJ)
+$(TARGET): filec $(PAGES_CMP) $(OBJ) $(HEADERS)
 	$(CC) -o $(DIST)$(TARGET) $(OBJ) $(LDFLAGS)
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
-
-%.chtml: %.html
-	./filec $< $< > $@
 
 # PAGES
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
@@ -86,13 +85,16 @@ $(MASTODONT_DIR):
 	git clone $(MASTODONT_URL) || true
 	@echo -e "\033[38;5;13mRun 'make update' to update mastodont-c\033[0m"
 
+apache_start:
+	./scripts/fcgistarter.sh
+
 dep_build:
 	make -C $(MASTODONT_DIR)
 
 update:
 	git -C $(MASTODONT_DIR) pull
 
-%.o: %.c
+%.o: %.c %.h $(PAGES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

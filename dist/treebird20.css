@@ -1,5 +1,3 @@
-
-
 /* Look, I tried my best to make this theme compatible with browsers like Netsurf and stuff, I HATE
    the modern web and flexboxes and stuff, so as a result, you WILL see some fugly things in here
    that you will probably want to cleanup or throw out completely, this CSS is a big hack. 
@@ -174,14 +172,14 @@ table.present th, table.present td
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
-input[type=button], input[type=submit], .sidebarbtn, .btn
+.sidebarbtn, .btn
 { 
     background: linear-gradient(#fff, #f7f7f7);
     color: #000;
     text-decoration: none;    
 }
 
-input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover, .btn:hover
+.sidebarbtn:hover, .btn:hover
 { 
     background: linear-gradient(#aa0000, #600000);
     border-color: #400000;
@@ -189,7 +187,7 @@ input[type=button]:hover, input[type=submit]:hover, .sidebarbtn:hover, .btn:hove
     cursor: pointer;
 }
 
-input[type=button]:active, input[type=submit]:active, .sidebarbtn:active, .btn:active
+.sidebarbtn:active, .btn:active
 { 
     background: linear-gradient(#600000, #aa0000);
     border-color: #400000;
@@ -961,14 +959,19 @@ ul.large-list li a
     list-style-type: none;
 }
 
-.menu .btn
+.menu .btn-menu
 {
     background: unset;
+    background-color: unset;
     display: block;
     padding: 6px 12px;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
 }
 
-.menu .btn:hover
+.menu .btn-menu:hover
 {
     background-color: #eaeaea;
     color: #000;
