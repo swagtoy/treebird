@@ -39,10 +39,10 @@ char* read_cookies_env(struct cookie_values* cookies)
     if (!cookies_env)
         return NULL;
     
-    char* cookies_str = malloc(strlen(cookies_env));
+    char* cookies_str = malloc(strlen(cookies_env) + 1);
     if (!cookies_str)
     {
-        printf("malloc");
+        perror("malloc");
         return NULL;
     }
     strcpy(cookies_str, cookies_env);

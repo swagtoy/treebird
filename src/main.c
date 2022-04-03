@@ -66,7 +66,7 @@ int main(void)
         api.token = ssn.cookies.access_token; // Load token now
         char* post_str = read_post_data(&(ssn.post));
         char* get_str = read_query_data(&(ssn.query));
-        
+
         /*******************
          *  Path handling  *
          ******************/
