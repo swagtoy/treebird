@@ -45,6 +45,8 @@ struct query_values
     char* min_id;
     char* max_id;
     char* start_id;
+
+    char* instance_url;
 };
 
 struct get_values
