@@ -91,9 +91,12 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     if (!(ssn->post.itype && id)) return 1;
 
     // Pretty up the type
-    if (strcmp(ssn->post.itype, "like") == 0)
+    if (strcmp(ssn->post.itype, "like") == 0 ||
+        strcmp(ssn->post.itype, "likeboost") == 0)
         mastodont_favourite_status(api, id, &storage, NULL);
-    else if (strcmp(ssn->post.itype, "repeat") == 0)
+    // Not else if because possibly a like-boost
+    if (strcmp(ssn->post.itype, "repeat") == 0 ||
+        strcmp(ssn->post.itype, "likeboost") == 0)
         mastodont_reblog_status(api, id, &storage, NULL);
     else if (strcmp(ssn->post.itype, "bookmark") == 0)
         mastodont_bookmark_status(api, id, &storage, NULL);
@@ -219,6 +222,7 @@ char* construct_status(mastodont_t* api,
                          emoji_reactions ? emoji_reactions : "",
                          config_url_prefix,
                          status->id,
+                         status->id,
                          reply_count ? reply_count : "",
                          config_url_prefix,
                          status->id,
@@ -230,6 +234,8 @@ char* construct_status(mastodont_t* api,
                          status->favourited ? "un" : "",
                          status->favourited ? "active" : "",
                          favourites_count ? favourites_count : "",
+                         config_url_prefix,
+                         status->id,
                          config_url_prefix,
                          status->id,
                          status->id);
@@ -269,10 +275,11 @@ void status_interact(struct session* ssn, mastodont_t* api, char** data)
     try_interact_status(ssn, api, data[0]);
     
     printf("Status: 303 See Other\r\n"
-           "Location: %s\r\n"
+           "Location: %s#id-%s\r\n"
            "Content-Length: 14\r\n\r\n"
            "Redirecting...",
-           referer ? referer : "/");
+           referer ? referer : "/",
+           data[0]);
 }
 
 void status_view(struct session* ssn, mastodont_t* api, char** data)

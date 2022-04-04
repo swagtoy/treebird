@@ -27,6 +27,20 @@
 // Files
 #include "../static/index.chtml"
 #include "../static/account.chtml"
+#include "../static/account_info.chtml"
+
+char* construct_account_info(struct mstdnt_account* acct,
+                             size_t* size)
+{
+    char* acct_info_html;
+    size_t s;
+
+    s = easprintf(&acct_info_html, data_account_info_html,
+                  acct->note);
+
+    if (size) *size = s;
+    return acct_info_html;
+}
 
 char* construct_account_page(mastodont_t* api,
                              struct mstdnt_account* acct,
@@ -37,6 +51,7 @@ char* construct_account_page(mastodont_t* api,
     int cleanup = 0;
     int result_size;
     char* statuses_html;
+    char* info_html = NULL;
     char* result;
 
     // Load statuses html
@@ -45,6 +60,11 @@ char* construct_account_page(mastodont_t* api,
         statuses_html = "Error in malloc!";
     else
         cleanup = 1;
+
+    if (acct->note)
+    {
+        info_html = construct_account_info(acct, NULL);
+    }
     
     result_size = easprintf(&result, data_account_html,
                             acct->header,
@@ -57,6 +77,7 @@ char* construct_account_page(mastodont_t* api,
                             "Followers",
                             acct->followers_count,
                             acct->avatar,
+                            info_html ? info_html : "",
                             statuses_html);
     
     if (result_size == -1)
@@ -64,6 +85,7 @@ char* construct_account_page(mastodont_t* api,
 
     if (res_size) *res_size = result_size;
     if (cleanup) free(statuses_html);
+    if (info_html) free(info_html);
     return result;
 }
 
