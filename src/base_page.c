@@ -65,7 +65,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         };
         
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
-            sidebar_str = construct_notifications_compact(notifs, notifs_len, NULL);
+            sidebar_str = construct_notifications_compact(api, notifs, notifs_len, NULL);
 
         mstdnt_cleanup_notifications(notifs, notifs_len);
     }

@@ -134,9 +134,11 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
                   config_url_prefix,
                   status->in_reply_to_id,
                   L10N[L10N_EN_US][L10N_IN_REPLY_TO],
-                  status->in_reply_to_account_id);
+                  acct.acct);
     
     if (size) *size = s;
+
+    mastodont_storage_cleanup(&storage);
     return irt_html;
 }
 
