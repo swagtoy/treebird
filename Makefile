@@ -11,7 +11,8 @@ PAGES_DIR = static
 PAGES = $(wildcard $(PAGES_DIR)/*.html)
 PAGES_CMP = $(patsubst %.html,%.chtml,$(PAGES))
 DIST = dist/
-TARGET = treebird.cgi
+PREFIX ?= /usr/local
+TARGET = treebird
 
 MASTODONT_URL = https://git.nekobit.net/repos/mastodont-c.git
 
@@ -19,7 +20,7 @@ all: $(MASTODONT_DIR) dep_build $(TARGET)
 apache: all apache_start
 
 $(TARGET): filec $(PAGES_CMP) $(OBJ) $(HEADERS)
-	$(CC) -o $(DIST)$(TARGET) $(OBJ) $(LDFLAGS)
+	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
@@ -87,8 +88,10 @@ $(MASTODONT_DIR):
 	git clone $(MASTODONT_URL) || true
 	@echo -e "\033[38;5;13mRun 'make update' to update mastodont-c\033[0m"
 
-install:
-	@echo "lol"
+install: $(TARGET)
+	install -m 655 treebird $(PREFIX)/bin/
+	install -d $(PREFIX)/share/treebird/
+	cp -r dist/ $(PREFIX)/share/treebird/
 
 apache_start:
 	./scripts/fcgistarter.sh
