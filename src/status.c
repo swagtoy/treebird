@@ -243,7 +243,7 @@ char* construct_status(mastodont_t* api,
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
-    if (parse_content) free(parse_content);
+//    if (parse_content) free(parse_content);
     return stat_html;
 }
 
