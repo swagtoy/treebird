@@ -21,6 +21,21 @@ body
     cursor: pointer;
 }
 
+a, a:visited, a:hover, a:active
+{
+    color: inherit;
+}
+
+.mention
+{
+    color: #cc0000;
+    text-decoration: none;
+    background-color: #ffcccc;
+    border-radius: 3px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
 /* Cleans up most of the tables */
 table.ui-table td
 {
@@ -323,14 +338,37 @@ ul li:first-child a.sidebarbtn
 /* Only move up if SVG is next to it, the SVG moves the text */
 .notification .notification-text-group-with-icon
 {
-    position: relative;
-    top: -2px;
+    vertical-align: middle;
 }
 
 .notification-info svg.like,
 .notification-info-format svg.like
 {
     fill: #aa0000;
+
+}
+
+svg.like, svg.repeat, svg.follow, svg.reply, svg.in-reply-to-icon
+{
+    vertical-align: middle;
+}
+
+svg.in-reply-to-icon
+{
+    position: relative;
+    top: -3px;
+    stroke: #606060;
+}
+
+.in-reply-to
+{
+    color: #606060;
+}
+
+.in-reply-to-id
+{
+    text-decoration: none;
+    line-height: 23px;
 }
 
 .notification-compact .notification-content
@@ -354,18 +392,20 @@ ul li:first-child a.sidebarbtn
 .notification-info img,
 .notification-info-format img
 {
-    margin-left: 36px;
+    margin-left: 38px;
     width: 24px;
     height: 24px;
     object-fit: cover;
 }
 
 .notification-info .notification-user,
-.ntoification-info-format .notification-user
+.notification-info-format .notification-user
 {
     display: inline;
+    vertical-align: middle;
     position: relative;
     top: -8px;
+    left: 2px;
 }
 
 /***************************
@@ -758,11 +798,6 @@ ul li:first-child a.sidebarbtn
 {
     font-size: 14px;
     padding-bottom: 3px;
-
-    /* Move up */
-    position: relative;
-    top: -5px;
-    margin-bottom: -5px;
 }
 
 /* Emoji reacts */
