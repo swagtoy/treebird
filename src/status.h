@@ -27,6 +27,7 @@
 #define STATUS_FOCUSED (1<<0)
 #define STATUS_EMOJI_PICKER (1<<1)
 
+char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
 void content_status_create(struct session* ssn, mastodont_t* api, char** data);
@@ -35,8 +36,8 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data);
 char* construct_post_box(char* reply_id,
                          char* default_content,
                          int* size);
-char* construct_status(struct mstdnt_status* status, int* size, struct mstdnt_notification* notif, uint8_t flags);
-char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size);
+char* construct_status(mastodont_t* api, struct mstdnt_status* status, int* size, struct mstdnt_notification* notif, uint8_t flags);
+char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 
 // Status frontends
 void status_view(struct session* ssn, mastodont_t* api, char** data);

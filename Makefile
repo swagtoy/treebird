@@ -79,11 +79,16 @@ $(PAGES_DIR)/config_general.chtml: $(PAGES_DIR)/config_general.html
 	./filec $< data_config_general_html > $@
 $(PAGES_DIR)/config_appearance.chtml: $(PAGES_DIR)/config_appearance.html
 	./filec $< data_config_appearance_html > $@
+$(PAGES_DIR)/in_reply_to.chtml: $(PAGES_DIR)/in_reply_to.html
+	./filec $< data_in_reply_to_html > $@
 
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
 	@echo -e "\033[38;5;13mRun 'make update' to update mastodont-c\033[0m"
+
+install:
+	@echo "lol"
 
 apache_start:
 	./scripts/fcgistarter.sh

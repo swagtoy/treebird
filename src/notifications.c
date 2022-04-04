@@ -36,7 +36,15 @@
 #include "../static/like_svg.chtml"
 #include "../static/repeat_svg.chtml"
 
-char* construct_notification(struct mstdnt_notification* notif, int* size)
+struct notification_args
+{
+    mastodont_t* api;
+    struct mstdnt_notification* notifs;
+};
+
+char* construct_notification(mastodont_t* api,
+                             struct mstdnt_notification* notif,
+                             int* size)
 {
     char* notif_html;
     int s = 0;
@@ -44,7 +52,7 @@ char* construct_notification(struct mstdnt_notification* notif, int* size)
     if (notif->status)
     {
         // Construct status with notification_info
-        notif_html = construct_status(notif->status, &s, notif, 0);
+        notif_html = construct_status(api, notif->status, &s, notif, 0);
     }
     else {
         notif_html = construct_notification_action(notif, &s);
@@ -73,7 +81,9 @@ char* construct_notification_action(struct mstdnt_notification* notif, int* size
     return notif_html;
 }
 
-char* construct_notification_compact(struct mstdnt_notification* notif, int* size)
+char* construct_notification_compact(mastodont_t* api,
+                                     struct mstdnt_notification* notif,
+                                     int* size)
 {
     char* notif_html;
     char* notif_stats = NULL;
@@ -110,27 +120,39 @@ char* construct_notification_compact(struct mstdnt_notification* notif, int* siz
 
 static char* construct_notification_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_notification((struct mstdnt_notification*)passed + index, res);
+    struct notification_args* args = passed;
+    return construct_notification(args->api, args->notifs + index, res);
 }
 
 static char* construct_notification_compact_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_notification_compact((struct mstdnt_notification*)passed + index, res);
+    struct notification_args* args = passed;
+    return construct_notification_compact(args->api, args->notifs + index, res);
 }
 
-char* construct_notifications(struct mstdnt_notification* notifs,
+char* construct_notifications(mastodont_t* api,
+                              struct mstdnt_notification* notifs,
                               size_t size,
                               size_t* ret_size)
 {
-    return construct_func_strings(construct_notification_voidwrap, notifs, size, ret_size);
+    struct notification_args args = {
+        .api = api,
+        .notifs = notifs
+    };
+    return construct_func_strings(construct_notification_voidwrap, &args, size, ret_size);
 }
 
-char* construct_notifications_compact(struct mstdnt_notification* notifs,
+char* construct_notifications_compact(mastodont_t* api,
+                                      struct mstdnt_notification* notifs,
                                       size_t size,
                                       size_t* ret_size)
 {
+    struct notification_args args = {
+        .api = api,
+        .notifs = notifs
+    };
     return construct_func_strings(construct_notification_compact_voidwrap,
-                                  notifs,
+                                  &args,
                                   size,
                                   ret_size);
 }
@@ -159,7 +181,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
         {
-            notif_html = construct_notifications(notifs, notifs_len, NULL);
+            notif_html = construct_notifications(api, notifs, notifs_len, NULL);
             mstdnt_cleanup_notifications(notifs, notifs_len);
         }
         else

@@ -28,7 +28,8 @@
 #include "../static/index.chtml"
 #include "../static/account.chtml"
 
-char* construct_account_page(struct mstdnt_account* acct,
+char* construct_account_page(mastodont_t* api,
+                             struct mstdnt_account* acct,
                              struct mstdnt_status* statuses,
                              size_t statuses_len,
                              size_t* res_size)
@@ -39,7 +40,7 @@ char* construct_account_page(struct mstdnt_account* acct,
     char* result;
 
     // Load statuses html
-    statuses_html = construct_statuses(statuses, statuses_len, NULL);
+    statuses_html = construct_statuses(api, statuses, statuses_len, NULL);
     if (!statuses_html)
         statuses_html = "Error in malloc!";
     else
@@ -83,7 +84,8 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
         account_page = construct_error("Couldn't load account info", NULL);
     }
     else {
-        account_page = construct_account_page(&acct,
+        account_page = construct_account_page(api,
+                                              &acct,
                                               statuses,
                                               status_len,
                                               NULL);

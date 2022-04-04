@@ -34,8 +34,15 @@
 // Pages
 #include "../static/status.chtml"
 #include "../static/notification.chtml"
+#include "../static/in_reply_to.chtml"
 
 #define NUM_STR "%u"
+
+struct status_args
+{
+    mastodont_t* api;
+    struct mstdnt_status* status;
+};
 
 int try_post_status(struct session* ssn, mastodont_t* api)
 {
@@ -109,7 +116,32 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     return 0;
 }
 
-char* construct_status(struct mstdnt_status* status,
+char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size)
+{
+    char* irt_html;
+    size_t s;
+    struct mstdnt_storage storage;
+    struct mstdnt_account acct;
+
+    mastodont_get_account(api,
+                          config_experimental_lookup,
+                          status->in_reply_to_account_id,
+                          &acct,
+                          &storage,
+                          NULL);
+
+    s = easprintf(&irt_html, data_in_reply_to_html,
+                  config_url_prefix,
+                  status->in_reply_to_id,
+                  L10N[L10N_EN_US][L10N_IN_REPLY_TO],
+                  status->in_reply_to_account_id);
+    
+    if (size) *size = s;
+    return irt_html;
+}
+
+char* construct_status(mastodont_t* api,
+                       struct mstdnt_status* status,
                        int* size,
                        struct mstdnt_notification* notif,
                        uint8_t flags)
@@ -123,6 +155,7 @@ char* construct_status(struct mstdnt_status* status,
     char* attachments = NULL;
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
+    char* in_reply_to_str = NULL;
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
@@ -139,7 +172,9 @@ char* construct_status(struct mstdnt_status* status,
                   notif->account->display_name,
                   notification_type_str(notif->type),
                   notification_type_svg(notif->type));
-        
+
+    if (status->in_reply_to_id && status->in_reply_to_account_id)
+        in_reply_to_str = construct_in_reply_to(api, status, NULL);
 
     size_t s = easprintf(&stat_html, data_status_html,
                          status->id,
@@ -164,6 +199,7 @@ char* construct_status(struct mstdnt_status* status,
                          status->id,
                          status->bookmarked ? "un" : "",
                          status->bookmarked ? "Remove Bookmark" : "Bookmark",
+                         in_reply_to_str ? in_reply_to_str : "",
                          status->content,
                          attachments ? attachments : "",
                          emoji_reactions ? emoji_reactions : "",
@@ -189,6 +225,7 @@ char* construct_status(struct mstdnt_status* status,
     if (reply_count) free(reply_count);
     if (repeat_count) free(repeat_count);
     if (favourites_count) free(favourites_count);
+    if (in_reply_to_str) free(in_reply_to_str);
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
@@ -197,12 +234,17 @@ char* construct_status(struct mstdnt_status* status,
 
 static char* construct_status_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_status((struct mstdnt_status*)passed + index, res, NULL, 0);
+    struct status_args* args = passed;
+    return construct_status(args->api, args->status + index, res, NULL, 0);
 }
 
-char* construct_statuses(struct mstdnt_status* statuses, size_t size, size_t* ret_size)
+char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size)
 {
-    return construct_func_strings(construct_status_voidwrap, statuses, size, ret_size);
+    struct status_args args = {
+        .api = api,
+        .status = statuses,
+    };
+    return construct_func_strings(construct_status_voidwrap, &args, size, ret_size);
 }
 
 void status_interact(struct session* ssn, mastodont_t* api, char** data)
@@ -245,10 +287,10 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     mastodont_get_status(api, data[0], &status_storage, &status);
 
     // Before...
-    before_html = construct_statuses(statuses_before, stat_before_len, NULL);
+    before_html = construct_statuses(api, statuses_before, stat_before_len, NULL);
 
     // Current status
-    stat_html = construct_status(&status, NULL, NULL, STATUS_FOCUSED);
+    stat_html = construct_status(api, &status, NULL, NULL, STATUS_FOCUSED);
     if (is_reply)
     {
         stat_reply = reply_status(data[0],
@@ -256,7 +298,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     }
 
     // After...
-    after_html = construct_statuses(statuses_after, stat_after_len, NULL);
+    after_html = construct_statuses(api, statuses_after, stat_after_len, NULL);
 
     easprintf(&output, "%s%s%s%s",
               before_html ? before_html : "",

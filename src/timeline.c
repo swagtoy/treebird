@@ -60,7 +60,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(statuses, status_count, &statuses_html_count);
+        status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
         if (!status_format)
             status_format = "Error in malloc!";
     }
@@ -124,7 +124,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(statuses, status_count, &statuses_html_count);
+        status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
         if (!status_format)
             status_format = "Error in malloc!";
         cleanup = 1;

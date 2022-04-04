@@ -61,6 +61,7 @@ enum l10n_string
     L10N_LIKE,
     L10N_QUICK,
     L10N_VIEW,
+    L10N_IN_REPLY_TO,
 
     /* ERRORS */
     L10N_PAGE_NOT_FOUND,
@@ -138,6 +139,7 @@ static const char* const L10N[][_L10N_LEN] = {
         "Like",
         "Quick",
         "View",
+        "In reply to",
 
         /* ERRORS */
         "Content not found",
@@ -211,7 +213,8 @@ static const char* const L10N[][_L10N_LEN] = {
         "Impulso",
         "Me gusta",
         "Rápido",
-        "View (Translate me)",
+        "View",
+        "In reply to",
         
         /* ERRORS */
         "Content not found",
