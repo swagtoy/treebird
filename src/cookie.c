@@ -52,7 +52,8 @@ char* read_cookies_env(struct cookie_values* cookies)
     struct key_value_refs refs[] = {
         { "access_token", &(cookies->access_token) },
         { "logged_in", &(cookies->logged_in) },
-        { "theme", &(cookies->theme) }
+        { "theme", &(cookies->theme) },
+        { "instance_url", &(cookies->instance_url) }
     };
 
     do

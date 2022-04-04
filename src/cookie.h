@@ -25,6 +25,7 @@ struct cookie_values
     char* access_token;
     char* logged_in;
     char* theme;
+    char* instance_url;
 };
 
 struct http_cookie_info

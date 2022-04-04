@@ -86,8 +86,7 @@ char* read_post_data(struct query_values* post)
         { "replyid", &(post->replyid) },
         { "min_id", &(post->min_id) },
         { "max_id", &(post->max_id) },
-        { "start_id", &(post->start_id) },
-        { "instance_url", &(post->instance_url) },
+        { "start_id", &(post->start_id) }
     };
     // END Query references
 

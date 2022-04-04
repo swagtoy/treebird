@@ -66,8 +66,8 @@ int main(void)
         char* get_str = read_query_data(&(ssn.query));
 
         mastodont_t api;
-        if (ssn.post.instance_url)
-            api.url = ssn.post.instance_url;
+        if (ssn.cookies.instance_url)
+            api.url = ssn.cookies.instance_url;
         else
             api.url = config_instance_url;
         mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
