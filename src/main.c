@@ -46,10 +46,6 @@ int main(void)
     // API
     while (FCGI_Accept() >= 0)
     {
-        mastodont_t api;
-        api.url = config_instance_url;
-        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
-
         struct session ssn = {
             .config = {
                 .changed = 0,
@@ -58,14 +54,21 @@ int main(void)
                 .jsactions = 0,
                 .jsreply = 0,
                 .jslive = 0
-            }
+            },
+            .cookies = { 0 },
+            .post = { 0 },
+            .query = { 0 }
         };
-
+        
         // Load cookies
         char* cookies_str = read_cookies_env(&(ssn.cookies));
-        api.token = ssn.cookies.access_token; // Load token now
         char* post_str = read_post_data(&(ssn.post));
         char* get_str = read_query_data(&(ssn.query));
+
+        mastodont_t api;
+        api.url = config_instance_url;
+        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
+        api.token = ssn.cookies.access_token; // Load token now
 
         /*******************
          *  Path handling  *
