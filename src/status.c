@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <pcre.h>
 #include "http.h"
 #include "base_page.h"
 #include "status.h"
@@ -142,6 +143,16 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
     return irt_html;
 }
 
+#define REGEX_GREENTEXT "((?:^|\\s)>.*)$"
+
+char* reformat_status(char* content)
+{
+    const char* error;
+    int erroffset;
+    pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
+    return "";
+}
+
 char* construct_status(mastodont_t* api,
                        struct mstdnt_status* status,
                        int* size,
@@ -158,6 +169,7 @@ char* construct_status(mastodont_t* api,
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
+    char* parse_content = status->content;
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
@@ -202,7 +214,7 @@ char* construct_status(mastodont_t* api,
                          status->bookmarked ? "un" : "",
                          status->bookmarked ? "Remove Bookmark" : "Bookmark",
                          in_reply_to_str ? in_reply_to_str : "",
-                         status->content,
+                         parse_content,
                          attachments ? attachments : "",
                          emoji_reactions ? emoji_reactions : "",
                          config_url_prefix,
@@ -231,6 +243,7 @@ char* construct_status(mastodont_t* api,
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
+    if (parse_content) free(parse_content);
     return stat_html;
 }
 
