@@ -507,11 +507,13 @@ svg.in-reply-to-icon
 .status .username,
 .notification-regular .username
 {
+    display: inline-block;
     font-weight: bold;
     text-overflow: ellipsis;
     overflow: hidden;
-    min-width: 0;
+    max-width: 350px;
     white-space: nowrap;
+    vertical-align: middle;
 }
 
 .status .status-content
