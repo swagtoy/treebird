@@ -25,6 +25,7 @@
 #include "error.h"
 #include "easprintf.h"
 #include "../config.h"
+#include "http.h"
 
 // Files
 #include "../static/login.chtml"
@@ -37,7 +38,6 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
     char* error = NULL;
     char* page;
 
-    printf("%s: %s\r\n", ssn->post.username ? ssn->post.username:  "none", ssn->post.password ? ssn->post.password : "none");
     if (ssn->post.username && ssn->post.password)
     {
         // Getting the client id/secret
@@ -48,34 +48,41 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
             .website = NULL
         };
 
-        mastodont_register_app(api, &args_app, &storage, &app);
-    
-        struct mstdnt_args args_token = {
-            .grant_type = "password",
-            .client_id = app.client_id,
-            .client_secret = app.client_secret,
-            .redirect_uri = NULL,
-            .scope = NULL,
-            .code = NULL,
-            .username = ssn->post.username,
-            .password = ssn->post.password
-        };
+        
 
-        if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
-                                         &token) == 1)
+        if (mastodont_register_app(api, &args_app, &storage, &app) != 0)
         {
             error = construct_error(oauth_store.error, NULL);
         }
         else {
-            // TODO checking, also ^ returns non-zero
-            fputs("Status: 303 See Other\r\n", stdout);
-            printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
-            printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
-            // if config_url_prefix is empty, make it root
-            printf("Location: %s\r\n\r\nRedirecting...",
-                   config_url_prefix[0] == '\0' ?
-                   "/" : config_url_prefix);
-            return;
+            struct mstdnt_args args_token = {
+                .grant_type = "password",
+                .client_id = app.client_id,
+                .client_secret = app.client_secret,
+                .redirect_uri = NULL,
+                .scope = NULL,
+                .code = NULL,
+                .username = ssn->post.username,
+                .password = ssn->post.password
+            };
+
+            if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
+                                             &token) != 0)
+            {
+                error = construct_error(oauth_store.error, NULL);
+            }
+            else {
+                printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
+                printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
+                // if config_url_prefix is empty, make it root
+                printf("Location: %s\r\n\r\nRedirecting...",
+                       config_url_prefix[0] == '\0' ?
+                       "/" : config_url_prefix);
+                redirect(REDIRECT_303, config_url_prefix ?
+                         (config_url_prefix[0] == '\0' ?
+                          "/" : config_url_prefix) : "/");
+                return;
+            }
         }
     }
 
