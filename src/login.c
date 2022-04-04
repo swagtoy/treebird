@@ -75,9 +75,6 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
                 printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
                 // if config_url_prefix is empty, make it root
-                printf("Location: %s\r\n\r\nRedirecting...",
-                       config_url_prefix[0] == '\0' ?
-                       "/" : config_url_prefix);
                 redirect(REDIRECT_303, config_url_prefix ?
                          (config_url_prefix[0] == '\0' ?
                           "/" : config_url_prefix) : "/");
