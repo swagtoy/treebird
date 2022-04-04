@@ -535,7 +535,7 @@ svg.in-reply-to-icon
     display: inline;
     float: right;
     font-size: 12px;
-    margin: 3px 3px 0 3px;
+    margin: 3px 0 0 3px;
 }
 
 .status-interact
@@ -703,16 +703,27 @@ svg.in-reply-to-icon
 {
     display: inline-block;
     position: relative;
-    left: 160px;
-    top: 200px;
+    left: 155px;
+    top: 185px;
     font-weight: bold;
     text-shadow: 0px 2px 6px #000;
 }
 
+.acct-banner
+{
+    overflow: hidden;
+}
+
+
 .acct-displayname
 {
     font-size: 26px;
-    display: block;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 6px 6px 8px;
+    overflow: hidden;
+    max-width: 420px !important;
     color: #fff;
 }
 
@@ -721,6 +732,7 @@ svg.in-reply-to-icon
     font-size: 14px;
     color: #dadada;
     display: block;
+    padding-left: 6px;
     font-weight: bold;
     text-shadow: 0px 0px 5px #000;
 }

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include "base_page.h"
 #include "error.h"
@@ -61,7 +62,7 @@ char* construct_account_page(mastodont_t* api,
     else
         cleanup = 1;
 
-    if (acct->note)
+    if (acct->note && strcmp(acct->note, "") != 0)
     {
         info_html = construct_account_info(acct, NULL);
     }
@@ -76,6 +77,8 @@ char* construct_account_page(mastodont_t* api,
                             acct->following_count,
                             "Followers",
                             acct->followers_count,
+                            acct->following ? "active" : "",
+                            acct->following ? "Following!" : "Follow",
                             acct->avatar,
                             info_html ? info_html : "",
                             statuses_html);

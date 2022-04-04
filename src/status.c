@@ -157,9 +157,9 @@ char* reformat_status(char* content)
 }
 
 char* construct_status(mastodont_t* api,
-                       struct mstdnt_status* status,
+                       struct mstdnt_status* local_status,
                        int* size,
-                       struct mstdnt_notification* notif,
+                       struct mstdnt_notification* local_notif,
                        uint8_t flags)
 {
     char* stat_html;
@@ -172,7 +172,23 @@ char* construct_status(mastodont_t* api,
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
+    struct mstdnt_status* status = local_status;
+    // Create a "fake" notification header which contains information for
+    // the reblogged status
+    struct mstdnt_notification notif_reblog;
+    struct mstdnt_notification* notif = local_notif;
+
+    // Repoint value if it's a reblog
+    if (status->reblog)
+    {
+        status = status->reblog;
+        // Point to our account
+        notif_reblog.account = &(local_status->account);
+        notif_reblog.type = MSTDNT_NOTIFICATION_REBLOG;
+        notif = &notif_reblog;
+    }
     char* parse_content = status->content;
+    
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
@@ -187,7 +203,9 @@ char* construct_status(mastodont_t* api,
         easprintf(&notif_info, data_notification_html,
                   notif->account->avatar,
                   notif->account->display_name,
-                  notification_type_str(notif->type),
+                  // Use compact type string, which looks better
+                  // for self-boosts
+                  local_status->reblog ? notification_type_compact_str(notif->type) : notification_type_str(notif->type),
                   notification_type_svg(notif->type));
 
     if (status->in_reply_to_id && status->in_reply_to_account_id)
