@@ -83,15 +83,15 @@ char* construct_account_page(mastodont_t* api,
                             acct->display_name,
                             acct->acct,
                             config_url_prefix,
-                            acct->acct,
+                            acct->id,
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "un" : "",
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "Unsubscribe" : "Subscribe",
                             config_url_prefix,
-                            acct->acct,
+                            acct->id,
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "un" : "",
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "Unblock" : "Block",
                             config_url_prefix,
-                            acct->acct,
+                            acct->id,
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "un" : "",
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "Unmute" : "Mute",
                             "Statuses",
@@ -173,7 +173,7 @@ void content_account_action(struct session* ssn, mastodont_t* api, char** data)
 {
     char* referer = getenv("HTTP_REFERER");
     struct mstdnt_storage storage = { 0 };
-    struct mstdnt_account acct = { 0 };
+    struct mstdnt_relationship acct = { 0 };
     
     if (strcmp(data[1], "follow") == 0)
         mastodont_follow_account(api, data[0], &storage, &acct);

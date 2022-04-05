@@ -83,7 +83,7 @@ int main(void)
             /* { "/config/account", content_config_account }, */
             { "/login", content_login },
             { "/test", content_test },
-            { "/@:/action/:", content_account_action },
+            { "/user/:/action/:", content_account_action },
             { "/@:", content_account },
             { "/status/create", content_status_create },
             { "/status/:/interact", status_interact },
