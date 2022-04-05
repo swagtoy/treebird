@@ -62,11 +62,25 @@ int parse_path(struct session* ssn,
                 tmp = NULL;
                 str_size = 0;
             }
+            else if (state == PARSE_NEUTRAL) {
+                if (p[j] == p2[i])
+                    break;
+                else {
+                    fail = 1;
+                    goto breakpt;
+                }
+            }
             
             if (fin) goto breakpt;
             break;
         case ':':
             state = PARSE_READ;
+            /* Abort early */
+            if (p2[j] == '\0')
+            {
+                fail = 1;
+                goto breakpt;
+            }
             // fall
         default:
             if (state == PARSE_NEUTRAL)
