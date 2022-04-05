@@ -657,6 +657,19 @@ svg.in-reply-to-icon
     position: relative;
 }
 
+.acct-badge
+{
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: #dadada;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+}
+
 .account-note
 {
     word-break: break-all;
@@ -997,7 +1010,8 @@ ul.large-list li a
 
 /* MENUS */
 
-.menu-container:hover .menu
+.menu-container:hover .menu,
+.menu-container:hover + .menu
 {
     position: absolute;
     display: block;
@@ -1008,6 +1022,7 @@ ul.large-list li a
     z-index: 5;
     display: none;
     background: #fafafa;
+    color: #000;
     border-radius: 4px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
@@ -1021,6 +1036,7 @@ ul.large-list li a
 .menu ul li
 {
     list-style-type: none;
+    display: block;
 }
 
 .menu .btn-menu
@@ -1033,10 +1049,28 @@ ul.large-list li a
     border: 0;
     cursor: pointer;
     text-align: left;
+    box-sizing: border-box;
+}
+
+.user-options-btn
+{
+    padding: 4px;
+    border-radius: 64px;
+    margin: 8px;
+    float: right;
+    font-size: 12px;
+    color: #dadada;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, .7);
 }
 
 .menu .btn-menu:hover
 {
     background-color: #eaeaea;
     color: #000;
+}
+
+.nolink
+{
+    text-decoration: none;
 }

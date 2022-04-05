@@ -1,9 +1,22 @@
 <div class="account">
+  %s
   <div class="acct-banner" style="background-image:url('%s');">
+    %s
     <div class="acct-info-data">
       <span class="acct-displayname">%s</span>
       <span class="acct-username">%s</span>
     </div>
+
+    <span class="menu-container user-options-btn">
+      Menu
+      <div class="menu menu-options">
+        <ul>
+          <li><a class="nolink" href="%s/@%s/action/%ssubscribe"><input class="btn-menu" type="button" value="%s"></a></li>
+          <li><a class="nolink" href="%s/@%s/action/%sblock"><input class="btn-menu" type="button" value="%s"></a></li>
+          <li><a class="nolink" href="%s/@%s/action/%smute"><input class="btn-menu" type="button" value="%s"></a></li>
+        </ul>
+      </div>
+    </span>
   </div>
   
   <div class="acct-header">
@@ -22,7 +35,9 @@
       <span class="btn-content">%d</span>
     </a>
     
-    <a href="#" class="follow-btn btn %s">%s</a>
+    <a class="follow-btn btn %s">
+      %s
+    </a>
   </div>
   <img class="acct-pfp" src="%s">
 </div>

@@ -24,11 +24,14 @@
 #include "account.h"
 #include "easprintf.h"
 #include "status.h"
+#include "http.h"
 
 // Files
 #include "../static/index.chtml"
 #include "../static/account.chtml"
 #include "../static/account_info.chtml"
+
+#define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
 char* construct_account_info(struct mstdnt_account* acct,
                              size_t* size)
@@ -53,6 +56,7 @@ char* construct_account_page(mastodont_t* api,
     int cleanup = 0;
     int result_size;
     char* statuses_html;
+    char* follows_you = NULL;
     char* info_html = NULL;
     char* result;
 
@@ -67,19 +71,37 @@ char* construct_account_page(mastodont_t* api,
     {
         info_html = construct_account_info(acct, NULL);
     }
+
+    if (relationship) 
+        if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWED_BY))
+            easprintf(&follows_you, FOLLOWS_YOU_HTML, "Follows you");
     
     result_size = easprintf(&result, data_account_html,
+                            "",
                             acct->header,
+                            follows_you ? follows_you : "",
                             acct->display_name,
                             acct->acct,
+                            config_url_prefix,
+                            acct->acct,
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "un" : "",
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "Unsubscribe" : "Subscribe",
+                            config_url_prefix,
+                            acct->acct,
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "un" : "",
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "Unblock" : "Block",
+                            config_url_prefix,
+                            acct->acct,
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "un" : "",
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "Unmute" : "Mute",
                             "Statuses",
                             acct->statuses_count,
                             "Following",
                             acct->following_count,
                             "Followers",
                             acct->followers_count,
-                            MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "active" : "",
-                            MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "Following!" : "Follow",
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "active" : "",
+                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "Following!" : "Follow",
                             acct->avatar,
                             info_html ? info_html : "",
                             statuses_html);
@@ -90,6 +112,7 @@ char* construct_account_page(mastodont_t* api,
     if (res_size) *res_size = result_size;
     if (cleanup) free(statuses_html);
     if (info_html) free(info_html);
+    if (follows_you) free(follows_you);
     return result;
 }
 
@@ -144,4 +167,32 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
     mstdnt_cleanup_statuses(statuses, status_len);
     mstdnt_cleanup_relationships(relationships);
     free(account_page);
+}
+
+void content_account_action(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* referer = getenv("HTTP_REFERER");
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account acct = { 0 };
+    
+    if (strcmp(data[1], "follow") == 0)
+        mastodont_follow_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "unfollow") == 0)
+        mastodont_unfollow_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "mute") == 0)
+        mastodont_mute_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "unmute") == 0)
+        mastodont_unmute_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "block") == 0)
+        mastodont_block_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "unblock") == 0)
+        mastodont_unblock_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "subscribe") == 0)
+        mastodont_subscribe_account(api, data[0], &storage, &acct);
+    else if (strcmp(data[1], "unsubscribe") == 0)
+        mastodont_unsubscribe_account(api, data[0], &storage, &acct);
+
+    mastodont_storage_cleanup(&storage);
+
+    redirect(REDIRECT_303, referer);
 }

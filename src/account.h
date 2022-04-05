@@ -32,4 +32,5 @@ char* construct_account_page(mastodont_t* api,
                              size_t* res_size);
 void content_account(struct session* ssn, mastodont_t* api, char** data);
 
+void content_account_action(struct session* ssn, mastodont_t* api, char** data);
 #endif // ACCOUNT_H
