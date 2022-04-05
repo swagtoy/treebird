@@ -62,7 +62,7 @@ int parse_path(struct session* ssn,
                 tmp = NULL;
                 str_size = 0;
             }
-            else if (state == PARSE_NEUTRAL) {
+            else if (state == PARSE_NEUTRAL && fin != 1) {
                 if (p[j] == p2[i])
                     break;
                 else {
