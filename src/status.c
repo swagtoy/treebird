@@ -26,6 +26,7 @@
 #include "query.h"
 #include "cookie.h"
 #include "string_helpers.h"
+#include "error.h"
 #include "reply.h"
 #include "attachments.h"
 #include "emoji_reaction.h"
@@ -320,21 +321,24 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
 
     try_post_status(ssn, api);
+    mastodont_get_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
+                                 &stat_before_len, &stat_after_len);
     
     // Get information
-    mastodont_get_status_context(api, data[0], &storage, &statuses_before, &statuses_after,
-                             &stat_before_len, &stat_after_len);
-    mastodont_get_status(api, data[0], &status_storage, &status);
-
-    // Before...
-    before_html = construct_statuses(api, statuses_before, stat_before_len, NULL);
-
-    // Current status
-    stat_html = construct_status(api, &status, NULL, NULL, STATUS_FOCUSED);
-    if (is_reply)
+    if (mastodont_get_status(api, data[0], &status_storage, &status))
     {
-        stat_reply = reply_status(data[0],
-                                  &status);
+        stat_html = construct_error("Status not found", NULL);
+    }
+    else {
+        before_html = construct_statuses(api, statuses_before, stat_before_len, NULL);
+
+        // Current status
+        stat_html = construct_status(api, &status, NULL, NULL, STATUS_FOCUSED);
+        if (is_reply)
+        {
+            stat_reply = reply_status(data[0],
+                                      &status);
+        }
     }
 
     // After...
@@ -366,4 +370,5 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     mstdnt_cleanup_statuses(statuses_after, stat_after_len);
     mstdnt_cleanup_status(&status);
     mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&status_storage);
 }
