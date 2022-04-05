@@ -45,6 +45,7 @@ char* construct_account_info(struct mstdnt_account* acct,
 
 char* construct_account_page(mastodont_t* api,
                              struct mstdnt_account* acct,
+                             struct mstdnt_relationship* relationship,
                              struct mstdnt_status* statuses,
                              size_t statuses_len,
                              size_t* res_size)
@@ -77,8 +78,8 @@ char* construct_account_page(mastodont_t* api,
                             acct->following_count,
                             "Followers",
                             acct->followers_count,
-                            0 ? "active" : "",
-                            0 ? "Following!" : "Follow",
+                            MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "active" : "",
+                            MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "Following!" : "Follow",
                             acct->avatar,
                             info_html ? info_html : "",
                             statuses_html);
@@ -96,9 +97,11 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
 {
     char* account_page;
     struct mstdnt_account acct = { 0 };
-    struct mstdnt_storage storage = { 0 }, status_storage = { 0 };
+    struct mstdnt_storage storage = { 0 }, status_storage = { 0 }, relations_storage = { 0 };
     struct mstdnt_status* statuses = NULL;
+    struct mstdnt_relationship* relationships = { 0 };
     size_t status_len = 0;
+    size_t relationships_len = 0;
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
     if (mastodont_get_account(api, lookup_type, data[0],
@@ -106,11 +109,15 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
         mastodont_get_account_statuses(api, acct.id, NULL,
                                        &status_storage, &statuses, &status_len))
     {
-        account_page = construct_error("Couldn't load account info", NULL);
+        account_page = construct_error(status_storage.error, NULL);
     }
     else {
+        /* Not an error? */
+        mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+            
         account_page = construct_account_page(api,
                                               &acct,
+                                              relationships,
                                               statuses,
                                               status_len,
                                               NULL);
@@ -128,9 +135,13 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
     /* Output */
     render_base_page(&b, ssn, api);
 
+    /* TODO urgent: cleanup relationships */
+
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
+    mastodont_storage_cleanup(&relations_storage);
     mstdnt_cleanup_statuses(statuses, status_len);
+    mstdnt_cleanup_relationships(relationships);
     free(account_page);
 }

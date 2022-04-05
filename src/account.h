@@ -26,6 +26,7 @@ char* construct_account_info(struct mstdnt_account* acct,
                              size_t* size);
 char* construct_account_page(mastodont_t* api,
                              struct mstdnt_account* acct,
+                             struct mstdnt_relationship* relationship,
                              struct mstdnt_status* statuses,
                              size_t statuses_len,
                              size_t* res_size);
