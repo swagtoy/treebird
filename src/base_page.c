@@ -74,6 +74,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
                         ssn->config.theme,
+                        ssn->config.themeclr ? "-dark" : "",
                         config_url_prefix,
                         L10N[locale][L10N_APP_NAME],
                         login_string,
