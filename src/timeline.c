@@ -56,7 +56,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
     
     if (mastodont_timeline_public(api, &args, &storage, &statuses, &status_count))
     {
-        status_format = construct_error(storage.error, NULL);
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
         // Construct statuses into HTML

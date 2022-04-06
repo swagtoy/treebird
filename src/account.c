@@ -58,6 +58,7 @@ char* construct_account_page(mastodont_t* api,
     char* statuses_html;
     char* follows_you = NULL;
     char* info_html = NULL;
+    char* is_blocked = NULL;
     char* result;
 
     // Load statuses html
@@ -72,12 +73,17 @@ char* construct_account_page(mastodont_t* api,
         info_html = construct_account_info(acct, NULL);
     }
 
-    if (relationship) 
+    if (relationship)
+    {
         if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWED_BY))
             easprintf(&follows_you, FOLLOWS_YOU_HTML, "Follows you");
+
+        if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKED_BY))
+            is_blocked = construct_error("You are blocked by this user", E_NOTE, 0, NULL);
+    }
     
     result_size = easprintf(&result, data_account_html,
-                            "",
+                            is_blocked ? is_blocked : "",
                             acct->header,
                             follows_you ? follows_you : "",
                             acct->display_name,
@@ -104,6 +110,18 @@ char* construct_account_page(mastodont_t* api,
                             !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "Following!" : "Follow",
                             acct->avatar,
                             info_html ? info_html : "",
+                            config_url_prefix,
+                            acct->acct,
+                            "Statuses",
+                            config_url_prefix,
+                            acct->acct,
+                            "Scrobbles",
+                            config_url_prefix,
+                            acct->acct,
+                            "Media",
+                            config_url_prefix,
+                            acct->acct,
+                            "Pinned",
                             statuses_html);
     
     if (result_size == -1)
@@ -113,6 +131,7 @@ char* construct_account_page(mastodont_t* api,
     if (cleanup) free(statuses_html);
     if (info_html) free(info_html);
     if (follows_you) free(follows_you);
+    if (is_blocked) free(is_blocked);
     return result;
 }
 
@@ -132,7 +151,7 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
         mastodont_get_account_statuses(api, acct.id, NULL,
                                        &status_storage, &statuses, &status_len))
     {
-        account_page = construct_error(status_storage.error, NULL);
+        account_page = construct_error(status_storage.error, E_ERROR, 1, NULL);
     }
     else {
         /* Not an error? */

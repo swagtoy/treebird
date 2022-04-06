@@ -72,7 +72,7 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
 
     if (mastodont_get_lists(api, &lists, &storage, &size_list))
     {
-        lists_page = construct_error(storage.error, NULL);
+        lists_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
         lists_format = construct_lists(lists, size_list, NULL);

@@ -327,7 +327,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     // Get information
     if (mastodont_get_status(api, data[0], &status_storage, &status))
     {
-        stat_html = construct_error("Status not found", NULL);
+        stat_html = construct_error("Status not found", E_ERROR, 1, NULL);
     }
     else {
         before_html = construct_statuses(api, statuses_before, stat_before_len, NULL);

@@ -172,15 +172,29 @@ table.present th, table.present td
     margin-top: 5px;
 }
 
-.error
+.e-error
 {
     display: block;
-    border-radius: 4px;
     background-color: #fcb0b0;
     color: #000;
     border: 1px solid #bb1c1f;
     padding: 15px;
+    font-weight: bold;
+}
+
+.error-pad
+{
     margin: 5px;
+    border-radius: 4px;
+}
+
+.e-notice
+{
+    display: block;
+    background-color: #ddeeff;
+    color: #000;
+    border: 1px solid #66ccff;
+    padding: 15px;
     font-weight: bold;
 }
 
@@ -191,7 +205,7 @@ table.present th, table.present td
 { 
     background: linear-gradient(#fff, #f7f7f7);
     color: #000;
-    text-decoration: none;    
+    text-decoration: none;
 }
 
 .sidebarbtn:hover, .btn:hover
@@ -673,6 +687,7 @@ svg.in-reply-to-icon
 .account-note
 {
     word-break: break-all;
+    text-align: center;
 }
 
 .account-info
@@ -681,7 +696,7 @@ svg.in-reply-to-icon
     color: #000;
     padding: 15px 50px;
     border-bottom: 1px solid #cacaca;
-    max-height: 200px;
+    max-height: 360px;
     overflow: auto;
 }
 
@@ -986,27 +1001,51 @@ ul.large-list li a
 }
 
 /* Navigation */
-.navigation
+.navigation,
+.tabs
 {
     table-layout: fixed;
-    background-color: #eaeaea;
+    background-color: #f3f3f3;
     color: #000;
     width: 100%;
     border-spacing: 0px;
     box-shadow: 0px 1px 0px #dadada;
 }
 
-.navigation .nav-btn
+.navigation .nav-btn,
+.tabs .tab-btn
 {
     display: block;
     padding: 8px !important;
 }
 
-.navigation tr td:not(:last-child)
+.tabs .tab-btn
+{
+    width: 100%;
+    border: 0;
+}
+
+.tabs .tab-btn.focused
+{
+    border-bottom: 3px solid #aa0000;
+}
+
+.tabs .tab-btn:hover,
+.tabs .tab-btn:active
+{
+    border-bottom: 3px solid #600000;
+}
+
+.navigation tr td:not(:last-child),
+.tabs tr td:not(:last-child)
 {
     border-right: 1px solid #dadada;
 }
 
+.ui-table tr td a
+{
+    text-decoration: none;
+}
 
 /* MENUS */
 

@@ -52,7 +52,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
 
         if (mastodont_register_app(api, &args_app, &storage, &app) != 0)
         {
-            error = construct_error(oauth_store.error, NULL);
+            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
         }
         else {
             struct mstdnt_args args_token = {
@@ -69,7 +69,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
             if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
                                              &token) != 0)
             {
-                error = construct_error(oauth_store.error, NULL);
+                error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
             }
             else {
                 printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);

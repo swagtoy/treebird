@@ -22,7 +22,14 @@
 #include <stddef.h>
 #include "session.h"
 
-char* construct_error(char* message, size_t* size);
+enum error_type
+{
+    E_ERROR,
+    E_WARNING,
+    E_NOTE
+};
+
+char* construct_error(char* error, enum error_type type, unsigned pad, size_t* size);
 void content_not_found(struct session* ssn, mastodont_t* api, char* path);
 
 #endif // ERROR_H

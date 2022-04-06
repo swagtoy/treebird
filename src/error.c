@@ -25,10 +25,23 @@
 #include "../static/error_404.chtml"
 #include "../static/error.chtml"
 
-char* construct_error(char* error, size_t* size)
+char* construct_error(char* error, enum error_type type, unsigned pad, size_t* size)
 {
     char* error_html;
+    char* class;
+
+    switch (type)
+    {
+    case E_ERROR:
+        class = "error"; break;
+    case E_WARNING:
+        class = "warning"; break;
+    case E_NOTE:
+        class = "notice"; break;
+    }
     size_t s = easprintf(&error_html, data_error_html,
+                         class,
+                         pad ? "error-pad" : "",
                          error);
     if (size) *size = s;
     return error_html;
