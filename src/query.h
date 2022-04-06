@@ -50,6 +50,7 @@ struct query_values
 struct get_values
 {
     char* offset;
+    char* q;
 };
 
 char* read_query_data(struct get_values* query);

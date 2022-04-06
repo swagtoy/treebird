@@ -84,6 +84,7 @@ int main(void)
             { "/login", content_login },
             { "/test", content_test },
             { "/user/:/action/:", content_account_action },
+            { "/search", content_search },
             { "/@:", content_account },
             { "/status/create", content_status_create },
             { "/status/:/interact", status_interact },
