@@ -35,6 +35,7 @@
 #include "session.h"
 #include "notifications.h"
 #include "test.h"
+#include "search.h"
 
 int main(void)
 {

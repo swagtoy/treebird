@@ -84,6 +84,8 @@ $(PAGES_DIR)/in_reply_to.chtml: $(PAGES_DIR)/in_reply_to.html
 	./filec $< data_in_reply_to_html > $@
 $(PAGES_DIR)/account_info.chtml: $(PAGES_DIR)/account_info.html
 	./filec $< data_account_info_html > $@
+$(PAGES_DIR)/search.chtml: $(PAGES_DIR)/search.html
+	./filec $< data_search_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
