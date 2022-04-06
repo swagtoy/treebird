@@ -46,11 +46,51 @@ struct status_args
     struct mstdnt_status* status;
 };
 
+/* A cheap parser for multipart data
+ * It is designed only for files, don't use this for anything else */
+static int parse_files(char*** files, size_t* files_len)
+{
+    char* content_type = getenv("CONTENT_TYPE");
+
+    char* bound_str;
+    char* boundary;
+
+    /* Tmp reading variables */
+    char* tmp;
+
+    if (strstr(content_type, "multipart/form-data") == NULL ||
+        (bound_str = strstr(content_type, "boundary")) == NULL)
+        return 1;
+
+    bound_str += sizeof("boundary")-1;
+
+    boundary = (tmp = strchr(bound_str, '\"')) ? tmp :
+        strchr(bound_str, '=');
+    if (!boundary)
+        return 1;
+    boundary++;
+
+    if ((tmp = strchr(boundary, '\"')))
+        *tmp = '\0';
+
+    return 0;
+}
+
+
 int try_post_status(struct session* ssn, mastodont_t* api)
 {
     if (!(ssn->post.content)) return 1;
 
     struct mstdnt_storage storage;
+
+    char** files;
+    size_t files_len;
+
+    if (parse_files(&files, &files_len) == 0)
+    {
+
+    }
+    return 1;
 
     // Cookie copy and read
     struct mstdnt_args args = {
@@ -84,6 +124,7 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data)
     try_post_status(ssn, api);
 
     redirect(REDIRECT_303, referer);
+
 }
 
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
