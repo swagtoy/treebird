@@ -59,3 +59,19 @@ error:
     free(content_type);
     return 1;
 }
+
+/* TODO Write a function like strchr but it checks a non-whitespace character */
+
+char* read_mime_data(char* boundary, char* begin, struct http_mime_info* info)
+{
+    char* begin_header;
+    size_t bound_len = strlen(boundary);
+    if (strncmp(begin, "--", 2) != 0 ||
+        strncmp(begin+2, boundary, bound_len) != 0)
+        return NULL;
+
+    begin_header = begin + 2 + bound+len + 2; /* Skip over LRSF */
+
+    if (strncmp(begin_header, "content-disposition", sizeof("content-disposition")) != 0)
+        return NULL;
+}
