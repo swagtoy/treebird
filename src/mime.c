@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <ctype.h>
 #include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -60,18 +61,49 @@ error:
     return 1;
 }
 
-/* TODO Write a function like strchr but it checks a non-whitespace character */
-
-char* read_mime_data(char* boundary, char* begin, struct http_mime_info* info)
+char* strnws(char* str)
 {
-    char* begin_header;
+    for (; isblank(*str); ++str);
+    return str;
+}
+
+#define STRSCMP(begin, str) strncmp((begin), (str), sizeof(str))
+char* read_form_data(char* boundary, char* begin, struct http_form_info* info)
+{
+    char* r, *name;
     size_t bound_len = strlen(boundary);
     if (strncmp(begin, "--", 2) != 0 ||
         strncmp(begin+2, boundary, bound_len) != 0)
         return NULL;
 
-    begin_header = begin + 2 + bound+len + 2; /* Skip over LRSF */
+    r = begin + 2 + bound_len + 2; /* Skip over LRSF */
 
-    if (strncmp(begin_header, "content-disposition", sizeof("content-disposition")) != 0)
+    if (STRSCMP(r, "Content-Disposition") != 0)
         return NULL;
+
+    r = strnws(r + sizeof("Content-Disposition")+1);
+    if (*r != ':' ||
+        STRSCMP(r, "form-data") != 0) // Fucked up
+        return NULL;
+    
+    r = strnws(r + sizeof("form-data")+1);
+    if (*r != ';')
+        return NULL;
+    r = strnws(r+1);
+    if (STRSCMP(r, "name") != 0)
+        return NULL;
+    r = strnws(r + sizeof("name")+1);
+    if (*r != '=')
+        return NULL;
+    r = strnws(r + 1);
+    if (*r == '\"')
+        r += 2;
+    if (*r == '\"') ++r;
+    name = r;
+    if ((r = strchr(r, '\"')))
+        *r = '\0';
+
+    printf("nameparsed: %s\r\n", name);
+
+    return name;
 }

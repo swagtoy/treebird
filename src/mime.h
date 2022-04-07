@@ -20,6 +20,6 @@
 #define MIME_H
 
 char* get_mime_boundary();
-char* read_mime_data(char* boundary, char* begin, struct http_mime_info* info);
+char* read_mime_data(char* boundary, char* begin, struct http_form_info* info);
 
 #endif /* MIME_H */
