@@ -16,23 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef KEY_H
-#define KEY_H
+#include "key.h"
 
-struct form_props
+void key_string(char* val, struct form_props* props, void* _arg)
 {
-    char* filename;
-    char* filetype;
-};
-
-struct key_value_refs
-{
-    char* key;
-    void* val;
-    struct form_props form;
-    void (*func)(char*, struct form_props*, void*);
-};
-
-void key_string(char* val, struct form_props* form, void* arg);
-
-#endif // KEY_H
+    char** arg = _arg;
+    *arg = val;
+}

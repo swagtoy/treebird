@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include "query.h"
 #include "key.h"
+#include "mime.h"
 
 struct query_values post = { 0 };
 struct get_values query = { 0 };
@@ -34,8 +35,8 @@ char* read_query_data(struct get_values* query)
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "offset", &(query->offset) },
-        { "q", &(query->q) },
+        { "offset", &(query->offset), { 0 }, key_string },
+        { "q", &(query->q), { 0 }, key_string },
     };
     // END Query references
     
@@ -58,7 +59,7 @@ char* read_query_data(struct get_values* query)
             if (!(info.key && info.val)) break;
             for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                 if (strcmp(info.key, refs[i].key) == 0)
-                    *(refs[i].val) = info.val;
+                    refs[i].func(info.val, NULL, info.key);
         }
         while (g_query_read);
     }
@@ -68,31 +69,34 @@ char* read_query_data(struct get_values* query)
 
 char* read_post_data(struct query_values* post)
 {
-    struct http_query_info info;
+    struct http_query_info query_info;
+    struct http_form_info form_info;
     char* request_method = getenv("REQUEST_METHOD");
     char* post_query = NULL, *p_query_read;
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "content", &(post->content) },
-        { "itype", &(post->itype) },
-        { "id", &(post->id) },
-        { "theme", &(post->theme) },
-        { "themeclr", &(post->themeclr) },
-        { "jsactions", &(post->jsactions) },
-        { "jsreply", &(post->jsreply) },
-        { "jslive", &(post->jslive) },
-        { "username", &(post->username) },
-        { "password", &(post->password) },
-        { "replyid", &(post->replyid) },
-        { "min_id", &(post->min_id) },
-        { "max_id", &(post->max_id) },
-        { "start_id", &(post->start_id) }
+        { "content", &(post->content), { 0 }, key_string },
+        { "itype", &(post->itype), { 0 }, key_string },
+        { "id", &(post->id), { 0 }, key_string },
+        { "theme", &(post->theme), { 0 }, key_string },
+        { "themeclr", &(post->themeclr), { 0 }, key_string },
+        { "jsactions", &(post->jsactions), { 0 }, key_string },
+        { "jsreply", &(post->jsreply), { 0 }, key_string },
+        { "jslive", &(post->jslive), { 0 }, key_string },
+        { "username", &(post->username), { 0 }, key_string },
+        { "password", &(post->password), { 0 }, key_string },
+        { "replyid", &(post->replyid), { 0 }, key_string },
+        { "min_id", &(post->min_id), { 0 }, key_string },
+        { "max_id", &(post->max_id), { 0 }, key_string },
+        { "start_id", &(post->start_id), { 0 }, key_string }
     };
     // END Query references
 
     if (request_method && strcmp("POST", request_method) == 0)
     {
+        char* mime_boundary;
+        char* mime_mem = get_mime_boundary(NULL, &mime_boundary);
         int content_length = atoi(getenv("CONTENT_LENGTH"));
         post_query = malloc(content_length + 1);
         if (!post_query)
@@ -110,13 +114,29 @@ char* read_post_data(struct query_values* post)
 
         do
         {
-            p_query_read = parse_query(p_query_read, &info);
-            if (!(info.key && info.val)) break;
-            for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
-                if (strcmp(info.key, refs[i].key) == 0)
-                    *(refs[i].val) = info.val;
+            if (mime_mem)
+            {
+                // Mime value
+                p_query_read = read_form_data(mime_boundary,
+                                              p_query_read,
+                                              &form_info);
+                if (!p_query_read) break;
+                for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
+                    if (strcmp(form_info.name, refs[i].key) == 0)
+                        refs[i].func(form_info.value, &(refs[i].form), refs[i].val);
+            }
+            else {
+                // Mime value not set
+                p_query_read = parse_query(p_query_read, &query_info);
+                if (!(query_info.key && query_info.val)) break;
+                for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
+                    if (strcmp(query_info.key, refs[i].key) == 0)
+                        refs[i].func(query_info.val, NULL, refs[i].val);
+            }
         }
         while (p_query_read);
+
+        if (mime_mem) free(mime_mem);
     }
 
     // Free me afterwards!

@@ -61,7 +61,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
             .min_id = NULL,
             .since_id = NULL,
             .offset = 0,
-            .limit = 20,
+            .limit = 8,
         };
         
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
