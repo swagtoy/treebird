@@ -19,7 +19,7 @@
 #ifndef MIME_H
 #define MIME_H
 
-char* get_mime_boundary();
+char* get_mime_boundary(char* content_type, char** res);
 char* read_mime_data(char* boundary, char* begin, struct http_form_info* info);
 
 #endif /* MIME_H */

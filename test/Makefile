@@ -1,10 +1,10 @@
 CC ?= cc
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
-CFLAGS += -Wall -I ../$(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-discarded-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
+CFLAGS += -g -Wall -I ../$(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-discarded-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
 LDFLAGS = -L./../$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
 TARGET = tests
-SRC = unit/main.c
+SRC = unit/main.c ../src/mime.c
 OBJ = $(patsubst %.c,%.o,$(SRC)) 
 
 all: $(TARGET)

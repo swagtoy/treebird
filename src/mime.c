@@ -22,17 +22,18 @@
 #include <stdlib.h>
 #include "mime.h"
 
-char* get_mime_boundary()
+char* get_mime_boundary(char* content_type_str, char** bound)
 {
-    if (!getenv("CONTENT_TYPE")) return 1;
+    char* content = content_type_str ? content_type_str : getenv("CONTENT_TYPE");
 
     // Data gets changed in place
-    char* content_type = malloc(strlen(getenv("CONTENT_TYPE"))+1);
+    char* content_type = malloc(strlen(content)+1);
     if (!content_type)
     {
         perror("malloc");
         exit(1);
     }
+    strcpy(content_type, content);
 
     char* bound_str;
     char* boundary;
@@ -55,10 +56,12 @@ char* get_mime_boundary()
     if ((tmp = strchr(boundary, '\"')))
         *tmp = '\0';
 
-    return 0;
+    *bound = boundary;
+    
+    return content_type;
 error:
     free(content_type);
-    return 1;
+    return NULL;
 }
 
 char* strnws(char* str)

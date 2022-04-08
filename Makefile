@@ -96,6 +96,9 @@ install: $(TARGET)
 	install -d $(PREFIX)/share/treebird/
 	cp -r dist/ $(PREFIX)/share/treebird/
 
+test:
+	make -C test
+
 apache_start:
 	./scripts/fcgistarter.sh
 
@@ -119,4 +122,4 @@ clean_deps:
 
 clean_all: clean clean_deps
 
-.PHONY: all filec clean update clean clean_deps clean_all
+.PHONY: all filec clean update clean clean_deps clean_all test
