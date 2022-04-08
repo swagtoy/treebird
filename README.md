@@ -1,3 +1,5 @@
+# NOTE: This software is not finished. Any bugs are likely noted
+
 # Treebird
 
 ![Treebird logo](./meta/treebird.png)
