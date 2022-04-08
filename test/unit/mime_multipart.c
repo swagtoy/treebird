@@ -19,7 +19,7 @@
 #include <string.h>
 #include <assert.h>
 
-int mime_multipart_test(void)
+void mime_boundary_check(void)
 {
     char* bound, *bound2;
     char* mem = get_mime_boundary(BOUNDARY_CONTENT_T2, &bound);
@@ -29,7 +29,43 @@ int mime_multipart_test(void)
            strcmp(bound2, BOUNDARY_RES_T) == 0);
     free(mem);
     free(mem2);
+}
 
+
+void form_check(void)
+{
+    struct http_form_info info;
+    char* pos;
+    char* multipart = malloc(sizeof(MULTIPART_TEST));
+    
+    assert(multipart != NULL);
+    
+    // Copy and test
+    strcpy(multipart, MULTIPART_TEST);
+    pos = read_form_data(BOUNDARY_RES_T, multipart, &info);
+
+    assert(pos != NULL);
+    assert(strcmp(info.name, "text") == 0);
+    assert(strcmp(info.value, "text default") == 0);
+
+    // test next value
+    pos = read_form_data(BOUNDARY_RES_T, pos, &info);
+
+    assert(pos != NULL);
+    assert(strcmp(info.name, "file1") == 0);
+    assert(strcmp(info.filename, "a.txt") == 0);
+    assert(strcmp(info.content_type, "text/plain") == 0);
+    assert(strcmp(info.value, "Content of a.txt.\r\n") == 0);
+
+    // TODO keep testing!
+    
+    free(multipart);
+}
+
+int mime_multipart_test(void)
+{
+    mime_boundary_check();
+    form_check();
     
     return 0;
 }
