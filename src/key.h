@@ -29,7 +29,6 @@ struct key_value_refs
 {
     char* key;
     void* val;
-    struct form_props form;
     void (*func)(char*, struct form_props*, void*);
 };
 

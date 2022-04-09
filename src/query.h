@@ -27,6 +27,12 @@ struct http_query_info
     char* val;
 };
 
+struct http_array
+{
+    char* content;
+    size_t array_size;
+}
+
 struct query_values
 {
     // Config
@@ -45,6 +51,8 @@ struct query_values
     char* min_id;
     char* max_id;
     char* start_id;
+
+    struct http_array file;
 };
 
 struct get_values

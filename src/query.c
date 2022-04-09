@@ -76,20 +76,21 @@ char* read_post_data(struct query_values* post)
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "content", &(post->content), { 0 }, key_string },
-        { "itype", &(post->itype), { 0 }, key_string },
-        { "id", &(post->id), { 0 }, key_string },
-        { "theme", &(post->theme), { 0 }, key_string },
-        { "themeclr", &(post->themeclr), { 0 }, key_string },
-        { "jsactions", &(post->jsactions), { 0 }, key_string },
-        { "jsreply", &(post->jsreply), { 0 }, key_string },
-        { "jslive", &(post->jslive), { 0 }, key_string },
-        { "username", &(post->username), { 0 }, key_string },
-        { "password", &(post->password), { 0 }, key_string },
-        { "replyid", &(post->replyid), { 0 }, key_string },
-        { "min_id", &(post->min_id), { 0 }, key_string },
-        { "max_id", &(post->max_id), { 0 }, key_string },
-        { "start_id", &(post->start_id), { 0 }, key_string }
+        { "content", &(post->content), key_string },
+        { "itype", &(post->itype), key_string },
+        { "id", &(post->id), key_string },
+        { "theme", &(post->theme), key_string },
+        { "themeclr", &(post->themeclr), key_string },
+        { "jsactions", &(post->jsactions), key_string },
+        { "jsreply", &(post->jsreply), key_string },
+        { "jslive", &(post->jslive), key_string },
+        { "username", &(post->username), key_string },
+        { "password", &(post->password), key_string },
+        { "replyid", &(post->replyid), key_string },
+        { "min_id", &(post->min_id), key_string },
+        { "max_id", &(post->max_id), key_string },
+        { "start_id", &(post->start_id), key_string },
+        { "file", &(post->file), key_form }
     };
     // END Query references
 
