@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fcgi_stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "query.h"
-#include "key.h"
 #include "mime.h"
 
 struct query_values post = { 0 };
@@ -35,8 +35,8 @@ char* read_query_data(struct get_values* query)
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
-        { "offset", &(query->offset), { 0 }, key_string },
-        { "q", &(query->q), { 0 }, key_string },
+        { "offset", &(query->offset), key_string },
+        { "q", &(query->q), key_string },
     };
     // END Query references
     
@@ -67,10 +67,35 @@ char* read_query_data(struct get_values* query)
     return get_query;
 }
 
+void key_files(char* val, struct form_props* form, void* arg)
+{
+    struct file_array* arr = arg;
+    char* ptr;
+
+    arr->content = realloc(arr->content,
+                           sizeof(struct file_content) * ++(arr->array_size));
+    if (!(arr->content))
+        return;
+    
+    ptr = malloc(form->data_size+1);
+    if (!ptr)
+        return;
+    
+    memcpy(ptr, val, form->data_size+1);
+
+    // Store
+    arr->content[arr->array_size-1].content = ptr;
+    arr->content[arr->array_size-1].content_size = form->data_size;
+
+    return;
+
+}
+
 char* read_post_data(struct query_values* post)
 {
     struct http_query_info query_info;
     struct http_form_info form_info;
+    struct form_props form_props;
     char* request_method = getenv("REQUEST_METHOD");
     char* post_query = NULL, *p_query_read;
 
@@ -90,7 +115,7 @@ char* read_post_data(struct query_values* post)
         { "min_id", &(post->min_id), key_string },
         { "max_id", &(post->max_id), key_string },
         { "start_id", &(post->start_id), key_string },
-        { "file", &(post->file), key_form }
+        { "file", &(post->files), key_files }
     };
     // END Query references
 
@@ -121,10 +146,13 @@ char* read_post_data(struct query_values* post)
                 p_query_read = read_form_data(mime_boundary,
                                               p_query_read,
                                               &form_info);
+                form_props.filename = form_info.filename;
+                form_props.filetype = form_info.content_type;
+                form_props.data_size = form_info.value_size;
                 if (!p_query_read) break;
                 for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                     if (strcmp(form_info.name, refs[i].key) == 0)
-                        refs[i].func(form_info.value, &(refs[i].form), refs[i].val);
+                        refs[i].func(form_info.value, &form_props, refs[i].val);
             }
             else {
                 // Mime value not set
@@ -200,4 +228,15 @@ char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg)
     }
 
     return post_query;
+}
+
+void free_files(struct file_array* files)
+{
+    if (!files) return;
+    struct file_content* content = files->content;
+    for (size_t i = 0; i < files->array_size; ++i)
+    {
+        free(content[i].content);
+    }
+    free(content);
 }

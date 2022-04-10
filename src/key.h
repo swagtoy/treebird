@@ -18,11 +18,13 @@
 
 #ifndef KEY_H
 #define KEY_H
+#include <stddef.h>
 
 struct form_props
 {
     char* filename;
     char* filetype;
+    size_t data_size;
 };
 
 struct key_value_refs

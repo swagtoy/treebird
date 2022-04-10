@@ -105,6 +105,7 @@ int main(void)
         if (post_str) free(post_str);
         if (get_str) free(get_str);
         mastodont_free(&api);
+        free_files(&(ssn.post.files));
 
         ++run_count;
     }

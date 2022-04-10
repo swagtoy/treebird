@@ -50,10 +50,10 @@ char* read_cookies_env(struct cookie_values* cookies)
 
     // Will loop through these
     struct key_value_refs refs[] = {
-        { "access_token", &(cookies->access_token) },
-        { "logged_in", &(cookies->logged_in) },
-        { "theme", &(cookies->theme) },
-        { "instance_url", &(cookies->instance_url) }
+        { "access_token", &(cookies->access_token), key_string },
+        { "logged_in", &(cookies->logged_in), key_string },
+        { "theme", &(cookies->theme), key_string },
+        { "instance_url", &(cookies->instance_url), key_string }
     };
 
     do
@@ -64,7 +64,7 @@ char* read_cookies_env(struct cookie_values* cookies)
         for (int i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
         {
             if (strcmp(info.key, refs[i].key) == 0)
-                *(refs[i].val) = info.val;
+                refs[i].func(info.val, NULL, refs[i].val);
         }
     }
     while (cookies_read);

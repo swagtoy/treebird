@@ -20,6 +20,7 @@
 #define QUERY_H
 #include <fcgi_stdio.h>
 #include <stddef.h>
+#include "key.h"
 
 struct http_query_info
 {
@@ -27,11 +28,17 @@ struct http_query_info
     char* val;
 };
 
-struct http_array
+struct file_content
 {
     char* content;
+    size_t content_size;
+};
+
+struct file_array
+{
+    struct file_content* content;
     size_t array_size;
-}
+};
 
 struct query_values
 {
@@ -52,7 +59,7 @@ struct query_values
     char* max_id;
     char* start_id;
 
-    struct http_array file;
+    struct file_array files;
 };
 
 struct get_values
@@ -61,10 +68,14 @@ struct get_values
     char* q;
 };
 
+void key_files(char* val, struct form_props* form, void* arg);
+
 char* read_query_data(struct get_values* query);
 char* read_post_data(struct query_values* post);
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
 char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg);
+
+void free_files(struct file_array* files);
 
 #endif // QUERY_H
