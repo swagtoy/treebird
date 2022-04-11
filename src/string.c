@@ -16,23 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MIME_H
-#define MIME_H
-#include <stddef.h>
+#include "string.h"
 
-struct http_form_info
+int streql(char* cmp1, char* cmp2)
 {
-    char* name;
-    char* filename;
-    char* content_type;
-    char* value;
-    size_t value_size;
-};
+    while (*cmp1 || *cmp2)
+        if (*cmp1++ != *cmp2++)
+            return 0;
+    
+    return 1;
+}
 
-char* get_mime_boundary(char* content_type, char** res);
-char* read_form_data(char* boundary,
-                     char* begin,
-                     struct http_form_info* info,
-                     size_t size);
+char* strnstr(const char* haystack, const char* needle, size_t s)
+{
+    for (size_t i = 0; i < s; ++i)
+    {
+    }
 
-#endif /* MIME_H */
+    return NULL;
+}

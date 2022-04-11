@@ -120,6 +120,7 @@ table.ui-table td
     max-width: 608px !important;
     min-width: 608px;
     border-collapse: collapse !important;
+    background-color: #fafafa;
     padding: 0;
 }
 

@@ -93,6 +93,7 @@ void key_files(char* val, struct form_props* form, void* arg)
 
 char* read_post_data(struct query_values* post)
 {
+    ptrdiff_t begin_curr_size;
     struct http_query_info query_info;
     struct http_form_info form_info;
     struct form_props form_props;
@@ -142,10 +143,13 @@ char* read_post_data(struct query_values* post)
         {
             if (mime_mem)
             {
+                // Get size from here to the end
+                begin_curr_size = p_query_read - p_query;
                 // Mime value
                 p_query_read = read_form_data(mime_boundary,
                                               p_query_read,
-                                              &form_info);
+                                              &form_info,
+                                              len - begin_curr_size);
                 form_props.filename = form_info.filename;
                 form_props.filetype = form_info.content_type;
                 form_props.data_size = form_info.value_size;

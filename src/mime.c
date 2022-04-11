@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include "mime.h"
+#include "string.h"
 
 char* get_mime_boundary(char* content_type_str, char** bound)
 {
@@ -98,9 +99,12 @@ static char* read_key(char** r, char* key)
 
 #define STRSCMP(begin, str) strncmp((begin), (str), sizeof(str)-1)
 
-char* read_form_data(char* boundary, char* begin, struct http_form_info* info)
+char* read_form_data(char* boundary,
+                     char* begin,
+                     struct http_form_info* info,
+                     size_t size)
 {
-    ptrdiff_t data_size;
+    ptrdiff_t data_size, begin_to_value_size;
     // Step 1: Parse name
     // Parser variables
     char* r, *read_val;
@@ -163,6 +167,7 @@ char* read_form_data(char* boundary, char* begin, struct http_form_info* info)
 
     // Last step: Find data
     info->value = r;
+    begin_to_value_size = info->value - begin;
 
     // Look for end
     if ((r = strstr(r, boundary)) &&

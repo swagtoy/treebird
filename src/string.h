@@ -16,23 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MIME_H
-#define MIME_H
+#ifndef TREE_STRING_H
+#define TREE_STRING_H
 #include <stddef.h>
 
-struct http_form_info
-{
-    char* name;
-    char* filename;
-    char* content_type;
-    char* value;
-    size_t value_size;
-};
+int streql(char* cmp1, char* cmp2);
+char* strnstr(const char* haystack, const char* needle, size_t s);
 
-char* get_mime_boundary(char* content_type, char** res);
-char* read_form_data(char* boundary,
-                     char* begin,
-                     struct http_form_info* info,
-                     size_t size);
-
-#endif /* MIME_H */
+#endif // TREE_STRING_H
