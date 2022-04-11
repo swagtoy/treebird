@@ -102,7 +102,6 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
 
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 {
-    int cleanup = 0;
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses;
     struct mstdnt_storage storage = { 0 };
@@ -120,14 +119,13 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     
     if (mastodont_timeline_list(api, list_id, &args, &storage, &statuses, &status_count))
     {
-        status_format = "An error occured loading the timeline";
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
         // Construct statuses into HTML
         status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
         if (!status_format)
-            status_format = "Error in malloc!";
-        cleanup = 1;
+            status_format = construct_error("No statuses", E_ERROR, 1, NULL);
     }
 
     // Create post box
@@ -149,7 +147,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     // Cleanup
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, status_count);
-    if (cleanup) free(status_format);
+    free(status_format);
     if (post_box) free(post_box);
     if (output) free(output);
 }

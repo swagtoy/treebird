@@ -63,11 +63,10 @@ char* construct_lists_view(char* lists_string, int* size)
 
 void content_lists(struct session* ssn, mastodont_t* api, char** data)
 {
-    int cleanup = 0;
     struct mstdnt_list* lists;
     size_t size_list;
     struct mstdnt_storage storage = { 0 };
-    char* lists_format;
+    char* lists_format = NULL;
     char* lists_page = NULL;
 
     if (mastodont_get_lists(api, &lists, &storage, &size_list))
@@ -77,8 +76,7 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     else {
         lists_format = construct_lists(lists, size_list, NULL);
         if (!lists_format)
-            lists_format = "Error in malloc!";
-        cleanup = 1;
+            lists_format = construct_error("No lists", E_ERROR, 1, NULL);
         lists_page = construct_lists_view(lists_format, NULL);
     }
 
@@ -94,6 +92,6 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    if (cleanup) free(lists_format);
+    if (lists_format) free(lists_format);
     if (lists_page) free(lists_page);
 }
