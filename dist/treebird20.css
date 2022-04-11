@@ -45,25 +45,33 @@ table.ui-table td
     vertical-align: top;
 }
 
-#display
+#navbar, #content
 {
     margin-left: auto;
     margin-right: auto;
     overflow: hidden;
     background-color: #ffffff;
-    width: 1000px;
-    border-radius: 5px;
     border: 1px solid #dadada;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    border-width: 0;
+}
+
+#content
+{
+    border-top: 0 !important;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 #navbar
 {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     border-top: 2px solid #fff;
     background: linear-gradient(#fafafa, #f3f3f3);
+    width: 1000px;
     display: flex;
     align-items: center;
-    padding: 0 5px;
     border-bottom: 2px solid #cacaca;
 }
 
@@ -106,9 +114,9 @@ table.ui-table td
 
 #main
 {
-    width: 610px;
-    max-width: 610px !important;
-    min-width: 610px;
+    width: 608px;
+    max-width: 608px !important;
+    min-width: 608px;
     border-collapse: collapse !important;
     padding: 0;
 }
