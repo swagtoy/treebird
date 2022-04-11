@@ -32,6 +32,8 @@ struct file_content
 {
     char* content;
     size_t content_size;
+    char* filetype;
+    char* filename;
 };
 
 struct file_array

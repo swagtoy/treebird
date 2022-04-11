@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include "string.h"
 
 int streql(char* cmp1, char* cmp2)
@@ -27,10 +28,24 @@ int streql(char* cmp1, char* cmp2)
     return 1;
 }
 
+
+int strneql(char* cmp1, char* cmp2, size_t cmp1_n)
+{
+    for (size_t i = 0; i < cmp1_n; ++i)
+        if (*cmp1++ != *cmp2++)
+            return 0;
+    
+    return 1;
+}
+
+
 char* strnstr(const char* haystack, const char* needle, size_t s)
 {
+    size_t needle_len = strlen(needle);
     for (size_t i = 0; i < s; ++i)
     {
+        if (strneql(needle, haystack + i, needle_len))
+            return haystack + i;
     }
 
     return NULL;

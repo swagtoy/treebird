@@ -26,6 +26,10 @@
 
 char* get_mime_boundary(char* content_type_str, char** bound)
 {
+    // If neither values are set, get out
+    if (!(getenv("CONTENT_TYPE") || content_type_str))
+        return NULL;
+    
     char* content = content_type_str ? content_type_str : getenv("CONTENT_TYPE");
 
     // Data gets changed in place
@@ -170,8 +174,8 @@ char* read_form_data(char* boundary,
     begin_to_value_size = info->value - begin;
 
     // Look for end
-    if ((r = strstr(r, boundary)) &&
-        r && strstr(r-4, "\r\n--"))
+    if ((r = strnstr(r, boundary, size - begin_to_value_size)) &&
+        r && strnstr(r-4, "\r\n--", size - begin_to_value_size))
     {
         r[-4] = '\0';
         data_size = (r-4) - info->value;

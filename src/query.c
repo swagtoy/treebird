@@ -86,6 +86,8 @@ void key_files(char* val, struct form_props* form, void* arg)
     // Store
     arr->content[arr->array_size-1].content = ptr;
     arr->content[arr->array_size-1].content_size = form->data_size;
+    arr->content[arr->array_size-1].filename = form->filename;
+    arr->content[arr->array_size-1].filetype = form->filetype;
 
     return;
 
@@ -98,6 +100,7 @@ char* read_post_data(struct query_values* post)
     struct http_form_info form_info;
     struct form_props form_props;
     char* request_method = getenv("REQUEST_METHOD");
+    char* content_length = getenv("CONTENT_LENGTH");
     char* post_query = NULL, *p_query_read;
 
     // BEGIN Query references
@@ -120,7 +123,9 @@ char* read_post_data(struct query_values* post)
     };
     // END Query references
 
-    if (request_method && strcmp("POST", request_method) == 0)
+    if (request_method &&
+        strcmp("POST", request_method) == 0 &&
+        content_length)
     {
         char* mime_boundary;
         char* mime_mem = get_mime_boundary(NULL, &mime_boundary);
@@ -144,7 +149,7 @@ char* read_post_data(struct query_values* post)
             if (mime_mem)
             {
                 // Get size from here to the end
-                begin_curr_size = p_query_read - p_query;
+                begin_curr_size = p_query_read - post_query;
                 // Mime value
                 p_query_read = read_form_data(mime_boundary,
                                               p_query_read,

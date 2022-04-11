@@ -21,6 +21,7 @@
 #include <stddef.h>
 
 int streql(char* cmp1, char* cmp2);
+int strneql(char* cmp1, char* cmp2, size_t cmp1_n);
 char* strnstr(const char* haystack, const char* needle, size_t s);
 
 #endif // TREE_STRING_H
