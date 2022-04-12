@@ -38,7 +38,8 @@ int try_upload_media(struct mstdnt_storage* storage,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids)
 {
-    if (!ssn->post.files.array_size)
+    if (!ssn->post.files.array_size ||
+        !(ssn->post.files.content && ssn->post.files.content[0].content_size))
         return 1;
 
     if (media_ids)

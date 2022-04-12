@@ -7,48 +7,51 @@
     <link rel="stylesheet" type="text/css" href="/%s%s.css">
   </head>
   <body %s>
-    <div id="main-page">
-      <header id="navbar">
-        <a href="%s/"><img src="/treebird_logo.png" height="42"></a>
-        <span class="info">%s</span>
-        <div id="navbar-right-container">
-          <div id="navbar-right">
-            %s
-            <!-- Searchbox -->
-            <form action="%s/search" method="get">
-              <input type="textbox" class="group group-left group-inputbox" placeholder="%s" id="searchbox" name="q"><!-- i hate HTML
-                                                                                                                       --><input type="submit" class="btn group group-right" value="%s">
-            </form>
+    <div></div>
+    <div id="main-page-container">
+      <div id="main-page">
+        <header id="navbar">
+          <a href="%s/"><img src="/treebird_logo.png" height="42"></a>
+          <span class="info">%s</span>
+          <div id="navbar-right-container">
+            <div id="navbar-right">
+              %s
+              <!-- Searchbox -->
+              <form action="%s/search" method="get">
+                <input type="textbox" class="group group-left group-inputbox" placeholder="%s" id="searchbox" name="q"><!-- i hate HTML
+                                                                                                                         --><input type="submit" class="btn group group-right" value="%s">
+              </form>
+            </div>
           </div>
-        </div>
-      </header>
-      <table id="content" class="ui-table">
-        <!-- Navigation -->
-        <tr>
-          <td id="leftbar" class="sidebar">
-            <ul>
-              <li><a class="sidebarbtn %s" href="%s/">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/local/">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/federated/">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/notifications">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/lists">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/direct">%s</a></li>
-              <li><a class="sidebarbtn %s" href="%s/config">%s</a></li>
-            </ul>
-            %s
-          </td>
-          
-          <!-- Display for posts -->
-          <td id="main">
-            %s
-          </td>
+        </header>
+        <table id="content" class="ui-table">
+          <!-- Navigation -->
+          <tr>
+            <td id="leftbar" class="sidebar">
+              <ul>
+                <li><a class="sidebarbtn %s" href="%s/">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/local/">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/federated/">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/notifications">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/lists">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/direct">%s</a></li>
+                <li><a class="sidebarbtn %s" href="%s/config">%s</a></li>
+              </ul>
+              %s
+            </td>
+            
+            <!-- Display for posts -->
+            <td id="main">
+              %s
+            </td>
 
-          <!-- Notifications and such -->
-          <td id="rightbar" class="sidebar">
-            %s
-          </td>
-        </tr>
-      </table>
+            <!-- Notifications and such -->
+            <td id="rightbar" class="sidebar">
+              %s
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   </body>
 </html>

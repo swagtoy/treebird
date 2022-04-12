@@ -11,8 +11,16 @@
     padding: 0;
 }
 
+html, body
+{
+    margin: 0;
+    padding: 0;
+    margin-top: 0px;
+}
+
 html
 {
+    height: 100%;
     background-color: #f6f6f6;
 }
 
@@ -22,6 +30,23 @@ body
     background-size: cover !important;
     background-color: unset;
     font-family: Arial, Helvetica, sans-serif;
+    min-height: 100%;
+}
+
+/* Basic elements */
+h1, h2, h3, h4
+{
+    margin: 12px 0px 6px 0px;
+}
+
+ul
+{
+    margin: 12px;
+}
+
+#main-page-container
+{
+    padding: 8px;
 }
 
 #main-page
