@@ -1,14 +1,14 @@
 <form action="%s/status/create" method="post" enctype="multipart/form-data">
   %s
   <div class="statusbox">
-    <textarea name="content" placeholder="Just landed in N.Y." rows="5">%s</textarea>
+    <textarea name="content" placeholder="Just landed in N.Y." rows="5" tabindex="1">%s</textarea>
     <div class="statusfooter">
       <div class="statusfooter-left">
-        <input type="file" name="file" multiple>
+        <input type="file" name="file" tabindex="3" multiple>
         <!-- Put text here -->
       </div>
       <div class="statusfooter-right">
-        <input type="submit" value="Post">
+        <input type="submit" value="Post" tabindex="2">
       </div>
     </div>
   </div>

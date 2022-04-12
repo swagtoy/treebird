@@ -19,11 +19,9 @@ body
 #main-page
 {
     width: 1000px;
-    border-top: 0 !important;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid #dadada !important;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.3);
     border-width: 0;
     border-radius: 5px;
 }
@@ -73,18 +71,20 @@ table.ui-table td
 {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border-top: 2px solid #fff;
-    background: linear-gradient(#fafafa, #f3f3f3);
+    background: rgba(245, 245, 245, 0.8);
+    backdrop-filter: blur(12px);
     width: 1000px;
-    border-bottom: 2px solid #cacaca;
+    border-bottom: 1px solid #dadada;
     z-index: 999;
+    position: sticky;
+    top: 0px;
 }
 
 #navbar img
 {
     vertical-align: middle;
     display: inline-block;
-    margin: 4px 3px 5px 14px;
+    margin: 8px 3px 10px 14px;
 }
 
 #navbar span.info
@@ -101,7 +101,7 @@ table.ui-table td
     width: 800px;
     display: inline-block;
     position: relative;
-    top: 9px;
+    top: 11px;
     padding-right: 8px;
     align-items: center;
 }
@@ -227,16 +227,18 @@ table.present th, table.present td
  *************************************************/
 .sidebarbtn, .btn
 { 
-    background: linear-gradient(#fff, #f7f7f7);
+    background-color: #fff;
     color: #000;
+    border-bottom: 1px solid #dadada;
     text-decoration: none;
+    transition: background-color .15s, border .15s;
 }
 
 .sidebarbtn:hover, .btn:hover
 { 
-    background: linear-gradient(#aa0000, #600000);
-    border-color: #400000;
-    color: #fff;
+    background-color: #ffcccc;
+    border-bottom: 1px solid #aa4040;
+    color: #000;
     cursor: pointer;
 }
 
@@ -271,17 +273,13 @@ input[type=button], input[type=submit]
     padding: 3px 15px;
 }
 
-/* Make first button glue to header */
-#leftbar ul:first-child .sidebarbtn
-{
-    border-top: 0;
-}
-
 .sidebarbtn
 {
     display: block;
-    border-bottom: 1px solid #dadada;
-    padding: 8px 8px 8px 16px;
+    padding: 10px 8px 10px 16px;
+    margin: 4px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .sidebarbtn.focused
@@ -313,11 +311,6 @@ input[type=button], input[type=submit]
 .sidebarbtn-sub:active, .sidebarbtn-sub:hover
 {
     background-color: #dadada;
-}
-
-ul li:first-child a.sidebarbtn
-{
-    border-top: 1px solid #dadada;
 }
 
 /****************************
