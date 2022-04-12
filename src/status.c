@@ -46,64 +46,19 @@ struct status_args
     struct mstdnt_status* status;
 };
 
-// TODO move to attachments.c
-int try_upload_media(struct session* ssn,
-                     mastodont_t* api,
-                     char*** media_ids)
-{
-    struct mstdnt_attachment attachment;
-    struct mstdnt_storage storage;
-
-    if (!ssn->post.files.array_size)
-        return 1;
-    *media_ids = malloc(sizeof(char*) * ssn->post.files.array_size);
-
-    for (int i = 0; i < ssn->post.files.array_size; ++i)
-    {
-        struct file_content* content = ssn->post.files.content + i;
-        struct mstdnt_upload_media_args args = {
-            .file = {
-                .file = content->content,
-                .filename = content->filename,
-                .filesize = content->content_size,
-                .filetype = content->filetype,
-            },
-            .thumbnail = NULL,
-            .description = "Treebird image"
-        };
-        
-        mastodont_upload_media(api,
-                               &args,
-                               &storage,
-                               &attachment);
-
-        (*media_ids)[i] = malloc(strlen(attachment.id)+1);
-        strcpy((*media_ids)[i], attachment.id);
-    }
-    
-    return 0;
-}
-
-void cleanup_media_ids(struct session* ssn, char** media_ids)
-{
-    if (!media_ids) return;
-    for (size_t i = 0; i < ssn->post.files.array_size; ++i)
-        free(media_ids[i]);
-    free(media_ids);
-}
-
 int try_post_status(struct session* ssn, mastodont_t* api)
 {
     if (!(ssn->post.content)) return 1;
 
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage, att_storage = { 0 };
 
     char** files;
     size_t files_len;
+    struct mstdnt_attachment* attachments = NULL;
     char** media_ids = NULL;
 
     // Upload images
-    try_upload_media(ssn, api, &media_ids);
+    try_upload_media(&att_storage, ssn, api, &attachments, &media_ids);
 
     // Cookie copy and read
     struct mstdnt_args args = {
@@ -127,7 +82,9 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 
     // TODO cleanup when errors are properly implemented
     mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&att_storage);
     cleanup_media_ids(ssn, media_ids);
+    if (attachments) free(attachments);
     
     return 0;
 }
@@ -139,7 +96,6 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data)
     try_post_status(ssn, api);
 
     redirect(REDIRECT_303, referer);
-
 }
 
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id)

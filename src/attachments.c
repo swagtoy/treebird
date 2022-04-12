@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include "easprintf.h"
 #include "attachments.h"
@@ -30,6 +31,57 @@ struct attachments_args
     struct mstdnt_attachment* atts;
     mstdnt_bool sensitive;
 };
+
+int try_upload_media(struct mstdnt_storage* storage,
+                     struct session* ssn,
+                     mastodont_t* api,
+                     struct mstdnt_attachment** attachments,
+                     char*** media_ids)
+{
+    if (!ssn->post.files.array_size)
+        return 1;
+
+    if (media_ids)
+        *media_ids = malloc(sizeof(char*) * ssn->post.files.array_size);
+
+    *attachments = malloc(sizeof(struct mstdnt_attachment) * ssn->post.files.array_size);
+
+    for (int i = 0; i < ssn->post.files.array_size; ++i)
+    {
+        struct file_content* content = ssn->post.files.content + i;
+        struct mstdnt_upload_media_args args = {
+            .file = {
+                .file = content->content,
+                .filename = content->filename,
+                .filesize = content->content_size,
+                .filetype = content->filetype,
+            },
+            .thumbnail = NULL,
+            .description = "Treebird image"
+        };
+        
+        mastodont_upload_media(api,
+                               &args,
+                               storage,
+                               *attachments + i);
+
+        if (media_ids)
+        {
+            (*media_ids)[i] = malloc(strlen((*attachments)[i].id)+1);
+            strcpy((*media_ids)[i], (*attachments)[i].id);
+        }
+    }
+    
+    return 0;
+}
+
+void cleanup_media_ids(struct session* ssn, char** media_ids)
+{
+    if (!media_ids) return;
+    for (size_t i = 0; i < ssn->post.files.array_size; ++i)
+        free(media_ids[i]);
+    free(media_ids);
+}
 
 char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size)
 {

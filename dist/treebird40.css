@@ -23,7 +23,7 @@ body
     margin-right: auto;
     box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.3);
     border-width: 0;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .hidden
@@ -63,14 +63,14 @@ table.ui-table td
 #content
 {
     overflow: hidden;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 #navbar
 {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     background: rgba(245, 245, 245, 0.8);
     backdrop-filter: blur(12px);
     width: 1000px;
@@ -98,7 +98,7 @@ table.ui-table td
 
 #navbar-right-container
 {
-    width: 800px;
+    width: 782px;
     display: inline-block;
     position: relative;
     top: 11px;

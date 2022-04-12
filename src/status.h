@@ -28,9 +28,6 @@
 #define STATUS_EMOJI_PICKER (1<<1)
 
 char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
-int try_upload_media(struct session* ssn,
-                     mastodont_t* api,
-                     char*** media_ids);
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
 void content_status_create(struct session* ssn, mastodont_t* api, char** data);

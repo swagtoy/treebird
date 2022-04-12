@@ -19,7 +19,14 @@
 #ifndef ATTACHMENTS_H
 #define ATTACHMENTS_H
 #include <mastodont.h>
+#include "session.h"
 
+int try_upload_media(struct mstdnt_storage* storage,
+                     struct session* ssn,
+                     mastodont_t* api,
+                     struct mstdnt_attachment** attachments,
+                     char*** media_ids);
+void cleanup_media_ids(struct session* ssn, char** media_ids);
 char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size);
 char* construct_attachments(mstdnt_bool sensitive, struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size);
 
