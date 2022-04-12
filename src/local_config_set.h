@@ -18,8 +18,10 @@
 
 #ifndef LOCAL_CONFIG_SET_H
 #define LOCAL_CONFIG_SET_H
+#include <mastodont.h>
 #include "local_config.h"
 #include "session.h"
+#include "attachments.h"
 
 int set_config_str(char** ssn,
                    char* cookie_name,
@@ -29,6 +31,6 @@ int set_config_int(int* ssn,
                    char* cookie_name,
                    char* value);
 
-void load_config(struct session* ssn);
+void load_config(struct session* ssn, mastodont_t* api);
 
 #endif // LOCAL_CONFIG_SET_H

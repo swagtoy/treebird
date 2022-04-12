@@ -29,11 +29,14 @@
 // Files
 #include "../static/index.chtml"
 
+#define BODY_STYLE "style=\"background:url('%s');\""
+
 void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api)
 {
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = page->locale;
     char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
+    char* background_url_css = NULL;
     char* sidebar_str = NULL;
     // Mastodont, used for notifications sidebar
     struct mstdnt_storage storage = { 0 };
@@ -46,8 +49,15 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
             ssn->config.theme = ssn->cookies.theme;
         if (ssn->cookies.logged_in)
             login_string = "";
+        if (ssn->cookies.background_url)
+            ssn->config.background_url = ssn->cookies.background_url;
     }
 
+    if (ssn->config.background_url)
+    {
+        easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url);
+    }
+    
     // Get / Show notifications on sidebar
     if (ssn->cookies.logged_in && ssn->cookies.access_token)
     {
@@ -75,6 +85,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                         L10N[locale][L10N_APP_NAME],
                         ssn->config.theme,
                         ssn->config.themeclr ? "-dark" : "",
+                        background_url_css ? background_url_css : "",
                         config_url_prefix,
                         L10N[locale][L10N_APP_NAME],
                         login_string,
@@ -122,4 +133,5 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     free(data);
 cleanup:
     if (sidebar_str) free(sidebar_str);
+    if (background_url_css) free(background_url_css);
 }

@@ -53,7 +53,8 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "access_token", &(cookies->access_token), key_string },
         { "logged_in", &(cookies->logged_in), key_string },
         { "theme", &(cookies->theme), key_string },
-        { "instance_url", &(cookies->instance_url), key_string }
+        { "instance_url", &(cookies->instance_url), key_string },
+        { "background_url", &(cookies->background_url), key_string },
     };
 
     do

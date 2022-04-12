@@ -58,8 +58,17 @@ int set_config_int(int* ssn,
     return 1;
 }
 
-void load_config(struct session* ssn)
+void load_config(struct session* ssn, mastodont_t* api)
 {
+    if (ssn->post.theme && ssn->post.files.array_size && ssn->post.files.content[0].content_size)
+    {
+        struct mstdnt_attachment* attachments = NULL;
+        struct mstdnt_storage storage = { 0 };
+        if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0)
+        {
+            set_config_str(&(ssn->config.background_url), "background_url", attachments[0].url);
+        }
+    }
     set_config_str(&(ssn->config.theme), "theme", ssn->post.theme);
     set_config_int(&(ssn->config.themeclr), "themeclr", ssn->post.themeclr);
 

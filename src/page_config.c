@@ -65,7 +65,7 @@ void content_config_general(struct session* ssn, mastodont_t* api, char** data)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
 
-    load_config(ssn);
+    load_config(ssn, api);
     
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
@@ -84,7 +84,7 @@ void content_config_appearance(struct session* ssn, mastodont_t* api, char** dat
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_APPEARANCE, NULL);
 
-    load_config(ssn);
+    load_config(ssn, api);
 
     struct base_page b = {
         .category = BASE_CAT_CONFIG,

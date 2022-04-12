@@ -24,6 +24,7 @@ struct local_config
 {
     int changed;
     char* theme;
+    char* background_url;
     int themeclr;
     int jsactions;
     int jsreply;
