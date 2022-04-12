@@ -91,6 +91,7 @@ int main(void)
             { "/status/:/interact", status_interact },
             { "/status/:/reply", status_reply },
             { "/status/:", status_view },
+            { "/notice/:", notice_redirect },
             { "/lists/for/:", content_tl_list },
             { "/lists", content_lists },
             { "/federated", content_tl_federated },

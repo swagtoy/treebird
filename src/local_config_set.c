@@ -63,9 +63,14 @@ void load_config(struct session* ssn, mastodont_t* api)
     if (ssn->post.theme)
     {
         struct mstdnt_attachment* attachments = NULL;
-        struct mstdnt_storage storage = { 0 };
+        struct mstdnt_storage* storage = NULL;
         if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0)
+        {
             set_config_str(&(ssn->config.background_url), "background_url", attachments[0].url);
+        }
+
+        if (storage)
+            cleanup_media_storages(ssn, storage);
     }
     set_config_str(&(ssn->config.theme), "theme", ssn->post.theme);
     set_config_int(&(ssn->config.themeclr), "themeclr", ssn->post.themeclr);

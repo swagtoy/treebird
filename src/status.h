@@ -50,4 +50,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
 // Cleanup
 void cleanup_media_ids(struct session* ssn, char** media_ids);
 
+// Redirects
+void notice_redirect(struct session* ssn, mastodont_t* api, char** data);
+
 #endif // STATUS_H

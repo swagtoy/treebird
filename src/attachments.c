@@ -32,22 +32,23 @@ struct attachments_args
     mstdnt_bool sensitive;
 };
 
-int try_upload_media(struct mstdnt_storage* storage,
+int try_upload_media(struct mstdnt_storage** storage,
                      struct session* ssn,
                      mastodont_t* api,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids)
 {
-    if (!ssn->post.files.array_size ||
-        !(ssn->post.files.content && ssn->post.files.content[0].content_size))
+    size_t size = ssn->post.files.array_size;
+    if (!FILES_READY(ssn))
         return 1;
 
     if (media_ids)
-        *media_ids = malloc(sizeof(char*) * ssn->post.files.array_size);
+        *media_ids = malloc(sizeof(char*) * size);
 
-    *attachments = malloc(sizeof(struct mstdnt_attachment) * ssn->post.files.array_size);
+    *attachments = malloc(sizeof(struct mstdnt_attachment) * size);
+    *storage = calloc(1, sizeof(struct mstdnt_storage) * size);
 
-    for (int i = 0; i < ssn->post.files.array_size; ++i)
+    for (int i = 0; i < size; ++i)
     {
         struct file_content* content = ssn->post.files.content + i;
         struct mstdnt_upload_media_args args = {
@@ -61,10 +62,30 @@ int try_upload_media(struct mstdnt_storage* storage,
             .description = "Treebird image"
         };
         
-        mastodont_upload_media(api,
-                               &args,
-                               storage,
-                               *attachments + i);
+        if (mastodont_upload_media(api,
+                                   &args,
+                                   *storage + i,
+                                   *attachments + i))
+        {
+            // EPICFAIL
+            for (size_t j = 0; j < i; ++j)
+            {
+                if (media_ids) free((*media_ids)[j]);
+                mastodont_storage_cleanup(*storage + j);
+            }
+
+            if (media_ids)
+            {
+                free(*media_ids);
+                *media_ids = NULL;
+            }
+            
+            free(*attachments);
+            *attachments = NULL;
+            free(*storage);
+            *storage = NULL;
+            return 1;
+        }
 
         if (media_ids)
         {
@@ -76,8 +97,17 @@ int try_upload_media(struct mstdnt_storage* storage,
     return 0;
 }
 
+void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage)
+{
+    if (!FILES_READY(ssn)) return;
+    for (size_t i = 0; i < ssn->post.files.array_size; ++i)
+        mastodont_storage_cleanup(storage + i);
+    free(storage);
+}
+
 void cleanup_media_ids(struct session* ssn, char** media_ids)
 {
+    if (!FILES_READY(ssn)) return;
     if (!media_ids) return;
     for (size_t i = 0; i < ssn->post.files.array_size; ++i)
         free(media_ids[i]);

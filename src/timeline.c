@@ -103,7 +103,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 {
     size_t status_count, statuses_html_count;
-    struct mstdnt_status* statuses;
+    struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
     char* status_format, *post_box;
     char* output = NULL;

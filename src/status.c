@@ -50,7 +50,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 {
     if (!(ssn->post.content)) return 1;
 
-    struct mstdnt_storage storage, att_storage = { 0 };
+    struct mstdnt_storage storage, *att_storage = NULL;
 
     char** files;
     size_t files_len;
@@ -82,7 +82,8 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 
     // TODO cleanup when errors are properly implemented
     mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&att_storage);
+    if (att_storage)
+        cleanup_media_storages(ssn, att_storage);
     cleanup_media_ids(ssn, media_ids);
     if (attachments) free(attachments);
     
@@ -383,4 +384,12 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     mstdnt_cleanup_status(&status);
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
+}
+
+void notice_redirect(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* url;
+    easprintf(&url, "%s/status/%s", config_url_prefix, data[0]);
+    redirect(REDIRECT_303, url);
+    free(url);
 }
