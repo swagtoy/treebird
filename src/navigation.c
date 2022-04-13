@@ -31,7 +31,8 @@ char* construct_navigation_box(char* start_id,
                                size_t* size)
 {
     char* nav_html;
-    int is_start = strcmp(start_id, prev_id) == 0;
+
+    int is_start = start_id && prev_id ? strcmp(start_id, prev_id) == 0 : 0;
 
     size_t s = easprintf(&nav_html, data_navigation_html,
                          start_id,

@@ -33,7 +33,7 @@
 
 void tl_public(struct session* ssn, mastodont_t* api, int local)
 {
-    size_t status_count, statuses_html_count;
+    size_t status_count = 0, statuses_html_count = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
     char* status_format = NULL,
@@ -62,7 +62,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
         // Construct statuses into HTML
         status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
         if (!status_format)
-            status_format = "Error in malloc!";
+            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }
 
     // Create post box
