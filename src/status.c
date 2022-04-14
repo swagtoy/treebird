@@ -329,7 +329,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     char* output;
     // Status context
     struct mstdnt_storage storage, status_storage;
-    struct mstdnt_status* statuses_before, *statuses_after, status;
+    struct mstdnt_status* statuses_before, *statuses_after, status = { 0 };
     size_t stat_before_len, stat_after_len;
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
 
