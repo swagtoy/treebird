@@ -22,15 +22,25 @@
 #include <mastodont.h>
 #include "session.h"
 
-char* construct_account_info(struct mstdnt_account* acct,
-                             size_t* size);
+enum account_tab
+{
+    ACCT_TAB_STATUSES,
+    ACCT_TAB_SCROBBLES,
+    ACCT_TAB_PINNED,
+    ACCT_TAB_MEDIA
+};
+
 char* construct_account_page(mastodont_t* api,
                              struct mstdnt_account* acct,
                              struct mstdnt_relationship* relationship,
-                             struct mstdnt_status* statuses,
-                             size_t statuses_len,
+                             enum account_tab tab,
+                             char* content,
                              size_t* res_size);
-void content_account(struct session* ssn, mastodont_t* api, char** data);
+
+char* construct_account_info(struct mstdnt_account* acct,
+                             size_t* size);
+
+void content_account_statuses(struct session* ssn, mastodont_t* api, char** data);
 
 void content_account_action(struct session* ssn, mastodont_t* api, char** data);
 #endif // ACCOUNT_H

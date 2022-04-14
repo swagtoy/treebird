@@ -36,7 +36,7 @@ char* construct_error(char* error, enum error_type type, unsigned pad, size_t* s
         class = "error"; break;
     case E_WARNING:
         class = "warning"; break;
-    case E_NOTE:
+    case E_NOTICE:
         class = "notice"; break;
     }
     size_t s = easprintf(&error_html, data_error_html,

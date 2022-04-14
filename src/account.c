@@ -32,6 +32,7 @@
 #include "../static/account_info.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
+#define MAKE_FOCUSED_IF(test_tab) (tab == test_tab ? "focused" : "")
 
 char* construct_account_info(struct mstdnt_account* acct,
                              size_t* size)
@@ -49,25 +50,18 @@ char* construct_account_info(struct mstdnt_account* acct,
 char* construct_account_page(mastodont_t* api,
                              struct mstdnt_account* acct,
                              struct mstdnt_relationship* relationship,
-                             struct mstdnt_status* statuses,
-                             size_t statuses_len,
+                             enum account_tab tab,
+                             char* content,
                              size_t* res_size)
 {
     int cleanup = 0;
     int result_size;
-    char* statuses_html;
     char* follows_you = NULL;
     char* info_html = NULL;
     char* is_blocked = NULL;
     char* result;
 
     // Load statuses html
-    statuses_html = construct_statuses(api, statuses, statuses_len, NULL);
-    if (!statuses_html)
-        statuses_html = "Error in malloc!";
-    else
-        cleanup = 1;
-
     if (acct->note && strcmp(acct->note, "") != 0)
     {
         info_html = construct_account_info(acct, NULL);
@@ -79,7 +73,7 @@ char* construct_account_page(mastodont_t* api,
             easprintf(&follows_you, FOLLOWS_YOU_HTML, "Follows you");
 
         if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKED_BY))
-            is_blocked = construct_error("You are blocked by this user", E_NOTE, 0, NULL);
+            is_blocked = construct_error("You are blocked by this user", E_NOTICE, 0, NULL);
     }
     
     result_size = easprintf(&result, data_account_html,
@@ -112,59 +106,69 @@ char* construct_account_page(mastodont_t* api,
                             info_html ? info_html : "",
                             config_url_prefix,
                             acct->acct,
+                            MAKE_FOCUSED_IF(ACCT_TAB_STATUSES),
                             "Statuses",
                             config_url_prefix,
                             acct->acct,
+                            MAKE_FOCUSED_IF(ACCT_TAB_SCROBBLES),
                             "Scrobbles",
                             config_url_prefix,
                             acct->acct,
+                            MAKE_FOCUSED_IF(ACCT_TAB_MEDIA),
                             "Media",
                             config_url_prefix,
                             acct->acct,
+                            MAKE_FOCUSED_IF(ACCT_TAB_PINNED),
                             "Pinned",
-                            statuses_html);
+                            content);
     
     if (result_size == -1)
         result = NULL;
 
     if (res_size) *res_size = result_size;
-    if (cleanup) free(statuses_html);
     if (info_html) free(info_html);
     if (follows_you) free(follows_you);
     if (is_blocked) free(is_blocked);
     return result;
 }
 
-void content_account(struct session* ssn, mastodont_t* api, char** data)
+void content_account_statuses(struct session* ssn, mastodont_t* api, char** data)
 {
     char* account_page;
     struct mstdnt_account acct = { 0 };
     struct mstdnt_storage storage = { 0 }, status_storage = { 0 }, relations_storage = { 0 };
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_relationship* relationships = { 0 };
-    size_t status_len = 0;
+    size_t statuses_len = 0;
+    char* statuses_html = NULL;
     size_t relationships_len = 0;
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
     if (mastodont_get_account(api, lookup_type, data[0],
                               &acct, &storage, NULL) ||
         mastodont_get_account_statuses(api, acct.id, NULL,
-                                       &status_storage, &statuses, &status_len))
+                                       &status_storage, &statuses, &statuses_len))
     {
         account_page = construct_error(status_storage.error, E_ERROR, 1, NULL);
     }
     else {
         /* Not an error? */
         mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
-            
+
+        // Create statuses HTML
+        statuses_html = construct_statuses(api, statuses, statuses_len, NULL);
+        if (!statuses_html)
+            statuses_html = construct_error("No statuses", E_NOTICE, 1, NULL);
+        
         account_page = construct_account_page(api,
                                               &acct,
                                               relationships,
-                                              statuses,
-                                              status_len,
+                                              ACCT_TAB_STATUSES,
+                                              statuses_html,
                                               NULL);
         if (!account_page)
             exit(EXIT_FAILURE);
+
     }
     
     struct base_page b = {        
@@ -177,14 +181,13 @@ void content_account(struct session* ssn, mastodont_t* api, char** data)
     /* Output */
     render_base_page(&b, ssn, api);
 
-    /* TODO urgent: cleanup relationships */
-
     /* Cleanup */
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
     mastodont_storage_cleanup(&relations_storage);
-    mstdnt_cleanup_statuses(statuses, status_len);
+    mstdnt_cleanup_statuses(statuses, statuses_len);
     mstdnt_cleanup_relationships(relationships);
+    free(statuses_html);
     free(account_page);
 }
 

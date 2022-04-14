@@ -26,7 +26,7 @@ enum error_type
 {
     E_ERROR,
     E_WARNING,
-    E_NOTE
+    E_NOTICE
 };
 
 char* construct_error(char* error, enum error_type type, unsigned pad, size_t* size);
