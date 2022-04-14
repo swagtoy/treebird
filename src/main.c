@@ -86,10 +86,10 @@ int main(void)
             { "/test", content_test },
             { "/user/:/action/:", content_account_action },
             { "/search", content_search },
+            { "/@:/scrobbles", content_account_scrobbles },
+            { "/@:/pinned", content_account_pinned },
+            { "/@:/media", content_account_media },
             { "/@:", content_account_statuses },
-            /* { "/@:/scrobbles", content_account_scrobbles }, */
-            /* { "/@:/pinned", content_account_pinned }, */
-            /* { "/@:/media", content_account_media }, */
             { "/status/create", content_status_create },
             { "/status/:/interact", status_interact },
             { "/status/:/reply", status_reply },
