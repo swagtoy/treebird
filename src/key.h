@@ -35,5 +35,6 @@ struct key_value_refs
 };
 
 void key_string(char* val, struct form_props* form, void* arg);
+void key_int(char* val, struct form_props* form, void* arg);
 
 #endif // KEY_H

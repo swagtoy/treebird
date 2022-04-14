@@ -1,15 +1,12 @@
-/* Look, I tried my best to make this theme compatible with browsers like Netsurf and stuff, I HATE
-   the modern web and flexboxes and stuff, so as a result, you WILL see some fugly things in here
-   that you will probably want to cleanup or throw out completely, this CSS is a big hack. 
-
-   Other themes do not need to be compatible with Netsurf and older browsers or use tables,
-   I just wanted this to be as compatible as possible, go wild with your own themes */
+/* Thanks to Grumbulon for the dark theme basis */
 
 *
 {
     margin: 0;
     padding: 0;
+    color: #fff;
 }
+
 
 html, body
 {
@@ -21,7 +18,6 @@ html, body
 html
 {
     height: 100%;
-    background-color: #f6f6f6;
 }
 
 body
@@ -30,8 +26,8 @@ body
     background-size: cover !important;
     background-color: unset;
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #141414;
     min-height: 100%;
-    
 }
 
 /* Basic elements */
@@ -43,17 +39,20 @@ h1, h2, h3, h4
 ul
 {
     margin: 12px;
+
 }
 
 #main-page-container
 {
     padding: 8px;
 }
+
 #main-page
 {
     margin: 8px;
     margin-top: 0;
     width: 1000px;
+    background-color: #202020;
     border-top: 0 !important;
     margin-left: auto;
     margin-right: auto;
@@ -61,7 +60,6 @@ ul
     border-width: 0;
     border-radius: 5px;
 }
-
 
 .hidden
 {
@@ -78,11 +76,12 @@ a, a:visited, a:hover, a:active
     color: inherit;
 }
 
-.mention
+.mention,
+.mention span
 {
-    color: #cc0000;
+    color: #5b4852;
     text-decoration: none;
-    background-color: #ffcccc;
+    background-color: #c9bac2;
     border-radius: 3px;
     padding-left: 2px;
     padding-right: 2px;
@@ -104,19 +103,19 @@ table.ui-table td
     border-bottom-right-radius: 5px;
 }
 
-#navbar
-{
+#navbar {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border-top: 2px solid #fff;
-    background: linear-gradient(#fafafa, #f3f3f3);
+    border-top: 2px solid #303030;
+    border-bottom: 2px solid #1c1c1c;
+    background: linear-gradient(#2c2c2c, #202020);
     width: 1000px;
-    border-bottom: 2px solid #cacaca;
     z-index: 999;
 }
 
 #navbar img
 {
+    filter: invert(1);
     vertical-align: middle;
     display: inline-block;
     margin: 4px 0px 6px 18px;
@@ -126,7 +125,7 @@ table.ui-table td
 {
     vertical-align: middle;
     margin-left: 15px;
-    color: #202020;
+    color: #fff;
     /* font-variant: small-caps; */
     font-size: 28px;
 }
@@ -149,6 +148,10 @@ table.ui-table td
 {
     display: inline-block;
     float: right;
+    padding-right: 8px;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
 }
 
 #login-header
@@ -159,6 +162,16 @@ table.ui-table td
     top: 4px;
     margin-right: 15px;
     text-decoration: none;
+    color: #f4ffff;
+}
+
+.alignend
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
 #main
@@ -167,7 +180,7 @@ table.ui-table td
     max-width: 608px !important;
     min-width: 608px;
     border-collapse: collapse !important;
-    background-color: #fafafa;
+    background-color: #202020;
     padding: 0;
 }
 
@@ -183,12 +196,12 @@ table.ui-table td
     min-height: 600px;
     max-width: 180px;
     min-width: 180px;
-    background-color: #fcfcfc;
+    background-color: #1c1c1c;
 }
 
 #leftbar
 {
-    border-right: 1px solid #cacaca;
+    border-right: 1px solid #303030;
 }
 
 #leftbar ul
@@ -205,7 +218,7 @@ table.ui-table td
 
 #rightbar
 {
-    border-left: 1px solid #cacaca;
+    border-left: 1px solid #303030;
     min-width: 210px;
     max-width: 210px;
 }
@@ -217,7 +230,7 @@ table.ui-table td
 
 table.present
 {
-    border: 1px solid #cacaca;
+    border: 1px solid #404040;
 }
 
 table.present th, table.present td
@@ -230,7 +243,7 @@ table.present th, table.present td
     margin-top: 5px;
 }
 
-.e-error
+.error
 {
     display: block;
     background-color: #fcb0b0;
@@ -256,52 +269,58 @@ table.present th, table.present td
     font-weight: bold;
 }
 
+input[type=textbox]
+{
+    background-color: #1c1c1c;
+    color: #f3f3f3;
+}
+
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
 .sidebarbtn, .btn
 { 
-    background: linear-gradient(#fff, #f7f7f7);
-    color: #000;
-    text-decoration: none;
+    background: linear-gradient(#202020, #141414);
+    color: #bfb0b0;
+    text-decoration: none;    
 }
 
 .sidebarbtn:hover, .btn:hover
 { 
-    background: linear-gradient(#aa0000, #600000);
+    background: linear-gradient(#520000, #290000);
     border-color: #400000;
-    color: #fff;
+    color: #a68f8f;
     cursor: pointer;
 }
 
 .sidebarbtn:active, .btn:active
 { 
-    background: linear-gradient(#600000, #aa0000);
-    border-color: #400000;
+    background: linear-gradient(#520000, #290000);
+    border-color: #140000;
     color: #fff;
     cursor: pointer;
 }
 
 .btn-disabled
 {
-    color: #cacaca !important;
-    background: #f3f3f3 !important;
+    color: #8a8a8a !important;
+    background: #101010 !important;
 }
 
 .btn-disabled:hover
 {
-    background: #f3f3f3;
+    background: #101010;
 }
 
 .btn-disabled:active
 {
-    background: #f3f3f3;
+    background: #101010;
 }
 
 
 input[type=button], input[type=submit]
 {
-    border: 1px solid #cacaca;
+    border: 1px solid #404040;
     padding: 3px 15px;
 }
 
@@ -314,7 +333,7 @@ input[type=button], input[type=submit]
 .sidebarbtn
 {
     display: block;
-    border-bottom: 1px solid #dadada;
+    border-bottom: 1px solid #303030;
     padding: 8px 8px 8px 16px;
 }
 
@@ -346,12 +365,12 @@ input[type=button], input[type=submit]
 
 .sidebarbtn-sub:active, .sidebarbtn-sub:hover
 {
-    background-color: #dadada;
+    background-color: #303030;
 }
 
 ul li:first-child a.sidebarbtn
 {
-    border-top: 1px solid #dadada;
+    border-top: 1px solid #303030;
 }
 
 /****************************
@@ -359,7 +378,7 @@ ul li:first-child a.sidebarbtn
  ***************************/
 .notification
 {
-    border-bottom: 1px solid #dadada;
+    border-bottom: 1px solid #303030;
     width: 100%;
 }
 
@@ -417,12 +436,13 @@ ul li:first-child a.sidebarbtn
 .notification-info-format svg.like
 {
     fill: #aa0000;
-
+    
 }
 
 svg.like, svg.repeat, svg.follow, svg.reply, svg.in-reply-to-icon, svg.one-click-software, svg.expand
 {
     vertical-align: middle;
+    stroke: #bfb0b0;
 }
 
 svg.in-reply-to-icon
@@ -441,6 +461,7 @@ svg.in-reply-to-icon
 {
     text-decoration: none;
     line-height: 23px;
+    color: #bfb0b0;
 }
 
 .notification-compact .notification-content
@@ -487,14 +508,14 @@ svg.in-reply-to-icon
 .notification-regular
 {
     padding: 6px 2px 0 6px;
-    border-bottom: 1px solid #cacaca !important;
+    border-bottom: 1px solid #303030 !important;
     width: 100%;
     border-spacing: 0px;
 }
 
 .status.focused
 {
-    background-color: #ffdddd;
+    background-color: #3d0000;
     border-left: 3px solid #aa0000;
 }
 
@@ -567,6 +588,7 @@ svg.in-reply-to-icon
     margin: 0 4px 0 6px;
     font-size: 14px;
     padding-top: 1px;
+    color: #bfb0b0;
 }
 
 .status .poster-stats
@@ -586,6 +608,7 @@ svg.in-reply-to-icon
     max-width: 350px;
     white-space: nowrap;
     vertical-align: middle;
+    color: #bfb0b0;
 }
 
 .status .status-content
@@ -593,6 +616,7 @@ svg.in-reply-to-icon
     margin: 2px 0 0 0;
     overflow-wrap: break-word;
     width: 520px;
+    color: #f4ffff;
     display: block;
 }
 
@@ -641,7 +665,7 @@ svg.in-reply-to-icon
 /* These are a pain for some reason */
 .group-inputbox
 {
-    border: 1px solid #cacaca;
+    border: 1px solid #303030;
     padding-left: 5px;
     border-right: 0px;
     height: 26px;
@@ -671,7 +695,7 @@ svg.in-reply-to-icon
 {
     padding-left: 12px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #cacaca;
+    border-bottom: 1px solid #303030;
 }
 
 #config-page h3
@@ -701,7 +725,7 @@ svg.in-reply-to-icon
 
 .header-btn .btn-content
 {
-    color: #000;
+    color: #cacaca;
 }
 
 .btn.header-btn:hover span
@@ -736,7 +760,7 @@ svg.in-reply-to-icon
     top: 8px;
     font-size: 12px;
     padding: 4px 8px;
-    color: #dadada;
+    color: #fff;
     text-transform: uppercase;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 5px;
@@ -750,11 +774,11 @@ svg.in-reply-to-icon
 
 .account-info
 {
-    background: linear-gradient(#e4e4e4, #efefef);
+    background: linear-gradient(#252525, #1c1c1c);
     color: #000;
     padding: 15px 50px;
-    border-bottom: 1px solid #cacaca;
-    max-height: 360px;
+    border-bottom: 1px solid #303030;
+    max-height: 200px;
     overflow: auto;
 }
 
@@ -763,7 +787,7 @@ svg.in-reply-to-icon
     position: absolute;
     display: inline;
     z-index: 100;
-    border: 3px solid #cacaca;
+    border: 3px solid #303030;
     background-color: #fff;
     border-radius: 8px;
     width: 100px;
@@ -780,8 +804,8 @@ svg.in-reply-to-icon
 {
     z-index: 1;
     padding-left: 160px;
-    background: linear-gradient(#fff, #f1f1f1);
-    border-bottom: 1px solid #cacaca;
+    background: linear-gradient(#2c2c2c, #202020);
+    border-bottom: 1px solid #303030;
     background-color: #e8e8e8;
 }
 
@@ -816,7 +840,7 @@ svg.in-reply-to-icon
 .acct-username
 {
     font-size: 14px;
-    color: #dadada;
+    color: #303030;
     display: block;
     padding-left: 6px;
     font-weight: bold;
@@ -856,7 +880,9 @@ svg.in-reply-to-icon
 .statusbox textarea
 {
     display: block;
+    border: 1px solid #303030;
     width: 592px;
+    background: #202020;
     margin-bottom: 5px;
 }
 
@@ -873,10 +899,8 @@ svg.in-reply-to-icon
 
 .statusbox .statusfooter-right
 {
-
     float: right;
 }
-
 
 .status-interact label
 {
@@ -922,13 +946,14 @@ svg.in-reply-to-icon
 {
     font-size: 14px;
     padding-bottom: 3px;
+    color: #f4ffff;
 }
 
 /* Emoji reacts */
 .emoji-react-box
 {
     border-radius: 4px;
-    border: 1px solid #cacaca;
+    border: 1px solid #303030;
 }
 
 .form-group
@@ -947,7 +972,7 @@ svg.in-reply-to-icon
 {
     padding-left: 12px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #cacaca;
+    border-bottom: 1px solid #303030;
 }
 
 .simple-page h3
@@ -997,9 +1022,8 @@ svg.in-reply-to-icon
     filter: none;
 }
 
-.statusbox textarea
-{
-    border: 1px solid #cacaca;
+textarea {
+    color: #f4ffff
 }
 
 /* Emoji reacts */
@@ -1035,7 +1059,7 @@ ul.large-list
     width: 500px;
     border-radius: 15px;
     background-color: #f8f8f8;
-    border: 1px solid #cacaca;
+    border: 1px solid #303030;
     padding: 0;
     overflow: hidden;
 }
@@ -1066,7 +1090,7 @@ ul.large-list li a
 
 .lists-view-container ul li:not(:last-child)
 {
-    border-bottom: 1px solid #dadada;
+    border-bottom: 1px solid #303030;
 }
 
 /* Navigation */
@@ -1074,11 +1098,11 @@ ul.large-list li a
 .tabs
 {
     table-layout: fixed;
-    background-color: #f3f3f3;
+    background-color: #202020;
     color: #000;
     width: 100%;
     border-spacing: 0px;
-    box-shadow: 0px 1px 0px #dadada;
+    box-shadow: 0px 1px 0px #303030;
 }
 
 .navigation .nav-btn,
@@ -1105,10 +1129,11 @@ ul.large-list li a
     border-bottom: 3px solid #600000;
 }
 
+
 .navigation tr td:not(:last-child),
 .tabs tr td:not(:last-child)
 {
-    border-right: 1px solid #dadada;
+    border-right: 1px solid #303030;
 }
 
 .ui-table tr td a
@@ -1167,7 +1192,7 @@ ul.large-list li a
     margin: 8px;
     float: right;
     font-size: 12px;
-    color: #dadada;
+    color: #303030;
     text-transform: uppercase;
     background-color: rgba(0, 0, 0, .7);
 }

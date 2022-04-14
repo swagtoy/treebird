@@ -55,6 +55,7 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "theme", &(cookies->theme), key_string },
         { "instance_url", &(cookies->instance_url), key_string },
         { "background_url", &(cookies->background_url), key_string },
+        { "themeclr", &(cookies->themeclr), key_int },
     };
 
     do

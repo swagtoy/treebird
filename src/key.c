@@ -16,10 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
+#include <limits.h>
 #include "key.h"
 
 void key_string(char* val, struct form_props* props, void* _arg)
 {
     char** arg = _arg;
     *arg = val;
+}
+
+void key_int(char* val, struct form_props* form, void* _arg)
+{
+    char* err;
+    int* arg = _arg;
+
+    // Convert
+    long result = strtol(val, &err, 10);
+    if (err == val ||
+        // Overflow
+        result == LONG_MIN || result == LONG_MAX)
+    {
+        *arg = 0;
+        return;
+    }
+    *arg = result;
 }

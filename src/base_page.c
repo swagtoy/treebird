@@ -49,6 +49,8 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
             ssn->config.theme = ssn->cookies.theme;
         if (ssn->cookies.logged_in)
             login_string = "";
+        if (ssn->cookies.themeclr)
+            ssn->config.themeclr = ssn->cookies.themeclr;
         if (ssn->cookies.background_url)
             ssn->config.background_url = ssn->cookies.background_url;
     }
