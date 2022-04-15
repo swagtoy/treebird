@@ -484,7 +484,8 @@ svg.in-reply-to-icon
  *      Statuses           *
  **************************/
 .status,
-.notification-regular
+.notification-regular,
+.scrobble
 {
     padding: 6px 2px 0 6px;
     border-bottom: 1px solid #cacaca !important;
@@ -1182,3 +1183,71 @@ ul.large-list li a
 {
     text-decoration: none;
 }
+
+/******************************
+ *         Scrobbles          *
+ ******************************/
+.scrobblist-info
+{
+    padding: 4px;
+    border-collapse: collapse;
+    border-bottom: 1px solid #cacaca;
+    width: 100%;
+}
+
+.scrobblist-info .username
+{
+    font-weight: bold;
+}
+
+.pfp-img-scrobble
+{
+    position: relative;
+    top: 2px;
+    left: 2px;
+}
+
+.scrobblist-info-text
+{
+    position: relative;
+    top: 5px;
+    left: 6px;
+}
+
+.scrobble
+{
+    padding: 0px;
+}
+
+.scrobbles
+{
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+}
+
+.scrobbles tr td
+{
+    padding: 8px 10px;
+    margin: 0;
+}
+
+.scrobble-key
+{
+    border-right: 1px solid #cacaca;
+}
+
+.scrobble-value
+{
+    width: 100%;
+    border-right: 0;
+    color: #404040;
+}
+
+.scrobble-key
+{
+    background-color: #eaeaea;
+    color: #606060;
+    font-weight: bold;
+}
+

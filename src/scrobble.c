@@ -28,10 +28,18 @@ char* construct_scrobble(struct mstdnt_scrobble* scrobble, int* size)
     size_t s;
 
     s = easprintf(&scrobble_html, data_scrobble_html,
+                  scrobble->id,
+                  scrobble->account.avatar,
+                  scrobble->account.display_name,
+                  "is listening to...",
+                  "Title",
                   scrobble->title,
+                  "Artist",
                   scrobble->artist,
-                  scrobble->length,
-                  scrobble->album);
+                  "Album",
+                  scrobble->album,
+                  "Duration",
+                  scrobble->length);
 
     if (size) *size = s;
     return scrobble_html;
