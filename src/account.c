@@ -25,9 +25,9 @@
 #include "easprintf.h"
 #include "status.h"
 #include "http.h"
+#include "scrobble.h"
 
 // Files
-#include "../static/index.chtml"
 #include "../static/account.chtml"
 #include "../static/account_info.chtml"
 
@@ -82,7 +82,7 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
         .min_id = NULL,
         .since_id = NULL,
         .offset = 0,
-        .limit = 0
+        .limit = 20
     };
     
     if (mastodont_get_scrobbles(api, acct->id, &args, &storage, &scrobbles, &scrobbles_len))
@@ -90,7 +90,7 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
         scrobbles_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
-        /* scrobble_html = construct_statuses(api, statuses, statuses_len, NULL); */
+        scrobbles_html = construct_scrobbles(scrobbles, scrobbles_len, NULL);
         if (!scrobbles_html)
             scrobbles_html = construct_error("No scrobbles", E_NOTICE, 1, NULL);
     }
@@ -239,6 +239,8 @@ char* construct_account_page(mastodont_t* api,
     if (is_blocked) free(is_blocked);
     return result;
 }
+
+
 
 void content_account_statuses(struct session* ssn, mastodont_t* api, char** data)
 {

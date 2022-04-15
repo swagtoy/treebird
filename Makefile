@@ -86,6 +86,8 @@ $(PAGES_DIR)/account_info.chtml: $(PAGES_DIR)/account_info.html
 	./filec $< data_account_info_html > $@
 $(PAGES_DIR)/search.chtml: $(PAGES_DIR)/search.html
 	./filec $< data_search_html > $@
+$(PAGES_DIR)/scrobble.chtml: $(PAGES_DIR)/scrobble.html
+	./filec $< data_scrobble_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
