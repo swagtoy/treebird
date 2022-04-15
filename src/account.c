@@ -69,6 +69,38 @@ static char* account_statuses_cb(struct session* ssn, mastodont_t* api, struct m
     return statuses_html;
 }
 
+
+static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct mstdnt_account* acct)
+{
+    (void)ssn;
+    char* scrobbles_html = NULL;
+    struct mstdnt_storage storage;
+    struct mstdnt_scrobble* scrobbles = NULL;
+    size_t scrobbles_len = 0;
+    struct mstdnt_get_scrobbles_args args = {
+        .max_id = NULL,
+        .min_id = NULL,
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 0
+    };
+    
+    if (mastodont_get_scrobbles(api, acct->id, &args, &storage, &scrobbles, &scrobbles_len))
+    {
+        scrobbles_html = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        /* scrobble_html = construct_statuses(api, statuses, statuses_len, NULL); */
+        if (!scrobbles_html)
+            scrobbles_html = construct_error("No scrobbles", E_NOTICE, 1, NULL);
+    }
+
+    mastodont_storage_cleanup(&storage);
+    free(scrobbles);
+    return scrobbles_html;
+}
+
+
 static void fetch_account_page(struct session* ssn,
                                mastodont_t* api,
                                char* id,
@@ -215,7 +247,7 @@ void content_account_statuses(struct session* ssn, mastodont_t* api, char** data
 
 void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** data)
 {
-    fetch_account_page(ssn, api, data[0], ACCT_TAB_SCROBBLES, account_statuses_cb);
+    fetch_account_page(ssn, api, data[0], ACCT_TAB_SCROBBLES, account_scrobbles_cb);
 }
 
 
