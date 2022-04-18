@@ -102,6 +102,9 @@ void read_config(struct session* ssn)
     SET_COOKIE_CONFIG(ssn->post.jslive,
                       ssn->cookies.jslive,
                       ssn->config.jslive);
+    SET_COOKIE_CONFIG(0,
+                      ssn->cookies.logged_in,
+                      ssn->config.logged_in);
     SET_COOKIE_CONFIG((ssn->post.files.content && ssn->post.files.content[0].content),
                       ssn->cookies.background_url,
                       ssn->config.background_url);

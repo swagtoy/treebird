@@ -32,5 +32,6 @@ int set_config_int(int* ssn,
                    char* value);
 
 void load_config(struct session* ssn, mastodont_t* api);
+void read_config(struct session* ssn);
 
 #endif // LOCAL_CONFIG_SET_H

@@ -45,6 +45,9 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
 
     read_config(ssn);
 
+    if (ssn->config.logged_in)
+        login_string = "";
+
     if (ssn->config.background_url)
     {
         easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url);
