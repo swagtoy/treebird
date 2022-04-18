@@ -22,6 +22,7 @@
 #include "l10n.h"
 #include "local_config.h"
 #include "session.h"
+
 enum base_category
 {
     BASE_CAT_NONE,

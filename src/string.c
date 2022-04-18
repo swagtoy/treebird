@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
 #include "string.h"
@@ -61,7 +62,7 @@ char* strrepl(char* source, char* find, char* repl)
 
     do
     {
-        n = strstr(find);
+        n = strstr(needle, find);
         if (!n) break;
         result = realloc(result, n - source + repl_len + 1);
         result[n - source + repl_len] = '\0';

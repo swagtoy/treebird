@@ -25,6 +25,7 @@
 #include "notifications.h"
 #include "string_helpers.h"
 #include "../config.h"
+#include "local_config_set.h"
 
 // Files
 #include "../static/index.chtml"
