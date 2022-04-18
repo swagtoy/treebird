@@ -28,6 +28,9 @@ struct cookie_values
     char* instance_url;
     char* background_url;
     int themeclr;
+    int jsactions;
+    int jsreply;
+    int jslive;
 };
 
 struct http_cookie_info

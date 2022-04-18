@@ -43,17 +43,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len;
 
-    if (!ssn->config.changed && cookie)
-    {
-        if (ssn->cookies.theme)
-            ssn->config.theme = ssn->cookies.theme;
-        if (ssn->cookies.logged_in)
-            login_string = "";
-        if (ssn->cookies.themeclr)
-            ssn->config.themeclr = ssn->cookies.themeclr;
-        if (ssn->cookies.background_url)
-            ssn->config.background_url = ssn->cookies.background_url;
-    }
+    read_config(ssn);
 
     if (ssn->config.background_url)
     {
