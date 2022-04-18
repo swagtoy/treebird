@@ -22,11 +22,12 @@
 
 // Imports
 #include "mime_multipart.c"
-
+#include "string_test.c"
 int main()
 {
     struct test tests[] = {
-        { "Mime multipart parser", mime_multipart_test }
+        { "Mime multipart parser", mime_multipart_test },
+        { "Strings", string_replace_test }
     };
     return iterate_tests(tests, sizeof(tests)/sizeof(tests[0]));
 }

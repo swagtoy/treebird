@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stddef.h>
 #include <string.h>
 #include "string.h"
 
@@ -49,4 +50,26 @@ char* strnstr(const char* haystack, const char* needle, size_t s)
     }
 
     return NULL;
+}
+
+char* strrepl(char* source, char* find, char* repl)
+{
+    size_t repl_len = strlen(repl);
+    char* result = NULL;
+    char* n;
+    char* needle = source;
+
+    do
+    {
+        n = strstr(find);
+        if (!n) break;
+        result = realloc(result, n - source + repl_len + 1);
+        result[n - source + repl_len] = '\0';
+        // Copy initial string up to here
+        strncpy(result, find, n - source - 1);
+        
+    } while (n);
+
+    // Return source string if no replacements
+    return result ? result : source;
 }
