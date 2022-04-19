@@ -297,7 +297,7 @@ input[type=textbox]
 { 
     background: linear-gradient(#520000, #290000);
     border-color: #400000;
-    color: #a68f8f;
+    color: #ffdddd;
     cursor: pointer;
 }
 

@@ -98,6 +98,7 @@ int main(void)
             { "/lists/for/:", content_tl_list },
             { "/lists", content_lists },
             { "/federated", content_tl_federated },
+            { "/direct", content_tl_direct },
             { "/local", content_tl_local },
             { "/notifications", content_notifications },
         };
