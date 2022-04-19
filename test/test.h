@@ -31,10 +31,10 @@ int iterate_tests(struct test* tests, size_t tests_len)
 
     for (size_t i = 0; i < tests_len; ++i)
     {
-        printf("[ Test ] %04ld   %s\n", i, tests->test_name);
-        status = tests->callback();
-        printf("[ Test \"%s\" %s! ]\n", tests->test_name, !status ? "passed" : "failed");
-        if (!status)
+        printf("[ Test ] %04ld   %s\n", i, tests[i].test_name);
+        status = tests[i].callback();
+        printf("[ Test \"%s\" %s! ]\n", tests[i].test_name, !status ? "passed" : "failed");
+        if (status)
             return 1;
     }
     

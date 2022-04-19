@@ -4,7 +4,7 @@ MASTODONT = $(MASTODONT_DIR)libmastodont.a
 CFLAGS += -g -Wall -I ../$(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-discarded-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
 LDFLAGS = -L./../$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
 TARGET = tests
-SRC = unit/main.c ../src/mime.c
+SRC = unit/main.c ../src/mime.c ../src/string.c
 OBJ = $(patsubst %.c,%.o,$(SRC)) 
 
 all: $(TARGET)

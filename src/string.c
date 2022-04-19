@@ -55,21 +55,45 @@ char* strnstr(const char* haystack, const char* needle, size_t s)
 
 char* strrepl(char* source, char* find, char* repl)
 {
-    size_t repl_len = strlen(repl);
+    const size_t find_len = strlen(find);
+    const size_t repl_len = strlen(repl);
     char* result = NULL;
-    char* n;
-    char* needle = source;
+    char* curr;
+    size_t is_last = 0;
+    char* last = source;
+    size_t str_size = 0;
+    size_t last_str_size;
 
     do
     {
-        n = strstr(needle, find);
-        if (!n) break;
-        result = realloc(result, n - source + repl_len + 1);
-        result[n - source + repl_len] = '\0';
-        // Copy initial string up to here
-        strncpy(result, find, n - source - 1);
+        if (*last == '\0') break;
+        curr = strstr(last, find);
+        if (last == source && !curr) break;
+        // Move to end
+        else if (!curr)
+        {
+            curr = last + strlen(last);
+            is_last = 1;
+        }
         
-    } while (n);
+        // Increase to distance
+        last_str_size = str_size;
+        str_size += curr - last;
+
+        // Create and copy
+        result = realloc(result, str_size + (!is_last ? repl_len : 0) + 1);
+        strncpy(result + last_str_size, last, curr - last);
+        if (!is_last)
+        {
+            strncpy(result + str_size, repl, repl_len);
+
+            // Bump past replace size and null term
+            str_size += repl_len;
+        }
+        result[str_size] = '\0';
+        // If is_last is true, this value doesn't matter
+        last = curr + find_len;
+    } while (curr && !is_last);
 
     // Return source string if no replacements
     return result ? result : source;

@@ -42,14 +42,14 @@ void form_check(void)
     
     // Copy and test
     strcpy(multipart, MULTIPART_TEST);
-    pos = read_form_data(BOUNDARY_RES_T, multipart, &info);
+    pos = read_form_data(BOUNDARY_RES_T, multipart, &info, sizeof(MULTIPART_TEST)-1);
 
     assert(pos != NULL);
     assert(strcmp(info.name, "text") == 0);
     assert(strcmp(info.value, "text default") == 0);
 
     // test next value
-    pos = read_form_data(BOUNDARY_RES_T, pos, &info);
+    pos = read_form_data(BOUNDARY_RES_T, pos, &info, sizeof(MULTIPART_TEST) - (pos - multipart));
 
     assert(pos != NULL);
     assert(strcmp(info.name, "file1") == 0);
