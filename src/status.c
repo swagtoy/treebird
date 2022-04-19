@@ -161,13 +161,33 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
 }
 
 #define REGEX_GREENTEXT "((?:^|\\s)>.*)$"
+#define REGEX_GREENTEXT_LEN 3
 
 char* reformat_status(char* content)
 {
     const char* error;
     int erroffset;
+    int rc;
+    char* res = content;
     pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
-    return "";
+    if (re == NULL)
+    {
+        fprintf(stderror, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
+        free(replies);
+        pcre_free(re);
+        return res;
+    }
+
+    for (int ind = 0;;)
+    {
+        rc = pcre_exec(re, NULL, content, strlen(content), ind, 0, re_results, REGEX_GREENTEXT_LEN);
+        if (rc < 0)
+            break;
+
+        // Store to last result
+        
+    }
+    return res;
 }
 
 char* construct_status(mastodont_t* api,
