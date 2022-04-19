@@ -22,5 +22,5 @@
 void content_index(struct session* ssn, mastodont_t* api)
 {
     // Check logins
-    tl_public(ssn, api, 0);
+    tl_public(ssn, api, 0, BASE_CAT_HOME);
 }

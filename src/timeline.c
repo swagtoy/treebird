@@ -31,7 +31,7 @@
 
 #include "../static/navigation.chtml"
 
-void tl_public(struct session* ssn, mastodont_t* api, int local)
+void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     size_t status_count = 0, statuses_html_count = 0;
     struct mstdnt_status* statuses = NULL;
@@ -82,7 +82,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local)
               STR_NULL_EMPTY(navigation_box));
 
     struct base_page b = {
-        .category = BASE_CAT_HOME,
+        .category = cat,
         .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
@@ -152,17 +152,16 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     if (output) free(output);
 }
 
-
 void content_tl_federated(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
-    tl_public(ssn, api, 0);
+    tl_public(ssn, api, 0, BASE_CAT_FEDERATED);
 }
 
 void content_tl_local(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
-    tl_public(ssn, api, 1);
+    tl_public(ssn, api, 1, BASE_CAT_LOCAL);
 }
 
 void content_tl_list(struct session* ssn, mastodont_t* api, char** data)

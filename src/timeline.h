@@ -21,9 +21,10 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "base_page.h"
 
 // Federated and local are here
-void tl_public(struct session* ssn, mastodont_t* api, int local);
+void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat);
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id);
 
 void content_tl_federated(struct session* ssn, mastodont_t* api, char** data);
