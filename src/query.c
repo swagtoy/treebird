@@ -119,6 +119,7 @@ char* read_post_data(struct query_values* post)
         { "min_id", &(post->min_id), key_string },
         { "max_id", &(post->max_id), key_string },
         { "start_id", &(post->start_id), key_string },
+        { "visibility", &(post->visibility), key_string },
         { "file", &(post->files), key_files }
     };
     // END Query references

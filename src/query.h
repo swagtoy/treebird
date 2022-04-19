@@ -60,6 +60,7 @@ struct query_values
     char* min_id;
     char* max_id;
     char* start_id;
+    char* visibility;
 
     struct file_array files;
 };

@@ -75,7 +75,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         .sensitive = 0,
         .spoiler_text = NULL,
         .status = ssn->post.content,
-        .visibility = "public",
+        .visibility = ssn->post.visibility,
     };
 
     mastodont_create_status(api, &args, &storage);
@@ -235,7 +235,7 @@ char* construct_status(mastodont_t* api,
                          config_url_prefix,
                          status->account.acct,
                          status->account.acct, /* Account */
-                         "Public", /* visibility */
+                         status->visibility, /* visibility */
                          config_url_prefix,
                          status->id,
                          status->muted ? "un" : "",
