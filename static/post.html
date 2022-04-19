@@ -4,15 +4,15 @@
     <textarea name="content" placeholder="Just landed in N.Y." rows="5" tabindex="1">%s</textarea>
     <div class="statusfooter">
       <div class="statusfooter-left">
-        <select name="visibility" id="visibility">
+        <select tabindex="3" name="visibility" id="visibility">
           <option value="public">Public</option>
           <option value="unlisted">Unlisted</option>
-          <option value="private">Followers</option>
+          <option value="private">Private</option>
           <option value="direct">Direct</option>
           <option value="local">Local</option>
           <!-- TODO generate lists -->
         </select>
-        <input type="file" name="file" tabindex="3" multiple>
+        <input type="file" name="file" tabindex="4" multiple>
       </div>
       <div class="statusfooter-right">
         <input type="submit" value="Post" tabindex="2" class="btn">

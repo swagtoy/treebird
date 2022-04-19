@@ -884,6 +884,8 @@ svg.in-reply-to-icon
     border: 1px solid #eaeaea;
     display: block;
     width: 592px;
+    max-width: 592px;
+    min-width: 592px;
     margin-bottom: 5px;
     padding: 2px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);

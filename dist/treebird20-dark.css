@@ -42,6 +42,11 @@ ul
 
 }
 
+select
+{
+    background-color: #303030;
+}
+
 #main-page-container
 {
     padding: 8px;
@@ -76,15 +81,15 @@ a, a:visited, a:hover, a:active
     color: inherit;
 }
 
-.mention,
-.mention span
+.mention
 {
-    color: #5b4852;
+    color: #ffcccc;
     text-decoration: none;
-    background-color: #c9bac2;
+    background-color: #600000;
     border-radius: 3px;
     padding-left: 2px;
     padding-right: 2px;
+    border: 1px solid #aa0000;
 }
 
 /* Cleans up most of the tables */
@@ -885,8 +890,11 @@ svg.in-reply-to-icon
     display: block;
     border: 1px solid #303030;
     width: 592px;
+    max-width: 592px;
+    min-width: 592px;
     background: #202020;
     margin-bottom: 5px;
+    padding: 2px;
 }
 
 .statusbox .statusfooter

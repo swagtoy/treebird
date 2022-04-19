@@ -858,7 +858,10 @@ svg.in-reply-to-icon
 {
     display: block;
     width: 592px;
+    max-width: 592px;
+    min-width: 592px;
     margin-bottom: 5px;
+    padding: 2px;
 }
 
 .statusbox .statusfooter
