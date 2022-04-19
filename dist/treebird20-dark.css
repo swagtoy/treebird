@@ -104,11 +104,14 @@ table.ui-table td
 }
 
 #navbar {
+    position: sticky;
+    top: 0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-top: 2px solid #303030;
     border-bottom: 2px solid #1c1c1c;
-    background: linear-gradient(#2c2c2c, #202020);
+    background: linear-gradient(#373737ea, #2c2c2cea);
+    backdrop-filter: saturate(600%) blur(12px);
     width: 1000px;
     z-index: 999;
 }
