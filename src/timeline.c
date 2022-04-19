@@ -31,6 +31,74 @@
 
 #include "../static/navigation.chtml"
 
+
+void tl_home(struct session* ssn, mastodont_t* api, int local)
+{
+    size_t status_count = 0, statuses_html_count = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+    char* status_format = NULL,
+        *post_box,
+        *navigation_box = NULL,
+        *output = NULL;
+    char* start_id;
+
+    struct mstdnt_timeline_args args = {
+        .local = local,
+        .max_id = ssn->post.max_id,
+        .since_id = NULL,
+        .min_id = ssn->post.min_id,
+        .limit = 10,
+    };
+
+    try_post_status(ssn, api);
+    
+    if (mastodont_timeline_home(api, &args, &storage, &statuses, &status_count))
+    {
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        // Construct statuses into HTML
+        status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
+        if (!status_format)
+            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
+    }
+
+    // Create post box
+    post_box = construct_post_box(NULL, "", NULL);
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, "%s%s%s",
+              post_box,
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
+
+    struct base_page b = {
+        .category = BASE_CAT_HOME,
+        .locale = L10N_EN_US,
+        .content = output,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_statuses(statuses, status_count);
+    if (status_format) free(status_format);
+    if (post_box) free(post_box);
+    if (navigation_box) free(navigation_box);
+    if (output) free(output);
+}
+
 void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     size_t status_count = 0, statuses_html_count = 0;
@@ -42,7 +110,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
         *output = NULL;
     char* start_id;
 
-    struct mstdnt_args args = {
+    struct mstdnt_timeline_args args = {
         .local = local,
         .remote = 0,
         .only_media = 0,
@@ -108,7 +176,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     char* status_format, *post_box;
     char* output = NULL;
 
-    struct mstdnt_args args = {
+    struct mstdnt_timeline_args args = {
         .max_id = NULL,
         .since_id = NULL,
         .min_id = NULL,
@@ -150,6 +218,15 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     free(status_format);
     if (post_box) free(post_box);
     if (output) free(output);
+}
+
+void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
+{
+    (void)data;
+    if (ssn->cookies.logged_in)
+        tl_home(ssn, api, 0);
+    else
+        content_tl_federated(ssn, api, data);
 }
 
 void content_tl_federated(struct session* ssn, mastodont_t* api, char** data)
