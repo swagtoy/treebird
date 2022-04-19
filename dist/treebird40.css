@@ -51,8 +51,10 @@ ul
 
 #main-page
 {
-
-    background-color: rgba(255, 255, 255, 0.9);
+    background: url("/img/noise.png");
+    background-color: rgba(255, 255, 255, 0.95);
+    background-attachment: fixed;
+    backdrop-filter: saturate(600%) blur(12px);
     width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -106,8 +108,8 @@ table.ui-table td
 {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background: rgba(250, 250, 250, 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(253, 253, 253, 0.85);
+    backdrop-filter: saturate(500%) blur(12px);
     width: 1000px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
     z-index: 999;
@@ -164,10 +166,10 @@ table.ui-table td
 
 #main
 {
-    background-color: #fff;
-    width: 610px;
-    max-width: 610px !important;
-    min-width: 610px;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 608px;
+    max-width: 608px !important;
+    min-width: 608px;
     border-collapse: collapse !important;
     padding: 0;
 }
@@ -178,11 +180,18 @@ table.ui-table td
     min-height: 600px;
 }
 
+#leftbar
+{
+    border-right: 1px solid #eaeaea;
+}
+
+#rightbar
+{
+    border-left: 1px solid #eaeaea;
+}
+
 .sidebar
 {
-    background: url("/img/noise.png");
-    background-attachment: fixed;
-    backdrop-filter: blur(16px);
     width: 180px;
     min-height: 600px;
     max-width: 180px;
@@ -312,30 +321,30 @@ input[type=button], input[type=submit]
 {
     position: relative;
     top: 0px;
+    border: 1px solid transparent;
     display: block;
     padding: 10px 8px 10px 16px;
     margin: 4px;
     border-radius: 8px;
     transition: top .2s,
                 box-shadow .2s,
-                background-color .2s;
+                background-color .2s,
+                transform .2s;
 }
 
 .sidebarbtn:hover
 {
-    background-color: #fff;
-    box-shadow: 0px 2px 0px 0px #f9f9f9,
-                0px 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid #efefef;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
 
 ;
 }
 
 .sidebarbtn:active
 {
-    position: relative;
-    top: 2px;
-    background-color: #fff;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.02);
+    transform: scale(.9);
 }
 
 
@@ -871,9 +880,13 @@ svg.in-reply-to-icon
 
 .statusbox textarea
 {
+    border-radius: 5px;
+    border: 1px solid #eaeaea;
     display: block;
     width: 592px;
     margin-bottom: 5px;
+    padding: 2px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .statusbox .statusfooter
