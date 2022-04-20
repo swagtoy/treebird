@@ -90,7 +90,7 @@ a, a:visited, a:hover, a:active
 
 .greentext
 {
-    color: #008000;
+    color: #00aa00;
 }
 
 /* Cleans up most of the tables */
@@ -409,6 +409,18 @@ input[type=button], input[type=submit]
 .notification-compact
 {
     min-width: 100%;
+}
+
+.notification-compact .notification-content
+{
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.notification-compact:hover .notification-content
+{
+    max-height: unset;
+    overflow: hidden;
 }
 
 .notification-compact p
@@ -961,6 +973,26 @@ svg.in-reply-to-icon
 }
 
 /* Emoji reacts */
+.emoji
+{
+    font-family: monospace;
+    display: inline;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    object-fit: contain;
+}
+
+.emoji:hover
+{
+    transform: scale(1.5);
+}
+
+.emoji:active
+{
+    transform: scale(2.7);
+}
+
 .emoji-react-box
 {
     border-radius: 4px;

@@ -35,11 +35,12 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 
         // Add colons around string
         sc_len = strlen(emos[i].shortcode);
+        // 3 = \0 and two :
         coloned = malloc(sc_len+3);
         coloned[0] = ':';
         strncpy(coloned + 1, emos[i].shortcode, sc_len);
-        coloned[sc_len-1] = ':';
-        coloned[sc_len] = '\0';
+        coloned[sc_len+1] = ':';
+        coloned[sc_len+2] = '\0';
 
         easprintf(&emoji_url_str, "<img class=\"emoji\" src=\"%s\">", emos[i].url);
         

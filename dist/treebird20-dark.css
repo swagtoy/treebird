@@ -413,6 +413,18 @@ ul li:first-child a.sidebarbtn
     min-width: 100%;
 }
 
+.notification-compact .notification-content
+{
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.notification-compact:hover .notification-content
+{
+    max-height: unset;
+    overflow: hidden;
+}
+
 .notification-compact p
 {
     margin: 0;
@@ -965,7 +977,28 @@ svg.in-reply-to-icon
     color: #f4ffff;
 }
 
-/* Emoji reacts */
+/* Emoji */
+.emoji
+{
+    font-family: monospace;
+    display: inline;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    object-fit: contain;
+    transition: transform .2s;
+}
+
+.emoji:hover
+{
+    transform: scale(1.5);
+}
+
+.emoji:active
+{
+    transform: scale(2.7);
+}
+
 .emoji-react-box
 {
     border-radius: 4px;

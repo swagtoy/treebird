@@ -173,7 +173,7 @@ char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len)
     if (emos)
     {
         emo_res = emojify(gt_res, emos, emos_len);
-        free(gt_res);
+        if (gt_res != content) free(gt_res);
         return emo_res;
     }
     return gt_res;

@@ -86,16 +86,25 @@ char* construct_notification_compact(mastodont_t* api,
                                      int* size)
 {
     char* notif_html;
+    char* status_format;
     char* notif_stats = NULL;
 
     const char* type_str = notification_type_compact_str(notif->type);
     const char* type_svg = notification_type_svg(notif->type);
 
     if (notif->status)
+    {
         easprintf(&notif_stats, "%d - %d - %d",
                   notif->status->replies_count,
                   notif->status->reblogs_count,
                   notif->status->favourites_count);
+        status_format = reformat_status(notif->status->content,
+                                        notif->status->emojis,
+                                        notif->status->emojis_len);
+    }
+    else {
+        status_format = NULL;
+    }
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
                          notif->account->avatar,
@@ -108,12 +117,13 @@ char* construct_notification_compact(mastodont_t* api,
                          /* Might show follower address */
                          notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
                          notif->account->acct :
-                         notif->status ? notif->status->content : "",
+                         status_format ? status_format : "",
                          /* end */
                          notif_stats ? notif_stats : "");
 
     if (size) *size = s;
 
+    if (status_format) free(status_format);
     if (notif_stats) free(notif_stats);
     return notif_html;
 }
