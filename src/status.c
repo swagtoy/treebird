@@ -220,7 +220,7 @@ char* greentextify(char* content)
         reg_string[gt_len] = '\0';
         easprintf(&gt_string, "<span class=\"greentext\">%s</span>", reg_string);
         
-        res = strrepl(res, reg_string, gt_string, 0);
+        res = strrepl(res, reg_string, gt_string, STRREPL_ALL );
         if (oldres != content) free(oldres);
         ind = re_results[2] + strlen(gt_string);
         free(reg_string);
