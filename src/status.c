@@ -147,8 +147,7 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
                           config_experimental_lookup,
                           status->in_reply_to_account_id,
                           &acct,
-                          &storage,
-                          NULL);
+                          &storage);
 
     s = easprintf(&irt_html, data_in_reply_to_html,
                   config_url_prefix,
