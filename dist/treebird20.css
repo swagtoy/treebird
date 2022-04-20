@@ -954,6 +954,7 @@ svg.in-reply-to-icon
     height: 32px;
     vertical-align: middle;
     object-fit: contain;
+    transition: transform .2s;
 }
 
 .emoji:hover
