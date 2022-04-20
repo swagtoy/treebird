@@ -92,6 +92,11 @@ a, a:visited, a:hover, a:active
     border: 1px solid #aa0000;
 }
 
+.greentext
+{
+    color: #00cc00;
+}
+
 /* Cleans up most of the tables */
 table.ui-table td
 {

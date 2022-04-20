@@ -88,6 +88,11 @@ a, a:visited, a:hover, a:active
     padding-right: 2px;
 }
 
+.greentext
+{
+    color: #008000;
+}
+
 /* Cleans up most of the tables */
 table.ui-table td
 {

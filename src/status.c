@@ -161,8 +161,8 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
     return irt_html;
 }
 
-#define REGEX_GREENTEXT "((?:^|\\s)>.*)$"
-#define REGEX_GREENTEXT_LEN 3
+#define REGEX_GREENTEXT "((?:^|<br/?>|\\s)&gt;.*?)(?:<br/?>|$)"
+#define REGEX_GREENTEXT_LEN 6
 
 char* reformat_status(char* content)
 {
@@ -172,9 +172,14 @@ char* reformat_status(char* content)
     int gt_off;
     int gt_len;
     char* res = content;
+
+    // Malloc'd strings
+    char* reg_string;
+    char* gt_string;
+    
     char* oldres = NULL;
-    pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
     int re_results[REGEX_GREENTEXT_LEN];
+    pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
     if (re == NULL)
     {
         fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
@@ -184,7 +189,7 @@ char* reformat_status(char* content)
 
     for (int ind = 0;;)
     {
-        rc = pcre_exec(re, NULL, content, strlen(content), ind, 0, re_results, REGEX_GREENTEXT_LEN);
+        rc = pcre_exec(re, NULL, res, strlen(res), ind, 0, re_results, REGEX_GREENTEXT_LEN);
         if (rc < 0)
             break;
 
@@ -192,13 +197,19 @@ char* reformat_status(char* content)
         gt_off = re_results[2];
         gt_len = re_results[3] - gt_off;
 
-        res[gt_off + gt_len] = '\0';
+        oldres = res;
+
+        // Malloc find/repl strings
+        reg_string = malloc(gt_len + 1);
+        strncpy(reg_string, res + gt_off, gt_len);
+        reg_string[gt_len] = '\0';
+        easprintf(&gt_string, "<span class=\"greentext\">%s</span>", reg_string);
         
-        if (res != content)
-            oldres = res;
-        res = strrepl(res, content + gt_off, "greentext");
-        if (oldres) free(oldres);
-        res[gt_off + gt_len] = 'a';
+        res = strrepl(res, reg_string, gt_string, 0);
+        if (oldres != content) free(oldres);
+        ind = re_results[2] + strlen(gt_string);
+        free(reg_string);
+        free(gt_string);
     }
 
     pcre_free(re);

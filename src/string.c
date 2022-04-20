@@ -53,7 +53,7 @@ char* strnstr(const char* haystack, const char* needle, size_t s)
     return NULL;
 }
 
-char* strrepl(char* source, char* find, char* repl)
+char* strrepl(char* source, char* find, char* repl, int flags)
 {
     const size_t find_len = strlen(find);
     const size_t repl_len = strlen(repl);
@@ -93,8 +93,9 @@ char* strrepl(char* source, char* find, char* repl)
         result[str_size] = '\0';
         // If is_last is true, this value doesn't matter
         last = curr + find_len;
-    } while (curr && !is_last);
+    } while (flags == STRREPL_ALL && curr && !is_last);
 
     // Return source string if no replacements
     return result ? result : source;
 }
+

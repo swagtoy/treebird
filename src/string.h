@@ -20,9 +20,11 @@
 #define TREE_STRING_H
 #include <stddef.h>
 
+#define STRREPL_ALL 1
+
 int streql(char* cmp1, char* cmp2);
 int strneql(char* cmp1, char* cmp2, size_t cmp1_n);
 char* strnstr(const char* haystack, const char* needle, size_t s);
-char* strrepl(char* source, char* find, char* replace);
+char* strrepl(char* source, char* find, char* replace, int flags);
 
 #endif // TREE_STRING_H
