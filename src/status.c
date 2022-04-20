@@ -33,6 +33,7 @@
 #include "../config.h"
 #include "type_string.h"
 #include "string.h"
+#include "emoji.h"
 
 // Pages
 #include "../static/status.chtml"
@@ -164,7 +165,21 @@ char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size
 #define REGEX_GREENTEXT "((?:^|<br/?>|\\s)&gt;.*?)(?:<br/?>|$)"
 #define REGEX_GREENTEXT_LEN 6
 
-char* reformat_status(char* content)
+char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len)
+{
+    char* gt_res;
+    char* emo_res;
+    gt_res = greentextify(content);
+    if (emos)
+    {
+        emo_res = emojify(gt_res, emos, emos_len);
+        free(gt_res);
+        return emo_res;
+    }
+    return gt_res;
+}
+
+char* greentextify(char* content)
 {
     const char* error;
     int erroffset;
@@ -247,7 +262,7 @@ char* construct_status(mastodont_t* api,
         notif_reblog.type = MSTDNT_NOTIFICATION_REBLOG;
         notif = &notif_reblog;
     }
-    char* parse_content = reformat_status(status->content);
+    char* parse_content = reformat_status(status->content, status->emojis, status->emojis_len);
     
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
