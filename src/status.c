@@ -32,6 +32,7 @@
 #include "emoji_reaction.h"
 #include "../config.h"
 #include "type_string.h"
+#include "string.h"
 
 // Pages
 #include "../static/status.chtml"
@@ -168,12 +169,15 @@ char* reformat_status(char* content)
     const char* error;
     int erroffset;
     int rc;
+    int gt_off;
+    int gt_len;
     char* res = content;
+    char* oldres = NULL;
     pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
+    int re_results[REGEX_GREENTEXT_LEN];
     if (re == NULL)
     {
-        fprintf(stderror, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
-        free(replies);
+        fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
         pcre_free(re);
         return res;
     }
@@ -185,8 +189,19 @@ char* reformat_status(char* content)
             break;
 
         // Store to last result
+        gt_off = re_results[2];
+        gt_len = re_results[3] - gt_off;
+
+        res[gt_off + gt_len] = '\0';
         
+        if (res != content)
+            oldres = res;
+        res = strrepl(res, content + gt_off, "greentext");
+        if (oldres) free(oldres);
+        res[gt_off + gt_len] = 'a';
     }
+
+    pcre_free(re);
     return res;
 }
 
@@ -221,7 +236,7 @@ char* construct_status(mastodont_t* api,
         notif_reblog.type = MSTDNT_NOTIFICATION_REBLOG;
         notif = &notif_reblog;
     }
-    char* parse_content = status->content;
+    char* parse_content = reformat_status(status->content);
     
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
@@ -301,7 +316,7 @@ char* construct_status(mastodont_t* api,
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
-//    if (parse_content) free(parse_content);
+    if (parse_content != status->content) free(parse_content);
     return stat_html;
 }
 
