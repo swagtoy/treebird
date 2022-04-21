@@ -90,6 +90,10 @@ $(PAGES_DIR)/scrobble.chtml: $(PAGES_DIR)/scrobble.html
 	./filec $< data_scrobble_html > $@
 $(PAGES_DIR)/directs_page.chtml: $(PAGES_DIR)/directs_page.html
 	./filec $< data_directs_page_html > $@
+$(PAGES_DIR)/status_interactions.chtml: $(PAGES_DIR)/status_interactions.html
+	./filec $< data_status_interactions_html > $@
+$(PAGES_DIR)/status_interactions_label.chtml: $(PAGES_DIR)/status_interactions_label.html
+	./filec $< data_status_interactions_label_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

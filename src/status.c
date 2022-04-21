@@ -246,11 +246,30 @@ char* construct_status(mastodont_t* api,
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
+    char* interactions_html;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
     // the reblogged status
     struct mstdnt_notification notif_reblog;
     struct mstdnt_notification* notif = local_notif;
+    struct mstdnt_account* favourites = NULL;
+    struct mstdnt_account* reblogs = NULL;
+    struct mstdnt_storage favourites_storage = { 0 };
+    struct mstdnt_storage reblogs_storage = { 0 };
+    size_t favourites_len;
+    size_t reblogs_len;
+
+    // If focused, show status interactions
+    if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&
+        (status->reblogs_count || status->favourites_count))
+    {
+        if (status->reblogs_count)
+            mastodont_status_favourited_by(api, status->id,
+                                           &favourites_storage,
+                                           &favourites,
+                                           &favourites_len);
+        
+    }
 
     // Repoint value if it's a reblog
     if (status->reblog)
@@ -312,6 +331,7 @@ char* construct_status(mastodont_t* api,
                          parse_content,
                          attachments ? attachments : "",
                          emoji_reactions ? emoji_reactions : "",
+                         interactions_html ? interactions_html : "",
                          config_url_prefix,
                          status->id,
                          status->id,
