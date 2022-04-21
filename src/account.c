@@ -119,7 +119,7 @@ static void fetch_account_page(struct session* ssn,
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
     if (mastodont_get_account(api, lookup_type, id,
-                              &acct, &storage, NULL) ||
+                              &acct, &storage) ||
         mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len))
     {
         account_page = construct_error(storage.error, E_ERROR, 1, NULL);
