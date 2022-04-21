@@ -136,6 +136,27 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     return 0;
 }
 
+char* construct_status_interactions_label(char* header, int size, size_t* size)
+{
+    char* html;
+    size_t s;
+    s = easprintf(&html, data_status_interactions_label_html,
+                  header, size);
+    if (size) *size = s;
+    return html;
+}
+
+char* construct_status_interactions(struct mstdnt_status* status, struct mstdnt_account* accounts, size_t accounts_len)
+{
+    char* html;
+    char* repeats_label = status->fa;
+    char* favourites_label;
+    size_t s;
+    s = easprintf(&html, data_status_interactions_html);
+    if (size) *size = s;
+    return html;
+}
+
 char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size)
 {
     char* irt_html;

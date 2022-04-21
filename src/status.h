@@ -39,6 +39,7 @@ char* construct_status(mastodont_t* api, struct mstdnt_status* status, int* size
 char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
 char* construct_status_interactions(struct mstdnt_account* accounts, size_t accounts_len);
+char* construct_status_interactions_label(char* header, int size, size_t* size);
 char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len);
 char* greentextify(char* content);
 
