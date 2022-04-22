@@ -703,6 +703,49 @@ svg.in-reply-to-icon
     padding-left: 15px;
 }
 
+/*********************
+ *   Interactions    *
+ *********************/
+.status-interactions
+{
+    border-bottom: 1px solid #ddbfbf;
+}
+
+.status-interactions-labels
+{
+    display: inline-block;
+    vertical-align: middle;
+    color: #cacaca;
+}
+
+.status-interactions-labels .header-btn
+{
+    padding: 8px 12px;
+}
+
+.status-interactions-labels .header-btn .btn-content
+{
+    text-align: left;
+    color: #606060;
+    font-weight: bold;
+}
+
+.status-interactions .status-interactions-pfps
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 2px;
+}
+
+.status-interactions .pfp-interaction
+{
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: 1px;
+    object-fit: cover;
+}
+
 /**********************
  *    Profiles        *
  **********************/

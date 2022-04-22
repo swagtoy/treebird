@@ -43,7 +43,7 @@
 #include "../static/status_interactions.chtml"
 #include "../static/status_interaction_profile.chtml"
 
-#define ACCOUNT_INTERACTIONS_LIMIT 9
+#define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
 
 struct status_args
@@ -224,6 +224,10 @@ char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
                                             size_t* ret_size)
 {
     size_t arr_size = reblogs_len + favourites_len;
+    // Set a limit to interactions
+    if (arr_size > ACCOUNT_INTERACTIONS_LIMIT)
+        arr_size = ACCOUNT_INTERACTIONS_LIMIT;
+    
     struct interact_profile_args args = {
         .reblogs = reblogs,
         .reblogs_len = reblogs_len,
@@ -442,8 +446,8 @@ char* construct_status(mastodont_t* api,
                          in_reply_to_str ? in_reply_to_str : "",
                          parse_content,
                          attachments ? attachments : "",
-                         emoji_reactions ? emoji_reactions : "",
                          interactions_html ? interactions_html : "",
+                         emoji_reactions ? emoji_reactions : "",
                          config_url_prefix,
                          status->id,
                          status->id,
