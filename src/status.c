@@ -182,9 +182,10 @@ char* construct_status_interactions(int fav_count,
 
 char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size)
 {
+    size_t s = 0;
     // Might change
     struct mstdnt_account* check_type = args->reblogs;
-    char* profile_html;
+    char* profile_html = NULL;
     
     // Loop through reblogs first, then favourites
     if (index >= args->reblogs_len)
@@ -203,9 +204,11 @@ char* construct_status_interaction_profile(struct interact_profile_args* args, s
                 return NULL;
             }
     }
-    
-    size_t s = easprintf(&profile_html, data_status_interaction_profile_html,
-                         check_type[index].acct, check_type[index].avatar);
+
+    // Usually means no reblogs if check_type is NULL
+    if (check_type)
+        s = easprintf(&profile_html, data_status_interaction_profile_html,
+                      check_type[index].acct, check_type[index].avatar);
     
     if (size) *size = s;
     return profile_html;
