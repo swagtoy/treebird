@@ -94,6 +94,9 @@ $(PAGES_DIR)/status_interactions.chtml: $(PAGES_DIR)/status_interactions.html
 	./filec $< data_status_interactions_html > $@
 $(PAGES_DIR)/status_interactions_label.chtml: $(PAGES_DIR)/status_interactions_label.html
 	./filec $< data_status_interactions_label_html > $@
+$(PAGES_DIR)/status_interaction_profile.chtml: $(PAGES_DIR)/status_interaction_profile.html
+	./filec $< data_status_interaction_profile_html > $@
+
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

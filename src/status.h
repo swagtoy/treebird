@@ -27,6 +27,14 @@
 #define STATUS_FOCUSED (1<<0)
 #define STATUS_EMOJI_PICKER (1<<1)
 
+struct interact_profile_args
+{
+    struct mstdnt_account* reblogs;
+    struct mstdnt_account* favourites;
+    size_t reblogs_len;
+    size_t favourites_len;
+};
+
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
 void content_status_create(struct session* ssn, mastodont_t* api, char** data);
@@ -38,8 +46,20 @@ char* construct_post_box(char* reply_id,
 char* construct_status(mastodont_t* api, struct mstdnt_status* status, int* size, struct mstdnt_notification* notif, uint8_t flags);
 char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size);
 char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
-char* construct_status_interactions(struct mstdnt_account* accounts, size_t accounts_len);
-char* construct_status_interactions_label(char* header, int size, size_t* size);
+char* construct_status_interactions(int fav_count,
+                                    int reblog_count,
+                                    struct mstdnt_account* fav_accounts,
+                                    size_t fav_accounts_len,
+                                    struct mstdnt_account* reblog_accounts,
+                                    size_t reblog_accounts_len,
+                                    size_t* size);
+char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
+                                            struct mstdnt_account* favourites,
+                                            size_t reblogs_len,
+                                            size_t favourites_len,
+                                            size_t* ret_size);
+char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size);
+char* construct_status_interactions_label(char* header, int val, size_t* size);
 char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len);
 char* greentextify(char* content);
 

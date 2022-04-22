@@ -54,6 +54,7 @@ static char* account_statuses_cb(struct session* ssn, mastodont_t* api, struct m
     struct mstdnt_storage storage;
     struct mstdnt_status* statuses = NULL;
     size_t statuses_len = 0;
+    
     if (mastodont_get_account_statuses(api, acct->id, NULL, &storage, &statuses, &statuses_len))
     {
         statuses_html = construct_error(storage.error, E_ERROR, 1, NULL);

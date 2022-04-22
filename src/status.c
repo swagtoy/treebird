@@ -39,7 +39,11 @@
 #include "../static/status.chtml"
 #include "../static/notification.chtml"
 #include "../static/in_reply_to.chtml"
+#include "../static/status_interactions_label.chtml"
+#include "../static/status_interactions.chtml"
+#include "../static/status_interaction_profile.chtml"
 
+#define ACCOUNT_INTERACTIONS_LIMIT 9
 #define NUM_STR "%u"
 
 struct status_args
@@ -136,26 +140,100 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     return 0;
 }
 
-char* construct_status_interactions_label(char* header, int size, size_t* size)
+char* construct_status_interactions_label(char* header, int val, size_t* size)
 {
     char* html;
     size_t s;
     s = easprintf(&html, data_status_interactions_label_html,
-                  header, size);
+                  header, val);
     if (size) *size = s;
     return html;
 }
 
-char* construct_status_interactions(struct mstdnt_status* status, struct mstdnt_account* accounts, size_t accounts_len)
+char* construct_status_interactions(int fav_count,
+                                    int reblog_count,
+                                    struct mstdnt_account* fav_accounts,
+                                    size_t fav_accounts_len,
+                                    struct mstdnt_account* reblog_accounts,
+                                    size_t reblog_accounts_len,
+                                    size_t* size)
 {
     char* html;
-    char* repeats_label = status->fa;
-    char* favourites_label;
+    char* reblogs_label = reblog_count ?
+        construct_status_interactions_label("Reblogs", reblog_count, NULL) : NULL;
+    char* favourites_label = fav_count ?
+        construct_status_interactions_label("Favorites", fav_count, NULL) : NULL;
+    char* profiles = construct_status_interaction_profiles(reblog_accounts,
+                                                           fav_accounts,
+                                                           reblog_accounts_len,
+                                                           fav_accounts_len,
+                                                           NULL);
     size_t s;
-    s = easprintf(&html, data_status_interactions_html);
+    s = easprintf(&html, data_status_interactions_html,
+                  reblogs_label ? reblogs_label : "",
+                  favourites_label ? favourites_label : "",
+                  profiles ? profiles : "");
     if (size) *size = s;
+    if (reblogs_label) free(reblogs_label);
+    if (favourites_label) free(favourites_label);
+    if (profiles) free(profiles);
     return html;
 }
+
+char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size)
+{
+    // Might change
+    struct mstdnt_account* check_type = args->reblogs;
+    char* profile_html;
+    
+    // Loop through reblogs first, then favourites
+    if (index >= args->reblogs_len)
+    {
+        index -= args->reblogs_len;
+        check_type = args->favourites;
+    }
+
+    // If favourites, loops through reblogs to verify no duplicates
+    if (check_type == args->favourites)
+    {
+        for (size_t i = 0; i < args->reblogs_len; ++i)
+            if (strcmp(check_type[index].id, args->reblogs[i].id) == 0)
+            {
+                if (size) *size = 0;
+                return NULL;
+            }
+    }
+    
+    size_t s = easprintf(&profile_html, data_status_interaction_profile_html,
+                         check_type[index].acct, check_type[index].avatar);
+    
+    if (size) *size = s;
+    return profile_html;
+}
+
+static char* construct_status_interaction_profiles_voidwrap(void* passed, size_t index, int* res)
+{
+    struct interact_profile_args* args = passed;
+    return construct_status_interaction_profile(args, index, res);
+}
+
+char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
+                                            struct mstdnt_account* favourites,
+                                            size_t reblogs_len,
+                                            size_t favourites_len,
+                                            size_t* ret_size)
+{
+    size_t arr_size = reblogs_len + favourites_len;
+    struct interact_profile_args args = {
+        .reblogs = reblogs,
+        .reblogs_len = reblogs_len,
+        .favourites = favourites,
+        .favourites_len = favourites_len
+    };
+    
+    return construct_func_strings(construct_status_interaction_profiles_voidwrap, &args, arr_size, ret_size);
+}
+
 
 char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size)
 {
@@ -267,7 +345,7 @@ char* construct_status(mastodont_t* api,
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
-    char* interactions_html;
+    char* interactions_html = NULL;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
     // the reblogged status
@@ -284,12 +362,25 @@ char* construct_status(mastodont_t* api,
     if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&
         (status->reblogs_count || status->favourites_count))
     {
-        if (status->reblogs_count)
+        if (status->favourites_count)
             mastodont_status_favourited_by(api, status->id,
                                            &favourites_storage,
                                            &favourites,
                                            &favourites_len);
-        
+        if (status->reblogs_count)
+            mastodont_status_reblogged_by(api, status->id,
+                                          &reblogs_storage,
+                                          &reblogs,
+                                          &reblogs_len);
+        interactions_html = construct_status_interactions(status->favourites_count,
+                                                          status->reblogs_count,
+                                                          favourites,
+                                                          favourites_len,
+                                                          reblogs,
+                                                          reblogs_len,
+                                                          NULL);
+        mastodont_storage_cleanup(&reblogs_storage);
+        mastodont_storage_cleanup(&favourites_storage);
     }
 
     // Repoint value if it's a reblog
@@ -382,6 +473,7 @@ char* construct_status(mastodont_t* api,
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
+    if (interactions_html) free(interactions_html);
     if (parse_content != status->content) free(parse_content);
     return stat_html;
 }
