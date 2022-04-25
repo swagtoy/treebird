@@ -362,8 +362,8 @@ char* construct_status(mastodont_t* api,
     struct mstdnt_account* reblogs = NULL;
     struct mstdnt_storage favourites_storage = { 0 };
     struct mstdnt_storage reblogs_storage = { 0 };
-    size_t favourites_len;
-    size_t reblogs_len;
+    size_t favourites_len = 0;
+    size_t reblogs_len = 0;
 
     // If focused, show status interactions
     if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&

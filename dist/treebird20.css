@@ -544,7 +544,7 @@ svg.in-reply-to-icon
 
 .pfp-td img
 {
-    border-radius: 3px;
+    border-radius: 5px;
     width: 56px;
     height: 56px;
     object-fit: cover;
@@ -709,6 +709,7 @@ svg.in-reply-to-icon
 .status-interactions
 {
     border-bottom: 1px solid #ddbfbf;
+    margin-top: 2px;
 }
 
 .status-interactions-labels
@@ -721,6 +722,7 @@ svg.in-reply-to-icon
 .status-interactions-labels .header-btn
 {
     padding: 8px 12px;
+    font-size: 15px;
 }
 
 .status-interactions-labels .header-btn .btn-content

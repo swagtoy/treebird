@@ -61,8 +61,9 @@ char* construct_func_strings(char* (*func)(void*, size_t, int*),
         // Cleanup
         free(res_html);
     }
-    
-    result[curr_parse_size] = '\0';
+
+    if (result)
+        result[curr_parse_size] = '\0';
 
     if (ret_size) *ret_size = curr_parse_size;
 
