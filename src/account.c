@@ -26,16 +26,18 @@
 #include "status.h"
 #include "http.h"
 #include "scrobble.h"
+#include "string_helpers.h"
 
 // Files
 #include "../static/account.chtml"
 #include "../static/account_info.chtml"
+#include "../static/account_follow_btn.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
-#define MAKE_FOCUSED_IF(test_tab) (tab == test_tab ? "focused" : "")
+#define MAKE_FOCUSED_IF(tab, test_tab) ((tab) == test_tab ? "focused" : "")
 
-char* construct_account_info(struct mstdnt_account* acct,
-                             size_t* size)
+char* load_account_info(struct mstdnt_account* acct,
+                        size_t* size)
 {
     char* acct_info_html;
     size_t s;
@@ -119,21 +121,22 @@ static void fetch_account_page(struct session* ssn,
         
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
-    if (mastodont_get_account(api, lookup_type, id,
-                              &acct, &storage) ||
-        mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len))
+    if (mastodont_get_account(api, lookup_type, id, &acct, &storage))
     {
         account_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
+        // Relationships may fail
+        mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+        
         data = callback(ssn, api, 
-&acct);
-        account_page = construct_account_page(api,
-                                              &acct,
-                                              relationships,
-                                              tab,
-                                              data,
-                                              NULL);
+                        &acct);
+        account_page = load_account_page(api,
+                                         &acct,
+                                         relationships,
+                                         tab,
+                                         data,
+                                         NULL);
         if (!account_page)
             account_page = construct_error("Couldn't load page", E_ERROR, 1, NULL);
         
@@ -156,88 +159,139 @@ static void fetch_account_page(struct session* ssn,
     free(account_page);
 }
 
-char* construct_account_page(mastodont_t* api,
-                             struct mstdnt_account* acct,
-                             struct mstdnt_relationship* relationship,
-                             enum account_tab tab,
-                             char* content,
-                             size_t* res_size)
+size_t construct_account_page(char** result, struct account_page* page, char* content)
 {
-    int cleanup = 0;
-    int result_size;
+    int size;
+    struct mstdnt_relationship* rel = page->relationship;
+    char* follow_btn = NULL, *follow_btn_text = NULL;
     char* follows_you = NULL;
     char* info_html = NULL;
     char* is_blocked = NULL;
-    char* result;
 
-    // Load statuses html
-    if (acct->note && strcmp(acct->note, "") != 0)
+    // Check if note is not empty
+    if (page->note && strcmp(page->note, "") != 0)
     {
-        info_html = construct_account_info(acct, NULL);
+        info_html = load_account_info(page->account, NULL);
     }
 
-    if (relationship)
+    if (rel)
     {
-        if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWED_BY))
-            easprintf(&follows_you, FOLLOWS_YOU_HTML, "Follows you");
+        if (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWED_BY))
+            easprintf(&follows_you, FOLLOWS_YOU_HTML, L10N[page->locale][L10N_FOLLOWS_YOU]);
 
-        if (MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKED_BY))
-            is_blocked = construct_error("You are blocked by this user", E_NOTICE, 0, NULL);
+        if (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_BLOCKED_BY))
+            is_blocked = construct_error(L10N[page->locale][L10N_BLOCKED], E_NOTICE, 0, NULL);
+
+        if (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_REQUESTED))
+            follow_btn_text = L10N[page->locale][L10N_FOLLOW_PENDING];
+        else if (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING))
+            follow_btn_text = L10N[page->locale][L10N_FOLLOWING];
+        else
+            follow_btn_text = L10N[page->locale][L10N_FOLLOW];
+
+        easprintf(&follow_btn, data_account_follow_btn_html,
+                  config_url_prefix,
+                  page->id,
+                  (rel && (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ||
+                           MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_REQUESTED))
+                   ? "un" : ""),
+                  (rel && MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING)
+                   ? "active" : ""),
+                  follow_btn_text);
     }
-    
-    result_size = easprintf(&result, data_account_html,
-                            is_blocked ? is_blocked : "",
-                            acct->header,
-                            follows_you ? follows_you : "",
-                            acct->display_name,
-                            acct->acct,
-                            config_url_prefix,
-                            acct->id,
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "un" : "",
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_NOTIFYING) ? "Unsubscribe" : "Subscribe",
-                            config_url_prefix,
-                            acct->id,
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "un" : "",
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_BLOCKING) ? "Unblock" : "Block",
-                            config_url_prefix,
-                            acct->id,
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "un" : "",
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_MUTING) ? "Unmute" : "Mute",
-                            "Statuses",
-                            acct->statuses_count,
-                            "Following",
-                            acct->following_count,
-                            "Followers",
-                            acct->followers_count,
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "active" : "",
-                            !relationship ? "" : MSTDNT_FLAG_ISSET(relationship->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ? "Following!" : "Follow",
-                            acct->avatar,
-                            info_html ? info_html : "",
-                            config_url_prefix,
-                            acct->acct,
-                            MAKE_FOCUSED_IF(ACCT_TAB_STATUSES),
-                            "Statuses",
-                            config_url_prefix,
-                            acct->acct,
-                            MAKE_FOCUSED_IF(ACCT_TAB_SCROBBLES),
-                            "Scrobbles",
-                            config_url_prefix,
-                            acct->acct,
-                            MAKE_FOCUSED_IF(ACCT_TAB_MEDIA),
-                            "Media",
-                            config_url_prefix,
-                            acct->acct,
-                            MAKE_FOCUSED_IF(ACCT_TAB_PINNED),
-                            "Pinned",
-                            content);
-    
-    if (result_size == -1)
-        result = NULL;
 
-    if (res_size) *res_size = result_size;
+    size = easprintf(result, data_account_html,
+                     STR_NULL_EMPTY(is_blocked),
+                     page->header_image,
+                     STR_NULL_EMPTY(follows_you),
+                     page->display_name,
+                     page->acct,
+                     config_url_prefix,
+                     page->id,
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_NOTIFYING)
+                      ? "un" : ""),
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_NOTIFYING)
+                      ? L10N[page->locale][L10N_UNSUBSCRIBE] : L10N[page->locale][L10N_SUBSCRIBE]),
+                     config_url_prefix,
+                     page->id,
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_BLOCKING)
+                      ? "un" : ""),
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_BLOCKING)
+                      ? L10N[page->locale][L10N_UNBLOCK] : L10N[page->locale][L10N_BLOCK]),
+                     config_url_prefix,
+                     page->id,
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_MUTING)
+                      ? "un" : ""),
+                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                               MSTDNT_RELATIONSHIP_MUTING)
+                      ? L10N[page->locale][L10N_UNMUTE] : L10N[page->locale][L10N_MUTE]),
+                     L10N[page->locale][L10N_TAB_STATUSES],
+                     page->statuses_count,
+                     L10N[page->locale][L10N_TAB_FOLLOWING],
+                     page->following_count,
+                     L10N[page->locale][L10N_TAB_FOLLOWERS],
+                     page->followers_count,
+                     STR_NULL_EMPTY(follow_btn),
+                     page->profile_image,
+                     STR_NULL_EMPTY(info_html),
+                     config_url_prefix,
+                     page->acct,
+                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_STATUSES),
+                     L10N[page->locale][L10N_TAB_STATUSES],
+                     config_url_prefix,
+                     page->acct,
+                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_SCROBBLES),
+                     L10N[page->locale][L10N_TAB_SCROBBLES],
+                     config_url_prefix,
+                     page->acct,
+                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_MEDIA),
+                     L10N[page->locale][L10N_TAB_MEDIA],
+                     config_url_prefix,
+                     page->acct,
+                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_PINNED),
+                     L10N[page->locale][L10N_TAB_PINNED],
+                     content);
+
     if (info_html) free(info_html);
     if (follows_you) free(follows_you);
+    if (follow_btn) free(follow_btn);
     if (is_blocked) free(is_blocked);
+    return size;
+}
+
+char* load_account_page(mastodont_t* api,
+                        struct mstdnt_account* acct,
+                        struct mstdnt_relationship* relationship,
+                        enum account_tab tab,
+                        char* content,
+                        size_t* res_size)
+{
+    size_t size;
+    char* result;
+    struct account_page page = {
+        .locale = L10N_EN_US,
+        .account = acct,
+        .header_image = acct->header,
+        .profile_image = acct->avatar,
+        .acct = acct->acct,
+        .display_name = acct->display_name,
+        .statuses_count = acct->statuses_count,
+        .following_count = acct->following_count,
+        .followers_count = acct->followers_count,
+        .note = acct->note,
+        .id = acct->id,
+        .tab = tab,
+        .relationship = relationship,
+    };
+
+    size = construct_account_page(&result, &page, content);
+
+    if (res_size) *res_size = size;
     return result;
 }
 

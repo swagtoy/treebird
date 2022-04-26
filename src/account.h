@@ -21,6 +21,7 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "l10n.h"
 
 enum account_tab
 {
@@ -30,15 +31,35 @@ enum account_tab
     ACCT_TAB_MEDIA
 };
 
-char* construct_account_page(mastodont_t* api,
-                             struct mstdnt_account* acct,
-                             struct mstdnt_relationship* relationship,
-                             enum account_tab tab,
-                             char* content,
-                             size_t* res_size);
+struct account_page
+{
+    enum l10n_locale locale;
+    struct mstdnt_account* account;
+    char* header_image;
+    char* profile_image;
+    char* acct;
+    char* display_name;
+    size_t statuses_count;
+    size_t following_count;
+    size_t followers_count;
+    char* id;
+    char* note;
+    enum account_tab tab;
+    mstdnt_relationship_flag_t flags;
+    struct mstdnt_relationship* relationship;
+};
 
-char* construct_account_info(struct mstdnt_account* acct,
-                             size_t* size);
+size_t construct_account_page(char** result, struct account_page* page, char* content);
+
+char* load_account_page(mastodont_t* api,
+                        struct mstdnt_account* acct,
+                        struct mstdnt_relationship* relationship,
+                        enum account_tab tab,
+                        char* content,
+                        size_t* res_size);
+
+char* load_account_info(struct mstdnt_account* acct,
+                        size_t* size);
 
 void content_account_statuses(struct session* ssn, mastodont_t* api, char** data);
 

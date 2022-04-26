@@ -2,7 +2,7 @@ CC ?= cc
 GIT ?= git
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
-CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-discarded-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
+CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
 LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
@@ -94,7 +94,8 @@ $(PAGES_DIR)/status_interactions_label.chtml: $(PAGES_DIR)/status_interactions_l
 	./filec $< data_status_interactions_label_html > $@
 $(PAGES_DIR)/status_interaction_profile.chtml: $(PAGES_DIR)/status_interaction_profile.html
 	./filec $< data_status_interaction_profile_html > $@
-
+$(PAGES_DIR)/account_follow_btn.chtml: $(PAGES_DIR)/account_follow_btn.html
+	./filec $< data_account_follow_btn_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
