@@ -62,12 +62,11 @@ char* load_account_info(struct mstdnt_account* acct,
                         size_t* size);
 
 void content_account_statuses(struct session* ssn, mastodont_t* api, char** data);
-
 void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** data);
-
 void content_account_pinned(struct session* ssn, mastodont_t* api, char** data);
-
 void content_account_media(struct session* ssn, mastodont_t* api, char** data);
-
 void content_account_action(struct session* ssn, mastodont_t* api, char** data);
+void content_account_favourites(struct session* ssn, mastodont_t* api, char** data);
+void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** data);
+
 #endif // ACCOUNT_H

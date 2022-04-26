@@ -100,6 +100,8 @@ int main(void)
             { "/federated", content_tl_federated },
             { "/direct", content_tl_direct },
             { "/local", content_tl_local },
+            { "/bookmarks", content_account_bookmarks },
+            { "/favourites", content_account_favourites },
             { "/notifications", content_notifications },
         };
 

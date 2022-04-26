@@ -25,13 +25,17 @@
 #include "easprintf.h"
 #include "status.h"
 #include "http.h"
+#include "base_page.h"
 #include "scrobble.h"
 #include "string_helpers.h"
+#include "navigation.h"
 
 // Files
 #include "../static/account.chtml"
 #include "../static/account_info.chtml"
 #include "../static/account_follow_btn.chtml"
+#include "../static/favourites_page.chtml"
+#include "../static/bookmarks_page.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 #define MAKE_FOCUSED_IF(tab, test_tab) ((tab) == test_tab ? "focused" : "")
@@ -345,4 +349,136 @@ void content_account_action(struct session* ssn, mastodont_t* api, char** data)
     mastodont_storage_cleanup(&storage);
 
     redirect(REDIRECT_303, referer);
+}
+
+void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** data)
+{
+    size_t status_count = 0, statuses_html_count = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+    char* status_format = NULL,
+        *navigation_box = NULL,
+        *output = NULL,
+        *page = NULL;
+    char* start_id;
+
+    struct mstdnt_bookmarks_args args = {
+        .with_muted = 0,
+        .max_id = ssn->post.max_id,
+        .since_id = NULL,
+        .min_id = ssn->post.min_id,
+        .limit = 20,
+    };
+
+    if (mastodont_get_bookmarks(api, &args, &storage, &statuses, &status_count))
+    {
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        // Construct statuses into HTML
+        status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
+        if (!status_format)
+            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
+    }
+
+    // Create post box
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    
+    easprintf(&page, "%s%s",
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
+    
+    easprintf(&output, data_bookmarks_page_html, page);
+
+    struct base_page b = {
+        .category = BASE_CAT_BOOKMARKS,
+        .locale = L10N_EN_US,
+        .content = output,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_statuses(statuses, status_count);
+    if (status_format) free(status_format);
+    if (navigation_box) free(navigation_box);
+    if (output) free(output);
+    if (page) free(page);    
+}
+
+void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)
+{
+        size_t status_count = 0, statuses_html_count = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+    char* status_format = NULL,
+        *navigation_box = NULL,
+        *output = NULL,
+        *page = NULL;
+    char* start_id;
+
+    struct mstdnt_timeline_args args = {
+        .with_muted = 0,
+        .max_id = ssn->post.max_id,
+        .since_id = NULL,
+        .min_id = ssn->post.min_id,
+        .limit = 20,
+    };
+
+    if (mastodont_get_favourites(api, &args, &storage, &statuses, &status_count))
+    {
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        // Construct statuses into HTML
+        status_format = construct_statuses(api, statuses, status_count, &statuses_html_count);
+        if (!status_format)
+            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
+    }
+
+    // Create post box
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    
+    easprintf(&page, "%s%s",
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
+    
+    easprintf(&output, data_favourites_page_html, page);
+
+    struct base_page b = {
+        .category = BASE_CAT_FAVOURITES,
+        .locale = L10N_EN_US,
+        .content = output,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_statuses(statuses, status_count);
+    if (status_format) free(status_format);
+    if (navigation_box) free(navigation_box);
+    if (output) free(output);
+    if (page) free(page);
 }

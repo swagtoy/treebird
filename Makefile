@@ -96,6 +96,10 @@ $(PAGES_DIR)/status_interaction_profile.chtml: $(PAGES_DIR)/status_interaction_p
 	./filec $< data_status_interaction_profile_html > $@
 $(PAGES_DIR)/account_follow_btn.chtml: $(PAGES_DIR)/account_follow_btn.html
 	./filec $< data_account_follow_btn_html > $@
+$(PAGES_DIR)/bookmarks_page.chtml: $(PAGES_DIR)/bookmarks_page.html
+	./filec $< data_bookmarks_page_html > $@
+$(PAGES_DIR)/favourites_page.chtml: $(PAGES_DIR)/favourites_page.html
+	./filec $< data_favourites_page_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
