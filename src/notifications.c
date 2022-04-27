@@ -23,6 +23,7 @@
 #include "base_page.h"
 #include "string_helpers.h"
 #include "easprintf.h"
+#include "navigation.h"
 #include "status.h"
 #include "error.h"
 #include "../config.h"
@@ -173,6 +174,8 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_storage storage;
     struct mstdnt_notification* notifs;
     size_t notifs_len;
+    char* start_id;
+    char* navigation_box = NULL;
 
     if (ssn->cookies.logged_in)
     {
@@ -193,6 +196,11 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
         {
             notif_html = construct_notifications(api, notifs, notifs_len, NULL);
             mstdnt_cleanup_notifications(notifs, notifs_len);
+            start_id = ssn->post.start_id ? ssn->post.start_id : notifs[0].id;
+            navigation_box = construct_navigation_box(start_id,
+                                                      notifs[0].id,
+                                                      notifs[notifs_len-1].id,
+                                                      NULL);
         }
         else
             notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
@@ -200,7 +208,8 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     }
  
     easprintf(&page, data_notifications_page_html,
-              notif_html ? notif_html : "Not logged in");
+              notif_html ? notif_html : "",
+              navigation_box);
     
     struct base_page b = {
         .category = BASE_CAT_NOTIFICATIONS,
@@ -212,6 +221,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     // Output
     render_base_page(&b, ssn, api);
     if (notif_html) free(notif_html);
+    if (navigation_box) free(navigation_box);
     if (page) free(page);
 }
 

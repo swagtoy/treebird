@@ -67,7 +67,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
             };
 
             if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
-                                             &token) != 0)
+                                             &token) != 0 && oauth_store.error)
             {
                 error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
             }

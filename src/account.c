@@ -363,7 +363,6 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     char* start_id;
 
     struct mstdnt_bookmarks_args args = {
-        .with_muted = 0,
         .max_id = ssn->post.max_id,
         .since_id = NULL,
         .min_id = ssn->post.min_id,
@@ -428,10 +427,8 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
         *page = NULL;
     char* start_id;
 
-    struct mstdnt_timeline_args args = {
-        .with_muted = 0,
+    struct mstdnt_favourites_args args = {
         .max_id = ssn->post.max_id,
-        .since_id = NULL,
         .min_id = ssn->post.min_id,
         .limit = 20,
     };
