@@ -365,6 +365,8 @@ char* construct_status(mastodont_t* api,
     size_t favourites_len = 0;
     size_t reblogs_len = 0;
 
+    if (!status) return NULL;
+
     // If focused, show status interactions
     if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&
         (status->reblogs_count || status->favourites_count))
@@ -493,6 +495,7 @@ static char* construct_status_voidwrap(void* passed, size_t index, int* res)
 
 char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size)
 {
+    if (!(statuses && size)) return NULL;
     struct status_args args = {
         .api = api,
         .status = statuses,

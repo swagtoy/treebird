@@ -122,7 +122,6 @@ static void fetch_account_page(struct session* ssn,
     struct mstdnt_relationship* relationships = NULL;
     size_t relationships_len = 0;
 
-        
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
     if (mastodont_get_account(api, lookup_type, id, &acct, &storage))
@@ -358,8 +357,7 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     struct mstdnt_storage storage = { 0 };
     char* status_format = NULL,
         *navigation_box = NULL,
-        *output = NULL,
-        *page = NULL;
+        *output = NULL;
     char* start_id;
 
     struct mstdnt_bookmarks_args args = {
@@ -391,11 +389,8 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
                                                   NULL);
     }
     
-    easprintf(&page, "%s%s",
-              STR_NULL_EMPTY(status_format),
+    easprintf(&output, data_bookmarks_page_html, status_format,
               STR_NULL_EMPTY(navigation_box));
-    
-    easprintf(&output, data_bookmarks_page_html, page);
 
     struct base_page b = {
         .category = BASE_CAT_BOOKMARKS,
@@ -413,7 +408,6 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     if (status_format) free(status_format);
     if (navigation_box) free(navigation_box);
     if (output) free(output);
-    if (page) free(page);    
 }
 
 void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)
@@ -454,12 +448,8 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
                                                   statuses[status_count-1].id,
                                                   NULL);
     }
-    
-    easprintf(&page, "%s%s",
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
-    
-    easprintf(&output, data_favourites_page_html, page);
+    easprintf(&output, data_favourites_page_html, status_format,
+              navigation_box ? navigation_box : "");
 
     struct base_page b = {
         .category = BASE_CAT_FAVOURITES,
@@ -477,5 +467,4 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
     if (status_format) free(status_format);
     if (navigation_box) free(navigation_box);
     if (output) free(output);
-    if (page) free(page);
 }
