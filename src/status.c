@@ -56,7 +56,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 {
     if (!(ssn->post.content)) return 1;
 
-    struct mstdnt_storage storage, *att_storage = NULL;
+    struct mstdnt_storage storage = { 0 }, *att_storage = NULL;
 
     char** files;
     size_t files_len;
