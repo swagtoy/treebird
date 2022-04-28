@@ -241,13 +241,13 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     size_t status_count, statuses_html_count;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format, *post_box;
+    char* status_format, *post_box, *navigation_box = NULL, *start_id;
     char* output = NULL;
 
     struct mstdnt_timeline_args args = {
-        .max_id = NULL,
+        .max_id = ssn->post.max_id,
         .since_id = NULL,
-        .min_id = NULL,
+        .min_id = ssn->post.min_id,
         .limit = 20,
     };
 
@@ -266,9 +266,19 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 
     // Create post box
     post_box = construct_post_box(NULL, "", NULL);
-    easprintf(&output, "%s%s%s", post_box,
-              status_format,
-              data_navigation_html);
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, "%s%s%s",
+              post_box,
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
 
     struct base_page b = {
         .category = BASE_CAT_LISTS,
@@ -286,6 +296,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     free(status_format);
     if (post_box) free(post_box);
     if (output) free(output);
+    if (navigation_box) free(navigation_box);
 }
 
 void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
