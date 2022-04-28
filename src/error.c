@@ -42,7 +42,7 @@ char* construct_error(char* error, enum error_type type, unsigned pad, size_t* s
     size_t s = easprintf(&error_html, data_error_html,
                          class,
                          pad ? "error-pad" : "",
-                         error);
+                         error ? error : "An error occured");
     if (size) *size = s;
     return error_html;
 }

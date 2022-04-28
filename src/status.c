@@ -531,9 +531,11 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
 {
     char* output;
     // Status context
-    struct mstdnt_storage storage, status_storage;
-    struct mstdnt_status* statuses_before, *statuses_after, status = { 0 };
-    size_t stat_before_len, stat_after_len;
+    struct mstdnt_storage storage = {0}, status_storage = {0};
+    struct mstdnt_status* statuses_before = NULL,
+        *statuses_after = NULL,
+        status = { 0 };
+    size_t stat_before_len = 0, stat_after_len = 0;
     char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
 
     try_post_status(ssn, api);
