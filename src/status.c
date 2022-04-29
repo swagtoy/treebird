@@ -86,7 +86,6 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 
     mastodont_create_status(api, &args, &storage);
 
-    // TODO cleanup when errors are properly implemented
     mastodont_storage_cleanup(&storage);
     if (att_storage)
         cleanup_media_storages(ssn, att_storage);
