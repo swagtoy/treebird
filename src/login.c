@@ -48,7 +48,23 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
             .website = NULL
         };
 
-        
+        // Check if the username contains an @ symbol
+        char* address = strstr(ssn->post.username, "%40");
+        // If it fails, we need to restore
+        char* orig_url = api->url;
+        char* url_link = NULL;
+        if (address)
+        {
+            // Let is viewable as username
+            *address = '\0';
+            address += sizeof("%40")-1;
+            easprintf(&url_link, "https://%s/", address);
+            api->url = url_link;
+        }
+        else {
+            // Reset to instance url
+            api->url = config_instance_url;
+        }
 
         if (mastodont_register_app(api, &args_app, &storage, &app) != 0)
         {
@@ -72,14 +88,27 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
             }
             else {
+                if (url_link)
+                    printf("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
+                else
+                    // Clear
+                    printf("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
                 printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
                 printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
                 // if config_url_prefix is empty, make it root
                 redirect(REDIRECT_303, config_url_prefix ?
                          (config_url_prefix[0] == '\0' ?
                           "/" : config_url_prefix) : "/");
+                if (url_link) free(url_link);
                 return;
             }
+        }
+        
+        if (url_link)
+        {
+            // Restore and cleanup, an error occured
+            api->url = orig_url;
+            free(url_link);
         }
     }
 
@@ -90,7 +119,11 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
               config_url_prefix,
               L10N[L10N_EN_US][L10N_USERNAME],
               L10N[L10N_EN_US][L10N_PASSWORD],
-              L10N[L10N_EN_US][L10N_LOGIN_BTN]);
+              L10N[L10N_EN_US][L10N_LOGIN_BTN],
+              "Or",
+              config_url_prefix,
+              "Instance url",
+              "Authorize");
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
