@@ -1,3 +1,2 @@
 #!/bin/bash
-kill -9 $(pgrep treebird) > /dev/null 2>&1
-fcgistarter -c $(dirname $(readlink -f $0))/../treebird -p 4000 -N 1
+spawn-fcgi -a 127.0.0.1 -p 4008 -n treebird
