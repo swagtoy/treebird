@@ -240,29 +240,38 @@ char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
     return construct_func_strings(construct_status_interaction_profiles_voidwrap, &args, arr_size, ret_size);
 }
 
+char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size)
+{
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account acct = { 0 };
+    
+    int res = mastodont_get_account(api,
+                                    config_experimental_lookup,
+                                    status->in_reply_to_account_id,
+                                    &acct,
+                                    &storage);
 
-char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size)
+    char* html = construct_in_reply_to(status, res ? &acct : NULL, size);
+    
+    mastodont_storage_cleanup(&storage);
+    return html;
+}
+
+char* construct_in_reply_to(struct mstdnt_status* status,
+                            struct mstdnt_account* account,
+                            size_t* size)
 {
     char* irt_html;
     size_t s;
-    struct mstdnt_storage storage;
-    struct mstdnt_account acct;
-
-    mastodont_get_account(api,
-                          config_experimental_lookup,
-                          status->in_reply_to_account_id,
-                          &acct,
-                          &storage);
-
+    
     s = easprintf(&irt_html, data_in_reply_to_html,
                   config_url_prefix,
                   status->in_reply_to_id,
                   L10N[L10N_EN_US][L10N_IN_REPLY_TO],
-                  acct.acct);
+                  account ? account->acct : status->in_reply_to_id);
     
     if (size) *size = s;
 
-    mastodont_storage_cleanup(&storage);
     return irt_html;
 }
 
@@ -422,7 +431,7 @@ char* construct_status(mastodont_t* api,
                   notification_type_svg(notif->type));
 
     if (status->in_reply_to_id && status->in_reply_to_account_id)
-        in_reply_to_str = construct_in_reply_to(api, status, NULL);
+        in_reply_to_str = get_in_reply_to(api, status, NULL);
 
     size_t s = easprintf(&stat_html, data_status_html,
                          status->id,

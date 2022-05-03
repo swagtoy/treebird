@@ -45,7 +45,13 @@ char* construct_post_box(char* reply_id,
                          int* size);
 char* construct_status(mastodont_t* api, struct mstdnt_status* status, int* size, struct mstdnt_notification* notif, uint8_t flags);
 char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size);
-char* construct_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
+
+// Reply to
+char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
+char* construct_in_reply_to(struct mstdnt_status* status,
+                            struct mstdnt_account* account,
+                            size_t* size);
+
 char* construct_status_interactions(int fav_count,
                                     int reblog_count,
                                     struct mstdnt_account* fav_accounts,
@@ -53,6 +59,7 @@ char* construct_status_interactions(int fav_count,
                                     struct mstdnt_account* reblog_accounts,
                                     size_t reblog_accounts_len,
                                     size_t* size);
+
 char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
                                             struct mstdnt_account* favourites,
                                             size_t reblogs_len,
