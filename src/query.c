@@ -36,7 +36,7 @@ char* read_query_data(struct get_values* query)
     // BEGIN Query references
     struct key_value_refs refs[] = {
         { "offset", &(query->offset), key_string },
-        { "q", &(query->q), key_string },
+        { "q", &(query->query), key_string },
     };
     // END Query references
     

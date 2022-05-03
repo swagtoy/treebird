@@ -57,10 +57,12 @@ struct query_values
     char* username;
     char* password;
     char* replyid;
+    char* visibility;
+
+    // Navigation
     char* min_id;
     char* max_id;
     char* start_id;
-    char* visibility;
 
     struct file_array files;
 };
@@ -68,7 +70,7 @@ struct query_values
 struct get_values
 {
     char* offset;
-    char* q;
+    char* query;
 };
 
 void key_files(char* val, struct form_props* form, void* arg);

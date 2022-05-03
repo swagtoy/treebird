@@ -16,9 +16,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include "search.h"
+#include "easprintf.h"
+#include "../config.h"
+#include "string_helpers.h"
+#include "base_page.h"
+
+// Pages
+#include "../static/search.chtml"
 
 void content_search(struct session* ssn, mastodont_t* api, char** data)
 {
-    
+    char* out_data;
+    easprintf(&out_data, data_search_html,
+              config_url_prefix,
+              ssn->query.query,
+              "Statuses",
+              config_url_prefix,
+              ssn->query.query,
+              "Accounts",
+              config_url_prefix,
+              ssn->query.query,
+              "Hashtags",
+              "Nothing");
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .locale = L10N_EN_US,
+        .content = out_data,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    free(out_data);
 }
