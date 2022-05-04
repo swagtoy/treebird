@@ -22,6 +22,8 @@
 #include "../config.h"
 #include "string_helpers.h"
 #include "base_page.h"
+#include "status.h"
+#include "error.h"
 
 // Pages
 #include "../static/search.chtml"
@@ -59,7 +61,38 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
 
 void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
 {
-    search_page(ssn, api, SEARCH_STATUSES, "statuses");
+    char* statuses_html;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_search_args args = {
+        .account_id = NULL,
+        .type = MSTDNT_SEARCH_STATUSES,
+        .resolve = 0,
+        .following = 0,
+        .with_relationships = 0,
+        .max_id = NULL,
+        .min_id = NULL,
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 20,
+    };
+    struct mstdnt_search_results results = { 0 };
+
+    if (mastodont_search(api,
+                         ssn->query.query,
+                         &storage,
+                         &args,
+                         &results) == 0)
+    {
+        statuses_html = construct_statuses(api, results.statuses, results.statuses_len, NULL);
+        if (!statuses_html)
+            statuses_html = construct_error("No statuses", E_ERROR, 1, NULL);
+    }
+    else
+        statuses_html = construct_error("An error occured.", E_ERROR, 1, NULL);
+    
+    search_page(ssn, api, SEARCH_STATUSES, STR_NULL_EMPTY(statuses_html));
+    
+    if (statuses_html) free(statuses_html);
 }
 
 void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
