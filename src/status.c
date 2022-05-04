@@ -50,6 +50,7 @@ struct status_args
 {
     mastodont_t* api;
     struct mstdnt_status* status;
+    struct construct_statuses_args* args;
 };
 
 int try_post_status(struct session* ssn, mastodont_t* api)
@@ -348,6 +349,7 @@ char* construct_status(mastodont_t* api,
                        struct mstdnt_status* local_status,
                        int* size,
                        struct mstdnt_notification* local_notif,
+                       struct construct_statuses_args* args,
                        uint8_t flags)
 {
     char* stat_html;
@@ -409,7 +411,24 @@ char* construct_status(mastodont_t* api,
         notif_reblog.type = MSTDNT_NOTIFICATION_REBLOG;
         notif = &notif_reblog;
     }
+
+    // Format status
     char* parse_content = reformat_status(status->content, status->emojis, status->emojis_len);
+    // Find and replace
+    if (args && args->highlight_word)
+    {
+        char* parse_content_tmp;
+        char* repl_str;
+        easprintf(&repl_str, "<span class=\"search-highlight\">%s</span>", args->highlight_word);
+        parse_content_tmp = parse_content;
+        parse_content = strrepl(parse_content, args->highlight_word, repl_str, STRREPL_ALL);
+        if (parse_content != parse_content_tmp)
+            free(parse_content_tmp);
+        else // No results, move back
+            parse_content = parse_content_tmp;
+
+        free(repl_str);
+    }
     
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
@@ -498,17 +517,22 @@ char* construct_status(mastodont_t* api,
 static char* construct_status_voidwrap(void* passed, size_t index, int* res)
 {
     struct status_args* args = passed;
-    return construct_status(args->api, args->status + index, res, NULL, 0);
+    return construct_status(args->api, args->status + index, res, NULL, args->args, 0);
 }
 
-char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size)
+char* construct_statuses(mastodont_t* api,
+                         struct mstdnt_status* statuses,
+                         size_t size,
+                         struct construct_statuses_args* args,
+                         size_t* ret_size)
 {
     if (!(statuses && size)) return NULL;
-    struct status_args args = {
+    struct status_args stat_args = {
         .api = api,
         .status = statuses,
+        .args = args,
     };
-    return construct_func_strings(construct_status_voidwrap, &args, size, ret_size);
+    return construct_func_strings(construct_status_voidwrap, &stat_args, size, ret_size);
 }
 
 void status_interact(struct session* ssn, mastodont_t* api, char** data)
@@ -556,10 +580,10 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
         stat_html = construct_error("Status not found", E_ERROR, 1, NULL);
     }
     else {
-        before_html = construct_statuses(api, statuses_before, stat_before_len, NULL);
+        before_html = construct_statuses(api, statuses_before, stat_before_len, NULL, 0);
 
         // Current status
-        stat_html = construct_status(api, &status, NULL, NULL, STATUS_FOCUSED);
+        stat_html = construct_status(api, &status, NULL, NULL, NULL, STATUS_FOCUSED);
         if (is_reply)
         {
             stat_reply = reply_status(data[0],
@@ -568,7 +592,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     }
 
     // After...
-    after_html = construct_statuses(api, statuses_after, stat_after_len, NULL);
+    after_html = construct_statuses(api, statuses_after, stat_after_len, NULL, 0);
 
     easprintf(&output, "%s%s%s%s",
               before_html ? before_html : "",

@@ -260,6 +260,11 @@ table.present th, table.present td
     font-weight: bold;
 }
 
+.search-highlight
+{
+    background-color: yellow;
+}
+
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/

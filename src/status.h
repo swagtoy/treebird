@@ -27,6 +27,11 @@
 #define STATUS_FOCUSED (1<<0)
 #define STATUS_EMOJI_PICKER (1<<1)
 
+struct construct_statuses_args
+{
+    char* highlight_word;
+};
+
 struct interact_profile_args
 {
     struct mstdnt_account* reblogs;
@@ -43,8 +48,17 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data);
 char* construct_post_box(char* reply_id,
                          char* default_content,
                          int* size);
-char* construct_status(mastodont_t* api, struct mstdnt_status* status, int* size, struct mstdnt_notification* notif, uint8_t flags);
-char* construct_statuses(mastodont_t* api, struct mstdnt_status* statuses, size_t size, size_t* ret_size);
+char* construct_status(mastodont_t* api,
+                       struct mstdnt_status* status,
+                       int* size,
+                       struct mstdnt_notification* notif,
+                       struct construct_statuses_args* args,
+                       uint8_t flags);
+char* construct_statuses(mastodont_t* api,
+                         struct mstdnt_status* statuses,
+                         size_t size,
+                         struct construct_statuses_args* args,
+                         size_t* ret_size);
 
 // Reply to
 char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);

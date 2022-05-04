@@ -53,7 +53,7 @@ char* construct_notification(mastodont_t* api,
     if (notif->status)
     {
         // Construct status with notification_info
-        notif_html = construct_status(api, notif->status, &s, notif, 0);
+        notif_html = construct_status(api, notif->status, &s, notif, NULL, 0);
     }
     else {
         notif_html = construct_notification_action(notif, &s);
