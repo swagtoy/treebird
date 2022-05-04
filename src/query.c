@@ -56,7 +56,7 @@ char* read_query_data(struct get_values* query)
             if (!(info.key && info.val)) break;
             for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                 if (strcmp(info.key, refs[i].key) == 0)
-                    refs[i].func(info.val, NULL, info.key);
+                    refs[i].func(info.val, NULL, refs[i].val);
         }
         while (g_query_read);
     }
