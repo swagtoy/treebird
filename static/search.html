@@ -1,31 +1,13 @@
-<table class="search-tabs ui-table">
+<table class="tabs ui-table">
   <tr>
-    <td class="search-tab btn">
-      <form action="%s/search/statuses" method="get">
-        <label class="pointer">
-          <input type="hidden" name="q" value="%s">
-          <span class="search-tab-btn">%s</span>
-          <input type="submit" class="hidden">
-        </label>
-      </form>
+    <td>
+      <a href="%s/search/statuses?q=%s"><input class="tab-btn btn %s" type="button" value="%s"></a>
     </td>
-    <td class="nav-prev btn">
-      <form action="%s/search/accounts" method="get">
-        <label class="pointer">
-          <input type="hidden" name="q" value="%s">
-          <span class="search-tab-btn">%s</span>
-          <input type="submit" class="hidden">
-        </label>
-      </form>
+    <td>
+      <a href="%s/search/accounts?q=%s"><input class="tab-btn btn %s" type="button" value="%s"></a>
     </td>
-    <td class="nav-next btn">
-      <form action="%s/search/hashtags" method="get">
-        <label class="pointer">
-          <input type="hidden" name="q" value="%s">
-          <span class="search-tab-btn">%s</span>
-          <input type="submit" class="hidden">
-        </label>
-      </form>
+    <td>
+      <a href="%s/search/hashtags?q=%s"><input class="tab-btn btn %s" type="button" value="%s"></a>
     </td>
   </tr>
 </table>

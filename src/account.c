@@ -38,7 +38,6 @@
 #include "../static/bookmarks_page.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
-#define MAKE_FOCUSED_IF(tab, test_tab) ((tab) == test_tab ? "focused" : "")
 
 char* load_account_info(struct mstdnt_account* acct,
                         size_t* size)

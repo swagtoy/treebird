@@ -26,20 +26,23 @@
 // Pages
 #include "../static/search.chtml"
 
-void content_search(struct session* ssn, mastodont_t* api, char** data)
+void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, char* content)
 {
     char* out_data;
     easprintf(&out_data, data_search_html,
               config_url_prefix,
               ssn->query.query,
+              MAKE_FOCUSED_IF(tab, SEARCH_STATUSES),
               "Statuses",
               config_url_prefix,
               ssn->query.query,
+              MAKE_FOCUSED_IF(tab, SEARCH_ACCOUNTS),
               "Accounts",
               config_url_prefix,
               ssn->query.query,
+              MAKE_FOCUSED_IF(tab, SEARCH_HASHTAGS),
               "Hashtags",
-              "Nothing");
+              content);
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
@@ -51,5 +54,20 @@ void content_search(struct session* ssn, mastodont_t* api, char** data)
     // Output
     render_base_page(&b, ssn, api);
 
-    free(out_data);
+    free(out_data);    
+}
+
+void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
+{
+    search_page(ssn, api, SEARCH_STATUSES, "statuses");
+}
+
+void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
+{
+    search_page(ssn, api, SEARCH_ACCOUNTS, "accounts");
+}
+
+void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
+{
+    search_page(ssn, api, SEARCH_HASHTAGS, "hashtags");
 }

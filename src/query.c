@@ -24,9 +24,6 @@
 #include "query.h"
 #include "mime.h"
 
-struct query_values post = { 0 };
-struct get_values query = { 0 };
-
 char* read_query_data(struct get_values* query)
 {
     struct http_query_info info;

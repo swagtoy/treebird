@@ -22,6 +22,7 @@
 
 /** Returns str. If NULL, returns empty string */
 #define STR_NULL_EMPTY(str) ((str) ? (str) : "")
+#define MAKE_FOCUSED_IF(tab, test_tab) ((tab) == test_tab ? "focused" : "")
 
 #define CAT_TEXT(cat, cfg_cat) ((cat) == (cfg_cat)) ? "focused" : ""
 
