@@ -36,8 +36,16 @@
 #include "../static/account_follow_btn.chtml"
 #include "../static/favourites_page.chtml"
 #include "../static/bookmarks_page.chtml"
+#include "../static/account_stub.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
+
+struct account_args
+{
+    mastodont_t* api;
+    struct mstdnt_account* accts;
+    uint8_t flags;
+};
 
 char* load_account_info(struct mstdnt_account* acct,
                         size_t* size)
@@ -288,6 +296,41 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
     if (follow_btn) free(follow_btn);
     if (is_blocked) free(is_blocked);
     return size;
+}
+
+char* construct_account(mastodont_t* api,
+                        struct mstdnt_account* acct,
+                        uint8_t flags,
+                        int* size)
+{
+    char* acct_html;
+
+    size_t s = easprintf(&acct_html, data_account_stub_html,
+                         acct->acct);
+
+    if (size) *size = s;
+    return acct_html;
+}
+
+static char* construct_account_voidwrap(void* passed, size_t index, int* res)
+{
+    struct account_args* args = passed;
+    return construct_account(args->api, args->accts + index, args->flags, res);
+}
+
+char* construct_accounts(mastodont_t* api,
+                         struct mstdnt_account* accounts,
+                         size_t size,
+                         uint8_t flags,
+                         size_t* ret_size)
+{
+    if (!(accounts && size)) return NULL;
+    struct account_args acct_args = {
+        .api = api,
+        .accts = accounts,
+        .flags = flags,
+    };
+    return construct_func_strings(construct_account_voidwrap, &acct_args, size, ret_size);
 }
 
 char* load_account_page(mastodont_t* api,

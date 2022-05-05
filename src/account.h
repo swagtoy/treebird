@@ -55,8 +55,8 @@ struct account_page
 
 char* construct_account(mastodont_t* api,
                         struct mstdnt_account* account,
-                        int* size,
-                        uint8_t flags);
+                        uint8_t flags,
+                        int* size);
 char* construct_accounts(mastodont_t* api,
                          struct mstdnt_account* accounts,
                          size_t size,

@@ -24,6 +24,7 @@
 #include "base_page.h"
 #include "status.h"
 #include "error.h"
+#include "account.h"
 
 // Pages
 #include "../static/search.chtml"
@@ -104,7 +105,7 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
         .account_id = NULL,
-        .type = MSTDNT_SEARCH_STATUSES,
+        .type = MSTDNT_SEARCH_ACCOUNTS,
         .resolve = 0,
         .following = 0,
         .with_relationships = 0,

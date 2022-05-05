@@ -100,6 +100,8 @@ $(PAGES_DIR)/bookmarks_page.chtml: $(PAGES_DIR)/bookmarks_page.html
 	./filec $< data_bookmarks_page_html > $@
 $(PAGES_DIR)/favourites_page.chtml: $(PAGES_DIR)/favourites_page.html
 	./filec $< data_favourites_page_html > $@
+$(PAGES_DIR)/account_stub.chtml: $(PAGES_DIR)/account_stub.html
+	./filec $< data_account_stub_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true
