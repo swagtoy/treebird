@@ -306,6 +306,12 @@ char* construct_account(mastodont_t* api,
     char* acct_html;
 
     size_t s = easprintf(&acct_html, data_account_stub_html,
+                         config_url_prefix,
+                         acct->acct,
+                         acct->avatar,
+                         config_url_prefix,
+                         acct->acct,
+                         acct->display_name,
                          acct->acct);
 
     if (size) *size = s;

@@ -587,9 +587,9 @@ svg.in-reply-to-icon
 {
     font-style: italic;
     text-decoration: none;
-    margin: 0 4px 0 6px;
     font-size: 14px;
-    padding-top: 1px;
+    vertical-align: middle;
+    padding-left: 4px;
 }
 
 .status .poster-stats
@@ -790,6 +790,35 @@ svg.in-reply-to-icon
     background-repeat: no-repeat;
     background-size: cover;
     height: 256px;
+}
+
+.account-stub-info
+{
+    padding-left: 4px;
+}
+
+.account-stub
+{
+    padding: 4px 4px 0;
+    width: 100%;
+}
+
+.account-stub-top,
+.account-stub-bottom
+{
+    display: block;
+}
+
+.account-stub-bottom
+{
+    color: #606060;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.search-results .account-stub:not(:last-child)
+{
+    border-bottom: 1px solid #cacaca;
 }
 
 .account
