@@ -23,6 +23,10 @@
 #include "session.h"
 #include "l10n.h"
 
+#define ACCOUNT_NOP 0
+#define ACCOUNT_ACTION_BTNS (1<<0)
+#define ACCOUNT_SUMMARY (1<<1)
+
 enum account_tab
 {
     ACCT_TAB_STATUSES,
@@ -48,6 +52,16 @@ struct account_page
     mstdnt_relationship_flag_t flags;
     struct mstdnt_relationship* relationship;
 };
+
+char* construct_account(mastodont_t* api,
+                        struct mstdnt_account* account,
+                        int* size,
+                        uint8_t flags);
+char* construct_accounts(mastodont_t* api,
+                         struct mstdnt_account* accounts,
+                         size_t size,
+                         uint8_t flags,
+                         size_t* ret_size);
 
 size_t construct_account_page(char** result, struct account_page* page, char* content);
 

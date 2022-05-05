@@ -100,7 +100,38 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
 
 void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
 {
-    search_page(ssn, api, SEARCH_ACCOUNTS, "accounts");
+    char* accounts_html;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_search_args args = {
+        .account_id = NULL,
+        .type = MSTDNT_SEARCH_STATUSES,
+        .resolve = 0,
+        .following = 0,
+        .with_relationships = 0,
+        .max_id = NULL,
+        .min_id = NULL,
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 20,
+    };
+    struct mstdnt_search_results results = { 0 };
+
+    if (mastodont_search(api,
+                         ssn->query.query,
+                         &storage,
+                         &args,
+                         &results) == 0)
+    {
+        accounts_html = construct_accounts(api, results.accts, results.accts_len, 0, NULL);
+        if (!accounts_html)
+            accounts_html = construct_error("No accounts", E_ERROR, 1, NULL);
+    }
+    else
+        accounts_html = construct_error("An error occured.", E_ERROR, 1, NULL);
+    
+    search_page(ssn, api, SEARCH_ACCOUNTS, STR_NULL_EMPTY(accounts_html));
+    
+    if (accounts_html) free(accounts_html);
 }
 
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
