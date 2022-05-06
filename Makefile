@@ -102,6 +102,12 @@ $(PAGES_DIR)/favourites_page.chtml: $(PAGES_DIR)/favourites_page.html
 	./filec $< data_favourites_page_html > $@
 $(PAGES_DIR)/account_stub.chtml: $(PAGES_DIR)/account_stub.html
 	./filec $< data_account_stub_html > $@
+$(PAGES_DIR)/hashtag.chtml: $(PAGES_DIR)/hashtag.html
+	./filec $< data_hashtag_html > $@
+$(PAGES_DIR)/hashtag_page.chtml: $(PAGES_DIR)/hashtag_page.html
+	./filec $< data_hashtag_page_html > $@
+$(PAGES_DIR)/hashtag_statistics.chtml: $(PAGES_DIR)/hashtag_statistics.html
+	./filec $< data_hashtag_statistics_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

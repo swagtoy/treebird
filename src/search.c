@@ -23,6 +23,7 @@
 #include "string_helpers.h"
 #include "base_page.h"
 #include "status.h"
+#include "hashtag.h"
 #include "error.h"
 #include "account.h"
 
@@ -137,5 +138,37 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
 
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
 {
-    search_page(ssn, api, SEARCH_HASHTAGS, "hashtags");
+    char* tags_html;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_search_args args = {
+        .account_id = NULL,
+        .type = MSTDNT_SEARCH_HASHTAGS,
+        .resolve = 0,
+        .following = 0,
+        .with_relationships = 0,
+        .max_id = NULL,
+        .min_id = NULL,
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 20,
+    };
+    struct mstdnt_search_results results = { 0 };
+
+    if (mastodont_search(api,
+                         ssn->query.query,
+                         &storage,
+                         &args,
+                         &results) == 0)
+    {
+        tags_html = construct_hashtags(results.tags, results.tags_len, NULL);
+        if (!tags_html)
+            tags_html = construct_error("No hashtags", E_ERROR, 1, NULL);
+    }
+    else
+        tags_html = construct_error("An error occured.", E_ERROR, 1, NULL);
+    
+    search_page(ssn, api, SEARCH_HASHTAGS, STR_NULL_EMPTY(tags_html));
+    
+    if (tags_html) free(tags_html);
+    // TODO cleanup shit
 }
