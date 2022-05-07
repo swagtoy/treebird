@@ -25,7 +25,6 @@
 // Pages
 #include "../static/hashtag.chtml"
 #include "../static/hashtag_page.chtml"
-#include "../static/hashtag_statistics.chtml"
 
 #define TAG_SIZE_INITIAL 12
 
