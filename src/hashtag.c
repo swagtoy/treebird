@@ -16,9 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "math.h"
 #include "hashtag.h"
 #include "string_helpers.h"
 #include "easprintf.h"
+#include "../config.h"
 
 // Pages
 #include "../static/hashtag.chtml"
@@ -27,19 +29,26 @@
 
 #define TAG_SIZE_INITIAL 12
 
+static unsigned hashtag_history_daily_uses(size_t max, struct mstdnt_history* history, size_t history_len)
+{
+    unsigned total = 0;
+
+    for (int i = 0; i < history_len && i < max; ++i)
+        total += history[i].uses;
+    
+    return total;
+}
+
 char* construct_hashtag(struct mstdnt_tag* hashtag, int* size)
 {
     char* hashtag_html;
 
     // Lol!
     unsigned hash_size = TAG_SIZE_INITIAL +
-        ((unsigned)(
-            (hashtag->history && hashtag->history_len >= 1 ?
-             hashtag->history[0].uses : 0) + 4
-            /4)*2);
+        CLAMP(hashtag_history_daily_uses(7, hashtag->history, hashtag->history_len)*2, 0, 42);
 
     size_t s = easprintf(&hashtag_html, data_hashtag_html,
-                         hash_size, hashtag->name);
+                         config_url_prefix, hashtag->name, hash_size, hashtag->name);
 
     if (size) *size = s;
     return hashtag_html;

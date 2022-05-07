@@ -30,7 +30,7 @@
 
 enum env_tbl_index
 {
-    ENV_HTTP_COOKIES = 0,
+    ENV_HTTP_COOKIE = 0,
     ENV_PATH_INFO,
     ENV_QUERY_STRING,
     ENV_REQUEST_METHOD,
@@ -45,7 +45,7 @@ enum env_tbl_index
 void content_test(struct session* ssn, mastodont_t* api, char** data)
 {
     char* env_tbl[] = {
-        getenv("HTTP_COOKIES"),
+        getenv("HTTP_COOKIE"),
         getenv("PATH_INFO"),
         getenv("QUERY_STRING"),
         getenv("REQUEST_METHOD"),
@@ -58,7 +58,7 @@ void content_test(struct session* ssn, mastodont_t* api, char** data)
     char* page;
     easprintf(&page,
               data_test_html,
-              ENV_TBL_GET(ENV_HTTP_COOKIES),
+              ENV_TBL_GET(ENV_HTTP_COOKIE),
               ENV_TBL_GET(ENV_PATH_INFO),
               ENV_TBL_GET(ENV_QUERY_STRING),
               ENV_TBL_GET(ENV_REQUEST_METHOD),

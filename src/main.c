@@ -106,6 +106,7 @@ int main(void)
             { "/bookmarks", content_account_bookmarks },
             { "/favourites", content_account_favourites },
             { "/notifications", content_notifications },
+            { "/tag/:", content_tl_tag },
         };
 
         handle_paths(&ssn, &api, paths, sizeof(paths)/sizeof(paths[0]));

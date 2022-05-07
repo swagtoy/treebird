@@ -28,11 +28,13 @@ void tl_home(struct session* ssn, mastodont_t* api, int local);
 void tl_direct(struct session* ssn, mastodont_t* api);
 void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat);
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id);
+void tl_tag(struct session* ssn, mastodont_t* api, char* tag);
 
 void content_tl_federated(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_home(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_direct(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_local(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_list(struct session* ssn, mastodont_t* api, char** data);
+void content_tl_tag(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // TIMELINE_H

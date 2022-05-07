@@ -31,6 +31,7 @@
 
 #include "../static/navigation.chtml"
 #include "../static/directs_page.chtml"
+#include "../static/hashtag_page.chtml"
 
 /* TODO Clean these up and make a meta function, i'm just lazy */
 
@@ -299,6 +300,64 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     if (navigation_box) free(navigation_box);
 }
 
+
+void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
+{
+    size_t status_count, statuses_html_count;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+    char* status_format, *navigation_box = NULL, *start_id;
+    char* output = NULL;
+
+    struct mstdnt_timeline_args args = {
+        .max_id = ssn->post.max_id,
+        .since_id = NULL,
+        .min_id = ssn->post.min_id,
+        .limit = 20,
+    };
+
+    if (mastodont_timeline_tag(api, tag_id, &args, &storage, &statuses, &status_count))
+        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
+    else {
+        // Construct statuses into HTML
+        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        if (!status_format)
+            status_format = construct_error("No statuses", E_ERROR, 1, NULL);
+    }
+
+    // Create post box
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[status_count-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, data_hashtag_page_html,
+              tag_id,
+              STR_NULL_EMPTY(status_format),
+              STR_NULL_EMPTY(navigation_box));
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .locale = L10N_EN_US,
+        .content = output,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_statuses(statuses, status_count);
+    free(status_format);
+    if (output) free(output);
+    if (navigation_box) free(navigation_box);
+}
+
 void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
@@ -329,4 +388,9 @@ void content_tl_local(struct session* ssn, mastodont_t* api, char** data)
 void content_tl_list(struct session* ssn, mastodont_t* api, char** data)
 {
     tl_list(ssn, api, data[0]);
+}
+
+void content_tl_tag(struct session* ssn, mastodont_t* api, char** data)
+{
+    tl_tag(ssn, api, data[0]);
 }
