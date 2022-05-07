@@ -27,6 +27,8 @@ struct cookie_values
     char* theme;
     char* instance_url;
     char* background_url;
+    char* client_id;
+    char* client_secret;
     int themeclr;
     int jsactions;
     int jsreply;

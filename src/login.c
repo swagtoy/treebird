@@ -31,6 +31,8 @@
 // Files
 #include "../static/login.chtml"
 
+#define LOGIN_SCOPE "read+write+follow+push"
+
 void apply_access_token(char* token)
 {
     printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
@@ -49,15 +51,30 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
     char* redirect_url = getenv("SERVER_NAME");
     char* decode_url = NULL;
     char* urlify_redirect_url = NULL;
+    easprintf(&urlify_redirect_url, "http%s://%s/login/oauth",
+              config_host_url_insecure ? "" : "s",
+              config_host_url ? config_host_url : redirect_url );
 
     if (ssn->query.code)
     {
-        apply_access_token(ssn->query.code);
+        struct mstdnt_args args_token = {
+            .grant_type = "authorization_code",
+            .client_id = ssn->cookies.client_id,
+            .client_secret = ssn->cookies.client_secret,
+            .redirect_uri = urlify_redirect_url,
+            .scope = LOGIN_SCOPE,
+            .code = ssn->query.code,
+        };
+
+        if (mastodont_obtain_oauth_token(api, &args_token, &oauth_storage,
+                                         &token) == 0)
+        {
+            apply_access_token(token.access_token);
+        }
     }
     else if (ssn->post.instance)
     {
         decode_url = curl_easy_unescape(api->curl, ssn->post.instance, 0, NULL);
-        easprintf(&urlify_redirect_url, "https://%s/login/oauth", redirect_url );
         api->url = decode_url;
         
         struct mstdnt_args args_app = {
@@ -69,24 +86,15 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
 
         if (mastodont_register_app(api, &args_app, &storage, &app) == 0)
         {
-            struct mstdnt_args args_token = {
-                .grant_type = "password",
-                .client_id = app.client_id,
-                .client_secret = app.client_secret,
-                .redirect_uri = NULL,
-                .scope = NULL,
-                .code = NULL,
-                .username = ssn->post.username,
-                .password = ssn->post.password
-            };
-            
             char* url;
             char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
-            easprintf(&url, "%s/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s",
+            easprintf(&url, "%s/oauth/authorize?response_type=code&scope=" LOGIN_SCOPE "&client_id=%s&redirect_uri=%s",
                       decode_url, encode_id, urlify_redirect_url);
 
             // Set cookie and redirect
             printf("Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
+            printf("Set-Cookie: client_id=%s; Path=/; Max-Age=3153600\r\n", app.client_id);
+            printf("Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
             
             redirect(REDIRECT_303, url);
             free(url);
@@ -95,6 +103,9 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
     }
 
     api->url = orig_url;
+    
+    redirect(REDIRECT_303, config_url_prefix &&
+             config_url_prefix[0] != '\0' ? config_url_prefix : "/");
 
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&oauth_storage);
@@ -116,7 +127,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
         struct mstdnt_args args_app = {
             .client_name = "Treebird",
             .redirect_uris = "http://localhost/",
-            .scopes = "read+write+follow+push",
+            .scopes = LOGIN_SCOPE,
             .website = NULL
         };
 
@@ -148,7 +159,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 .client_id = app.client_id,
                 .client_secret = app.client_secret,
                 .redirect_uri = NULL,
-                .scope = NULL,
+                .scope = LOGIN_SCOPE,
                 .code = NULL,
                 .username = ssn->post.username,
                 .password = ssn->post.password

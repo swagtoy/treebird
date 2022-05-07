@@ -11,6 +11,7 @@
 #include <mastodont.h>
 #define FALSE 0
 #define TRUE 1
+#define UNSET NULL
 
 /*
  * String: canonical_name
@@ -31,7 +32,29 @@ static char* const config_canonical_name = "treebird";
  *
  * Example: "https://shitposter.club/"
  */
-static char* const config_instance_url = "https://my-instace.social/";
+static char* const config_instance_url = "https://my-instance.social/";
+
+/*
+ * OPTIONAL - Mainly for development (or broken servers)
+ * String: host_url
+ *
+ * The host url for redirecting, used in development in localhost.
+ * Likely not needed, as Treebird tries at SERVER_NAME (which is your servers host)
+ *
+ * Example: my-instance.social
+ */
+static char* const config_host_url = UNSET;
+
+/*
+ * OPTIONAL - For development only
+ * String: host_url_insecure
+ *
+ * If TRUE, then use HTTP
+ * If FALSE, then use HTTPS
+ *
+ * Example: TRUE
+ */
+static int const config_host_url_insecure = FALSE;
 
 /* [[ IF YOU DON'T UNDERSTAND THIS, LEAVE IT ALONE ]]
  * Flag: library_flags
