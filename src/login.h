@@ -22,6 +22,7 @@
 #include <mastodont.h>
 #include "session.h"
 
+void content_login_oauth(struct session* ssn, mastodont_t* api, char** data);
 void content_login(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // LOGIN_H

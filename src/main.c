@@ -80,8 +80,9 @@ int main(void)
         struct path_info paths[] = {
             { "/config/general", content_config_general },
             { "/config/appearance", content_config_appearance },
-            { "/config", content_config },
             /* { "/config/account", content_config_account }, */
+            { "/config", content_config },
+            { "/login/oauth", content_login_oauth },
             { "/login", content_login },
             { "/test", content_test },
             { "/user/:/action/:", content_account_action },

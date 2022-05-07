@@ -34,6 +34,7 @@ char* read_query_data(struct get_values* query)
     struct key_value_refs refs[] = {
         { "offset", &(query->offset), key_string },
         { "q", &(query->query), key_string },
+        { "code", &(query->code), key_string },
     };
     // END Query references
     
@@ -85,9 +86,6 @@ void key_files(char* val, struct form_props* form, void* arg)
     arr->content[arr->array_size-1].content_size = form->data_size;
     arr->content[arr->array_size-1].filename = form->filename;
     arr->content[arr->array_size-1].filetype = form->filetype;
-
-    return;
-
 }
 
 char* read_post_data(struct query_values* post)
@@ -116,6 +114,7 @@ char* read_post_data(struct query_values* post)
         { "min_id", &(post->min_id), key_string },
         { "max_id", &(post->max_id), key_string },
         { "start_id", &(post->start_id), key_string },
+        { "instance", &(post->instance), key_string },
         { "visibility", &(post->visibility), key_string },
         { "file", &(post->files), key_files }
     };

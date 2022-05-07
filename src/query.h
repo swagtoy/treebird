@@ -58,6 +58,7 @@ struct query_values
     char* password;
     char* replyid;
     char* visibility;
+    char* instance;
 
     // Navigation
     char* min_id;
@@ -71,6 +72,7 @@ struct get_values
 {
     char* offset;
     char* query;
+    char* code;
 };
 
 void key_files(char* val, struct form_props* form, void* arg);

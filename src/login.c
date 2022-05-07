@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <curl/curl.h>
 #include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -30,6 +31,77 @@
 // Files
 #include "../static/login.chtml"
 
+void apply_access_token(char* token)
+{
+    printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
+    printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
+    // if config_url_prefix is empty, make it root
+    redirect(REDIRECT_303, config_url_prefix &&
+             config_url_prefix[0] != '\0' ? config_url_prefix : "/");
+}
+
+void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_storage storage = { 0 }, oauth_storage = { 0 };
+    struct mstdnt_app app;
+    struct mstdnt_oauth_token token;
+    char* orig_url = api->url;
+    char* redirect_url = getenv("SERVER_NAME");
+    char* decode_url = NULL;
+    char* urlify_redirect_url = NULL;
+
+    if (ssn->query.code)
+    {
+        apply_access_token(ssn->query.code);
+    }
+    else if (ssn->post.instance)
+    {
+        decode_url = curl_easy_unescape(api->curl, ssn->post.instance, 0, NULL);
+        easprintf(&urlify_redirect_url, "https://%s/login/oauth", redirect_url );
+        api->url = decode_url;
+        
+        struct mstdnt_args args_app = {
+            .client_name = "Treebird",
+            .redirect_uris = urlify_redirect_url,
+            .scopes = "read+write+follow+push",
+            .website = ssn->post.instance
+        };
+
+        if (mastodont_register_app(api, &args_app, &storage, &app) == 0)
+        {
+            struct mstdnt_args args_token = {
+                .grant_type = "password",
+                .client_id = app.client_id,
+                .client_secret = app.client_secret,
+                .redirect_uri = NULL,
+                .scope = NULL,
+                .code = NULL,
+                .username = ssn->post.username,
+                .password = ssn->post.password
+            };
+            
+            char* url;
+            char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
+            easprintf(&url, "%s/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s",
+                      decode_url, encode_id, urlify_redirect_url);
+
+            // Set cookie and redirect
+            printf("Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
+            
+            redirect(REDIRECT_303, url);
+            free(url);
+            curl_free(encode_id);
+        }
+    }
+
+    api->url = orig_url;
+
+    mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&oauth_storage);
+    if (urlify_redirect_url) free(urlify_redirect_url);
+    if (decode_url) curl_free(decode_url);
+}
+
 void content_login(struct session* ssn, mastodont_t* api, char** data)
 {
     struct mstdnt_storage storage = { 0 }, oauth_store = { 0 };
@@ -42,7 +114,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
     {
         // Getting the client id/secret
         struct mstdnt_args args_app = {
-            .client_name = "treebird",
+            .client_name = "Treebird",
             .redirect_uris = "http://localhost/",
             .scopes = "read+write+follow+push",
             .website = NULL
@@ -93,12 +165,8 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 else
                     // Clear
                     printf("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
-                printf("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token.access_token);
-                printf("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
-                // if config_url_prefix is empty, make it root
-                redirect(REDIRECT_303, config_url_prefix ?
-                         (config_url_prefix[0] == '\0' ?
-                          "/" : config_url_prefix) : "/");
+
+                apply_access_token(token.access_token);
                 if (url_link) free(url_link);
                 return;
             }
