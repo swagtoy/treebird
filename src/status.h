@@ -43,6 +43,7 @@ struct interact_profile_args
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
 void content_status_create(struct session* ssn, mastodont_t* api, char** data);
+void content_status_react(struct session* ssn, mastodont_t* api, char** data);
 
 // HTML Builders
 char* construct_post_box(char* reply_id,

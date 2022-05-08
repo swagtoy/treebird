@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../config.h"
 #include "string_helpers.h"
 #include "emoji_reaction.h"
 #include <stdlib.h>
@@ -25,25 +26,36 @@
 #include "../static/emoji_reaction.chtml"
 #include "../static/emoji_reactions.chtml"
 
-char* construct_emoji_reaction(struct mstdnt_emoji_reaction* emo, int* str_size)
+struct construct_emoji_reactions_args
+{
+    struct mstdnt_emoji_reaction* emojis;
+    char* id;
+};
+
+char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, int* str_size)
 {
     char* emo_html;
 
     size_t s = easprintf(&emo_html, data_emoji_reaction_html,
-                         emo->name, emo->count);
+                         config_url_prefix, id, emo->name, emo->me ? "active" : "", emo->name, emo->count);
     if (str_size) *str_size = s;
     return emo_html;
 }
 
 static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_emoji_reaction((struct mstdnt_emoji_reaction*)passed + index, res);
+    struct construct_emoji_reactions_args* args = passed;
+    return construct_emoji_reaction(args->id, args->emojis + index, res);
 }
 
-char* construct_emoji_reactions(struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_size)
+char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_size)
 {
     size_t elements_size;
-    char* elements = construct_func_strings(construct_emoji_reactions_voidwrap, emos, emos_len, &elements_size);
+    struct construct_emoji_reactions_args args = {
+        .emojis = emos,
+        .id = id
+    };
+    char* elements = construct_func_strings(construct_emoji_reactions_voidwrap, &args, emos_len, &elements_size);
     char* emos_view;
 
     size_t s = easprintf(&emos_view, data_emoji_reactions_html, elements);

@@ -20,7 +20,7 @@
 #define EMOJI_REACTION_H
 #include <mastodont.h>
 
-char* construct_emoji_reaction(struct mstdnt_emoji_reaction* emo, int* str_len);
-char* construct_emoji_reactions(struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_len);
+char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, int* str_len);
+char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_len);
 
 #endif // EMOJI_REACTION_H

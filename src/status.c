@@ -96,11 +96,32 @@ int try_post_status(struct session* ssn, mastodont_t* api)
     return 0;
 }
 
+int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoji)
+{
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_status status = { 0 };
+
+    mastodont_status_emoji_react(api, id, emoji, &storage, &status);
+
+    mstdnt_cleanup_status(&status);
+    mastodont_storage_cleanup(&storage);
+    return 1;
+}
+
 void content_status_create(struct session* ssn, mastodont_t* api, char** data)
 {
     char* referer = getenv("HTTP_REFERER");
 
     try_post_status(ssn, api);
+
+    redirect(REDIRECT_303, referer);
+}
+
+void content_status_react(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* referer = getenv("HTTP_REFERER");
+
+    try_react_status(ssn, api, data[0], data[1]);
 
     redirect(REDIRECT_303, referer);
 }
@@ -439,7 +460,7 @@ char* construct_status(mastodont_t* api,
     if (status->media_attachments_len)
         attachments = construct_attachments(status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
-        emoji_reactions = construct_emoji_reactions(status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
+        emoji_reactions = construct_emoji_reactions(status->id, status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
     if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
         easprintf(&notif_info, data_notification_html,
                   notif->account->avatar,

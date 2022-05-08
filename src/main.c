@@ -90,6 +90,7 @@ int main(void)
             { "/@:/pinned", content_account_pinned },
             { "/@:/media", content_account_media },
             { "/@:", content_account_statuses },
+            { "/status/:/react/:", content_status_react },
             { "/status/create", content_status_create },
             { "/status/:/interact", status_interact },
             { "/status/:/reply", status_reply },
