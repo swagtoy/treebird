@@ -526,7 +526,7 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
 
 void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)
 {
-        size_t status_count = 0, statuses_html_count = 0;
+    size_t status_count = 0, statuses_html_count = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
     char* status_format = NULL,

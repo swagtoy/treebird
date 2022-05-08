@@ -26,6 +26,7 @@
 #include "hashtag.h"
 #include "error.h"
 #include "account.h"
+#include "graphsnbars.h"
 
 // Pages
 #include "../static/search.chtml"
@@ -139,6 +140,9 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
 {
     char* tags_html;
+    char* tags_graph = NULL;
+    char* tags_bars = NULL;
+    char* tags_page;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
         .account_id = NULL,
@@ -163,12 +167,25 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
         tags_html = construct_hashtags(results.tags, results.tags_len, NULL);
         if (!tags_html)
             tags_html = construct_error("No hashtags", E_ERROR, 1, NULL);
+
+        tags_bars = construct_hashtags_graph(results.tags,
+                                             results.tags_len,
+                                             14,
+                                             NULL);
+        tags_graph = construct_bar_graph_container(tags_bars, NULL);
+        if (tags_bars) free(tags_bars);
     }
     else
         tags_html = construct_error("An error occured.", E_ERROR, 1, NULL);
+
+    easprintf(&tags_page, "%s%s", STR_NULL_EMPTY(tags_graph), tags_html);
     
-    search_page(ssn, api, SEARCH_HASHTAGS, STR_NULL_EMPTY(tags_html));
+    search_page(ssn, api, SEARCH_HASHTAGS, tags_page);
     
     if (tags_html) free(tags_html);
-    // TODO cleanup shit
+    mastodont_storage_cleanup(&storage);
+    if (tags_graph) free(tags_graph);
+    free(tags_page);
+    
+    // TODO Cleanup shit
 }
