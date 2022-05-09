@@ -110,6 +110,10 @@ $(PAGES_DIR)/bar_graph.chtml: $(PAGES_DIR)/bar_graph.html
 	./filec $< data_bar_graph_html > $@
 $(PAGES_DIR)/bar.chtml: $(PAGES_DIR)/bar.html
 	./filec $< data_bar_html > $@
+$(PAGES_DIR)/emoji_picker.chtml: $(PAGES_DIR)/emoji_picker.html
+	./filec $< data_emoji_picker_html > $@
+$(PAGES_DIR)/emoji.chtml: $(PAGES_DIR)/emoji.html
+	./filec $< data_emoji_html > $@
 
 $(MASTODONT_DIR): 
 	git clone $(MASTODONT_URL) || true

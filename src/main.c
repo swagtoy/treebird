@@ -91,6 +91,7 @@ int main(void)
             { "/@:/media", content_account_media },
             { "/@:", content_account_statuses },
             { "/status/:/react/:", content_status_react },
+            { "/status/:/react", status_emoji },
             { "/status/create", content_status_create },
             { "/status/:/interact", status_interact },
             { "/status/:/reply", status_reply },

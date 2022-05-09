@@ -21,6 +21,11 @@
 #include "string.h"
 #include "emoji.h"
 #include "easprintf.h"
+#include "string_helpers.h"
+
+// Pages
+#include "../static/emoji.chtml"
+#include "../static/emoji_picker.chtml"
 
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 {
@@ -51,4 +56,34 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
         free(coloned);
     }
     return res;
+}
+
+char* construct_emoji(struct emoji_info* emoji, size_t* size)
+{
+    char* emoji_html;
+
+    size_t s = easprintf(&emoji_html, data_emoji_html, emoji->codes);
+    
+    if (size) *size = s;
+    return emoji_html;
+}
+
+static char* construct_emoji_voidwrap(void* passed, size_t index, int* res)
+{
+    return construct_emoji((struct emoji_info*)passed + index, 0);
+}
+
+char* construct_emoji_picker(enum emoji_picker_cat cat, unsigned index, size_t* size)
+{
+    char* emoji_picker_html;
+    char* emojis;
+
+    emojis = construct_func_strings(construct_emoji_voidwrap, emojos, 8, NULL);
+
+    size_t s = easprintf(&emoji_picker_html, data_emoji_picker_html,
+                         emojis);
+    free(emojis);
+    
+    if (size) *size = s;
+    return emoji_picker_html;
 }

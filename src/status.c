@@ -384,6 +384,7 @@ char* construct_status(mastodont_t* api,
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
     char* interactions_html = NULL;
+    char* emoji_picker_html = NULL;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
     // the reblogged status
@@ -397,6 +398,12 @@ char* construct_status(mastodont_t* api,
     size_t reblogs_len = 0;
 
     if (!status) return NULL;
+
+    // Emojo picker
+    if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
+    {
+        emoji_picker_html = construct_emoji_picker(EMOJI_CAT_FACES, 0, NULL);
+    }
 
     // If focused, show status interactions
     if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&
@@ -519,7 +526,10 @@ char* construct_status(mastodont_t* api,
                          status->id,
                          config_url_prefix,
                          status->id,
-                         status->id);
+                         config_url_prefix,
+                         status->id,
+                         status->id,
+                         emoji_picker_html);
     
     if (size) *size = s;
     // Cleanup
@@ -531,6 +541,7 @@ char* construct_status(mastodont_t* api,
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
     if (interactions_html) free(interactions_html);
+    if (emoji_picker_html) free(emoji_picker_html);
     if (parse_content != status->content) free(parse_content);
     return stat_html;
 }
@@ -572,15 +583,20 @@ void status_interact(struct session* ssn, mastodont_t* api, char** data)
 
 void status_view(struct session* ssn, mastodont_t* api, char** data)
 {
-    content_status(ssn, api, data, 0);
+    content_status(ssn, api, data, STATUS_FOCUSED);
+}
+
+void status_emoji(struct session* ssn, mastodont_t* api, char** data)
+{
+    content_status(ssn, api, data, STATUS_FOCUSED | STATUS_EMOJI_PICKER);
 }
 
 void status_reply(struct session* ssn, mastodont_t* api, char** data)
 {
-    content_status(ssn, api, data, 1);
+    content_status(ssn, api, data, STATUS_FOCUSED | STATUS_REPLY);
 }
 
-void content_status(struct session* ssn, mastodont_t* api, char** data, int is_reply)
+void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t flags)
 {
     char* output;
     // Status context
@@ -604,8 +620,8 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
         before_html = construct_statuses(api, statuses_before, stat_before_len, NULL, 0);
 
         // Current status
-        stat_html = construct_status(api, &status, NULL, NULL, NULL, STATUS_FOCUSED);
-        if (is_reply)
+        stat_html = construct_status(api, &status, NULL, NULL, NULL, flags);
+        if ((flags & STATUS_REPLY) == STATUS_REPLY)
         {
             stat_reply = reply_status(data[0],
                                       &status);
@@ -636,7 +652,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, int is_r
     if (stat_html) free(stat_html);
     if (after_html) free(after_html);
     if (output) free(output);
-    if (is_reply) free(stat_reply);
+    if ((flags & STATUS_REPLY) == STATUS_REPLY) free(stat_reply);
     mstdnt_cleanup_statuses(statuses_before, stat_before_len);
     mstdnt_cleanup_statuses(statuses_after, stat_after_len);
     mstdnt_cleanup_status(&status);

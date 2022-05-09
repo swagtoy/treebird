@@ -16,20 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef EMOJI_H
-#define EMOJI_H
-#include <mastodont.h>
-#include "emoji_codes.h"
+#ifndef EMOJI_INFO_H
+#define EMOJI_INFO_H
 
-
-enum emoji_picker_cat
+struct emoji_info
 {
-    EMOJI_CAT_CUSTOM,
-    EMOJI_CAT_FACES,
+    char* codes;
+    char* name;
+    char* group;
 };
 
-char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len);
-char* construct_emoji(struct emoji_info* emoji, size_t* size);
-char* construct_emoji_picker(enum emoji_picker_cat cat, unsigned index, size_t* size);
-
-#endif // EMOJI_H
+#endif /* EMOJI_INFO_H */

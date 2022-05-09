@@ -24,8 +24,9 @@
 
 // Flags
 #define STATUS_NOOP 0
-#define STATUS_FOCUSED (1<<0)
-#define STATUS_EMOJI_PICKER (1<<1)
+#define STATUS_REPLY (1<<0)
+#define STATUS_FOCUSED (1<<1)
+#define STATUS_EMOJI_PICKER (1<<2)
 
 struct construct_statuses_args
 {
@@ -89,8 +90,9 @@ char* greentextify(char* content);
 void status_view(struct session* ssn, mastodont_t* api, char** data);
 void status_reply(struct session* ssn, mastodont_t* api, char** data);
 void status_interact(struct session* ssn, mastodont_t* api, char** data);
+void status_emoji(struct session* ssn, mastodont_t* api, char** data);
 // Above wraps to the below function
-void content_status(struct session* ssn, mastodont_t* api, char** data, int is_reply);
+void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t flags);
 
 // Cleanup
 void cleanup_media_ids(struct session* ssn, char** media_ids);
