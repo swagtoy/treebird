@@ -80,7 +80,7 @@ static char* account_statuses_cb(struct session* ssn,
         statuses_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
-        statuses_html = construct_statuses(api, statuses, statuses_len, NULL, NULL);
+        statuses_html = construct_statuses(ssn, api, statuses, statuses_len, NULL, NULL);
         if (!statuses_html)
             statuses_html = construct_error("No statuses", E_NOTICE, 1, NULL);
     }
@@ -487,7 +487,7 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }
@@ -547,7 +547,7 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }

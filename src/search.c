@@ -89,7 +89,7 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
         struct construct_statuses_args statuses_args = {
             .highlight_word = ssn->query.query,
         };
-        statuses_html = construct_statuses(api, results.statuses, results.statuses_len, &statuses_args, NULL);
+        statuses_html = construct_statuses(ssn, api, results.statuses, results.statuses_len, &statuses_args, NULL);
         if (!statuses_html)
             statuses_html = construct_error("No statuses", E_ERROR, 1, NULL);
     }

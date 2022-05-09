@@ -62,7 +62,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }
@@ -127,7 +127,7 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }
@@ -197,7 +197,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
     }
@@ -260,7 +260,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     }
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("No statuses", E_ERROR, 1, NULL);
     }
@@ -320,7 +320,7 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
         status_format = construct_error(storage.error, E_ERROR, 1, NULL);
     else {
         // Construct statuses into HTML
-        status_format = construct_statuses(api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
         if (!status_format)
             status_format = construct_error("No statuses", E_ERROR, 1, NULL);
     }

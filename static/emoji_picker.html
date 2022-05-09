@@ -1,3 +1,28 @@
 <div class="emoji-picker">
-  %s
+  <div class="emoji-picker-emojos">
+    %s
+  </div>
+  
+  <table class="navigation ui-table">
+    <tr>
+      <td class="nav-prev btn">
+        <form action="#id-%s" method="post">
+          <label class="pointer">
+            <input type="hidden" name="emojoindex" value="%u">
+            <span class="nav-btn %s">Previous</span>
+            <input type="submit" class="hidden">
+          </label>
+        </form>
+      </td>
+      <td class="nav-next btn">
+        <form action="#id-%s" method="post">
+          <label class="pointer">
+            <input type="hidden" name="emojoindex" value="%u">
+            <span class="nav-btn">Next</span>
+            <input type="submit" class="hidden">
+          </label>
+        </form>
+      </td>
+    </tr>
+  </table>
 </div>

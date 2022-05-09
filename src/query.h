@@ -59,6 +59,7 @@ struct query_values
     char* replyid;
     char* visibility;
     char* instance;
+    int emojoindex;
 
     // Navigation
     char* min_id;

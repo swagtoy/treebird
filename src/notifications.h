@@ -22,18 +22,22 @@
 #include "session.h"
 #include "type_string.h"
 
-char* construct_notification(mastodont_t* api,
+char* construct_notification(struct session* ssn,
+                             mastodont_t* api,
                              struct mstdnt_notification* notif,
                              int* size);
 char* construct_notification_action(struct mstdnt_notification* notif, int* size);
-char* construct_notification_compact(mastodont_t* api,
+char* construct_notification_compact(struct session* ssn,
+                                     mastodont_t* api,
                                      struct mstdnt_notification* notif,
                                      int* size);
-char* construct_notifications(mastodont_t* api,
+char* construct_notifications(struct session* ssn,
+                              mastodont_t* api,
                               struct mstdnt_notification* notifs,
                               size_t size,
                               size_t* ret_size);
-char* construct_notifications_compact(mastodont_t* api,
+char* construct_notifications_compact(struct session* ssn,
+                                      mastodont_t* api,
                                       struct mstdnt_notification* notifs,
                                       size_t size,
                                       size_t* ret_size);

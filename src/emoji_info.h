@@ -21,9 +21,9 @@
 
 struct emoji_info
 {
-    char* codes;
-    char* name;
-    char* group;
+    const char* codes;
+    const char* name;
+    const char* group;
 };
 
 #endif /* EMOJI_INFO_H */

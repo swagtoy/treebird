@@ -58,11 +58,18 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
     return res;
 }
 
-char* construct_emoji(struct emoji_info* emoji, size_t* size)
+struct construct_emoji_picker_args
+{
+    char* status_id;
+    unsigned index;
+};
+
+char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size)
 {
     char* emoji_html;
 
-    size_t s = easprintf(&emoji_html, data_emoji_html, emoji->codes);
+    size_t s = easprintf(&emoji_html, data_emoji_html,
+                         status_id, emoji->codes, emoji->codes);
     
     if (size) *size = s;
     return emoji_html;
@@ -70,18 +77,31 @@ char* construct_emoji(struct emoji_info* emoji, size_t* size)
 
 static char* construct_emoji_voidwrap(void* passed, size_t index, int* res)
 {
-    return construct_emoji((struct emoji_info*)passed + index, 0);
+    struct construct_emoji_picker_args* args = passed;
+    size_t calc_index = index + args->index;
+    return calc_index < 0 || calc_index > emojos_size ? NULL :
+        construct_emoji(emojos + calc_index, args->status_id, res);
 }
 
-char* construct_emoji_picker(enum emoji_picker_cat cat, unsigned index, size_t* size)
+char* construct_emoji_picker(char* status_id, unsigned index, size_t* size)
 {
+    struct construct_emoji_picker_args args = {
+        .status_id = status_id,
+        .index = index
+    };
     char* emoji_picker_html;
     char* emojis;
 
-    emojis = construct_func_strings(construct_emoji_voidwrap, emojos, 8, NULL);
+    emojis = construct_func_strings(construct_emoji_voidwrap, &args, EMOJI_FACTOR_NUM, NULL);
 
     size_t s = easprintf(&emoji_picker_html, data_emoji_picker_html,
-                         emojis);
+                         emojis ? emojis : "",
+                         status_id,
+                         // Index movements
+                         index > 0 ? index - EMOJI_FACTOR_NUM : 0,
+                         0 > index - EMOJI_FACTOR_NUM ? "disabled" : "",
+                         status_id,
+                         index + EMOJI_FACTOR_NUM);
     free(emojis);
     
     if (size) *size = s;

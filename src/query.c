@@ -116,6 +116,7 @@ char* read_post_data(struct query_values* post)
         { "start_id", &(post->start_id), key_string },
         { "instance", &(post->instance), key_string },
         { "visibility", &(post->visibility), key_string },
+        { "emojoindex", &(post->emojoindex), key_int },
         { "file", &(post->files), key_files }
     };
     // END Query references

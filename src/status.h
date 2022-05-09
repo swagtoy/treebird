@@ -50,13 +50,15 @@ void content_status_react(struct session* ssn, mastodont_t* api, char** data);
 char* construct_post_box(char* reply_id,
                          char* default_content,
                          int* size);
-char* construct_status(mastodont_t* api,
+char* construct_status(struct session* ssn,
+                       mastodont_t* api,
                        struct mstdnt_status* status,
                        int* size,
                        struct mstdnt_notification* notif,
                        struct construct_statuses_args* args,
                        uint8_t flags);
-char* construct_statuses(mastodont_t* api,
+char* construct_statuses(struct session* ssn,
+                       mastodont_t* api,
                          struct mstdnt_status* statuses,
                          size_t size,
                          struct construct_statuses_args* args,

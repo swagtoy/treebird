@@ -51,7 +51,7 @@ ul
 }
 #main-page
 {
-    margin: 8px;
+v    margin: 8px;
     margin-top: 0;
     width: 1000px;
     border-top: 0 !important;
@@ -1064,7 +1064,8 @@ svg.in-reply-to-icon
 }
 
 /* Emoji */
-.emoji
+.status-content .emoji,
+.notification-content .emoji
 {
     font-family: monospace;
     display: inline;
@@ -1075,12 +1076,14 @@ svg.in-reply-to-icon
     transition: transform .2s;
 }
 
-.emoji:hover
+.status-content .emoji:hover,
+.notification-content .emoji:hover
 {
     transform: scale(1.5);
 }
 
-.emoji:active
+.status-content .emoji:active,
+.notification-content .emoji:active
 {
     transform: scale(2.7);
 }
@@ -1089,6 +1092,35 @@ svg.in-reply-to-icon
 {
     border-radius: 4px;
     border: 1px solid #cacaca;
+}
+
+/* Emojo picker */
+.emoji-picker
+{
+    position: absolute;
+    margin-left: -15px;
+    width: 260px;
+    border: 1px solid #cacaca;
+    background-color: #fff;
+    background: linear-gradient(#fff, #f3f3f3);
+    border-radius: 8px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.emoji-picker .emoji
+{
+    font-size: 18px;
+    text-align: center;
+    vertical-align: center;
+    padding: 8px 0;
+}
+
+.emoji-picker-emojos
+{
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    padding: 0px 8px;
+    z-index: 999;
 }
 
 .form-group
