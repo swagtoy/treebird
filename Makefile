@@ -14,7 +14,7 @@ DIST = dist/
 PREFIX ?= /usr/local
 TARGET = treebird
 
-MASTODONT_URL = https://git.nekobit.net/repos/mastodont-c.git
+MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 
 all: $(MASTODONT_DIR) dep_build $(TARGET)
 apache: all apache_start
@@ -116,8 +116,7 @@ $(PAGES_DIR)/emoji.chtml: $(PAGES_DIR)/emoji.html
 	./filec $< data_emoji_html > $@
 
 $(MASTODONT_DIR): 
-	git clone $(MASTODONT_URL) || true
-	@echo -e "\033[38;5;13mRun 'make update' to update mastodont-c\033[0m"
+	fossil clone $(MASTODONT_URL) || true
 
 install: $(TARGET)
 	install -m 655 treebird $(PREFIX)/bin/
@@ -132,9 +131,6 @@ apache_start:
 
 dep_build:
 	make -C $(MASTODONT_DIR)
-
-update:
-	git -C $(MASTODONT_DIR) pull
 
 %.o: %.c %.h $(PAGES)
 	$(CC) $(CFLAGS) -c $< -o $@
