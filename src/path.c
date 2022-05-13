@@ -122,14 +122,16 @@ breakpt:
         path_info->callback(ssn, api, data);
     }
     else
+    {
         res = 1;
+    }
 
     // Cleanup
-    for (size_t i = 0; i < size; ++i)
-    {
-        free(data[i]);
-    }
-    if (data) free(data);
+    /* for (size_t i = 0; i < size; ++i) */
+    /* { */
+    /*     free(data[i]); */
+    /* } */
+    /* if (data) free(data); */
     return res;
 }
 

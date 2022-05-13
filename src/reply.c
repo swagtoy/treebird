@@ -117,7 +117,7 @@ char* reply_status(char* id, struct mstdnt_status* status)
         replies[replies_size-1] = ' ';
     }
 
-    replies[replies_size] = '\0';
+    replies[replies_size-1] = '\0';
     
     stat_reply = construct_post_box(id, replies, NULL);
     if (replies) free(replies);
