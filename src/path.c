@@ -33,6 +33,7 @@ int parse_path(struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info)
 {
+    int res = 0;
     int fail = 0, fin = 0;
     enum path_state state = PARSE_NEUTRAL;
     char* p = path_info->path + 1;
@@ -116,10 +117,12 @@ int parse_path(struct session* ssn,
         ++i; // Used for p2
     }
 breakpt:
-    if (fail)
-        return 1;
-
-    path_info->callback(ssn, api, data);
+    if (!fail)
+    {
+        path_info->callback(ssn, api, data);
+    }
+    else
+        res = 1;
 
     // Cleanup
     for (size_t i = 0; i < size; ++i)
@@ -127,7 +130,7 @@ breakpt:
         free(data[i]);
     }
     if (data) free(data);
-    return 0;
+    return res;
 }
 
 void handle_paths(struct session* ssn,
