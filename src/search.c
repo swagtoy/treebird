@@ -172,7 +172,9 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
                                              results.tags_len,
                                              14,
                                              NULL);
-        tags_graph = construct_bar_graph_container(tags_bars, NULL);
+        if (tags_bars)
+            tags_graph = construct_bar_graph_container(tags_bars, NULL);
+        
         if (tags_bars) free(tags_bars);
     }
     else
