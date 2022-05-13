@@ -64,7 +64,7 @@ char* construct_lists_view(char* lists_string, int* size)
 void content_lists(struct session* ssn, mastodont_t* api, char** data)
 {
     struct mstdnt_list* lists;
-    size_t size_list;
+    size_t size_list = 0;
     struct mstdnt_storage storage = { 0 };
     char* lists_format = NULL;
     char* lists_page = NULL;
