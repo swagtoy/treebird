@@ -74,6 +74,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
             sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
 
         mstdnt_cleanup_notifications(notifs, notifs_len);
+        mastodont_storage_cleanup(&storage);
     }
     
     char* data;
