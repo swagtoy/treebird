@@ -42,7 +42,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     // Mastodont, used for notifications sidebar
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
-    size_t notifs_len;
+    size_t notifs_len = 0;
 
     read_config(ssn);
 

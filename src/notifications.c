@@ -90,7 +90,7 @@ char* construct_notification_compact(struct session* ssn,
                                      int* size)
 {
     char* notif_html;
-    char* status_format;
+    char* status_format = NULL;
     char* notif_stats = NULL;
 
     const char* type_str = notification_type_compact_str(notif->type);
@@ -105,9 +105,6 @@ char* construct_notification_compact(struct session* ssn,
         status_format = reformat_status(notif->status->content,
                                         notif->status->emojis,
                                         notif->status->emojis_len);
-    }
-    else {
-        status_format = NULL;
     }
 
     size_t s = easprintf(&notif_html, data_notification_compact_html,
@@ -127,7 +124,8 @@ char* construct_notification_compact(struct session* ssn,
 
     if (size) *size = s;
 
-    if (status_format) free(status_format);
+    if (status_format &&
+        status_format != notif->status->content) free(status_format);
     if (notif_stats) free(notif_stats);
     return notif_html;
 }
