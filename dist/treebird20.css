@@ -16,7 +16,7 @@ html, body
 html
 {
     height: 100%;
-    background-color: #f6f6f6;
+    background-color: #eee;
 }
 
 body
@@ -46,13 +46,12 @@ ul
 }
 #main-page
 {
-v    margin: 8px;
+    margin: 8px;
     margin-top: 0;
     width: 1000px;
-    border-top: 0 !important;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
     border-width: 0;
     border-radius: 5px;
 }
@@ -162,9 +161,9 @@ table.ui-table td
 
 #main
 {
-    width: 608px;
-    max-width: 608px !important;
-    min-width: 608px;
+    width: 568px;
+    max-width: 568px !important;
+    min-width: 568px;
     border-collapse: collapse !important;
     background-color: #fafafa;
     padding: 0;
@@ -182,12 +181,12 @@ table.ui-table td
     min-height: 600px;
     max-width: 180px;
     min-width: 180px;
-    background-color: #fcfcfc;
+    background-color: #eaecf0;
 }
 
 #leftbar
 {
-    border-right: 1px solid #cacaca;
+    border-right: 1px solid #dadada;
 }
 
 #leftbar ul
@@ -204,9 +203,9 @@ table.ui-table td
 
 #rightbar
 {
-    border-left: 1px solid #cacaca;
-    min-width: 210px;
-    max-width: 210px;
+    border-left: 1px solid #dadada;
+    min-width: 250px;
+    max-width: 250px;
 }
 
 
@@ -295,14 +294,14 @@ table.present th, table.present td
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
-.sidebarbtn, .btn
+.btn
 { 
     background: linear-gradient(#fff, #f7f7f7);
     color: #000;
     text-decoration: none;
 }
 
-.sidebarbtn:hover, .btn:hover
+.btn:hover
 { 
     background: linear-gradient(#aa0000, #600000);
     border-color: #400000;
@@ -310,7 +309,7 @@ table.present th, table.present td
     cursor: pointer;
 }
 
-.sidebarbtn:active, .btn:active
+.btn:active
 { 
     background: linear-gradient(#600000, #aa0000);
     border-color: #400000;
@@ -348,28 +347,22 @@ input[type=button], input[type=submit]
     padding: 3px 15px;
 }
 
-/* Make first button glue to header */
-#leftbar ul:first-child .sidebarbtn
-{
-    border-top: 0;
-}
-
 .sidebarbtn
 {
     display: block;
-    border-bottom: 1px solid #e4e4e4;
-    padding: 8px 8px 8px 16px;
-    color: #202020;
+    margin: 9px 12px 9px 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #505050;
 }
 
 .sidebarbtn:hover
 {
-    z-index: 999;
-}
-
-.sidebarbtn.focused
-{
-    border-right: 3px solid #aa0000;
+    background: linear-gradient(#606060, #d3d3d3);
+    color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .sidebarbtn-sub
@@ -396,11 +389,6 @@ input[type=button], input[type=submit]
 .sidebarbtn-sub:active, .sidebarbtn-sub:hover
 {
     background-color: #dadada;
-}
-
-ul li:first-child a.sidebarbtn
-{
-    border-top: 1px solid #dadada;
 }
 
 /****************************
@@ -636,7 +624,7 @@ svg.in-reply-to-icon
 {
     /* To maintain compatibility while keeping it a flexbox, we have to 
      * hardcode the width, sorry! Tables are just weird and I hate CSS */
-    max-width: 520px;
+    max-width: 480px;
 }
 
 .status .username,
@@ -646,7 +634,7 @@ svg.in-reply-to-icon
     font-weight: bold;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 350px;
+    max-width: 310px;
     white-space: nowrap;
     vertical-align: middle;
 }
@@ -655,7 +643,7 @@ svg.in-reply-to-icon
 {
     margin: 2px 0 0 0;
     overflow-wrap: break-word;
-    width: 520px;
+    width: 480px;
     display: block;
 }
 
@@ -987,17 +975,24 @@ svg.in-reply-to-icon
 {
     display: block;
     flex-direction: column;
-    padding: 5px;
+    background-color: #f6f6f6;
+    padding: 10px;
+    border-bottom: 1px dashed #dadada;
 }
 
 .statusbox textarea
 {
     display: block;
-    width: 592px;
-    max-width: 592px;
-    min-width: 592px;
+    width: 536px;
+    max-width: 536px;
+    min-width: 536px;
     margin-bottom: 5px;
-    padding: 2px;
+    font-family: arial;
+    font-size: 16px;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid #505050;
+    border-radius: 3px;
+    padding: 5px;
 }
 
 .statusbox .statusfooter
