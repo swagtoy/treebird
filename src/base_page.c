@@ -29,6 +29,7 @@
 
 // Files
 #include "../static/index.chtml"
+#include "../static/quick_login.chtml"
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
@@ -53,10 +54,11 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     {
         easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url);
     }
-    
-    // Get / Show notifications on sidebar
+
+    // If user is logged in
     if (ssn->cookies.logged_in && ssn->cookies.access_token)
     {
+        // Get / Show notifications on sidebar
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
             .account_id = NULL,
@@ -71,12 +73,22 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         };
         
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        {
             sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+        }
 
         mstdnt_cleanup_notifications(notifs, notifs_len);
         mastodont_storage_cleanup(&storage);
     }
-    
+    else {
+        // Construct small login page
+        easprintf(&sidebar_str, data_quick_login_html,
+                  config_url_prefix,
+                  L10N[L10N_EN_US][L10N_USERNAME],
+                  L10N[L10N_EN_US][L10N_PASSWORD],
+                  L10N[L10N_EN_US][L10N_LOGIN_BTN]);
+    }
+
     char* data;
     int len = easprintf(&data, data_index_html,
                         L10N[locale][L10N_APP_NAME],
@@ -119,7 +131,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                         page->sidebar_left ?
                         page->sidebar_left : "",
                         page->content,
-                        sidebar_str ? sidebar_str : "<p>Not logged in</p>");
+                        sidebar_str ? sidebar_str : "");
     
     if (!data)
     {

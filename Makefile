@@ -114,6 +114,9 @@ $(PAGES_DIR)/emoji_picker.chtml: $(PAGES_DIR)/emoji_picker.html
 	./filec $< data_emoji_picker_html > $@
 $(PAGES_DIR)/emoji.chtml: $(PAGES_DIR)/emoji.html
 	./filec $< data_emoji_html > $@
+# Login panel
+$(PAGES_DIR)/quick_login.chtml: $(PAGES_DIR)/quick_login.html
+	./filec $< data_quick_login_html > $@
 
 $(MASTODONT_DIR): 
 	fossil clone $(MASTODONT_URL) || true

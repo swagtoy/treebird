@@ -30,7 +30,7 @@
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 {
     size_t sc_len;
-    char* oldres;
+    char* oldres = NULL;
     char* res = content;
     char* emoji_url_str;
     char* coloned;
@@ -50,7 +50,7 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
         easprintf(&emoji_url_str, "<img class=\"emoji\" src=\"%s\">", emos[i].url);
         
         res = strrepl(res, coloned, emoji_url_str, STRREPL_ALL);
-        if (oldres != content) free(oldres);
+        if (oldres != content && res != oldres) free(oldres);
         // Cleanup
         free(emoji_url_str);
         free(coloned);

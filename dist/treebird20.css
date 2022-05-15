@@ -1,9 +1,4 @@
-/* Look, I tried my best to make this theme compatible with browsers like Netsurf and stuff, I HATE
-   the modern web and flexboxes and stuff, so as a result, you WILL see some fugly things in here
-   that you will probably want to cleanup or throw out completely, this CSS is a big hack. 
 
-   Other themes do not need to be compatible with Netsurf and older browsers or use tables,
-   I just wanted this to be as compatible as possible, go wild with your own themes */
 
 *
 {
@@ -1071,7 +1066,8 @@ svg.in-reply-to-icon
 
 /* Emoji */
 .status-content .emoji,
-.notification-content .emoji
+.notification-content .emoji,
+.username .emoji
 {
     font-family: monospace;
     display: inline;
@@ -1080,6 +1076,12 @@ svg.in-reply-to-icon
     vertical-align: middle;
     object-fit: contain;
     transition: transform .2s;
+}
+
+.username .emoji
+{
+    width: 20px;
+    height: 20px;
 }
 
 .status-content .emoji:hover,

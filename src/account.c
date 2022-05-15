@@ -187,9 +187,10 @@ static void fetch_account_page(struct session* ssn,
     render_base_page(&b, ssn, api);
         
     /* Output */
+    mstdnt_cleanup_account(&acct);
+    mstdnt_cleanup_relationships(relationships);
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&relations_storage);
-    mstdnt_cleanup_relationships(relationships);
     free(account_page);
 }
 

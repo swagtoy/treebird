@@ -274,7 +274,7 @@ char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* si
                                     &acct,
                                     &storage);
 
-    char* html = construct_in_reply_to(status, res ? &acct : NULL, size);
+    char* html = construct_in_reply_to(status, res == 0 ? &acct : NULL, size);
     
     mastodont_storage_cleanup(&storage);
     return html;
@@ -381,6 +381,7 @@ char* construct_status(struct session* ssn,
     char* reply_count = NULL;
     char* repeat_count = NULL;
     char* favourites_count = NULL;
+    char* formatted_display_name = NULL;
     char* attachments = NULL;
     char* emoji_reactions = NULL;
     char* notif_info = NULL;
@@ -442,6 +443,11 @@ char* construct_status(struct session* ssn,
         notif = &notif_reblog;
     }
 
+    // Format username with emojis
+    formatted_display_name = emojify(status->account.display_name,
+                                     status->account.emojis,
+                                     status->account.emojis_len);
+
     // Format status
     char* parse_content = reformat_status(status->content, status->emojis, status->emojis_len);
     // Find and replace
@@ -488,7 +494,7 @@ char* construct_status(struct session* ssn,
                          "focused" : "",
                          notif_info ? notif_info : "",
                          status->account.avatar,
-                         status->account.display_name, /* Username */
+                         formatted_display_name, /* Username */
                          config_url_prefix,
                          status->account.acct,
                          status->account.acct, /* Account */
@@ -544,6 +550,7 @@ char* construct_status(struct session* ssn,
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
     if (interactions_html) free(interactions_html);
+    //if (formatted_display_name != status->account.display_name) free(formatted_display_name);
     if (emoji_picker_html) free(emoji_picker_html);
     if (parse_content != status->content) free(parse_content);
     return stat_html;
