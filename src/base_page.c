@@ -26,6 +26,7 @@
 #include "string_helpers.h"
 #include "../config.h"
 #include "local_config_set.h"
+#include "account.h"
 
 // Files
 #include "../static/index.chtml"
@@ -39,8 +40,12 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     enum l10n_locale locale = page->locale;
     char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
     char* background_url_css = NULL;
-    char* sidebar_str = NULL;
+    // Sidebar
+    char* sidebar_str,
+        * main_sidebar_str = NULL,
+        * account_sidebar_str = NULL;
     // Mastodont, used for notifications sidebar
+    struct mstdnt_account acct = { 0 };
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
@@ -58,6 +63,13 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     // If user is logged in
     if (ssn->cookies.logged_in && ssn->cookies.access_token)
     {
+        if (mastodont_verify_credentials(api, &acct, &storage) == 0)
+        {
+            account_sidebar_str = construct_account_sidebar(&acct, NULL);
+        }
+        mstdnt_cleanup_account(&acct);
+        mastodont_storage_cleanup(&storage); // reuse it later
+
         // Get / Show notifications on sidebar
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
@@ -74,7 +86,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
         {
-            sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+            main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
         }
 
         mstdnt_cleanup_notifications(notifs, notifs_len);
@@ -82,12 +94,17 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     }
     else {
         // Construct small login page
-        easprintf(&sidebar_str, data_quick_login_html,
+        easprintf(&main_sidebar_str, data_quick_login_html,
                   config_url_prefix,
                   L10N[L10N_EN_US][L10N_USERNAME],
                   L10N[L10N_EN_US][L10N_PASSWORD],
                   L10N[L10N_EN_US][L10N_LOGIN_BTN]);
     }
+
+    // Combine into sidebar
+    easprintf(&sidebar_str, "%s%s",
+              account_sidebar_str ? account_sidebar_str : "",
+              main_sidebar_str ? main_sidebar_str : "");
 
     char* data;
     int len = easprintf(&data, data_index_html,
@@ -148,5 +165,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     free(data);
 cleanup:
     if (sidebar_str) free(sidebar_str);
+    if (main_sidebar_str) free(main_sidebar_str);
+    if (account_sidebar_str) free(account_sidebar_str);
     if (background_url_css) free(background_url_css);
 }

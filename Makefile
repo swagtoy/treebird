@@ -117,6 +117,8 @@ $(PAGES_DIR)/emoji.chtml: $(PAGES_DIR)/emoji.html
 # Login panel
 $(PAGES_DIR)/quick_login.chtml: $(PAGES_DIR)/quick_login.html
 	./filec $< data_quick_login_html > $@
+$(PAGES_DIR)/account_sidebar.chtml: $(PAGES_DIR)/account_sidebar.html
+	./filec $< data_account_sidebar_html > $@
 
 $(MASTODONT_DIR): 
 	fossil clone $(MASTODONT_URL) || true

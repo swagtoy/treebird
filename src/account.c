@@ -37,6 +37,7 @@
 #include "../static/favourites_page.chtml"
 #include "../static/bookmarks_page.chtml"
 #include "../static/account_stub.chtml"
+#include "../static/account_sidebar.chtml"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
@@ -58,6 +59,25 @@ char* load_account_info(struct mstdnt_account* acct,
 
     if (size) *size = s;
     return acct_info_html;
+}
+
+char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
+{
+    char* acct_sidebar_html;
+    size_t s;
+
+    s = easprintf(&acct_sidebar_html, data_account_sidebar_html,
+                  acct->avatar,
+                  acct->display_name,
+                  L10N[L10N_EN_US][L10N_TAB_STATUSES],
+                  acct->statuses_count,
+                  L10N[L10N_EN_US][L10N_TAB_FOLLOWING],
+                  acct->following_count,
+                  L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
+                  acct->followers_count);
+
+    if (size) *size = s;
+    return acct_sidebar_html;
 }
 
 static char* account_statuses_cb(struct session* ssn,

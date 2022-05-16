@@ -53,6 +53,9 @@ struct account_page
     struct mstdnt_relationship* relationship;
 };
 
+
+char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size);
+
 char* construct_account(mastodont_t* api,
                         struct mstdnt_account* account,
                         uint8_t flags,
