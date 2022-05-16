@@ -107,9 +107,9 @@ table.ui-table td
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-top: 2px solid #fff;
-    background: linear-gradient(#fafafa, #f3f3f3);
+    background: linear-gradient(#fbfbfb, #ececef);
     width: 1000px;
-    border-bottom: 2px solid #cacaca;
+    border-bottom: 2px solid #bfbfc4;
     z-index: 999;
 }
 
@@ -301,27 +301,22 @@ table.present th, table.present td
     text-decoration: none;
 }
 
-.btn:hover
-{ 
-    background: linear-gradient(#aa0000, #600000);
-    border-color: #400000;
-    color: #fff;
-    cursor: pointer;
-}
-
+.btn:hover,
 .btn:active
 { 
-    background: linear-gradient(#600000, #aa0000);
-    border-color: #400000;
+    background: linear-gradient(#606060, #d3d3d3);
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2);
     color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
     cursor: pointer;
 }
 
 .btn.active
 {
-    background: initial;
-    background-color: #eeaaaa;
-    border-color: #cc0000;
+    background: linear-gradient(#606060, #d3d3d3);
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .btn-disabled
@@ -340,19 +335,29 @@ table.present th, table.present td
     background: #f3f3f3;
 }
 
-
 input[type=button], input[type=submit]
 {
     border: 1px solid #cacaca;
     padding: 3px 15px;
 }
 
+.post-btn
+{
+    background: linear-gradient(#aa0000, #900000);
+    padding: 2px 25px 3px !important;
+    font-size: 15px;
+    border-radius: 4px;
+    border: none !important; 
+    color: #fff;
+}
+
+
+
 .sidebarbtn
 {
     display: block;
-    margin: 9px 12px 9px 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
+    margin: 7px 0 7px 0;
+    padding: 6px 18px;
     font-size: 14px;
     text-transform: uppercase;
     color: #505050;
@@ -361,6 +366,7 @@ input[type=button], input[type=submit]
 .sidebarbtn:hover
 {
     background: linear-gradient(#606060, #d3d3d3);
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2);
     color: #fff;
     text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
 }
@@ -391,6 +397,11 @@ input[type=button], input[type=submit]
     background-color: #dadada;
 }
 
+.sidebar-login
+{
+    padding: 18px;
+}
+
 /****************************
  *      Notifications       *
  ***************************/
@@ -416,6 +427,7 @@ input[type=button], input[type=submit]
 .notification-compact
 {
     min-width: 100%;
+    padding: 3px;
 }
 
 .notification-compact p
@@ -537,8 +549,8 @@ svg.in-reply-to-icon
 .notification-regular,
 .scrobble
 {
-    padding: 6px 2px 0 6px;
-    border-bottom: 1px solid #cacaca !important;
+    padding: 10px 4px 0 10px;
+    border-bottom: 1px dashed #cacaca;
     width: 100%;
     border-spacing: 0px;
 }
@@ -555,7 +567,8 @@ svg.in-reply-to-icon
     padding-top: 0;
 }
 
-.status .profile-picture
+.status .profile-picture,
+.account-sidebar .acct-pfp
 {
     display: inline-block;
     width: 52px;
@@ -786,13 +799,19 @@ svg.in-reply-to-icon
  **********************/
 .header-btn
 {
-    display: inline-block;
     padding: 8px 15px;
     margin: 0;
     background: inherit;
     text-decoration: none;
     color: #606060;
     font-size: 14px;
+}
+
+/* Make inline when not in table */
+.account .header-btn,
+.status .header-btn
+{
+    display: inline-block;
 }
 
 .header-btn .btn-content
@@ -883,7 +902,7 @@ svg.in-reply-to-icon
     overflow: auto;
 }
 
-.acct-pfp
+.account .acct-pfp
 {
     position: absolute;
     display: inline;
@@ -946,6 +965,38 @@ svg.in-reply-to-icon
     padding-left: 6px;
     font-weight: bold;
     text-shadow: 0px 0px 5px #000;
+}
+
+.account-sidebar .acct-pfp,
+.account-sidebar .username
+{
+    vertical-align: top;
+}
+
+.account-sidebar .username
+{
+    position: relative;
+    top: 5px;
+    margin-left: 5px;
+}
+
+.account-sidebar .acct-stats
+{
+    width: 100%;
+    table-layout: fixed;
+}
+
+.account-sidebar
+{
+    padding: 7px 7px 3px;
+    background-color: #e4e4ea;
+    border-bottom: 1px dashed #cacaca;
+}
+
+.account-sidebar .header-btn
+{
+    padding: 4px;
+    border-radius: 4px;
 }
 
 .follow-btn
@@ -1181,21 +1232,31 @@ svg.in-reply-to-icon
 
 .attachment-container
 {
-    z-index: 3;
+    position: relative;
+    z-index: 1;
     display: inline-block;
     overflow: hidden;
 }
 
-.sensitive
+.sensitive-contain.sensitive
 {
-    z-index: 2;
-    filter: blur(16px);
-    transition: filter .4s;
+    background: #000;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
-.sensitive:hover
+.sensitive.attachment-link::after,
+.sensitive.attachment-audio::after
 {
-    filter: none;
+    content: " (Sensitive)";
+}
+
+.attachment-container:hover .sensitive
+{
+    display: none;
 }
 
 .statusbox textarea

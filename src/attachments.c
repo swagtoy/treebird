@@ -25,6 +25,10 @@
 // Pages
 #include "../static/attachments.chtml"
 #include "../static/attachment_image.chtml"
+#include "../static/attachment_gifv.chtml"
+#include "../static/attachment_video.chtml"
+#include "../static/attachment_link.chtml"
+#include "../static/attachment_audio.chtml"
 
 struct attachments_args
 {
@@ -117,10 +121,40 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
 char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size)
 {
     char* att_html;
+    size_t s;
+    const char* attachment_str;
+    if (!att) return NULL;
 
-    size_t s = easprintf(&att_html, data_attachment_image_html,
-                         sensitive ? "sensitive" : "",
-                         att->url);
+    switch (att->type)
+    {
+    case MSTDNT_ATTACHMENT_IMAGE:
+        attachment_str = data_attachment_image_html; break;
+    case MSTDNT_ATTACHMENT_GIFV:
+        attachment_str = data_attachment_gifv_html; break;
+    case MSTDNT_ATTACHMENT_VIDEO:
+        attachment_str = data_attachment_video_html; break;
+    case MSTDNT_ATTACHMENT_AUDIO:
+        attachment_str = data_attachment_audio_html; break;
+    case MSTDNT_ATTACHMENT_UNKNOWN: // Fall through
+    default:
+        attachment_str = data_attachment_link_html; break;
+    }
+
+    // Images/visible content displays sensitive placeholder after
+    if (att->type == MSTDNT_ATTACHMENT_IMAGE ||
+        att->type == MSTDNT_ATTACHMENT_GIFV ||
+        att->type == MSTDNT_ATTACHMENT_VIDEO)
+    {
+        s = easprintf(&att_html, attachment_str,
+                      att->url,
+                      sensitive ? "<div class=\"sensitive-contain sensitive\"></div>" : "");
+    }
+    else {
+        s = easprintf(&att_html, attachment_str,
+                      sensitive ? "sensitive" : "",
+                      att->url);
+    }
+    
     if (str_size) *str_size = s;
     return att_html;
 }

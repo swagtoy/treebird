@@ -46,6 +46,14 @@ $(PAGES_DIR)/attachments.chtml: $(PAGES_DIR)/attachments.html
 	./filec $< data_attachments_html > $@
 $(PAGES_DIR)/attachment_image.chtml: $(PAGES_DIR)/attachment_image.html
 	./filec $< data_attachment_image_html > $@
+$(PAGES_DIR)/attachment_video.chtml: $(PAGES_DIR)/attachment_video.html
+	./filec $< data_attachment_video_html > $@
+$(PAGES_DIR)/attachment_link.chtml: $(PAGES_DIR)/attachment_link.html
+	./filec $< data_attachment_link_html > $@
+$(PAGES_DIR)/attachment_audio.chtml: $(PAGES_DIR)/attachment_audio.html
+	./filec $< data_attachment_audio_html > $@
+$(PAGES_DIR)/attachment_gifv.chtml: $(PAGES_DIR)/attachment_gifv.html
+	./filec $< data_attachment_gifv_html > $@
 $(PAGES_DIR)/emoji_reactions.chtml: $(PAGES_DIR)/emoji_reactions.html
 	./filec $< data_emoji_reactions_html > $@
 $(PAGES_DIR)/emoji_reaction.chtml: $(PAGES_DIR)/emoji_reaction.html
