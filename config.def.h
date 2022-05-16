@@ -90,7 +90,7 @@ static char* const config_url_prefix = "";
  * Keep this disabled if running an older pleroma build, or because you just
  * don't want it.
  */
-static const int config_experimental_lookup = TRUE;
+static const int config_experimental_lookup = FALSE;
 
 /*
  * Bool: test_page
