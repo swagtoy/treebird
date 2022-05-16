@@ -46,10 +46,19 @@ struct query_values
 {
     // Config
     char* theme;
-    char* themeclr;
-    char* jsactions;
-    char* jsreply;
-    char* jslive;
+    int themeclr;
+    int jsactions;
+    int jsreply;
+    int jslive;
+    int js;
+    int stat_attachments;
+    int stat_greentexts;
+    int stat_dope;
+    int stat_oneclicksoftware;
+    int stat_emoji_likes;
+    int stat_hide_muted;
+    int instance_show_shoutbox;
+    int instance_panel;
     
     char* content;
     char* itype;

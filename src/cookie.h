@@ -33,6 +33,14 @@ struct cookie_values
     int jsactions;
     int jsreply;
     int jslive;
+    int js;
+    int stat_attachments;
+    int stat_greentexts;
+    int stat_dope;
+    int stat_oneclicksoftware;
+    int stat_emoji_likes;
+    int instance_show_shoutbox;
+    int instance_panel;
 };
 
 struct http_cookie_info

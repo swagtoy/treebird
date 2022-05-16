@@ -301,11 +301,18 @@ char* construct_in_reply_to(struct mstdnt_status* status,
 #define REGEX_GREENTEXT "((?:^|<br/?>|\\s)&gt;.*?)(?:<br/?>|$)"
 #define REGEX_GREENTEXT_LEN 6
 
-char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len)
+char* reformat_status(struct session* ssn,
+                      char* content,
+                      struct mstdnt_emoji* emos,
+                      size_t emos_len)
 {
-    char* gt_res;
+    char* gt_res = NULL;
     char* emo_res;
-    gt_res = greentextify(content);
+    if (ssn->config.stat_greentexts)
+        gt_res = greentextify(content);
+    else
+        gt_res = content;
+    
     if (emos)
     {
         emo_res = emojify(gt_res, emos, emos_len);
@@ -449,7 +456,8 @@ char* construct_status(struct session* ssn,
                                      status->account.emojis_len);
 
     // Format status
-    char* parse_content = reformat_status(status->content, status->emojis, status->emojis_len);
+    char* parse_content = reformat_status(ssn, status->content, status->emojis, status->emojis_len);
+    
     // Find and replace
     if (args && args->highlight_word)
     {

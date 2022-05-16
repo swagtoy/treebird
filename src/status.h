@@ -85,7 +85,10 @@ char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
                                             size_t* ret_size);
 char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size);
 char* construct_status_interactions_label(char* header, int val, size_t* size);
-char* reformat_status(char* content, struct mstdnt_emoji* emos, size_t emos_len);
+char* reformat_status(struct session* ssn,
+                      char* content,
+                      struct mstdnt_emoji* emos,
+                      size_t emos_len);
 char* greentextify(char* content);
 
 // Status frontends

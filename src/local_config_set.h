@@ -29,7 +29,7 @@ int set_config_str(char** ssn,
 
 int set_config_int(int* ssn,
                    char* cookie_name,
-                   char* value);
+                   int value);
 
 void load_config(struct session* ssn, mastodont_t* api);
 void read_config(struct session* ssn);

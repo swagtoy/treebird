@@ -61,6 +61,14 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "jsactions", &(cookies->jsactions), key_int },
         { "jsreply", &(cookies->jsreply), key_int },
         { "jslive", &(cookies->jslive), key_int },
+        { "js", &(cookies->js), key_int },
+        { "statattachments", &(cookies->stat_attachments), key_int },
+        { "statgreentexts", &(cookies->stat_greentexts), key_int },
+        { "statdope", &(cookies->stat_dope), key_int },
+        { "statoneclicksoftware", &(cookies->stat_oneclicksoftware), key_int },
+        { "statemojilikes", &(cookies->stat_emoji_likes), key_int },
+        { "instanceshowshoutbox", &(cookies->instance_show_shoutbox), key_int },
+        { "instancepanel", &(cookies->instance_panel), key_int },
     };
 
     do

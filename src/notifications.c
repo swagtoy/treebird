@@ -102,7 +102,8 @@ char* construct_notification_compact(struct session* ssn,
                   notif->status->replies_count,
                   notif->status->reblogs_count,
                   notif->status->favourites_count);
-        status_format = reformat_status(notif->status->content,
+        status_format = reformat_status(ssn,
+                                        notif->status->content,
                                         notif->status->emojis,
                                         notif->status->emojis_len);
     }

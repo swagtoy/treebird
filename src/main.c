@@ -47,14 +47,24 @@ int main(void)
     // API
     while (FCGI_Accept() >= 0)
     {
+        // Default config
         struct session ssn = {
             .config = {
                 .changed = 0,
                 .theme = "treebird20",
                 .themeclr = 0,
-                .jsactions = 0,
-                .jsreply = 0,
-                .jslive = 0
+                .jsactions = 1,
+                .jsreply = 1,
+                .jslive = 0,
+                .js = 1,
+                .stat_attachments = 1,
+                .stat_greentexts = 1,
+                .stat_dope = 1,
+                .stat_oneclicksoftware = 1,
+                .stat_emoji_likes = 0,
+                .stat_hide_muted = 0,
+                .instance_show_shoutbox = 1,
+                .instance_panel = 1,
             },
             .cookies = { 0 },
             .post = { 0 },

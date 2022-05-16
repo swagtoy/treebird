@@ -38,21 +38,13 @@ int set_config_str(char** ssn,
 
 int set_config_int(int* ssn,
                    char* cookie_name,
-                   char* value)
+                   int value)
 {
-    if (!value) return 0;
-    char* err = NULL;
-    long str_l = strtol(value, &err, 0);
-
-    // Not a number
-    if (err == value)
-        return 0;
-
     if (ssn)
     {
-        *ssn = str_l;
+        *ssn = value;
         printf("Set-Cookie: %s=%ld; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-               cookie_name, str_l);
+               cookie_name, value);
     }
     
     return 1;
@@ -72,40 +64,18 @@ void load_config(struct session* ssn, mastodont_t* api)
         if (storage)
             cleanup_media_storages(ssn, storage);
     }
-    set_config_str(&(ssn->config.theme), "theme", ssn->post.theme);
-    set_config_int(&(ssn->config.themeclr), "themeclr", ssn->post.themeclr);
+    set_config_str(&(ssn->config.theme), "theme", ssn->post.theme, ssn->cookie.theme);
+    set_config_int(&(ssn->config.themeclr), "themeclr", ssn->post.themeclr, ssn->cookie.themeclr);
 
-    set_config_int(&(ssn->config.jsactions), "jsactions", ssn->post.jsactions);
-    set_config_int(&(ssn->config.jsreply), "jsreply", ssn->post.jsreply);
-    set_config_int(&(ssn->config.jslive), "jslive", ssn->post.jslive);
-}
-
-#define SET_COOKIE_CONFIG(post, cookie, config) do{ \
-        if (cookie && !post)                        \
-            config = cookie;                        \
-    } while(0); 
-
-void read_config(struct session* ssn)
-{
-    SET_COOKIE_CONFIG(ssn->post.theme,
-                      ssn->cookies.theme,
-                      ssn->config.theme);
-    SET_COOKIE_CONFIG(ssn->post.themeclr,
-                      ssn->cookies.themeclr,
-                      ssn->config.themeclr);
-    SET_COOKIE_CONFIG(ssn->post.jsactions,
-                      ssn->cookies.jsactions,
-                      ssn->config.jsactions);
-    SET_COOKIE_CONFIG(ssn->post.jsreply,
-                      ssn->cookies.jsreply,
-                      ssn->config.jsreply);
-    SET_COOKIE_CONFIG(ssn->post.jslive,
-                      ssn->cookies.jslive,
-                      ssn->config.jslive);
-    SET_COOKIE_CONFIG(0,
-                      ssn->cookies.logged_in,
-                      ssn->config.logged_in);
-    SET_COOKIE_CONFIG((ssn->post.files.content && ssn->post.files.content[0].content),
-                      ssn->cookies.background_url,
-                      ssn->config.background_url);
+    set_config_int(&(ssn->config.jsactions), "jsactions", ssn->cookie.theme, ssn->post.jsactions);
+    set_config_int(&(ssn->config.jsreply), "jsreply", ssn->cookie.theme, ssn->post.jsreply);
+    set_config_int(&(ssn->config.jslive), "jslive", ssn->cookie.theme, ssn->post.jslive);
+    set_config_int(&(ssn->config.js), "js", ssn->cookie.theme, ssn->post.js);
+    set_config_int(&(ssn->config.stat_attachments), "statattachments", ssn->cookie.theme, ssn->post.stat_attachments);
+    set_config_int(&(ssn->config.stat_greentexts), "statgreentexts", ssn->cookie.theme, ssn->post.stat_greentexts);
+    set_config_int(&(ssn->config.stat_dope), "statdope", ssn->cookie.theme, ssn->post.stat_dope);
+    set_config_int(&(ssn->config.stat_oneclicksoftware), "statoneclicksoftware", ssn->cookie.theme, ssn->post.stat_oneclicksoftware);
+    set_config_int(&(ssn->config.stat_emoji_likes), "statemojilikes", ssn->cookie.theme, ssn->post.stat_emoji_likes);
+    set_config_int(&(ssn->config.instance_show_shoutbox), "instanceshowshoutbox", ssn->cookie.theme, ssn->post.instance_show_shoutbox);
+    set_config_int(&(ssn->config.instance_panel), "instancepanel", ssn->cookie.theme, ssn->post.instance_panel);
 }
