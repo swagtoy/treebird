@@ -39,7 +39,8 @@ struct cookie_values
     struct key stat_greentexts;
     struct key stat_dope;
     struct key stat_oneclicksoftware;
-    struct key stat_emoji_likes;
+    struct key stat_emojo_likes;
+    struct key stat_hide_muted;
     struct key instance_show_shoutbox;
     struct key instance_panel;
 };

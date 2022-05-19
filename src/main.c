@@ -61,7 +61,7 @@ int main(void)
                 .stat_greentexts = 1,
                 .stat_dope = 1,
                 .stat_oneclicksoftware = 1,
-                .stat_emoji_likes = 0,
+                .stat_emojo_likes = 0,
                 .stat_hide_muted = 0,
                 .instance_show_shoutbox = 1,
                 .instance_panel = 1,

@@ -65,7 +65,8 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "statgreentexts", &(cookies->stat_greentexts), key_int },
         { "statdope", &(cookies->stat_dope), key_int },
         { "statoneclicksoftware", &(cookies->stat_oneclicksoftware), key_int },
-        { "statemojilikes", &(cookies->stat_emoji_likes), key_int },
+        { "statemojolikes", &(cookies->stat_emojo_likes), key_int },
+        { "stathidemuted", &(cookies->stat_hide_muted), key_int },
         { "instanceshowshoutbox", &(cookies->instance_show_shoutbox), key_int },
         { "instancepanel", &(cookies->instance_panel), key_int },
     };

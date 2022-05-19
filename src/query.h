@@ -41,7 +41,7 @@ struct post_values
     struct key stat_greentexts; // Int
     struct key stat_dope; // Int
     struct key stat_oneclicksoftware; // Int
-    struct key stat_emoji_likes; // Int
+    struct key stat_emojo_likes; // Int
     struct key stat_hide_muted; // Int
     struct key instance_show_shoutbox; // Int
     struct key instance_panel; // Int

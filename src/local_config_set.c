@@ -88,7 +88,8 @@ void load_config(struct session* ssn, mastodont_t* api)
     set_config_int(LOAD_CFG_SIM("statgreentexts",       stat_greentexts));
     set_config_int(LOAD_CFG_SIM("statdope",             stat_dope));
     set_config_int(LOAD_CFG_SIM("statoneclicksoftware", stat_oneclicksoftware));
-    set_config_int(LOAD_CFG_SIM("statemojilikes",       stat_emoji_likes));
+    set_config_int(LOAD_CFG_SIM("statemojolikes",       stat_emojo_likes));
+    set_config_int(LOAD_CFG_SIM("stathidemuted",        stat_hide_muted));
     set_config_int(LOAD_CFG_SIM("instanceshowshoutbox", instance_show_shoutbox));
     set_config_int(LOAD_CFG_SIM("instancepanel",        instance_panel));
 }

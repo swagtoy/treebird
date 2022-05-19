@@ -108,7 +108,7 @@ char* read_post_data(struct post_values* post)
         { "statgreentexts", &(post->stat_greentexts), key_int },
         { "statdope", &(post->stat_dope), key_int },
         { "statoneclicksoftware", &(post->stat_oneclicksoftware), key_int },
-        { "statemojolikes", &(post->stat_emoji_likes), key_int },
+        { "statemojolikes", &(post->stat_emojo_likes), key_int },
         { "stathidemuted", &(post->stat_hide_muted), key_int },
         { "instanceshowshoutbox", &(post->instance_show_shoutbox), key_int },
         { "instancepanel", &(post->instance_panel), key_int },

@@ -36,6 +36,8 @@
 #include "../static/config_appearance.chtml"
 #include "../static/config_sidebar.chtml"
 
+#define bool_checked(key) (ssn->config.key ? "checked" : "")
+
 enum config_category
 {
     CONFIG_CAT_GENERAL,
@@ -60,23 +62,39 @@ static char* construct_config_sidebar(enum config_category cat, size_t* size)
     return sidebar_html;
 }
 
-
 void content_config_general(struct session* ssn, mastodont_t* api, char** data)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
+    
+    char* general_page;
+
+    easprintf(&general_page, data_config_general_html,
+              bool_checked(js),
+              bool_checked(jsactions),
+              bool_checked(jsreply),
+              bool_checked(jslive),
+              bool_checked(stat_attachments),
+              bool_checked(stat_greentexts),
+              bool_checked(stat_dope),
+              bool_checked(stat_oneclicksoftware),
+              bool_checked(stat_emojo_likes),
+              bool_checked(stat_hide_muted),
+              bool_checked(instance_show_shoutbox),
+              bool_checked(instance_panel));
 
     load_config(ssn, api);
     
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
         .locale = L10N_EN_US,
-        .content = data_config_general_html,
+        .content = general_page,
         .sidebar_left = sidebar_html
     };
 
     render_base_page(&b, ssn, api);
     // Cleanup
     free(sidebar_html);
+    free(general_page);
 }
 
 

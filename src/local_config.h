@@ -34,7 +34,7 @@ struct local_config
     int stat_greentexts;
     int stat_dope;
     int stat_oneclicksoftware;
-    int stat_emoji_likes;
+    int stat_emojo_likes;
     int stat_hide_muted;
     int instance_show_shoutbox;
     int instance_panel;
