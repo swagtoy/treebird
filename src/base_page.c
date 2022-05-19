@@ -50,8 +50,6 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
 
-    read_config(ssn);
-
     if (ssn->config.logged_in)
         login_string = "";
 
@@ -61,7 +59,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     }
 
     // If user is logged in
-    if (ssn->cookies.logged_in && ssn->cookies.access_token)
+    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
     {
         if (mastodont_verify_credentials(api, &acct, &storage) == 0)
         {

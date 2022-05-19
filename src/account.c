@@ -108,7 +108,7 @@ static char* account_statuses_cb(struct session* ssn,
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[statuses_len-1].id,
@@ -403,8 +403,8 @@ void content_account_statuses(struct session* ssn, mastodont_t* api, char** data
         .exclude_reblogs = 0,
         .exclude_replies = 0,
         .tagged = NULL,
-        .max_id = ssn->post.max_id,
-        .min_id = ssn->post.min_id,
+        .max_id = keystr(ssn->post.max_id),
+        .min_id = keystr(ssn->post.min_id),
         .since_id = NULL,
         .offset = 0,
         .limit = 20,
@@ -427,8 +427,8 @@ void content_account_pinned(struct session* ssn, mastodont_t* api, char** data)
         .exclude_reblogs = 0,
         .exclude_replies = 0,
         .tagged = NULL,
-        .max_id = ssn->post.max_id,
-        .min_id = ssn->post.min_id,
+        .max_id = keystr(ssn->post.max_id),
+        .min_id = keystr(ssn->post.min_id),
         .since_id = NULL,
         .offset = 0,
         .limit = 20,
@@ -447,8 +447,8 @@ void content_account_media(struct session* ssn, mastodont_t* api, char** data)
         .exclude_reblogs = 0,
         .exclude_replies = 0,
         .tagged = NULL,
-        .max_id = ssn->post.max_id,
-        .min_id = ssn->post.min_id,
+        .max_id = keystr(ssn->post.max_id),
+        .min_id = keystr(ssn->post.min_id),
         .since_id = NULL,
         .offset = 0,
         .limit = 20,
@@ -496,9 +496,9 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     char* start_id;
 
     struct mstdnt_bookmarks_args args = {
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
@@ -517,7 +517,7 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -557,8 +557,8 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
     char* start_id;
 
     struct mstdnt_favourites_args args = {
-        .max_id = ssn->post.max_id,
-        .min_id = ssn->post.min_id,
+        .max_id = keystr(ssn->post.max_id),
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
@@ -577,7 +577,7 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,

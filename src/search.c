@@ -36,15 +36,15 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
     char* out_data;
     easprintf(&out_data, data_search_html,
               config_url_prefix,
-              ssn->query.query,
+              keystr(ssn->query.query),
               MAKE_FOCUSED_IF(tab, SEARCH_STATUSES),
               "Statuses",
               config_url_prefix,
-              ssn->query.query,
+              keystr(ssn->query.query),
               MAKE_FOCUSED_IF(tab, SEARCH_ACCOUNTS),
               "Accounts",
               config_url_prefix,
-              ssn->query.query,
+              keystr(ssn->query.query),
               MAKE_FOCUSED_IF(tab, SEARCH_HASHTAGS),
               "Hashtags",
               content);
@@ -81,13 +81,13 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
-                         ssn->query.query,
+                         keystr(ssn->query.query),
                          &storage,
                          &args,
                          &results) == 0)
     {
         struct construct_statuses_args statuses_args = {
-            .highlight_word = ssn->query.query,
+            .highlight_word = keystr(ssn->query.query),
         };
         statuses_html = construct_statuses(ssn, api, results.statuses, results.statuses_len, &statuses_args, NULL);
         if (!statuses_html)
@@ -120,7 +120,7 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
-                         ssn->query.query,
+                         keystr(ssn->query.query),
                          &storage,
                          &args,
                          &results) == 0)
@@ -159,7 +159,7 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
-                         ssn->query.query,
+                         keystr(ssn->query.query),
                          &storage,
                          &args,
                          &results) == 0)

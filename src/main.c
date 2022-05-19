@@ -36,6 +36,7 @@
 #include "notifications.h"
 #include "test.h"
 #include "search.h"
+#include "local_config_set.h"
 
 int main(void)
 {
@@ -50,7 +51,6 @@ int main(void)
         // Default config
         struct session ssn = {
             .config = {
-                .changed = 0,
                 .theme = "treebird20",
                 .themeclr = 0,
                 .jsactions = 1,
@@ -66,23 +66,26 @@ int main(void)
                 .instance_show_shoutbox = 1,
                 .instance_panel = 1,
             },
-            .cookies = { 0 },
-            .post = { 0 },
-            .query = { 0 }
+            .cookies = {{}},
+            .post = {{}},
+            .query = {{}}
         };
         
         // Load cookies
         char* cookies_str = read_cookies_env(&(ssn.cookies));
         char* post_str = read_post_data(&(ssn.post));
-        char* get_str = read_query_data(&(ssn.query));
+        char* get_str = read_get_data(&(ssn.query));
 
         mastodont_t api;
-        if (ssn.cookies.instance_url)
-            api.url = ssn.cookies.instance_url;
+        if (keystr(ssn.cookies.instance_url))
+            api.url = keystr(ssn.cookies.instance_url);
         else
             api.url = config_instance_url;
         mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
-        api.token = ssn.cookies.access_token; // Load token now
+        api.token = keystr(ssn.cookies.access_token); // Load token now
+
+        // Read config options
+        load_config(&ssn, &api);
 
         /*******************
          *  Path handling  *
@@ -129,7 +132,7 @@ int main(void)
         if (post_str) free(post_str);
         if (get_str) free(get_str);
         mastodont_free(&api);
-        free_files(&(ssn.post.files));
+        free_files(&(keyfile(ssn.post.files)));
 
         ++run_count;
     }

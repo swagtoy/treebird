@@ -29,7 +29,7 @@ enum error_type
     E_NOTICE
 };
 
-char* construct_error(char* error, enum error_type type, unsigned pad, size_t* size);
+char* construct_error(const char* error, enum error_type type, unsigned pad, size_t* size);
 void content_not_found(struct session* ssn, mastodont_t* api, char* path);
 
 #endif // ERROR_H

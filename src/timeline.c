@@ -48,9 +48,9 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
 
     struct mstdnt_timeline_args args = {
         .local = local,
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20
     };
 
@@ -72,7 +72,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -115,9 +115,9 @@ void tl_direct(struct session* ssn, mastodont_t* api)
 
     struct mstdnt_timeline_args args = {
         .with_muted = 0,
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
@@ -136,7 +136,7 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -183,9 +183,9 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
         .local = local,
         .remote = 0,
         .only_media = 0,
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20
     };
 
@@ -207,7 +207,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -246,9 +246,9 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     char* output = NULL;
 
     struct mstdnt_timeline_args args = {
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
@@ -270,7 +270,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -310,9 +310,9 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
     char* output = NULL;
 
     struct mstdnt_timeline_args args = {
-        .max_id = ssn->post.max_id,
+        .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
-        .min_id = ssn->post.min_id,
+        .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
@@ -329,7 +329,7 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
     if (statuses)
     {
         // If not set, set it
-        start_id = ssn->post.start_id ? ssn->post.start_id : statuses[0].id;
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
         navigation_box = construct_navigation_box(start_id,
                                                   statuses[0].id,
                                                   statuses[status_count-1].id,
@@ -361,7 +361,7 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
 void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
 {
     (void)data;
-    if (ssn->cookies.logged_in)
+    if (keystr(ssn->cookies.logged_in))
         tl_home(ssn, api, 0);
     else
         content_tl_federated(ssn, api, data);

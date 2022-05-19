@@ -21,8 +21,9 @@
 #include <mastodont.h>
 #include "session.h"
 
-#define FILES_READY(ssn) (ssn->post.files.array_size &&                 \
-                          ssn->post.files.content && ssn->post.files.content[0].content_size)
+#define FILES_READY(ssn) (ssn->post.files.type.f.array_size &&          \
+                          ssn->post.files.type.f.content &&             \
+                          ssn->post.files.type.f.content[0].content_size)
 
 int try_upload_media(struct mstdnt_storage** storage,
                      struct session* ssn,

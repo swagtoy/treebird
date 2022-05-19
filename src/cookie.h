@@ -19,28 +19,29 @@
 #ifndef COOKIE_H
 #define COOKIE_H
 #include <stddef.h>
+#include "key.h"
 
 struct cookie_values
 {
-    char* access_token;
-    char* logged_in;
-    char* theme;
-    char* instance_url;
-    char* background_url;
-    char* client_id;
-    char* client_secret;
-    int themeclr;
-    int jsactions;
-    int jsreply;
-    int jslive;
-    int js;
-    int stat_attachments;
-    int stat_greentexts;
-    int stat_dope;
-    int stat_oneclicksoftware;
-    int stat_emoji_likes;
-    int instance_show_shoutbox;
-    int instance_panel;
+    struct key access_token;
+    struct key logged_in;
+    struct key theme;
+    struct key instance_url;
+    struct key background_url;
+    struct key client_id;
+    struct key client_secret;
+    struct key themeclr;
+    struct key jsactions;
+    struct key jsreply;
+    struct key jslive;
+    struct key js;
+    struct key stat_attachments;
+    struct key stat_greentexts;
+    struct key stat_dope;
+    struct key stat_oneclicksoftware;
+    struct key stat_emoji_likes;
+    struct key instance_show_shoutbox;
+    struct key instance_panel;
 };
 
 struct http_cookie_info

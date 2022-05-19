@@ -20,62 +20,75 @@
 #include <stdlib.h>
 #include "local_config_set.h"
 
-int set_config_str(char** ssn,
+#define post_bool_intp(post) (post->is_set ? keypint(post) : 0)
+
+int set_config_str(struct session* ssn,
+                   char** v,
                    char* cookie_name,
-                   char* value)
+                   struct key* post,
+                   struct key* cookie)
 {
-    if (value && ssn)
+    if (ssn->post.set.is_set && post->is_set)
     {
-        *ssn = value;
         printf("Set-Cookie: %s=%s; HttpOnly; Path=/; SameSite=Strict;\r\n",
-               cookie_name, value);
+               cookie_name, keypstr(post));
     }
 
-    // If ssn isn't passed but value is set, then that means
-    // something has changed
-    return value != NULL;
+    if ((ssn->post.set.is_set && post->is_set) || cookie->is_set)
+        *v = post->is_set ? keypstr(post) : keypstr(cookie);
+
+    return 0;
 }
 
-int set_config_int(int* ssn,
+int set_config_int(struct session* ssn,
+                   int* v,
                    char* cookie_name,
-                   int value)
+                   struct key* post,
+                   struct key* cookie)
 {
-    if (ssn)
+    if (ssn->post.set.is_set)
     {
-        *ssn = value;
-        printf("Set-Cookie: %s=%ld; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-               cookie_name, value);
-    }
+        printf("Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+               cookie_name, post_bool_intp(post));
+    } 
+
+    // Checks if boolean option
+    if (ssn->post.set.is_set || cookie->is_set)
+    *v = ssn->post.set.is_set ? post_bool_intp(post)
+        : keypint(cookie);
     
-    return 1;
+    return 0;
 }
+
+// Shorthand for the arguments passed into functions below
+#define LOAD_CFG_SIM(strcookie, varname) ssn, &(ssn->config.varname), (strcookie), &(ssn->post.varname), &(ssn->cookies.varname)
 
 void load_config(struct session* ssn, mastodont_t* api)
 {
-    if (ssn->post.theme)
-    {
-        struct mstdnt_attachment* attachments = NULL;
-        struct mstdnt_storage* storage = NULL;
-        if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0)
-        {
-            set_config_str(&(ssn->config.background_url), "background_url", attachments[0].url);
-        }
+    // TODO update
+    /* if (ssn->post.theme) */
+    /* { */
+    /*     struct mstdnt_attachment* attachments = NULL; */
+    /*     struct mstdnt_storage* storage = NULL; */
+    /*     if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0) */
+    /*     { */
+    /*         set_config_str(&(ssn->config.background_url), "background_url", attachments[0].url); */
+    /*     } */
 
-        if (storage)
-            cleanup_media_storages(ssn, storage);
-    }
-    set_config_str(&(ssn->config.theme), "theme", ssn->post.theme, ssn->cookie.theme);
-    set_config_int(&(ssn->config.themeclr), "themeclr", ssn->post.themeclr, ssn->cookie.themeclr);
-
-    set_config_int(&(ssn->config.jsactions), "jsactions", ssn->cookie.theme, ssn->post.jsactions);
-    set_config_int(&(ssn->config.jsreply), "jsreply", ssn->cookie.theme, ssn->post.jsreply);
-    set_config_int(&(ssn->config.jslive), "jslive", ssn->cookie.theme, ssn->post.jslive);
-    set_config_int(&(ssn->config.js), "js", ssn->cookie.theme, ssn->post.js);
-    set_config_int(&(ssn->config.stat_attachments), "statattachments", ssn->cookie.theme, ssn->post.stat_attachments);
-    set_config_int(&(ssn->config.stat_greentexts), "statgreentexts", ssn->cookie.theme, ssn->post.stat_greentexts);
-    set_config_int(&(ssn->config.stat_dope), "statdope", ssn->cookie.theme, ssn->post.stat_dope);
-    set_config_int(&(ssn->config.stat_oneclicksoftware), "statoneclicksoftware", ssn->cookie.theme, ssn->post.stat_oneclicksoftware);
-    set_config_int(&(ssn->config.stat_emoji_likes), "statemojilikes", ssn->cookie.theme, ssn->post.stat_emoji_likes);
-    set_config_int(&(ssn->config.instance_show_shoutbox), "instanceshowshoutbox", ssn->cookie.theme, ssn->post.instance_show_shoutbox);
-    set_config_int(&(ssn->config.instance_panel), "instancepanel", ssn->cookie.theme, ssn->post.instance_panel);
+    /*     if (storage) */
+    /*         cleanup_media_storages(ssn, storage); */
+    /* } */
+    set_config_str(LOAD_CFG_SIM("theme",                theme));
+    set_config_int(LOAD_CFG_SIM("themeclr",             themeclr));
+    set_config_int(LOAD_CFG_SIM("jsactions",            jsactions));
+    set_config_int(LOAD_CFG_SIM("jsreply",              jsreply));
+    set_config_int(LOAD_CFG_SIM("jslive",               jslive));
+    set_config_int(LOAD_CFG_SIM("js",                   js));
+    set_config_int(LOAD_CFG_SIM("statattachments",      stat_attachments));
+    set_config_int(LOAD_CFG_SIM("statgreentexts",       stat_greentexts));
+    set_config_int(LOAD_CFG_SIM("statdope",             stat_dope));
+    set_config_int(LOAD_CFG_SIM("statoneclicksoftware", stat_oneclicksoftware));
+    set_config_int(LOAD_CFG_SIM("statemojilikes",       stat_emoji_likes));
+    set_config_int(LOAD_CFG_SIM("instanceshowshoutbox", instance_show_shoutbox));
+    set_config_int(LOAD_CFG_SIM("instancepanel",        instance_panel));
 }

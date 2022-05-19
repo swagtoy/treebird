@@ -183,7 +183,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     char* start_id;
     char* navigation_box = NULL;
 
-    if (ssn->cookies.logged_in)
+    if (keystr(ssn->cookies.logged_in))
     {
         struct mstdnt_get_notifications_args args = {
             .exclude_types = 0,
@@ -191,8 +191,8 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
             .exclude_visibilities = 0,
             .include_types = 0,
             .with_muted = 1,
-            .max_id = ssn->post.max_id,
-            .min_id = ssn->post.min_id,
+            .max_id = keystr(ssn->post.max_id),
+            .min_id = keystr(ssn->post.min_id),
             .since_id = NULL,
             .offset = 0,
             .limit = 20,
@@ -201,13 +201,13 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
         {
             notif_html = construct_notifications(ssn, api, notifs, notifs_len, NULL);
-            start_id = ssn->post.start_id ? ssn->post.start_id : notifs[0].id;
+            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
             navigation_box = construct_navigation_box(start_id,
                                                       notifs[0].id,
                                                       notifs[notifs_len-1].id,
                                                       NULL);
-            mstdnt_cleanup_notifications(notifs, notifs_len);
-        }
+            mstdnt_cleanup_notifications(notifs, notifs_len);}
+                
         else
             notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
 

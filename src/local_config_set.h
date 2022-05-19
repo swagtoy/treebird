@@ -22,16 +22,20 @@
 #include "local_config.h"
 #include "session.h"
 #include "attachments.h"
+#include "key.h"
 
-int set_config_str(char** ssn,
+int set_config_str(struct session* ssn,
+                   char** v,
                    char* cookie_name,
-                   char* value);
+                   struct key* post,
+                   struct key* cookie);
 
-int set_config_int(int* ssn,
+int set_config_int(struct session* ssn,
+                   int* v,
                    char* cookie_name,
-                   int value);
+                   struct key* post,
+                   struct key* cookie);
 
 void load_config(struct session* ssn, mastodont_t* api);
-void read_config(struct session* ssn);
 
 #endif // LOCAL_CONFIG_SET_H

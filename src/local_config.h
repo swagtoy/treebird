@@ -22,7 +22,6 @@
 
 struct local_config
 {
-    int changed;
     char* logged_in;
     char* theme;
     char* background_url;

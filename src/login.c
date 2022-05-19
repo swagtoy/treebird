@@ -55,15 +55,15 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
               config_host_url_insecure ? "" : "s",
               config_host_url ? config_host_url : redirect_url );
 
-    if (ssn->query.code)
+    if (keystr(ssn->query.code))
     {
         struct mstdnt_args args_token = {
             .grant_type = "authorization_code",
-            .client_id = ssn->cookies.client_id,
-            .client_secret = ssn->cookies.client_secret,
+            .client_id = keystr(ssn->cookies.client_id),
+            .client_secret = keystr(ssn->cookies.client_secret),
             .redirect_uri = urlify_redirect_url,
             .scope = LOGIN_SCOPE,
-            .code = ssn->query.code,
+            .code = keystr(ssn->query.code),
         };
 
         if (mastodont_obtain_oauth_token(api, &args_token, &oauth_storage,
@@ -72,16 +72,16 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
             apply_access_token(token.access_token);
         }
     }
-    else if (ssn->post.instance)
+    else if (keystr(ssn->post.instance))
     {
-        decode_url = curl_easy_unescape(api->curl, ssn->post.instance, 0, NULL);
+        decode_url = curl_easy_unescape(api->curl, keystr(ssn->post.instance), 0, NULL);
         api->url = decode_url;
         
         struct mstdnt_args args_app = {
             .client_name = "Treebird",
             .redirect_uris = urlify_redirect_url,
             .scopes = "read+write+follow+push",
-            .website = ssn->post.instance
+            .website = keystr(ssn->post.instance)
         };
 
         if (mastodont_register_app(api, &args_app, &storage, &app) == 0)
@@ -121,7 +121,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
     char* error = NULL;
     char* page;
 
-    if (ssn->post.username && ssn->post.password)
+    if (keystr(ssn->post.username) && keystr(ssn->post.password))
     {
         // Getting the client id/secret
         struct mstdnt_args args_app = {
@@ -132,7 +132,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
         };
 
         // Check if the username contains an @ symbol
-        char* address = strstr(ssn->post.username, "%40");
+        char* address = strstr(keystr(ssn->post.username), "%40");
         // If it fails, we need to restore
         char* orig_url = api->url;
         char* url_link = NULL;
@@ -161,8 +161,8 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 .redirect_uri = NULL,
                 .scope = LOGIN_SCOPE,
                 .code = NULL,
-                .username = ssn->post.username,
-                .password = ssn->post.password
+                .username = keystr(ssn->post.username),
+                .password = keystr(ssn->post.password)
             };
 
             if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,

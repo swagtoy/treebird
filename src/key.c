@@ -20,16 +20,14 @@
 #include <limits.h>
 #include "key.h"
 
-void key_string(char* val, struct form_props* props, void* _arg)
+void key_string(char* val, struct file_content* props, struct key* arg)
 {
-    char** arg = _arg;
-    *arg = val;
+    arg->type.s = val;
 }
 
-void key_int(char* val, struct form_props* form, void* _arg)
+void key_int(char* val, struct file_content* form, struct key* arg)
 {
     char* err;
-    int* arg = _arg;
 
     // Convert
     long result = strtol(val, &err, 10);
@@ -37,8 +35,31 @@ void key_int(char* val, struct form_props* form, void* _arg)
         // Overflow
         result == LONG_MIN || result == LONG_MAX)
     {
-        *arg = 0;
+        arg->type.i = 0;
         return;
     }
-    *arg = result;
+    arg->type.i = result;
+}
+
+void key_files(char* val, struct file_content* form, struct key* arg)
+{
+    struct file_array* arr = &(arg->type.f);
+    char* content_cpy;
+
+    arr->content = realloc(arr->content,
+                           sizeof(struct file_content) * ++(arr->array_size));
+    if (!(arr->content))
+        return;
+
+    // Make a copy so we can remember it later
+    if (!(content_cpy = malloc(form->content_size+1)))
+        return;
+    
+    memcpy(content_cpy, val, form->content_size+1);
+
+    // Store
+    arr->content[arr->array_size-1].content = content_cpy;
+    arr->content[arr->array_size-1].content_size = form->content_size;
+    arr->content[arr->array_size-1].filename = form->filename;
+    arr->content[arr->array_size-1].filetype = form->filetype;
 }

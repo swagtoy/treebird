@@ -25,7 +25,7 @@
 #include "../static/error_404.chtml"
 #include "../static/error.chtml"
 
-char* construct_error(char* error, enum error_type type, unsigned pad, size_t* size)
+char* construct_error(const char* error, enum error_type type, unsigned pad, size_t* size)
 {
     char* error_html;
     char* class;

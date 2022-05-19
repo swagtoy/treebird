@@ -24,7 +24,7 @@
 
 struct session
 {
-    struct query_values post;
+    struct post_values post;
     struct get_values query;
     struct cookie_values cookies;
     struct local_config config;

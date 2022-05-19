@@ -28,67 +28,52 @@ struct http_query_info
     char* val;
 };
 
-struct file_content
-{
-    char* content;
-    size_t content_size;
-    char* filetype;
-    char* filename;
-};
-
-struct file_array
-{
-    struct file_content* content;
-    size_t array_size;
-};
-
-struct query_values
+struct post_values
 {
     // Config
-    char* theme;
-    int themeclr;
-    int jsactions;
-    int jsreply;
-    int jslive;
-    int js;
-    int stat_attachments;
-    int stat_greentexts;
-    int stat_dope;
-    int stat_oneclicksoftware;
-    int stat_emoji_likes;
-    int stat_hide_muted;
-    int instance_show_shoutbox;
-    int instance_panel;
+    struct key theme; // String
+    struct key themeclr; // Int
+    struct key jsactions; // Int
+    struct key jsreply; // Int
+    struct key jslive; // Int
+    struct key js; // Int
+    struct key stat_attachments; // Int
+    struct key stat_greentexts; // Int
+    struct key stat_dope; // Int
+    struct key stat_oneclicksoftware; // Int
+    struct key stat_emoji_likes; // Int
+    struct key stat_hide_muted; // Int
+    struct key instance_show_shoutbox; // Int
+    struct key instance_panel; // Int
+    struct key set; // Int
     
-    char* content;
-    char* itype;
-    char* id;
-    char* username;
-    char* password;
-    char* replyid;
-    char* visibility;
-    char* instance;
-    int emojoindex;
+    struct key content; // String
+    struct key itype; // String
+    struct key id; // String
+    struct key username; // String
+    struct key password; // String
+    struct key replyid; // String
+    struct key visibility; // String
+    struct key instance; // String
+    struct key emojoindex; // Int
 
     // Navigation
-    char* min_id;
-    char* max_id;
-    char* start_id;
+    struct key min_id; // String
+    struct key max_id; // String
+    struct key start_id; // String
 
-    struct file_array files;
+    struct key files; // Files
 };
 
 struct get_values
 {
-    char* offset;
-    char* query;
-    char* code;
+    struct key offset; // String
+    struct key query; // String
+    struct key code; // String
 };
 
-void key_files(char* val, struct form_props* form, void* arg);
-
-char* read_query_data(struct get_values* query);
-char* read_post_data(struct query_values* post);
+char* read_get_data(struct get_values* query);
+char* read_post_data(struct post_values* post);
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
 char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg);

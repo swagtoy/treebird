@@ -20,7 +20,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "cookie.h"
-#include "key.h"
 
 enum cookie_state
 {
@@ -79,7 +78,10 @@ char* read_cookies_env(struct cookie_values* cookies)
         for (int i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
         {
             if (strcmp(info.key, refs[i].key) == 0)
+            {
                 refs[i].func(info.val, NULL, refs[i].val);
+                refs[i].val->is_set = 1;
+            }
         }
     }
     while (cookies_read);

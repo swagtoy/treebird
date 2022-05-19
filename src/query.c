@@ -24,7 +24,7 @@
 #include "query.h"
 #include "mime.h"
 
-char* read_query_data(struct get_values* query)
+char* read_get_data(struct get_values* query)
 {
     struct http_query_info info;
     char* query_string = getenv("QUERY_STRING");
@@ -57,7 +57,12 @@ char* read_query_data(struct get_values* query)
             if (!(info.key && info.val)) break;
             for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                 if (strcmp(info.key, refs[i].key) == 0)
+                {
                     refs[i].func(info.val, NULL, refs[i].val);
+                    refs[i].val->is_set = 1;
+                }
+                else
+                    refs[i].val->is_set = 0;
         }
         while (g_query_read);
     }
@@ -65,41 +70,22 @@ char* read_query_data(struct get_values* query)
     return get_query;
 }
 
-void key_files(char* val, struct form_props* form, void* arg)
-{
-    struct file_array* arr = arg;
-    char* ptr;
 
-    arr->content = realloc(arr->content,
-                           sizeof(struct file_content) * ++(arr->array_size));
-    if (!(arr->content))
-        return;
-    
-    ptr = malloc(form->data_size+1);
-    if (!ptr)
-        return;
-    
-    memcpy(ptr, val, form->data_size+1);
 
-    // Store
-    arr->content[arr->array_size-1].content = ptr;
-    arr->content[arr->array_size-1].content_size = form->data_size;
-    arr->content[arr->array_size-1].filename = form->filename;
-    arr->content[arr->array_size-1].filetype = form->filetype;
-}
 
-char* read_post_data(struct query_values* post)
+char* read_post_data(struct post_values* post)
 {
     ptrdiff_t begin_curr_size;
     struct http_query_info query_info;
     struct http_form_info form_info;
-    struct form_props form_props;
+    struct file_content form_props;
     char* request_method = getenv("REQUEST_METHOD");
     char* content_length = getenv("CONTENT_LENGTH");
     char* post_query = NULL, *p_query_read;
 
     // BEGIN Query references
     struct key_value_refs refs[] = {
+        { "set", &(post->set), key_int },
         { "content", &(post->content), key_string },
         { "itype", &(post->itype), key_string },
         { "id", &(post->id), key_string },
@@ -152,7 +138,6 @@ char* read_post_data(struct query_values* post)
         p_query_read = post_query;
 
         do
-        {
             if (mime_mem)
             {
                 // Get size from here to the end
@@ -164,21 +149,27 @@ char* read_post_data(struct query_values* post)
                                               len - begin_curr_size);
                 form_props.filename = form_info.filename;
                 form_props.filetype = form_info.content_type;
-                form_props.data_size = form_info.value_size;
+                form_props.content_size = form_info.value_size;
                 if (!p_query_read) break;
                 for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                     if (strcmp(form_info.name, refs[i].key) == 0)
+                    {
                         refs[i].func(form_info.value, &form_props, refs[i].val);
+                        refs[i].val->is_set = 1;
+                    }
             }
-            else {
+            else
+            {
                 // Mime value not set
                 p_query_read = parse_query(p_query_read, &query_info);
                 if (!(query_info.key && query_info.val)) break;
                 for (size_t i = 0; i < (sizeof(refs)/sizeof(refs[0])); ++i)
                     if (strcmp(query_info.key, refs[i].key) == 0)
+                    {
                         refs[i].func(query_info.val, NULL, refs[i].val);
+                        refs[i].val->is_set = 1;
+                    }
             }
-        }
         while (p_query_read);
 
         if (mime_mem) free(mime_mem);
