@@ -42,6 +42,9 @@
 #include "../static/status_interactions_label.chtml"
 #include "../static/status_interactions.chtml"
 #include "../static/status_interaction_profile.chtml"
+#include "../static/likeboost.chtml"
+#include "../static/reactions_btn.chtml"
+#include "../static/interaction_buttons.chtml"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
@@ -170,6 +173,65 @@ char* construct_status_interactions_label(char* header, int val, size_t* size)
                   header, val);
     if (size) *size = s;
     return html;
+}
+
+char* construct_interaction_buttons(struct session* ssn,
+                                    struct mstdnt_status* status,
+                                    size_t* size,
+                                    uint8_t flags)
+{
+    char* interaction_html;
+    char* reply_count = NULL;
+    char* repeat_count = NULL;
+    char* favourites_count = NULL;
+    char* emoji_picker_html = NULL;
+    size_t s;
+
+    // Emojo picker
+    if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
+    {
+        emoji_picker_html = construct_emoji_picker(status->id, keyint(ssn->post.emojoindex), NULL);
+    }
+
+    if (status->replies_count)
+        easprintf(&reply_count, NUM_STR, status->replies_count);
+    if (status->reblogs_count)
+        easprintf(&repeat_count, NUM_STR, status->reblogs_count);
+    if (status->favourites_count)
+        easprintf(&favourites_count, NUM_STR, status->favourites_count);
+    
+    s = easprintf(&interaction_html, data_interaction_buttons_html,
+                  config_url_prefix,
+                  status->id,
+                  status->id,
+                  reply_count ? reply_count : "",
+                  config_url_prefix,
+                  status->id,
+                  status->reblogged ? "un" : "",
+                  status->reblogged ? "active" : "",
+                  repeat_count ? repeat_count : "",
+                  config_url_prefix,
+                  status->id,
+                  status->favourited ? "un" : "",
+                  status->favourited ? "active" : "",
+                  favourites_count ? favourites_count : "",
+                  config_url_prefix,
+                  status->id,
+                  config_url_prefix,
+                  status->id,
+                  status->id,
+                  emoji_picker_html ? emoji_picker_html : "",
+                  config_url_prefix,
+                  status->id,
+                  status->id);
+    if (size) *size = s;
+
+    // Cleanup
+    if (emoji_picker_html) free(emoji_picker_html);
+    if (reply_count) free(reply_count);
+    if (repeat_count) free(repeat_count);
+    if (favourites_count) free(favourites_count);
+    return interaction_html;
 }
 
 char* construct_status_interactions(int fav_count,
@@ -385,16 +447,13 @@ char* construct_status(struct session* ssn,
     char* stat_html;
 
     // Counts
-    char* reply_count = NULL;
-    char* repeat_count = NULL;
-    char* favourites_count = NULL;
     char* formatted_display_name = NULL;
     char* attachments = NULL;
     char* emoji_reactions = NULL;
+    char* interaction_btns = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
     char* interactions_html = NULL;
-    char* emoji_picker_html = NULL;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
     // the reblogged status
@@ -408,12 +467,6 @@ char* construct_status(struct session* ssn,
     size_t reblogs_len = 0;
 
     if (!status) return NULL;
-
-    // Emojo picker
-    if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
-    {
-        emoji_picker_html = construct_emoji_picker(status->id, keyint(ssn->post.emojoindex), NULL);
-    }
 
     // If focused, show status interactions
     if ((flags & STATUS_FOCUSED) == STATUS_FOCUSED &&
@@ -457,6 +510,8 @@ char* construct_status(struct session* ssn,
 
     // Format status
     char* parse_content = reformat_status(ssn, status->content, status->emojis, status->emojis_len);
+
+    interaction_btns = construct_interaction_buttons(ssn, status, NULL, flags);
     
     // Find and replace
     if (args && args->highlight_word)
@@ -474,12 +529,6 @@ char* construct_status(struct session* ssn,
         free(repl_str);
     }
     
-    if (status->replies_count)
-        easprintf(&reply_count, NUM_STR, status->replies_count);
-    if (status->reblogs_count)
-        easprintf(&repeat_count, NUM_STR, status->reblogs_count);
-    if (status->favourites_count)
-        easprintf(&favourites_count, NUM_STR, status->favourites_count);
     if (status->media_attachments_len)
         attachments = construct_attachments(status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
@@ -524,42 +573,17 @@ char* construct_status(struct session* ssn,
                          attachments ? attachments : "",
                          interactions_html ? interactions_html : "",
                          emoji_reactions ? emoji_reactions : "",
-                         config_url_prefix,
-                         status->id,
-                         status->id,
-                         reply_count ? reply_count : "",
-                         config_url_prefix,
-                         status->id,
-                         status->reblogged ? "un" : "",
-                         status->reblogged ? "active" : "",
-                         repeat_count ? repeat_count : "",
-                         config_url_prefix,
-                         status->id,
-                         status->favourited ? "un" : "",
-                         status->favourited ? "active" : "",
-                         favourites_count ? favourites_count : "",
-                         config_url_prefix,
-                         status->id,
-                         config_url_prefix,
-                         status->id,
-                         status->id,
-                         emoji_picker_html ? emoji_picker_html : "",
-                         config_url_prefix,
-                         status->id,
-                         status->id);
+                         interaction_btns);
     
     if (size) *size = s;
     // Cleanup
-    if (reply_count) free(reply_count);
-    if (repeat_count) free(repeat_count);
-    if (favourites_count) free(favourites_count);
+    if (interaction_btns) free(interaction_btns);
     if (in_reply_to_str) free(in_reply_to_str);
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
     if (interactions_html) free(interactions_html);
     //if (formatted_display_name != status->account.display_name) free(formatted_display_name);
-    if (emoji_picker_html) free(emoji_picker_html);
     if (parse_content != status->content) free(parse_content);
     return stat_html;
 }

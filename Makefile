@@ -122,6 +122,12 @@ $(PAGES_DIR)/emoji_picker.chtml: $(PAGES_DIR)/emoji_picker.html
 	./filec $< data_emoji_picker_html > $@
 $(PAGES_DIR)/emoji.chtml: $(PAGES_DIR)/emoji.html
 	./filec $< data_emoji_html > $@
+$(PAGES_DIR)/likeboost.chtml: $(PAGES_DIR)/likeboost.html
+	./filec $< data_likeboost_html > $@
+$(PAGES_DIR)/reactions_btn.chtml: $(PAGES_DIR)/reactions_btn.html
+	./filec $< data_reactions_btn_html > $@
+$(PAGES_DIR)/interaction_buttons.chtml: $(PAGES_DIR)/interaction_buttons.html
+	./filec $< data_interaction_buttons_html > $@
 # Login panel
 $(PAGES_DIR)/quick_login.chtml: $(PAGES_DIR)/quick_login.html
 	./filec $< data_quick_login_html > $@
