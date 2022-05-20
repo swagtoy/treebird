@@ -1,0 +1,1266 @@
+/* Thanks to Grumbulon for the dark theme basis */
+
+*
+{
+    margin: 0;
+    padding: 0;
+    color: #FBF5D9;
+}
+
+
+html, body
+{
+    margin: 0;
+    padding: 0;
+    margin-top: 0px;
+}
+
+html
+{
+    height: 100%;
+}
+
+body
+{
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    background-color: unset;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #00232B;
+    min-height: 100%;
+    line-height: 1.65;
+}
+
+/* Basic elements */
+h1, h2, h3, h4
+{
+    margin: 12px 0px 6px 0px;
+}
+
+ul
+{
+    margin: 12px;
+
+}
+
+select
+{
+    background-color: #00232B;
+}
+
+#main-page-container
+{
+    padding: 8px;
+}
+
+#main-page
+{
+    margin: 0 auto 8px;
+    width: 1000px;
+    background-color: #202020;
+    border-top: 0 !important;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    border-width: 0;
+    border-radius: 3px;
+}
+
+.hidden
+{
+    display: none;
+}
+
+.pointer
+{
+    cursor: pointer;
+}
+
+a, a:visited, a:hover, a:active
+{
+    color: inherit;
+}
+
+.mention
+{
+    text-decoration: none;
+    background-color: #8E545C;
+    border-radius: 3px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border: 1px solid #CA545C;
+}
+
+.greentext
+{
+    color: #9DCF94;
+}
+
+/* Cleans up most of the tables */
+table.ui-table td
+{
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse !important;
+    vertical-align: top;
+}
+
+#content
+{
+    overflow: hidden;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+#navbar {
+    position: sticky;
+    top: 0;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top: 1px solid #00232B;
+    border-bottom: 1px solid #00232B;
+    background: #004B5D;
+    width: 1000px;
+    z-index: 999;
+}
+
+#navbar img
+{
+    filter: invert(1);
+    vertical-align: middle;
+    display: inline-block;
+    margin: 4px 0px 6px 18px;
+}
+
+#navbar span.info
+{
+    vertical-align: middle;
+    margin-left: 15px;
+    color: #FBF5D9;
+    /* font-variant: small-caps; */
+    font-size: 28px;
+}
+
+#navbar-right-container
+{
+    width: 795px;
+    display: inline-block;
+    position: relative;
+    top: 9px;
+    align-items: center;
+}
+
+#navbar-right form
+{
+    float: right;
+}
+
+#navbar-right
+{
+    display: inline-block;
+    float: right;
+    padding-right: 8px;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+#login-header
+{
+    vertical-align: middle;
+    float: left;
+    position: relative;
+    top: 4px;
+    margin-right: 15px;
+    text-decoration: none;
+    color: #FBF5D9;
+}
+
+.alignend
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+#main
+{
+    width: 623px;
+    max-width: 623px !important;
+    min-width: 623px;
+    border-collapse: collapse !important;
+    background-color: #002B36;
+    padding: 0;
+}
+
+#content
+{
+    border-collapse: collapse !important;
+    min-height: 600px;
+}
+
+.sidebar
+{
+    background-color: #002B36;
+}
+
+#leftbar
+{
+    width: 130px;
+    min-height: 600px;
+    max-width: 130px;
+    min-width: 130px;
+    border-right: 1px solid #004B5D;
+}
+
+#leftbar ul
+{
+    margin: 0;
+    padding: 0;
+}
+
+#leftbar ul li
+{
+    list-style-type: none;
+}
+
+
+#rightbar
+{
+    width: 245px;
+    min-height: 600px;
+    max-width: 245px;
+    min-width: 245px;
+    border-left: 1px solid #004B5D;
+}
+
+
+/*************************************************
+ *               COMMON ELEMENTS                 *
+ *************************************************/
+
+table.present
+{
+    border: 1px solid #404040;
+}
+
+table.present th, table.present td
+{
+    padding: 2px 5px;
+}
+
+#env-table
+{
+    margin-top: 5px;
+}
+
+.error
+{
+    display: block;
+    background-color: #fcb0b0;
+    color: #000;
+    border: 1px solid #bb1c1f;
+    padding: 15px;
+    font-weight: bold;
+}
+
+.error-pad
+{
+    margin: 5px;
+    border-radius: 4px;
+}
+
+.e-notice
+{
+    display: block;
+    background-color: #ddeeff;
+    color: #000;
+    border: 1px solid #66ccff;
+    padding: 15px;
+    font-weight: bold;
+}
+
+input[type=textbox]
+{
+    background-color: #00232B;
+    color: #c3e3d3;
+}
+
+/*************************************************
+ *                  BUTTONS                      *
+ *************************************************/
+.sidebarbtn:hover, .sidebarbtn-sub:hover
+{
+    border-top: 1px solid #5FB4BF !important;
+    border-bottom: 1px solid #5FB4BF !important;
+}
+
+.sidebarbtn, .btn
+{ 
+    background: #00232B;
+    color: #F7EDBE;
+    text-decoration: none;
+    border-color: #004B5D;
+}
+
+.sidebarbtn:hover, .btn:hover
+{ 
+    background: #42838c;
+    border-color: #5FB4BF !important;
+    color: #FBF5D9;
+    cursor: pointer;
+}
+
+.sidebarbtn:active, .btn:active
+{ 
+    background: #42838c;
+    border-color: #5FB4BF;
+    color: #FBF5D9;
+    cursor: pointer;
+}
+
+.btn-disabled
+{
+    color: #004B5D !important;
+    background: #00232B !important;
+}
+
+.btn-disabled:hover
+{
+    background: #486c5c;
+}
+
+.btn-disabled:active
+{
+    background: #00232B;
+}
+
+
+input[type=button], input[type=submit]
+{
+    background: #00232B;
+    border: 1px solid #00232B;
+    padding: 3px 15px;
+}
+
+/* Make first button glue to header */
+#leftbar ul:first-child .sidebarbtn
+{
+    border-top: 0;
+}
+
+.sidebarbtn
+{
+    display: block;
+    border-bottom: 1px solid #004B5D;
+    padding: 8px 8px 8px 16px;
+}
+
+.sidebarbtn.focused
+{
+    border-right: 3px solid #ECBA71 !important;
+}
+
+.sidebarbtn-sub
+{
+    display: block;
+    color: #F7EDBE;
+    padding: 8px;
+    padding-left: 32px;
+    text-decoration: none;
+}
+
+.sidebar-config
+{
+    background-color: #002B36;
+    border-left: 3px solid #ECBA71;
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebarbtn-sub.focused
+{
+    font-weight: bold;
+}
+
+.sidebarbtn-sub:active, .sidebarbtn-sub:hover
+{
+    background-color: #42838c;
+}
+
+ul li:first-child a.sidebarbtn
+{
+    border-top: 1px solid #00232B;
+}
+
+/****************************
+ *      Notifications       *
+ ***************************/
+.notification
+{
+    border-bottom: 1px solid #004B5D;
+    width: 100%;
+}
+
+.pfp-compact-td
+{
+    width: 16px;
+    padding: 3px !important;
+}
+
+.pfp-compact-td img
+{
+    border-radius: 2px;
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
+.notification-compact
+{
+    border-bottom: 1px solid #004B5D;
+    min-width: 100%;
+}
+
+.notification-compact .notification-content
+{
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.notification-compact:hover .notification-content
+{
+    max-height: unset;
+    overflow: hidden;
+}
+
+.notification-compact p
+{
+    margin: 0;
+}
+.notification-compact .notification-info
+{
+    font-size: 12px;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.notification-info svg,
+.notification-info-format svg
+{
+    width: 16px;
+    height: 16px;
+}
+
+.notification-table-bit
+{
+    width: auto;
+}
+
+/* Only move up if SVG is next to it, the SVG moves the text */
+.notification .notification-text-group-with-icon
+{
+    vertical-align: middle;
+}
+
+.notification-info svg.like,
+.notification-info-format svg.like
+{
+    fill: #ECBA71;
+    stroke: #ECBA71;
+}
+
+svg.like, svg.repeat, svg.follow, svg.reply, svg.in-reply-to-icon, svg.one-click-software, svg.expand
+{
+    vertical-align: middle;
+    stroke: #d1cdb7;
+}
+
+svg.in-reply-to-icon
+{
+    position: relative;
+    top: -3px;
+    stroke: #F7EDBE;
+}
+
+.in-reply-to
+{
+    color: #F7EDBE;
+}
+
+.in-reply-to-id
+{
+    text-decoration: none;
+    line-height: 23px;
+    font-size: 14px;
+    color: #F7EDBE;
+}
+
+.notification-compact .notification-content
+{
+    color: #d1cdb7;
+    font-size: 12px;
+    padding: 8px 0;
+}
+
+.notification-compact .notification-stats
+{
+    color: #c1bdc7;
+    font-size: 10px;
+}
+
+.notification-info
+{
+    margin-top: 7px;
+}
+
+.notification-info img,
+.notification-info-format img
+{
+    margin-left: 38px;
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
+.notification-info .notification-user,
+.notification-info-format .notification-user
+{
+    display: inline;
+    vertical-align: middle;
+    position: relative;
+    top: -8px;
+    left: 2px;
+}
+
+/***************************
+ *      Statuses           *
+ **************************/
+.status,
+.notification-regular
+{
+    padding: 6px 2px 0 6px;
+    border-bottom: 1px solid #004B5D !important;
+    width: 100%;
+    border-spacing: 0px;
+}
+
+.status.focused
+{
+    background-color: #00232B;
+    border-left: 3px solid #ECBA71;
+}
+
+.notification-info + .status,
+.notification-info-format + .status
+{
+    padding-top: 0;
+}
+
+.status .profile-picture
+{
+    display: inline-block;
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.pfp-td
+{
+    width: 56px;
+    border-collapse: collapse !important;
+    padding: 6px !important;
+}
+
+.pfp-td img
+{
+    border-radius: 3px;
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+}
+
+.status tr
+{
+    width: auto;
+}
+
+
+.status .status-info,
+.notification-info-format,
+.notification-content
+{
+    min-width: 0;
+    width: auto;
+    padding: 0 0 0 10px;
+}
+
+.status .status-info > table.ui-table
+{
+    width: 100%;
+}
+
+.status .status-info table.ui-table, .status .status-info table.ui-table td, .status .status-info table.ui-table tr
+{
+    border-collapse: collapse !important;
+    border-spacing: 0px;
+    padding: 0 8px;
+    margin: 0;
+}
+
+.status .instance-info
+{
+    font-style: italic;
+    text-decoration: none;
+    margin: 0 4px 0 6px;
+    font-size: 14px;
+    padding-top: 1px;
+    color: #d1cdb7;
+}
+
+.status .poster-stats
+{
+    /* To maintain compatibility while keeping it a flexbox, we have to 
+     * hardcode the width, sorry! Tables are just weird and I hate CSS */
+    max-width: 520px;
+}
+
+.status .username,
+.notification-regular .username
+{
+    display: inline-block;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 350px;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: #d1cdb7;
+}
+
+.status .status-content
+{
+    margin: 8px 0;
+    overflow-wrap: break-word;
+    width: 520px;
+    color: #FBF5D9;
+    display: block;
+}
+
+.status .status-content p
+{
+    margin: 2px 0 0 0;
+}
+
+.status-visibility
+{
+    color: #d1cdb7;
+    display: inline;
+    float: right;
+    font-size: 12px;
+    margin: 3px 0 0 3px;
+}
+
+.status-interact
+{
+    margin: 8px 0 0 0;
+}
+
+.status-interact table.ui-table
+{
+    border-collapse: collapse !important;
+    padding: 0;
+}
+
+.status-interact table.ui-table tr
+{
+    border-collapse: collapse !important;
+    padding: 0;
+}
+
+/***************************
+ *    Element Grouping     *
+ **************************/
+.group
+{
+    padding: 0;
+    margin: 0 !important;
+    height: 28px;
+}
+
+/* These are a pain for some reason */
+.group-inputbox
+{
+    border: 1px solid #004B5D;
+    padding-left: 5px;
+    border-right: 0px;
+    height: 26px;
+    background: #00232B;
+}
+
+.group-left
+{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.group-right
+{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+/*************************
+ *     Config            *
+ ************************/
+#config-page
+{
+    padding: 0 12px;
+}
+
+#config-page h1
+{
+    padding-left: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #004B5D;
+}
+
+#config-page h3
+{
+    margin-left: 15px;
+}
+
+#config-page ul
+{
+    list-style-type: none;
+    padding-left: 15px;
+}
+
+/**********************
+ *    Profiles        *
+ **********************/
+.header-btn
+{
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0;
+    background: inherit;
+    text-decoration: none;
+    color: #606060;
+    font-size: 14px;
+}
+
+.header-btn .btn-content
+{
+    color: #F7EDBE;
+}
+
+.btn.header-btn:hover span
+{
+    color: #fff;
+}
+
+.header-btn span
+{
+    display: block;
+    text-align: center;
+}
+
+.acct-banner
+{
+    width: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 256px;
+}
+
+.account
+{
+    position: relative;
+}
+
+.acct-badge
+{
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: #FBF5D9;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 3px;
+}
+
+.account-note
+{
+    word-break: break-all;
+    text-align: center;
+}
+
+.account-info
+{
+    background: #002B36;
+    color: #FBF5D9;
+    padding: 15px 50px;
+    border-bottom: 1px solid #004B5D;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.acct-pfp
+{
+    position: absolute;
+    display: inline;
+    z-index: 100;
+    border: 3px solid #ECBA71;
+    background-color: #004B5D;
+    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    top: 190px;
+    left: 42px;
+    object-fit: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.acct-header
+{
+    z-index: 1;
+    padding-left: 160px;
+    border-bottom: 1px solid #004B5D;
+    background-color: #00232B;
+}
+
+.acct-info-data
+{
+    display: inline-block;
+    position: relative;
+    left: 155px;
+    top: 185px;
+    font-weight: bold;
+    text-shadow: 0px 2px 6px #000;
+}
+
+.acct-banner
+{
+    overflow: hidden;
+}
+
+
+.acct-displayname
+{
+    font-size: 26px;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 6px 6px 8px;
+    overflow: hidden;
+    max-width: 420px !important;
+    color: #fff;
+}
+
+.acct-username
+{
+    font-size: 14px;
+    color: #004B5D;
+    display: block;
+    padding-left: 6px;
+    font-weight: bold;
+    text-shadow: 0px 0px 5px #000;
+}
+
+.follow-btn
+{
+    margin-left: auto;
+    position: relative;
+    float: right;
+    top: 10px;
+    margin: 0px 15px 15px 0px;
+    padding: 5px 20px;
+    border-radius: 3px;
+    background: inherit;
+    box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+.follow-btn.active
+{
+    box-shadow: unset;
+    color: #FBF5D9;
+    background: #B6C1A2;
+}
+
+/****************
+ *   Statusbox  *
+ ****************/
+.statusbox
+{
+    display: block;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.statusbox textarea
+{
+    display: block;
+    border: 1px solid #004B5D;
+    width: 592px;
+    max-width: 592px;
+    min-width: 592px;
+    background: #00232B;
+    margin-bottom: 5px;
+    padding: 2px;
+}
+
+.statusbox .statusfooter
+{
+    display: block;
+    flex-direction: row;
+}
+
+.statusbox .statusfooter-left
+{
+    display: inline-block;
+}
+
+.statusbox .statusfooter-right
+{
+    float: right;
+}
+
+.status-interact label
+{
+    display: block;
+    padding: 3px 8px;
+}
+
+.status-interact svg.repeat.active
+{
+    stroke: #9DCF94;
+}
+
+.status-interact svg.like.active
+{
+    fill: #ECBA71;
+    stroke: #ECBA71;
+}
+
+.status-interact svg.like:hover,
+.status-interact svg.like:active,
+.status-interact svg.like:focus
+{
+    stroke: #ECBA71;
+    pointer: select;
+}
+
+.status-interact svg.repeat:hover,
+.status-interact svg.repeat:active,
+.statis-interact svg.repeat:focus
+{
+    stroke: #9DCF94;
+    pointer: select;
+}
+
+.status-interact .count
+{
+    font-size: 14px;
+    padding-bottom: 3px;
+    color: #f4ffff;
+}
+
+/* Emoji */
+.emoji
+{
+    font-family: monospace;
+    display: inline;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    object-fit: contain;
+    transition: transform .2s;
+}
+
+.emoji:hover
+{
+    transform: scale(1.5);
+}
+
+.emoji:active
+{
+    transform: scale(2.7);
+}
+
+.emoji-react-box
+{
+    border-radius: 4px;
+    border: 1px solid #004B5D;
+}
+
+.form-group
+{
+    padding: 5px;
+    display: block;
+}
+
+/* Simple page layout */
+.simple-page
+{
+    padding: 0 12px;
+}
+
+.simple-page h1
+{
+    padding-left: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #004B5D;
+}
+
+.simple-page h3
+{
+    margin-left: 15px;
+}
+
+.simple-page ul
+{
+    list-style-type: none;
+    padding-left: 15px;
+}
+
+.simple-page p
+{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* Attachments */
+.attachments img
+{
+    min-width: 100px;
+}
+
+.attachments
+{
+    margin: 10px 0 3px 0;
+}
+
+.attachment-container
+{
+    z-index: 3;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.sensitive
+{
+    z-index: 2;
+    filter: blur(16px);
+    transition: filter .4s;
+}
+
+.sensitive:hover
+{
+    filter: none;
+}
+
+textarea {
+    color: #FBF5D9;
+}
+
+/* Emoji reacts */
+.emoji-reactions
+{
+    display: block;
+    padding: 0;
+    margin: 0;
+    white-space-collapse: discard;
+    margin-top: 8px;
+    padding-left: 0px !important;
+    margin-bottom: 6px;
+}
+
+.emoji-react-box
+{
+    display: inline-block;
+    list-style-type: none;    
+    padding: 3px 7px;
+    margin: 2px 4px;
+}
+
+.emoji
+{
+    font-family: Emoji;
+}
+
+/*************************************************
+ *                   LISTS                       *
+ *************************************************/
+ul.large-list
+{
+    width: 500px;
+    border-radius: 6px;
+    background-color: #42838C;
+    border: 1px solid #004B5D;
+    padding: 0;
+    overflow: hidden;
+}
+
+ul.large-list li
+{
+    list-style-type: none;
+    margin: 0;
+}
+
+ul.large-list li a
+{
+    display: block;
+    padding: 15px;
+    list-style-type: none;
+}
+
+.lists-view-header
+{
+    text-align: center;
+}
+
+.lists-view-container ul
+{
+    margin-left: auto;
+    margin-right: auto;   
+}
+
+.lists-view-container ul li:not(:last-child)
+{
+    border-bottom: 1px solid #004B5D;
+}
+
+/* Navigation */
+.navigation,
+.tabs
+{
+    table-layout: fixed;
+    background-color: #00232B;
+    color: #F7EDBE;
+    width: 100%;
+    border-spacing: 0px;
+    box-shadow: 0px 1px 0px #004B5D;
+}
+
+.navigation .nav-btn,
+.tabs .tab-btn
+{
+    display: block;
+    padding: 8px !important;
+}
+
+.tabs .tab-btn
+{
+    width: 100%;
+    border: 0;
+}
+
+.tabs .tab-btn.focused
+{
+    border-bottom: 3px solid #ECBA71;
+}
+
+.tabs .tab-btn:hover,
+.tabs .tab-btn:active
+{
+    border-bottom: 3px solid #42838c;
+}
+
+
+.navigation tr td:not(:last-child),
+.tabs tr td:not(:last-child)
+{
+    border-right: 1px solid #004B5D;
+}
+
+.ui-table tr td a
+{
+    text-decoration: none;
+}
+
+/* MENUS */
+
+.menu-container:hover .menu,
+.menu-container:hover + .menu
+{
+    position: absolute;
+    display: block;
+}
+
+.menu
+{
+    z-index: 5;
+    display: none;
+    background: #004B5D;
+    color: #FBF5D9;
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.menu ul
+{
+    background-color: #004B5D;
+    margin: 0;
+    padding: 4px 0 4px 0;
+}
+
+.menu ul li
+{
+    list-style-type: none;
+    display: block;
+}
+
+.menu .btn-menu
+{
+    background: unset;
+    background-color: unset;
+    display: block;
+    padding: 6px 12px;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.user-options-btn
+{
+    padding: 4px;
+    border-radius: 3px;
+    margin: 8px;
+    float: right;
+    font-size: 12px;
+    color: #F7EDBE;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, .7);
+}
+
+.menu .btn-menu:hover
+{
+    background-color: #00232B;
+    color: #FBF5D9;
+}
+
+.nolink
+{
+    text-decoration: none;
+}
+
+.status-content pre, .notification pre
+{
+    width: 100%;
+    max-width: 100%;
+    overflow-x: scroll;
+}
