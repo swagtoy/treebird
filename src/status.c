@@ -396,6 +396,8 @@ char* reformat_status(struct session* ssn,
 
 char* greentextify(char* content)
 {
+    if (!content) return NULL;
+    
     const char* error;
     int erroffset;
     int rc;
