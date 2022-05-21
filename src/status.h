@@ -63,7 +63,10 @@ char* construct_statuses(struct session* ssn,
                          size_t size,
                          struct construct_statuses_args* args,
                          size_t* ret_size);
-
+char* construct_interaction_buttons(struct session* ssn,
+                                    struct mstdnt_status* status,
+                                    size_t* size,
+                                    uint8_t flags);
 // Reply to
 char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
 char* construct_in_reply_to(struct mstdnt_status* status,

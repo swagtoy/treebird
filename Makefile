@@ -25,6 +25,10 @@ $(TARGET): filec $(PAGES_CMP) $(OBJ) $(HEADERS)
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
 
+emojitoc: scripts/emoji-to.o
+	$(CC) -o emojitoc $< $(LDFLAGS)
+	./emojitoc meta/emoji.json > src/emoji_codes.h
+
 # PAGES
 $(PAGES_DIR)/index.chtml: $(PAGES_DIR)/index.html
 	./filec $< data_index_html > $@

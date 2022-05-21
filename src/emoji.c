@@ -68,6 +68,9 @@ char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size)
 {
     char* emoji_html;
 
+    if (!emoji)
+        return NULL;
+
     size_t s = easprintf(&emoji_html, data_emoji_html,
                          status_id, emoji->codes, emoji->codes);
     
@@ -79,7 +82,7 @@ static char* construct_emoji_voidwrap(void* passed, size_t index, int* res)
 {
     struct construct_emoji_picker_args* args = passed;
     size_t calc_index = index + args->index;
-    return calc_index < 0 || calc_index > emojos_size ? NULL :
+    return calc_index < 0 || calc_index >= emojos_size ? NULL :
         construct_emoji(emojos + calc_index, args->status_id, res);
 }
 
@@ -95,9 +98,24 @@ char* construct_emoji_picker(char* status_id, unsigned index, size_t* size)
     emojis = construct_func_strings(construct_emoji_voidwrap, &args, EMOJI_FACTOR_NUM, NULL);
 
     size_t s = easprintf(&emoji_picker_html, data_emoji_picker_html,
+                         ACTIVE_CONDITION(index >= 0 && index < EMOJO_CAT_ANIMALS),
+                         EMOJO_CAT_ANIMALS,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_ANIMALS && index < EMOJO_CAT_FOOD),
+                         EMOJO_CAT_FOOD,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_FOOD && index < EMOJO_CAT_TRAVEL),
+                         EMOJO_CAT_TRAVEL,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_TRAVEL && index < EMOJO_CAT_ACTIVITIES),
+                         EMOJO_CAT_ACTIVITIES,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_ACTIVITIES && index < EMOJO_CAT_OBJECTS),
+                         EMOJO_CAT_OBJECTS,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_OBJECTS && index < EMOJO_CAT_SYMBOLS),
+                         EMOJO_CAT_SYMBOLS,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_SYMBOLS && index < EMOJO_CAT_FLAGS),
+                         EMOJO_CAT_FLAGS,
+                         ACTIVE_CONDITION(index >= EMOJO_CAT_FLAGS && index < emojos_size),
                          emojis ? emojis : "",
-                         status_id,
                          // Index movements
+                         status_id,
                          index > 0 ? index - EMOJI_FACTOR_NUM : 0,
                          0 > index - EMOJI_FACTOR_NUM ? "disabled" : "",
                          status_id,

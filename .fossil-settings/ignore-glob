@@ -1,4 +1,5 @@
 filec
+emojitoc
 **/*.cgi
 **/*.o
 **/*.chtml
@@ -6,3 +7,4 @@ mastodont-c
 config.h
 treebird
 test/tests
+scripts/*.o

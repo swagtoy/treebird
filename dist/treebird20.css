@@ -319,6 +319,19 @@ table.present th, table.present td
     text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
+
+.btn-alt.active,
+.btn-alt:active
+{
+    background: linear-gradient(#ee0000, #aa0000);
+    border-color: #800000;
+}
+
+.btn-alt:hover
+{
+    background: linear-gradient(#aa0000, #ee0000);
+}
+
 .btn-disabled
 {
     color: #cacaca !important;
@@ -969,7 +982,7 @@ svg.in-reply-to-icon
 
 .account-sidebar .acct-pfp,
 .account-sidebar .username
-{
+
     vertical-align: top;
 }
 
@@ -1175,6 +1188,17 @@ svg.in-reply-to-icon
     padding: 8px 0;
 }
 
+.emoji-picker .emoji:hover
+{
+    transform: scale(1.2);
+}
+
+.emoji-picker .emoji:active
+{
+    transition: 0.1s transform;
+    transform: scale(1.0);
+}
+
 .emoji-picker-emojos
 {
     display: grid;
@@ -1362,17 +1386,23 @@ ul.large-list li a
 {
     width: 100%;
     border: 0;
+    transition: .1s box-shadow, .1s border-color;
+    border-bottom: 2px solid #f7f7f7;
 }
 
-.tabs .tab-btn.focused
+.tabs .tab-btn.active
 {
-    border-bottom: 3px solid #aa0000;
+    background: linear-gradient(#fff, #f7f7f7);
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.15);
+    border-color: #aa0000;
 }
 
 .tabs .tab-btn:hover,
 .tabs .tab-btn:active
 {
-    border-bottom: 3px solid #600000;
+    background: linear-gradient(#fff, #f7f7f7);
+    box-shadow: inset 0px 1px 4px rgba(0, 0, 0, 0.08);
+    border-color: #aa0000;
 }
 
 .navigation tr td:not(:last-child),

@@ -181,10 +181,12 @@ char* construct_interaction_buttons(struct session* ssn,
                                     uint8_t flags)
 {
     char* interaction_html;
+    char* likeboost_html = NULL;
     char* reply_count = NULL;
     char* repeat_count = NULL;
     char* favourites_count = NULL;
     char* emoji_picker_html = NULL;
+    char* reactions_btn_html = NULL;
     size_t s;
 
     // Emojo picker
@@ -193,12 +195,22 @@ char* construct_interaction_buttons(struct session* ssn,
         emoji_picker_html = construct_emoji_picker(status->id, keyint(ssn->post.emojoindex), NULL);
     }
 
+    easprintf(&reactions_btn_html, data_reactions_btn_html,
+              config_url_prefix,
+              status->id,
+              status->id,
+              emoji_picker_html ? emoji_picker_html : "");
+
     if (status->replies_count)
         easprintf(&reply_count, NUM_STR, status->replies_count);
     if (status->reblogs_count)
         easprintf(&repeat_count, NUM_STR, status->reblogs_count);
     if (status->favourites_count)
         easprintf(&favourites_count, NUM_STR, status->favourites_count);
+
+    easprintf(&likeboost_html, data_likeboost_html,
+              config_url_prefix,
+              status->id);
     
     s = easprintf(&interaction_html, data_interaction_buttons_html,
                   config_url_prefix,
@@ -215,12 +227,8 @@ char* construct_interaction_buttons(struct session* ssn,
                   status->favourited ? "un" : "",
                   status->favourited ? "active" : "",
                   favourites_count ? favourites_count : "",
-                  config_url_prefix,
-                  status->id,
-                  config_url_prefix,
-                  status->id,
-                  status->id,
-                  emoji_picker_html ? emoji_picker_html : "",
+                  likeboost_html ? likeboost_html : "",
+                  reactions_btn_html ? reactions_btn_html : "",
                   config_url_prefix,
                   status->id,
                   status->id);
@@ -231,6 +239,8 @@ char* construct_interaction_buttons(struct session* ssn,
     if (reply_count) free(reply_count);
     if (repeat_count) free(repeat_count);
     if (favourites_count) free(favourites_count);
+    if (reactions_btn_html) free(reactions_btn_html);
+    if (likeboost_html) free(likeboost_html);
     return interaction_html;
 }
 
