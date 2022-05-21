@@ -29,7 +29,7 @@
 
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 {
-    if (!(content && emos && emos_len)) return NULL;
+    if (!content) return NULL;
     size_t sc_len;
     char* oldres = NULL;
     char* res = content;
