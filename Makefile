@@ -147,7 +147,7 @@ $(MASTODONT_DIR):
 	fossil clone $(MASTODONT_URL) || true
 
 install: $(TARGET)
-	install -m 655 treebird $(PREFIX)/bin/
+	install -m 755 treebird $(PREFIX)/bin/
 	install -d $(PREFIX)/share/treebird/
 	cp -r dist/ $(PREFIX)/share/treebird/
 
