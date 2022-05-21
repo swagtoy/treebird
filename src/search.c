@@ -99,6 +99,8 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
     search_page(ssn, api, SEARCH_STATUSES, STR_NULL_EMPTY(statuses_html));
     
     if (statuses_html) free(statuses_html);
+    mstdnt_cleanup_search_results(&results);
+    mastodont_storage_cleanup(&storage);
 }
 
 void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
@@ -135,6 +137,8 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
     search_page(ssn, api, SEARCH_ACCOUNTS, STR_NULL_EMPTY(accounts_html));
     
     if (accounts_html) free(accounts_html);
+    mstdnt_cleanup_search_results(&results);
+    mastodont_storage_cleanup(&storage);
 }
 
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
@@ -185,9 +189,8 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
     search_page(ssn, api, SEARCH_HASHTAGS, tags_page);
     
     if (tags_html) free(tags_html);
-    mastodont_storage_cleanup(&storage);
     if (tags_graph) free(tags_graph);
     free(tags_page);
-    
-    // TODO Cleanup shit
+    mstdnt_cleanup_search_results(&results);
+    mastodont_storage_cleanup(&storage);
 }

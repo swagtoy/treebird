@@ -379,6 +379,7 @@ char* reformat_status(struct session* ssn,
                       struct mstdnt_emoji* emos,
                       size_t emos_len)
 {
+    if (!content) return NULL;
     char* gt_res = NULL;
     char* emo_res;
     if (ssn->config.stat_greentexts)
@@ -527,14 +528,15 @@ char* construct_status(struct session* ssn,
     interaction_btns = construct_interaction_buttons(ssn, status, NULL, flags);
     
     // Find and replace
-    if (args && args->highlight_word)
+    if (args && args->highlight_word && parse_content != status->content)
     {
         char* parse_content_tmp;
         char* repl_str;
         easprintf(&repl_str, "<span class=\"search-highlight\">%s</span>", args->highlight_word);
         parse_content_tmp = parse_content;
         parse_content = strrepl(parse_content, args->highlight_word, repl_str, STRREPL_ALL);
-        if (parse_content != parse_content_tmp)
+        // Check if the old parse_content needed to be free'd
+        if (parse_content_tmp != status->content)
             free(parse_content_tmp);
         else // No results, move back
             parse_content = parse_content_tmp;
@@ -590,15 +592,16 @@ char* construct_status(struct session* ssn,
     
     if (size) *size = s;
     // Cleanup
-    if (formatted_display_name != status->account.display_name) free(formatted_display_name);
+    if (formatted_display_name != status->account.display_name &&
+        formatted_display_name) free(formatted_display_name);
     if (interaction_btns) free(interaction_btns);
     if (in_reply_to_str) free(in_reply_to_str);
     if (attachments) free(attachments);
     if (emoji_reactions) free(emoji_reactions);
     if (notif) free(notif_info);
     if (interactions_html) free(interactions_html);
-    //if (formatted_display_name != status->account.display_name) free(formatted_display_name);
-    if (parse_content != status->content) free(parse_content);
+    if (parse_content != status->content &&
+        parse_content) free(parse_content);
     return stat_html;
 }
 
