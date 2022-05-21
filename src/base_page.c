@@ -27,6 +27,7 @@
 #include "../config.h"
 #include "local_config_set.h"
 #include "account.h"
+#include "global_cache.h"
 
 // Files
 #include "../static/index.chtml"
@@ -143,8 +144,9 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                         CAT_TEXT(page->category, BASE_CAT_CONFIG),
                         config_url_prefix,
                         L10N[locale][L10N_CONFIG],
-                        page->sidebar_left ?
-                        page->sidebar_left : "",
+                        page->sidebar_left ? page->sidebar_left : "",
+                        (ssn->config.instance_panel && g_cache.panel_html.response ?
+                         g_cache.panel_html.response : ""),
                         page->content,
                         sidebar_str ? sidebar_str : "");
     

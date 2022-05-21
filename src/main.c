@@ -36,14 +36,64 @@
 #include "notifications.h"
 #include "test.h"
 #include "search.h"
+#include "about.h"
 #include "local_config_set.h"
+#include "global_cache.h"
 
 int main(void)
 {
+    unsigned run_count = 1;
+
     // Global init
     mastodont_global_curl_init();
 
-    unsigned run_count = 1;
+    // Initiate mastodont library
+    mastodont_t api;
+    mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
+    api.url = config_instance_url;
+
+    // Fetch information about the current instance
+    load_instance_info_cache(&api);
+
+    /*******************
+     *  Path handling  *
+     ******************/
+    struct path_info paths[] = {
+        { "/config/general", content_config_general },
+        { "/config/appearance", content_config_appearance },
+        /* { "/config/account", content_config_account }, */
+        { "/config", content_config },
+        { "/login/oauth", content_login_oauth },
+        { "/login", content_login },
+        { "/test", content_test },
+        { "/user/:/action/:", content_account_action },
+        { "/@:/scrobbles", content_account_scrobbles },
+        { "/@:/pinned", content_account_pinned },
+        { "/@:/media", content_account_media },
+        { "/@:", content_account_statuses },
+        { "/status/:/react/:", content_status_react },
+        { "/status/:/react", status_emoji },
+        { "/status/create", content_status_create },
+        { "/status/:/interact", status_interact },
+        { "/status/:/reply", status_reply },
+        { "/status/:", status_view },
+        { "/notice/:", notice_redirect },
+        { "/about/license", content_about_license },
+        { "/about", content_about },
+        { "/search/statuses", content_search_statuses },
+        { "/search/accounts", content_search_accounts },
+        { "/search/hashtags", content_search_hashtags },
+        { "/search", content_search_statuses },
+        { "/lists/for/:", content_tl_list },
+        { "/lists", content_lists },
+        { "/federated", content_tl_federated },
+        { "/direct", content_tl_direct },
+        { "/local", content_tl_local },
+        { "/bookmarks", content_account_bookmarks },
+        { "/favourites", content_account_favourites },
+        { "/notifications", content_notifications },
+        { "/tag/:", content_tl_tag },
+    };
 
     // API
     while (FCGI_Accept() >= 0)
@@ -76,54 +126,16 @@ int main(void)
         char* post_str = read_post_data(&(ssn.post));
         char* get_str = read_get_data(&(ssn.query));
 
-        mastodont_t api;
+        // Instance info temp stuff
         if (keystr(ssn.cookies.instance_url))
             api.url = keystr(ssn.cookies.instance_url);
         else
             api.url = config_instance_url;
-        mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
+        
         api.token = keystr(ssn.cookies.access_token); // Load token now
 
         // Read config options
         load_config(&ssn, &api);
-
-        /*******************
-         *  Path handling  *
-         ******************/
-        struct path_info paths[] = {
-            { "/config/general", content_config_general },
-            { "/config/appearance", content_config_appearance },
-            /* { "/config/account", content_config_account }, */
-            { "/config", content_config },
-            { "/login/oauth", content_login_oauth },
-            { "/login", content_login },
-            { "/test", content_test },
-            { "/user/:/action/:", content_account_action },
-            { "/@:/scrobbles", content_account_scrobbles },
-            { "/@:/pinned", content_account_pinned },
-            { "/@:/media", content_account_media },
-            { "/@:", content_account_statuses },
-            { "/status/:/react/:", content_status_react },
-            { "/status/:/react", status_emoji },
-            { "/status/create", content_status_create },
-            { "/status/:/interact", status_interact },
-            { "/status/:/reply", status_reply },
-            { "/status/:", status_view },
-            { "/notice/:", notice_redirect },
-            { "/search/statuses", content_search_statuses },
-            { "/search/accounts", content_search_accounts },
-            { "/search/hashtags", content_search_hashtags },
-            { "/search", content_search_statuses },
-            { "/lists/for/:", content_tl_list },
-            { "/lists", content_lists },
-            { "/federated", content_tl_federated },
-            { "/direct", content_tl_direct },
-            { "/local", content_tl_local },
-            { "/bookmarks", content_account_bookmarks },
-            { "/favourites", content_account_favourites },
-            { "/notifications", content_notifications },
-            { "/tag/:", content_tl_tag },
-        };
 
         handle_paths(&ssn, &api, paths, sizeof(paths)/sizeof(paths[0]));
 
@@ -131,11 +143,12 @@ int main(void)
         if (cookies_str) free(cookies_str);
         if (post_str) free(post_str);
         if (get_str) free(get_str);
-        mastodont_free(&api);
         free_files(&(keyfile(ssn.post.files)));
 
         ++run_count;
     }
 
+    free_instance_info_cache();
+    mastodont_free(&api);
     mastodont_global_curl_cleanup();
 }

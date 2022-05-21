@@ -132,11 +132,16 @@ $(PAGES_DIR)/reactions_btn.chtml: $(PAGES_DIR)/reactions_btn.html
 	./filec $< data_reactions_btn_html > $@
 $(PAGES_DIR)/interaction_buttons.chtml: $(PAGES_DIR)/interaction_buttons.html
 	./filec $< data_interaction_buttons_html > $@
+$(PAGES_DIR)/license.chtml: $(PAGES_DIR)/license.html
+	./filec $< data_license_html > $@	
 # Login panel
 $(PAGES_DIR)/quick_login.chtml: $(PAGES_DIR)/quick_login.html
 	./filec $< data_quick_login_html > $@
 $(PAGES_DIR)/account_sidebar.chtml: $(PAGES_DIR)/account_sidebar.html
 	./filec $< data_account_sidebar_html > $@
+$(PAGES_DIR)/about.chtml: $(PAGES_DIR)/about.html
+	./filec $< data_about_html > $@
+
 
 $(MASTODONT_DIR): 
 	fossil clone $(MASTODONT_URL) || true
