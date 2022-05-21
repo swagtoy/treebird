@@ -149,6 +149,6 @@ int main(void)
     }
 
     free_instance_info_cache();
-    mastodont_free(&api);
+    mastodont_cleanup(&api);
     mastodont_global_curl_cleanup();
 }

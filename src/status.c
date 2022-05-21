@@ -347,7 +347,8 @@ char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* si
                                     &storage);
 
     char* html = construct_in_reply_to(status, res == 0 ? &acct : NULL, size);
-    
+
+    if (res == 0) mstdnt_cleanup_account(&acct);
     mastodont_storage_cleanup(&storage);
     return html;
 }
@@ -589,6 +590,7 @@ char* construct_status(struct session* ssn,
     
     if (size) *size = s;
     // Cleanup
+    if (formatted_display_name != status->account.display_name) free(formatted_display_name);
     if (interaction_btns) free(interaction_btns);
     if (in_reply_to_str) free(in_reply_to_str);
     if (attachments) free(attachments);
