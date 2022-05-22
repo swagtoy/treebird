@@ -142,9 +142,9 @@ $(PAGES_DIR)/account_sidebar.chtml: $(PAGES_DIR)/account_sidebar.html
 $(PAGES_DIR)/about.chtml: $(PAGES_DIR)/about.html
 	./filec $< data_about_html > $@
 
-
 $(MASTODONT_DIR): 
-	fossil clone $(MASTODONT_URL) || true
+	cd ..; fossil clone $(MASTODONT_URL) || true
+	cd treebird; ln -s ../mastodont-c .
 
 install: $(TARGET)
 	install -m 755 treebird $(PREFIX)/bin/
