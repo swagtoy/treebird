@@ -16,6 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#define _XOPEN_SOURCE
+#define _DEFAULT_SOURCE
+#include <time.h>
+#include <math.h>
+#include "easprintf.h"
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
@@ -23,10 +28,26 @@
 
 char* reltime_to_str(time_t stime)
 {
-    char str[16];
-    // Get current time
+    char* str;
+    // Get current time and convert it to GMT
     time_t curr_time = time(NULL);
+    int since = curr_time - stime;
 
+    // Timezone likely off
+    if (since < 60)
+        easprintf(&str, "%ds", since);
+    else if (since < 60 * 60)
+        easprintf(&str, "%dm", since / 60);
+    else if (since < 60 * 60 * 24)
+        easprintf(&str, "%dh", since / (60 * 60));
+    else if (since < 60 * 60 * 24 * 31) // Not truly but werks
+        easprintf(&str, "%dd", since / (60 * 60 * 24));
+    else if (since < 60 * 60 * 24 * 365)
+        easprintf(&str, "%dmon", since / (60 * 60 * 24 * 31));
+    else
+        easprintf(&str, "%dyr", since / (60 * 60 * 24 * 365));
+    
+    return str;
 }
 
 int streql(char* cmp1, char* cmp2)

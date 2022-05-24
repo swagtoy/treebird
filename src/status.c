@@ -187,6 +187,7 @@ char* construct_interaction_buttons(struct session* ssn,
     char* favourites_count = NULL;
     char* emoji_picker_html = NULL;
     char* reactions_btn_html = NULL;
+    char* time_str;
     size_t s;
 
     // Emojo picker
@@ -211,6 +212,8 @@ char* construct_interaction_buttons(struct session* ssn,
     easprintf(&likeboost_html, data_likeboost_html,
               config_url_prefix,
               status->id);
+
+    time_str = reltime_to_str(status->created_at);
     
     s = easprintf(&interaction_html, data_interaction_buttons_html,
                   config_url_prefix,
@@ -231,16 +234,18 @@ char* construct_interaction_buttons(struct session* ssn,
                   reactions_btn_html ? reactions_btn_html : "",
                   config_url_prefix,
                   status->id,
-                  status->id);
+                  status->id,
+                  reltime_to_str(status->created_at));
     if (size) *size = s;
 
     // Cleanup
-    if (emoji_picker_html) free(emoji_picker_html);
-    if (reply_count) free(reply_count);
-    if (repeat_count) free(repeat_count);
-    if (favourites_count) free(favourites_count);
-    if (reactions_btn_html) free(reactions_btn_html);
-    if (likeboost_html) free(likeboost_html);
+    free(emoji_picker_html);
+    free(reply_count);
+    free(repeat_count);
+    free(favourites_count);
+    free(reactions_btn_html);
+    free(likeboost_html);
+    free(time_str);
     return interaction_html;
 }
 
