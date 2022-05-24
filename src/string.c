@@ -21,6 +21,14 @@
 #include <string.h>
 #include "string.h"
 
+char* reltime_to_str(time_t stime)
+{
+    char str[16];
+    // Get current time
+    time_t curr_time = time(NULL);
+
+}
+
 int streql(char* cmp1, char* cmp2)
 {
     while (*cmp1 || *cmp2)

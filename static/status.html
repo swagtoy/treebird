@@ -5,49 +5,43 @@
       <img src="%s">
     </td>
     <td class="status-info">
-      <table class="ui-table">
-        <tr>
-          <td>
-            <div class="poster-stats">
-              <span class="username">%s</span>
-              <a class="instance-info" href="%s/@%s">%s</a>
-              <span class="alignend status-visibility menu-container">
-                %s
-                <div class="menu">
-                  <ul>
-                    <li>
-                      <form action="%s/status/%s/interact" method="post">
-                        <input type="hidden" name="itype" value="%smute">
-                        <input type="submit" class="btn-menu" value="%s">
-                      </form>
-                    </li>
-                    <li>
-                      <form action="%s/status/%s/interact" method="post">
-                        <input type="hidden" name="itype" value="%spin">
-                        <input type="submit" class="btn-menu" value="%s">
-                      </form>
-                    </li>
-                    <li>
-                      <form action="%s/status/%s/interact" method="post">
-                        <input type="hidden" name="itype" value="%sbookmark">
-                        <input type="submit" class="btn-menu" value="%s">
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </span>
-            </div>
+      <div class="poster-stats">
+        <span class="username">%s</span>
+        <a class="instance-info" href="%s/@%s">%s</a>
+        <span class="alignend status-visibility menu-container">
+          <div class="menu">
             %s
-            <span class="status-content">
-              %s
-            </span>
-            %s
-            %s
-            %s
-            %s
-          </td>
-        </tr>
-      </table>
+            <ul>
+              <li>
+                <form action="%s/status/%s/interact" method="post">
+                  <input type="hidden" name="itype" value="%smute">
+                  <input type="submit" class="btn-menu" value="%s">
+                </form>
+              </li>
+              <li>
+                <form action="%s/status/%s/interact" method="post">
+                  <input type="hidden" name="itype" value="%spin">
+                  <input type="submit" class="btn-menu" value="%s">
+                </form>
+              </li>
+              <li>
+                <form action="%s/status/%s/interact" method="post">
+                  <input type="hidden" name="itype" value="%sbookmark">
+                  <input type="submit" class="btn-menu" value="%s">
+                </form>
+              </li>
+            </ul>
+          </div>
+        </span>
+      </div>
+      %s
+      <span class="status-content">
+        %s
+      </span>
+      %s
+      %s
+      %s
+      %s
     </td>
   </tr>
 </table>
