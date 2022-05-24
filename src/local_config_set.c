@@ -65,19 +65,21 @@ int set_config_int(struct session* ssn,
 
 void load_config(struct session* ssn, mastodont_t* api)
 {
-    // TODO update
-    /* if (ssn->post.theme) */
-    /* { */
-    /*     struct mstdnt_attachment* attachments = NULL; */
-    /*     struct mstdnt_storage* storage = NULL; */
-    /*     if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0) */
-    /*     { */
-    /*         set_config_str(&(ssn->config.background_url), "background_url", attachments[0].url); */
-    /*     } */
+    if (ssn->post.set.is_set)
+    {
+        struct mstdnt_attachment* attachments = NULL;
+        struct mstdnt_storage* storage = NULL;
+        if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0)
+        {
+            struct key atm = { .type.s = attachments[0].url, .is_set = 1 };
+            set_config_str(ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url));
+        }
 
-    /*     if (storage) */
-    /*         cleanup_media_storages(ssn, storage); */
-    /* } */
+        if (storage)
+            cleanup_media_storages(ssn, storage);
+    }
+    if (!ssn->post.set.is_set)
+        ssn->config.background_url = keystr(ssn->cookies.background_url);
     set_config_str(LOAD_CFG_SIM("theme",                theme));
     set_config_int(LOAD_CFG_SIM("themeclr",             themeclr));
     set_config_int(LOAD_CFG_SIM("jsactions",            jsactions));
