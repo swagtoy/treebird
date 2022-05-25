@@ -27,6 +27,8 @@
 #define STATUS_REPLY (1<<0)
 #define STATUS_FOCUSED (1<<1)
 #define STATUS_EMOJI_PICKER (1<<2)
+#define STATUS_NO_LIKEBOOST (1<<3)
+#define STATUS_NO_DOPAMEME (1<<4)
 
 struct construct_statuses_args
 {

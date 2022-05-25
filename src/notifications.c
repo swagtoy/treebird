@@ -99,10 +99,9 @@ char* construct_notification_compact(struct session* ssn,
 
     if (notif->status)
     {
-        easprintf(&notif_stats, "%d - %d - %d",
-                  notif->status->replies_count,
-                  notif->status->reblogs_count,
-                  notif->status->favourites_count);
+        if (notif->type == MSTDNT_NOTIFICATION_MENTION)
+            notif_stats = construct_interaction_buttons(ssn, notif->status, NULL,
+                                                        STATUS_NO_LIKEBOOST | STATUS_NO_DOPAMEME);
         status_format = reformat_status(ssn,
                                         notif->status->content,
                                         notif->status->emojis,

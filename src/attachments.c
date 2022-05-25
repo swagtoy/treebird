@@ -32,6 +32,7 @@
 
 struct attachments_args
 {
+    struct session* ssn;
     struct mstdnt_attachment* atts;
     mstdnt_bool sensitive;
 };
@@ -118,32 +119,39 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
     free(media_ids);
 }
 
-char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att, int* str_size)
+char* construct_attachment(struct session* ssn,
+                           mstdnt_bool sensitive,
+                           struct mstdnt_attachment* att,
+                           int* str_size)
 {
     char* att_html;
     size_t s;
     const char* attachment_str;
     if (!att) return NULL;
 
-    switch (att->type)
-    {
-    case MSTDNT_ATTACHMENT_IMAGE:
-        attachment_str = data_attachment_image_html; break;
-    case MSTDNT_ATTACHMENT_GIFV:
-        attachment_str = data_attachment_gifv_html; break;
-    case MSTDNT_ATTACHMENT_VIDEO:
-        attachment_str = data_attachment_video_html; break;
-    case MSTDNT_ATTACHMENT_AUDIO:
-        attachment_str = data_attachment_audio_html; break;
-    case MSTDNT_ATTACHMENT_UNKNOWN: // Fall through
-    default:
-        attachment_str = data_attachment_link_html; break;
-    }
+    if (ssn->config.stat_attachments)
+        switch (att->type)
+        {
+        case MSTDNT_ATTACHMENT_IMAGE:
+            attachment_str = data_attachment_image_html; break;
+        case MSTDNT_ATTACHMENT_GIFV:
+            attachment_str = data_attachment_gifv_html; break;
+        case MSTDNT_ATTACHMENT_VIDEO:
+            attachment_str = data_attachment_video_html; break;
+        case MSTDNT_ATTACHMENT_AUDIO:
+            attachment_str = data_attachment_audio_html; break;
+        case MSTDNT_ATTACHMENT_UNKNOWN: // Fall through
+        default:
+            attachment_str = data_attachment_link_html; break;
+        }
+    else
+        attachment_str = data_attachment_link_html;
 
     // Images/visible content displays sensitive placeholder after
-    if (att->type == MSTDNT_ATTACHMENT_IMAGE ||
-        att->type == MSTDNT_ATTACHMENT_GIFV ||
-        att->type == MSTDNT_ATTACHMENT_VIDEO)
+    if ((att->type == MSTDNT_ATTACHMENT_IMAGE ||
+         att->type == MSTDNT_ATTACHMENT_GIFV ||
+         att->type == MSTDNT_ATTACHMENT_VIDEO) &&
+        ssn->config.stat_attachments)
     {
         s = easprintf(&att_html, attachment_str,
                       att->url,
@@ -162,13 +170,17 @@ char* construct_attachment(mstdnt_bool sensitive, struct mstdnt_attachment* att,
 static char* construct_attachments_voidwrap(void* passed, size_t index, int* res)
 {
     struct attachments_args* args = passed;
-    return construct_attachment(args->sensitive, args->atts + index, res);
+    return construct_attachment(args->ssn, args->sensitive, args->atts + index, res);
 }
 
-char* construct_attachments(mstdnt_bool sensitive, struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size)
+char* construct_attachments(struct session* ssn,
+                            mstdnt_bool sensitive,
+                            struct mstdnt_attachment* atts,
+                            size_t atts_len,
+                            size_t* str_size)
 {
     size_t elements_size;
-    struct attachments_args args = { atts, sensitive };
+    struct attachments_args args = { ssn, atts, sensitive };
     char* elements = construct_func_strings(construct_attachments_voidwrap, &args, atts_len, &elements_size);
     char* att_view;
 

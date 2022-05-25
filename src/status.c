@@ -188,6 +188,8 @@ char* construct_interaction_buttons(struct session* ssn,
     char* emoji_picker_html = NULL;
     char* reactions_btn_html = NULL;
     char* time_str;
+    int show_nums = (flags & STATUS_NO_DOPAMEME) != STATUS_NO_DOPAMEME &&
+        ssn->config.stat_dope;
     size_t s;
 
     // Emojo picker
@@ -202,12 +204,15 @@ char* construct_interaction_buttons(struct session* ssn,
               status->id,
               emoji_picker_html ? emoji_picker_html : "");
 
-    if (status->replies_count)
-        easprintf(&reply_count, NUM_STR, status->replies_count);
-    if (status->reblogs_count)
-        easprintf(&repeat_count, NUM_STR, status->reblogs_count);
-    if (status->favourites_count)
-        easprintf(&favourites_count, NUM_STR, status->favourites_count);
+    if (show_nums)
+    {
+        if (status->replies_count)
+            easprintf(&reply_count, NUM_STR, status->replies_count);
+        if (status->reblogs_count)
+            easprintf(&repeat_count, NUM_STR, status->reblogs_count);
+        if (status->favourites_count)
+            easprintf(&favourites_count, NUM_STR, status->favourites_count);
+    }
 
     easprintf(&likeboost_html, data_likeboost_html,
               config_url_prefix,
@@ -230,7 +235,9 @@ char* construct_interaction_buttons(struct session* ssn,
                   status->favourited ? "un" : "",
                   status->favourited ? "active" : "",
                   favourites_count ? favourites_count : "",
-                  likeboost_html ? likeboost_html : "",
+                  (likeboost_html &&
+                   ssn->config.stat_oneclicksoftware &&
+                   (flags & STATUS_NO_LIKEBOOST) != STATUS_NO_LIKEBOOST ? likeboost_html : ""),
                   reactions_btn_html ? reactions_btn_html : "",
                   config_url_prefix,
                   status->id,
@@ -550,7 +557,7 @@ char* construct_status(struct session* ssn,
     }
     
     if (status->media_attachments_len)
-        attachments = construct_attachments(status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
+        attachments = construct_attachments(ssn, status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
         emoji_reactions = construct_emoji_reactions(status->id, status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
     if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
