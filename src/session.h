@@ -18,6 +18,7 @@
 
 #ifndef SESSION_H
 #define SESSION_H
+#include <mastodont.h>
 #include "query.h"
 #include "local_config.h"
 #include "cookie.h"
@@ -28,6 +29,9 @@ struct session
     struct get_values query;
     struct cookie_values cookies;
     struct local_config config;
+    int logged_in;
+    struct mstdnt_account acct;
+    struct mstdnt_storage acct_storage;
 };
 
 #endif // SESSION_H

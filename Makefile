@@ -62,6 +62,8 @@ $(PAGES_DIR)/emoji_reactions.chtml: $(PAGES_DIR)/emoji_reactions.html
 	./filec $< data_emoji_reactions_html > $@
 $(PAGES_DIR)/emoji_reaction.chtml: $(PAGES_DIR)/emoji_reaction.html
 	./filec $< data_emoji_reaction_html > $@
+$(PAGES_DIR)/menu_item.chtml: $(PAGES_DIR)/menu_item.html
+	./filec $< data_menu_item_html > $@
 $(PAGES_DIR)/test.chtml: $(PAGES_DIR)/test.html
 	./filec $< data_test_html > $@
 $(PAGES_DIR)/notifications_page.chtml: $(PAGES_DIR)/notifications_page.html

@@ -120,7 +120,10 @@ int main(void)
             },
             .cookies = {{}},
             .post = {{}},
-            .query = {{}}
+            .query = {{}},
+            .acct = { 0 },
+            .acct_storage = { 0 },
+            .logged_in = 0,
         };
         
         // Load cookies
@@ -139,6 +142,9 @@ int main(void)
         // Read config options
         load_config(&ssn, &api);
 
+        // Load current account information
+        get_account_info(&api, &ssn);
+
         handle_paths(&ssn, &api, paths, sizeof(paths)/sizeof(paths[0]));
 
         // Cleanup
@@ -146,6 +152,8 @@ int main(void)
         if (post_str) free(post_str);
         if (get_str) free(get_str);
         free_files(&(keyfile(ssn.post.files)));
+        if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
+        mastodont_storage_cleanup(&(ssn.acct_storage));
 
         ++run_count;
     }

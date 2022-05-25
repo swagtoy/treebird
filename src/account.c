@@ -157,6 +157,13 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
     return scrobbles_html;
 }
 
+void get_account_info(mastodont_t* api, struct session* ssn)
+{
+    if (mastodont_verify_credentials(api, &(ssn->acct), &(ssn->acct_storage)) == 0)
+    {
+        ssn->logged_in = 1;
+    }
+}
 
 static void fetch_account_page(struct session* ssn,
                                mastodont_t* api,

@@ -45,6 +45,7 @@
 #include "../static/likeboost.chtml"
 #include "../static/reactions_btn.chtml"
 #include "../static/interaction_buttons.chtml"
+#include "../static/menu_item.chtml"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
@@ -149,6 +150,8 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
         mastodont_pin_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "mute") == 0)
         mastodont_mute_conversation(api, id, &storage, NULL);
+    else if (strcmp(keystr(ssn->post.itype), "delete") == 0)
+        mastodont_delete_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unlike") == 0)
         mastodont_unfavourite_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unrepeat") == 0)
@@ -479,6 +482,7 @@ char* construct_status(struct session* ssn,
     char* interaction_btns = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
+    char* delete_status = NULL;
     char* interactions_html = NULL;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
@@ -555,6 +559,11 @@ char* construct_status(struct session* ssn,
 
         free(repl_str);
     }
+
+    // Delete status menu item, logged in only
+    if (strcmp(status->account.acct, ssn->acct.acct) == 0)
+        easprintf(&delete_status, data_menu_item_html,
+                  config_url_prefix, status->id, "delete", "Delete status");
     
     if (status->media_attachments_len)
         attachments = construct_attachments(ssn, status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
@@ -595,6 +604,7 @@ char* construct_status(struct session* ssn,
                          status->id,
                          status->bookmarked ? "un" : "",
                          status->bookmarked ? "Remove Bookmark" : "Bookmark",
+                         delete_status ? delete_status : "",
                          in_reply_to_str ? in_reply_to_str : "",
                          parse_content,
                          attachments ? attachments : "",
@@ -606,12 +616,13 @@ char* construct_status(struct session* ssn,
     // Cleanup
     if (formatted_display_name != status->account.display_name &&
         formatted_display_name) free(formatted_display_name);
-    if (interaction_btns) free(interaction_btns);
-    if (in_reply_to_str) free(in_reply_to_str);
-    if (attachments) free(attachments);
-    if (emoji_reactions) free(emoji_reactions);
+    free(interaction_btns);
+    free(in_reply_to_str);
+    free(attachments);
+    free(emoji_reactions);
     if (notif) free(notif_info);
-    if (interactions_html) free(interactions_html);
+    free(delete_status);
+    free(interactions_html);
     if (parse_content != status->content &&
         parse_content) free(parse_content);
     return stat_html;

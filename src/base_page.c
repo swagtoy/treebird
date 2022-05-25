@@ -47,7 +47,6 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         * main_sidebar_str = NULL,
         * account_sidebar_str = NULL;
     // Mastodont, used for notifications sidebar
-    struct mstdnt_account acct = { 0 };
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
@@ -63,12 +62,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     // If user is logged in
     if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
     {
-        if (mastodont_verify_credentials(api, &acct, &storage) == 0)
-        {
-            account_sidebar_str = construct_account_sidebar(&acct, NULL);
-        }
-        mstdnt_cleanup_account(&acct);
-        mastodont_storage_cleanup(&storage); // reuse it later
+        account_sidebar_str = construct_account_sidebar(&(ssn->acct), NULL);
 
         // Get / Show notifications on sidebar
         if (ssn->config.notif_embed)
