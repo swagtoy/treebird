@@ -1,4 +1,4 @@
-<table id="id-%s" class="status %s ui-table">
+<table id="%s" class="status %s ui-table">
   %s
   <tr>
     <td class="pfp-td">
@@ -8,29 +8,31 @@
       <div class="poster-stats">
         <span class="username">%s</span>
         <a class="instance-info" href="%s/@%s">%s</a>
-        <span class="alignend status-visibility menu-container">
-          %s
-          <div class="menu">
-            <ul>
-              <li>
-                <form action="%s/status/%s/interact" method="post">
-                  <input type="hidden" name="itype" value="%smute">
-                  <input type="submit" class="btn-menu" value="%s">
-                </form>
-              </li>
-              <li>
-                <form action="%s/status/%s/interact" method="post">
-                  <input type="hidden" name="itype" value="%spin">
-                  <input type="submit" class="btn-menu" value="%s">
-                </form>
-              </li>
-              <li>
-                <form action="%s/status/%s/interact" method="post">
-                  <input type="hidden" name="itype" value="%sbookmark">
-                  <input type="submit" class="btn-menu" value="%s">
-                </form>
-              </li>
-            </ul>
+        <span class="alignend">
+          <div class="menu-container status-visibility">
+            %s
+            <div class="menu">
+              <ul>
+                <li>
+                  <form action="%s/status/%s/interact" method="post">
+                    <input type="hidden" name="itype" value="%smute">
+                    <input type="submit" class="btn-menu" value="%s">
+                  </form>
+                </li>
+                <li>
+                  <form action="%s/status/%s/interact" method="post">
+                    <input type="hidden" name="itype" value="%spin">
+                    <input type="submit" class="btn-menu" value="%s">
+                  </form>
+                </li>
+                <li>
+                  <form action="%s/status/%s/interact" method="post">
+                    <input type="hidden" name="itype" value="%sbookmark">
+                    <input type="submit" class="btn-menu" value="%s">
+                  </form>
+                </li>
+              </ul>
+            </div>
           </div>
         </span>
       </div>

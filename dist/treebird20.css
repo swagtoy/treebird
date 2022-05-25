@@ -1170,6 +1170,16 @@ p}
     float: right;
 }
 
+.statusbox-ani
+{
+    animation: expand-reply .3s 1;
+}
+
+@keyframes expand-reply
+{
+    0% { padding-top: 0px; height: 0px; overflow: hidden; }
+    100% { padding-top: 10px; height: 150px; overflow: hidden; }
+}
 
 .status-interact .statbtn
 {
