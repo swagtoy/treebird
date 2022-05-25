@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ %s : title }}</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" type="text/css" href="/{{ %s : theme }}{{ %s : theme_clr }}.css">
+  </head>
+  <body {{ %s : not_sure_what_this_is }}>
+    <div></div>
+    <div id="main-page-container">
+      <div id="main-page">
+        <header id="navbar">
+          <a href="{{ %s : prefix }}/"><img src="/treebird_logo.png" height="42"></a>
+          <span class="info">{{ %s : name }}</span>
+          <div id="navbar-right-container">
+            <div id="navbar-right">
+              {{ %s : sidebar_cnt }}
+              <!-- Searchbox -->
+              <form action="{{ %s : prefix }}/search" method="get">
+                <input type="textbox" class="group group-left group-inputbox" placeholder="{{ %s : placeholder }}" id="searchbox" name="q"><!-- i hate HTML
+             --><input type="submit" class="btn group group-right" value="{{ %s : search_btn }}">
+              </form>
+            </div>
+          </div>
+        </header>
+        <table id="content" class="ui-table">
+          <!-- Navigation -->
+          <tr>
+            <td id="leftbar" class="sidebar">
+              <ul>
+                <li><a class="sidebarbtn { %s : active_home" href="{{ %s : prefix}}/">{{ %s : home }}</a></li>
+                <li><a class="sidebarbtn { %s : active_local" href="{{ %s : prefix}}/local/">{{ %s : local}}</a></li>
+                <li><a class="sidebarbtn { %s : active_federated" href="{{ %s : prefix}}/federated/">{{ %s : federated }}</a></li>
+                <li><a class="sidebarbtn { %s : active_notifications" href="{{ %s : prefix}}/notifications">{{ %s : notifications }}</a></li>
+                <li><a class="sidebarbtn { %s : active_lists" href="{{ %s : prefix}}/lists">{{ %s : lists }}</a></li>
+                <li><a class="sidebarbtn { %s : active_favourites" href="{{ %s : prefix}}/favourites">{{ %s : favourites }}</a></li>
+                <li><a class="sidebarbtn { %s : active_bookmarks" href="{{ %s : prefix}}/bookmarks">{{ %s : bookmarks }}</a></li>
+                <li><a class="sidebarbtn { %s : active_direct" href="{{ %s : prefix}}/direct">{{ %s : direct }}</a></li>
+                <li><a class="sidebarbtn { %s : active_config" href="{{ %s : prefix}}/config">{{ %s : config }}</a></li>
+              </ul>
+              {{ %s : sidebar_leftbar }}
+              <div class="static-html" id="instance-panel">
+                {{ %s : instance_panel }}
+              </div>
+            </td>
+            
+            <!-- Display for posts -->
+            <td id="main">
+              {{ %s : main }}
+            </td>
+
+            <!-- Notifications and such -->
+            <td id="rightbar" class="sidebar">
+              {{ %s : sidebar_rightbar }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Source -->
+    <script src="/js/main.js"></script>
+  </body>
+</html>
