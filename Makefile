@@ -66,6 +66,8 @@ $(PAGES_DIR)/test.chtml: $(PAGES_DIR)/test.html
 	./filec $< data_test_html > $@
 $(PAGES_DIR)/notifications_page.chtml: $(PAGES_DIR)/notifications_page.html
 	./filec $< data_notifications_page_html > $@
+$(PAGES_DIR)/notifications_embed.chtml: $(PAGES_DIR)/notifications_embed.html
+	./filec $< data_notifications_embed_html > $@
 $(PAGES_DIR)/notifications.chtml: $(PAGES_DIR)/notifications.html
 	./filec $< data_notifications_html > $@
 $(PAGES_DIR)/notification.chtml: $(PAGES_DIR)/notification.html
@@ -141,6 +143,8 @@ $(PAGES_DIR)/account_sidebar.chtml: $(PAGES_DIR)/account_sidebar.html
 	./filec $< data_account_sidebar_html > $@
 $(PAGES_DIR)/about.chtml: $(PAGES_DIR)/about.html
 	./filec $< data_about_html > $@
+$(PAGES_DIR)/instance.chtml: $(PAGES_DIR)/instance.html
+	./filec $< data_instance_html > $@
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true

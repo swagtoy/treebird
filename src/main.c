@@ -91,6 +91,7 @@ int main(void)
         { "/local", content_tl_local },
         { "/bookmarks", content_account_bookmarks },
         { "/favourites", content_account_favourites },
+        { "/notifications_compact", content_notifications_compact },
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },
     };
@@ -115,6 +116,7 @@ int main(void)
                 .stat_hide_muted = 0,
                 .instance_show_shoutbox = 1,
                 .instance_panel = 1,
+                .notif_embed = 1,
             },
             .cookies = {{}},
             .post = {{}},

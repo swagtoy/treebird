@@ -58,6 +58,7 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "client_secret", &(cookies->client_secret), key_string },
         { "themeclr", &(cookies->themeclr), key_int },
         { "jsactions", &(cookies->jsactions), key_int },
+        { "notifembed", &(cookies->notif_embed), key_int },
         { "jsreply", &(cookies->jsreply), key_int },
         { "jslive", &(cookies->jslive), key_int },
         { "js", &(cookies->js), key_int },

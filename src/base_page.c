@@ -39,7 +39,8 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
 {
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = page->locale;
-    char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
+    const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
+    const char* sidebar_embed = "<iframe class=\"sidebar-frame\" src=\"/notifications_compact\"></iframe>";
     char* background_url_css = NULL;
     // Sidebar
     char* sidebar_str,
@@ -70,26 +71,32 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         mastodont_storage_cleanup(&storage); // reuse it later
 
         // Get / Show notifications on sidebar
-        struct mstdnt_get_notifications_args args = {
-            .exclude_types = 0,
-            .account_id = NULL,
-            .exclude_visibilities = 0,
-            .include_types = 0,
-            .with_muted = 1,
-            .max_id = NULL,
-            .min_id = NULL,
-            .since_id = NULL,
-            .offset = 0,
-            .limit = 8,
-        };
-        
-        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        if (ssn->config.notif_embed)
         {
-            main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+            main_sidebar_str = (char*)sidebar_embed;
         }
+        else {
+            struct mstdnt_get_notifications_args args = {
+                .exclude_types = 0,
+                .account_id = NULL,
+                .exclude_visibilities = 0,
+                .include_types = 0,
+                .with_muted = 1,
+                .max_id = NULL,
+                .min_id = NULL,
+                .since_id = NULL,
+                .offset = 0,
+                .limit = 8,
+            };
+        
+            if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+            {
+                main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+            }
 
-        mstdnt_cleanup_notifications(notifs, notifs_len);
-        mastodont_storage_cleanup(&storage);
+            mstdnt_cleanup_notifications(notifs, notifs_len);
+            mastodont_storage_cleanup(&storage);
+        }
     }
     else {
         // Construct small login page
@@ -156,16 +163,21 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         goto cleanup;
     }
     
-    fputs("Content-type: text/html\r\n", stdout);
-    printf("Content-Length: %d\r\n\r\n", len + 1);
-    puts(data);
+    render_html(data, len);
 
     // Cleanup
 /* cleanup_all: */
     free(data);
 cleanup:
-    if (sidebar_str) free(sidebar_str);
-    if (main_sidebar_str) free(main_sidebar_str);
-    if (account_sidebar_str) free(account_sidebar_str);
-    if (background_url_css) free(background_url_css);
+    free(sidebar_str);
+    if (main_sidebar_str != sidebar_embed) free(main_sidebar_str);
+    free(account_sidebar_str);
+    free(background_url_css);
+}
+
+void render_html(char* data, size_t data_len)
+{
+    fputs("Content-type: text/html\r\n", stdout);
+    printf("Content-Length: %d\r\n\r\n", data_len + 1);
+    puts(data);    
 }

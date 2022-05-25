@@ -36,6 +36,7 @@
 #include "../static/notification_compact.chtml"
 #include "../static/like_svg.chtml"
 #include "../static/repeat_svg.chtml"
+#include "../static/notifications_embed.chtml"
 
 struct notification_args
 {
@@ -226,6 +227,58 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
     // Output
     render_base_page(&b, ssn, api);
+    if (notif_html) free(notif_html);
+    if (navigation_box) free(navigation_box);
+    if (page) free(page);
+}
+
+void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* page, *notif_html = NULL;
+    struct mstdnt_storage storage;
+    struct mstdnt_notification* notifs;
+    size_t notifs_len;
+    char* start_id;
+    char* navigation_box = NULL;
+
+    if (keystr(ssn->cookies.logged_in))
+    {
+        struct mstdnt_get_notifications_args args = {
+            .exclude_types = 0,
+            .account_id = NULL,
+            .exclude_visibilities = 0,
+            .include_types = 0,
+            .with_muted = 1,
+            .max_id = keystr(ssn->post.max_id),
+            .min_id = keystr(ssn->post.min_id),
+            .since_id = NULL,
+            .offset = 0,
+            .limit = 20,
+        };
+
+        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        {
+            notif_html = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
+            navigation_box = construct_navigation_box(start_id,
+                                                      notifs[0].id,
+                                                      notifs[notifs_len-1].id,
+                                                      NULL);
+            mstdnt_cleanup_notifications(notifs, notifs_len);}
+                
+        else
+            notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
+
+    }
+ 
+    size_t len = easprintf(&page, data_notifications_embed_html,
+                           ssn->config.theme,
+                           ssn->config.themeclr ? "-dark" : "",
+                           navigation_box ? navigation_box : "",
+                           notif_html ? notif_html : "");
+
+    render_html(page, len);
+
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);
     if (page) free(page);

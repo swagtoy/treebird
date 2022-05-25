@@ -80,7 +80,8 @@ void content_config_general(struct session* ssn, mastodont_t* api, char** data)
               bool_checked(stat_emojo_likes),
               bool_checked(stat_hide_muted),
               bool_checked(instance_show_shoutbox),
-              bool_checked(instance_panel));
+              bool_checked(instance_panel),
+              bool_checked(notif_embed));
 
     load_config(ssn, api);
     

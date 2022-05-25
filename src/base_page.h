@@ -47,4 +47,12 @@ struct base_page
 
 void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api);
 
+/**
+ * Outputs HTML in format for CGI. This can only be called once!
+ *
+ * @param data HTML content
+ * @param data_len Length of data.
+ */
+void render_html(char* data, size_t data_len);
+
 #endif // BASE_PAGE_H

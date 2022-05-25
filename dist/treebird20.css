@@ -184,6 +184,44 @@ table.ui-table td
     background-color: #eaecf0;
 }
 
+.sidebar-frame
+{
+    border: none;
+    width: 100%;
+    min-height: 600px;
+    border-bottom: 1px dashed #cacaca;
+}
+
+
+.sidebar-embed-container .navigation
+{
+    position: sticky;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(234, 236, 240, .7);
+    padding: 0;
+}
+
+.sidebar-embed-container .btn,
+.sidebar-embed-container .nav-btn
+{
+    background: unset;
+    padding: 2px !important;
+    font-size: 13px;
+}
+
+.sidebar-embed-container .btn-disabled
+{
+    background: unset;
+}
+
+.sidebar-embed-container .btn:hover
+{
+    background: unset;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
 #leftbar
 {
     border-right: 1px solid #dadada;
@@ -335,8 +373,8 @@ table.present th, table.present td
 
 .btn-disabled
 {
-    color: #cacaca !important;
-    background: #f3f3f3 !important;
+    color: #cacaca;
+    background: #f3f3f3;
 }
 
 .btn-disabled:hover

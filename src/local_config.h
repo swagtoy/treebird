@@ -38,6 +38,7 @@ struct local_config
     int stat_hide_muted;
     int instance_show_shoutbox;
     int instance_panel;
+    int notif_embed;
 };
 
 #endif // LOCAL_CONFIG_H

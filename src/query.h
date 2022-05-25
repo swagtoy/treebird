@@ -45,6 +45,7 @@ struct post_values
     struct key stat_hide_muted; // Int
     struct key instance_show_shoutbox; // Int
     struct key instance_panel; // Int
+    struct key notif_embed; // Int
     struct key set; // Int
     
     struct key content; // String

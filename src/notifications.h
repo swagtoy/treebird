@@ -44,5 +44,6 @@ char* construct_notifications_compact(struct session* ssn,
 
 // Page contents
 void content_notifications(struct session* ssn, mastodont_t* api, char** data);
+void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // NOTIFICATION_H
