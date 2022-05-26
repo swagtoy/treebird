@@ -3,7 +3,7 @@ GIT ?= git
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
 CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ $(shell pkg-config --cflags libcurl libcjson libpcre)
-LDFLAGS = -lm -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
+LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcjson libcurl libpcre) -lfcgi
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h)
@@ -19,8 +19,11 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 all: $(MASTODONT_DIR) dep_build $(TARGET)
 apache: all apache_start
 
-$(TARGET): filec $(PAGES_CMP) $(OBJ) $(HEADERS)
+$(TARGET): filec template $(PAGES_CMP) $(OBJ) $(HEADERS)
 	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
+
+template: src/template/main.o
+	$(CC) -o template $<
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
