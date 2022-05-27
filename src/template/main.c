@@ -56,7 +56,7 @@ long filesize(FILE* file)
 
 void chexput(const char* buf, size_t size)
 {
-    for (size_t i = 0; i < size; ++i)
+    for (size_t i = 0; i < size && buf; ++i)
     {
         printf("0X%hhX,", buf[i]);
     }
@@ -81,6 +81,7 @@ char* tkn_typetostr(enum tmpl_type tkn)
     case TMPL_INT:
         return "int";
     case TMPL_STR:
+        return "const char*";
     case TMPL_STRLEN:
         return "char*";
     case TMPL_UINT:
@@ -190,8 +191,8 @@ void print_template(char* var, char* buf)
 
     // Print remainder if any
     chexput(buf_prev, strlen(buf_prev));
-    printf("};\n"
-           "struct %s {", var);
+    printf("0};\n"
+           "struct %s_template {", var);
 
     int should_print = 0;
     // Print tokens
@@ -217,12 +218,16 @@ void print_template(char* var, char* buf)
 
     // Generate function
     printf("};\n"
-           "char* tmpl_gen_%s(struct %s* data, unsigned* size){\n"
+           "char* tmpl_gen_%s(struct %s_template* data, unsigned* size){\n"
            "char* ret;\n"
            "unsigned s = easprintf(&ret, data_%s, ", var, var, var);
     for (size_t i = 0; i < tokens_len; ++i)
     {
-        printf("data->%s%s", tokens[i].token, i < tokens_len-1 ? ", " : "");
+        printf("data->%s", tokens[i].token);
+        // No (null) strings, make them empty
+        if (tokens[i].type == TMPL_STR || tokens[i].type == TMPL_STRLEN)
+            printf("?data->%s:\"\"", tokens[i].token);
+        fputs(i < tokens_len-1 ? ", " : "", stdout);
     }
     fputs(");\n"
           "if (size) *size = s;\n"
@@ -255,6 +260,7 @@ int main(int argc, char** argv)
     }
 
     fclose(file);
+    buf[size-1] = '\0';
 
     print_template(argv[ARG_VARIABLE], buf);
 

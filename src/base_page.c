@@ -30,7 +30,7 @@
 #include "global_cache.h"
 
 // Files
-#include "../static/index.chtml"
+#include "../static/index.ctmpl"
 #include "../static/quick_login.chtml"
 
 #define BODY_STYLE "style=\"background:url('%s');\""
@@ -45,7 +45,8 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     // Sidebar
     char* sidebar_str,
         * main_sidebar_str = NULL,
-        * account_sidebar_str = NULL;
+        * account_sidebar_str = NULL,
+        * instance_str = NULL;
     // Mastodont, used for notifications sidebar
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
@@ -106,50 +107,47 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
               account_sidebar_str ? account_sidebar_str : "",
               main_sidebar_str ? main_sidebar_str : "");
 
-    char* data;
-    int len = easprintf(&data, data_index_html,
-                        L10N[locale][L10N_APP_NAME],
-                        ssn->config.theme,
-                        ssn->config.themeclr ? "-dark" : "",
-                        background_url_css ? background_url_css : "",
-                        config_url_prefix,
-                        L10N[locale][L10N_APP_NAME],
-                        login_string,
-                        config_url_prefix,
-                        L10N[locale][L10N_SEARCH_PLACEHOLDER],
-                        L10N[locale][L10N_SEARCH_BUTTON],
-                        CAT_TEXT(page->category, BASE_CAT_HOME),
-                        config_url_prefix,
-                        L10N[locale][L10N_HOME],
-                        CAT_TEXT(page->category, BASE_CAT_LOCAL),
-                        config_url_prefix,
-                        L10N[locale][L10N_LOCAL],
-                        CAT_TEXT(page->category, BASE_CAT_FEDERATED),
-                        config_url_prefix,
-                        L10N[locale][L10N_FEDERATED],
-                        CAT_TEXT(page->category, BASE_CAT_NOTIFICATIONS),
-                        config_url_prefix,
-                        L10N[locale][L10N_NOTIFICATIONS],
-                        CAT_TEXT(page->category, BASE_CAT_LISTS),
-                        config_url_prefix,
-                        L10N[locale][L10N_LISTS],
-                        CAT_TEXT(page->category, BASE_CAT_FAVOURITES),
-                        config_url_prefix,
-                        L10N[locale][L10N_FAVOURITES],
-                        CAT_TEXT(page->category, BASE_CAT_BOOKMARKS),
-                        config_url_prefix,
-                        L10N[locale][L10N_BOOKMARKS],
-                        CAT_TEXT(page->category, BASE_CAT_DIRECT),
-                        config_url_prefix,
-                        L10N[locale][L10N_DIRECT],
-                        CAT_TEXT(page->category, BASE_CAT_CONFIG),
-                        config_url_prefix,
-                        L10N[locale][L10N_CONFIG],
-                        page->sidebar_left ? page->sidebar_left : "",
-                        (ssn->config.instance_panel && g_cache.panel_html.response ?
-                         g_cache.panel_html.response : ""),
-                        page->content,
-                        sidebar_str ? sidebar_str : "");
+    // Create instance panel
+    easprintf(&instance_str, "<div class=\"static-html\" id=\"instance-panel\">%s</div>",
+              (g_cache.panel_html.response ?
+               g_cache.panel_html.response : ""));
+
+    struct index_template index = {
+        .title = L10N[locale][L10N_APP_NAME],
+        .theme = ssn->config.theme,
+        .theme_clr = ssn->config.themeclr ? "-dark" : "",
+        .prefix = config_url_prefix,
+        .background_url = background_url_css,
+        .name = L10N[locale][L10N_APP_NAME],
+        .sidebar_cnt = login_string,
+        .placeholder = L10N[locale][L10N_SEARCH_PLACEHOLDER],
+        .search_btn = L10N[locale][L10N_SEARCH_BUTTON],
+        .active_home = CAT_TEXT(page->category, BASE_CAT_HOME),
+        .home = L10N[locale][L10N_HOME],
+        .active_local = CAT_TEXT(page->category, BASE_CAT_LOCAL),
+        .local = L10N[locale][L10N_LOCAL],
+        .active_federated = CAT_TEXT(page->category, BASE_CAT_FEDERATED),
+        .federated = L10N[locale][L10N_FEDERATED],
+        .active_notifications = CAT_TEXT(page->category, BASE_CAT_NOTIFICATIONS),
+        .notifications = L10N[locale][L10N_NOTIFICATIONS],
+        .active_lists = CAT_TEXT(page->category, BASE_CAT_LISTS),
+        .lists = L10N[locale][L10N_LISTS],
+        .active_favourites = CAT_TEXT(page->category, BASE_CAT_FAVOURITES),
+        .favourites = L10N[locale][L10N_FAVOURITES],
+        .active_bookmarks = CAT_TEXT(page->category, BASE_CAT_BOOKMARKS),
+        .bookmarks = L10N[locale][L10N_BOOKMARKS],
+        .active_direct = CAT_TEXT(page->category, BASE_CAT_DIRECT),
+        .direct = L10N[locale][L10N_DIRECT],
+        .active_config = CAT_TEXT(page->category, BASE_CAT_CONFIG),
+        .config = L10N[locale][L10N_CONFIG],
+        .sidebar_leftbar = page->sidebar_left,
+        .instance_panel = ssn->config.instance_panel ? instance_str : "",
+        .main = page->content,
+        .sidebar_rightbar = sidebar_str
+    };
+    
+    unsigned len;
+    char* data = tmpl_gen_index(&index, &len);
     
     if (!data)
     {
@@ -167,6 +165,7 @@ cleanup:
     if (main_sidebar_str != sidebar_embed) free(main_sidebar_str);
     free(account_sidebar_str);
     free(background_url_css);
+    free(instance_str);
 }
 
 void render_html(char* data, size_t data_len)

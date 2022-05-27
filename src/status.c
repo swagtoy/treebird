@@ -245,7 +245,7 @@ char* construct_interaction_buttons(struct session* ssn,
                   config_url_prefix,
                   status->id,
                   status->id,
-                  reltime_to_str(status->created_at));
+                  time_str);
     if (size) *size = s;
 
     // Cleanup
@@ -561,7 +561,7 @@ char* construct_status(struct session* ssn,
     }
 
     // Delete status menu item, logged in only
-    if (strcmp(status->account.acct, ssn->acct.acct) == 0)
+    if (ssn->logged_in && strcmp(status->account.acct, ssn->acct.acct) == 0)
         easprintf(&delete_status, data_menu_item_html,
                   config_url_prefix, status->id, "delete", "Delete status");
     

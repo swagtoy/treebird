@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" type="text/css" href="/{{ %s : theme }}{{ %s : theme_clr }}.css">
   </head>
-  <body {{ %s : not_sure_what_this_is }}>
+  <body {{ %s : background_url }}>
     <div></div>
     <div id="main-page-container">
       <div id="main-page">
@@ -40,9 +40,7 @@
                 <li><a class="sidebarbtn {{ %s : active_config }}" href="{{ %s : prefix}}/config">{{ %s : config }}</a></li>
               </ul>
               {{ %s : sidebar_leftbar }}
-              <div class="static-html" id="instance-panel">
-                {{ %s : instance_panel }}
-              </div>
+              {{ %s : instance_panel }}
             </td>
             
             <!-- Display for posts -->
