@@ -23,7 +23,7 @@ $(TARGET): filec template $(PAGES_CMP) $(OBJ) $(HEADERS)
 	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
 template: src/template/main.o
-	$(CC) -o template $<
+	$(CC) $(LDFLATS) -o template $<
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
