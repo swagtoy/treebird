@@ -27,7 +27,6 @@
 #include "string_helpers.h"
 
 // Files
-#include "../static/index.chtml"
 #include "../static/account.chtml"
 #include "../static/list.chtml"
 #include "../static/lists.chtml"

@@ -31,7 +31,6 @@
 #include "l10n.h"
 
 // Pages
-#include "../static/index.chtml"
 #include "../static/config_general.chtml"
 #include "../static/config_appearance.chtml"
 #include "../static/config_sidebar.chtml"

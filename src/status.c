@@ -36,7 +36,7 @@
 #include "emoji.h"
 
 // Pages
-#include "../static/status.chtml"
+#include "../static/status.ctmpl"
 #include "../static/notification.chtml"
 #include "../static/in_reply_to.chtml"
 #include "../static/status_interactions_label.chtml"
@@ -581,38 +581,33 @@ char* construct_status(struct session* ssn,
     if (status->in_reply_to_id && status->in_reply_to_account_id)
         in_reply_to_str = get_in_reply_to(api, status, NULL);
 
-    size_t s = easprintf(&stat_html, data_status_html,
-                         status->id,
-                         (flags & STATUS_FOCUSED) == STATUS_FOCUSED ?
-                         "focused" : "",
-                         notif_info ? notif_info : "",
-                         status->account.avatar,
-                         formatted_display_name, /* Username */
-                         config_url_prefix,
-                         status->account.acct,
-                         status->account.acct, /* Account */
-                         status->visibility, /* visibility */
-                         config_url_prefix,
-                         status->id,
-                         status->muted ? "un" : "",
-                         status->muted ? "Unmute thread" : "Mute thread",
-                         config_url_prefix,
-                         status->id,
-                         status->pinned ? "un" : "",
-                         status->pinned ? "Unpin" : "Pin",
-                         config_url_prefix,
-                         status->id,
-                         status->bookmarked ? "un" : "",
-                         status->bookmarked ? "Remove Bookmark" : "Bookmark",
-                         delete_status ? delete_status : "",
-                         in_reply_to_str ? in_reply_to_str : "",
-                         parse_content,
-                         attachments ? attachments : "",
-                         interactions_html ? interactions_html : "",
-                         emoji_reactions ? emoji_reactions : "",
-                         interaction_btns);
+    struct status_template tmpl = {
+        .status_id = status->id,
+        .focused = ((flags & STATUS_FOCUSED) == STATUS_FOCUSED ?
+                   "focused" : ""),
+        .notif_info = notif_info,
+        .avatar = status->account.avatar,
+        .username = formatted_display_name,
+        .prefix = config_url_prefix,
+        .acct = status->account.acct,
+        .visibility = status->visibility,
+        .unmute = status->muted ? "un" : "",
+        .unmute_btn = status->muted ? "Unmute thread" : "Mute thread",
+        .unpin = status->pinned ? "un" : "",
+        .unpin_btn = status->pinned ? "Unpin" : "Pin",
+        .unbookmark =  status->bookmarked ? "un" : "",
+        .unbookmark_btn = status->bookmarked ? "Remove Bookmark" : "Bookmark"
+        .delete_status = delete_status,
+        .in_reply_to_str = in_reply_to_str,
+        .status_content = parse_content,
+        .attachments = attachments,
+        .interactions = interactions_html,
+        .emoji_reactions = emoji_reactions,
+        .interaction_btns = interaction_btns
+    };
+
+    stat_html = tmpl_gen_status(&tmpl, size);
     
-    if (size) *size = s;
     // Cleanup
     if (formatted_display_name != status->account.display_name &&
         formatted_display_name) free(formatted_display_name);
