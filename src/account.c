@@ -51,33 +51,25 @@ struct account_args
 char* load_account_info(struct mstdnt_account* acct,
                         size_t* size)
 {
-    char* acct_info_html;
-    size_t s;
-
-    s = easprintf(&acct_info_html, data_account_info_html,
-                  acct->note);
-
-    if (size) *size = s;
-    return acct_info_html;
+    struct account_info_template data = {
+        .acct_note = acct->note
+    };
+    return tmpl_gen_account_info(&data, size);
 }
 
 char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
 {
-    char* acct_sidebar_html;
-    size_t s;
-
-    s = easprintf(&acct_sidebar_html, data_account_sidebar_html,
-                  acct->avatar,
-                  acct->display_name,
-                  L10N[L10N_EN_US][L10N_TAB_STATUSES],
-                  acct->statuses_count,
-                  L10N[L10N_EN_US][L10N_TAB_FOLLOWING],
-                  acct->following_count,
-                  L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
-                  acct->followers_count);
-
-    if (size) *size = s;
-    return acct_sidebar_html;
+    struct account_sidebar_template data = {
+        .avatar = acct->avatar,
+        .username = acct->display_name,
+        .statuses_text = L10N[L10N_EN_US][L10N_TAB_STATUSES],
+        .following_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWING],
+        .followers_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
+        .statuses_count = acct->statuses_count,
+        .following_count = acct->following_count,
+        .followers_count = acct->followers_count
+    };
+    return tmpl_gen_account_sidebar(&data, size);
 }
 
 static char* account_statuses_cb(struct session* ssn,
@@ -251,74 +243,67 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
         else
             follow_btn_text = L10N[page->locale][L10N_FOLLOW];
 
-        easprintf(&follow_btn, data_account_follow_btn_html,
-                  config_url_prefix,
-                  page->id,
-                  (rel && (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ||
-                           MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_REQUESTED))
-                   ? "un" : ""),
-                  (rel && MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING)
-                   ? "active" : ""),
-                  follow_btn_text);
+        struct account_follow_btn_template data = {
+            .prefix = config_url_prefix,
+            .active = (rel && MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING)
+                       ? "active" : ""),
+            .follow_text = follow_btn_text,
+            .unfollow = (rel && (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWING) ||
+                                 MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_REQUESTED))
+                         ? "un" : ""),
+            .userid = page->id,
+        };
+        
+        follow_btn = tmpl_gen_account_follow_btn(&data, NULL);
     }
 
-    size = easprintf(result, data_account_html,
-                     STR_NULL_EMPTY(is_blocked),
-                     page->header_image,
-                     STR_NULL_EMPTY(follows_you),
-                     page->display_name,
-                     page->acct,
-                     config_url_prefix,
-                     page->id,
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
-                                               MSTDNT_RELATIONSHIP_NOTIFYING)
+    struct account_template acct_data = {
+        .block_text = STR_NULL_EMPTY(is_blocked),
+        .header = page->header_image,
+        .display_name = page->display_name,
+        .acct = page->acct,
+        .prefix = config_url_prefix,
+        .userid = page->id,
+        .unsubscribe = (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                                 MSTDNT_RELATIONSHIP_NOTIFYING)
+                        ? "un" : ""),
+        .subscribe_text =  (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                                     MSTDNT_RELATIONSHIP_NOTIFYING)
+                            ? L10N[page->locale][L10N_UNSUBSCRIBE] : L10N[page->locale][L10N_SUBSCRIBE]),
+        .unblock = (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                             MSTDNT_RELATIONSHIP_BLOCKING)
                       ? "un" : ""),
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
-                                               MSTDNT_RELATIONSHIP_NOTIFYING)
-                      ? L10N[page->locale][L10N_UNSUBSCRIBE] : L10N[page->locale][L10N_SUBSCRIBE]),
-                     config_url_prefix,
-                     page->id,
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
-                                               MSTDNT_RELATIONSHIP_BLOCKING)
-                      ? "un" : ""),
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+        .block_text = (rel && MSTDNT_FLAG_ISSET(rel->flags,
                                                MSTDNT_RELATIONSHIP_BLOCKING)
                       ? L10N[page->locale][L10N_UNBLOCK] : L10N[page->locale][L10N_BLOCK]),
-                     config_url_prefix,
-                     page->id,
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
-                                               MSTDNT_RELATIONSHIP_MUTING)
-                      ? "un" : ""),
-                     (rel && MSTDNT_FLAG_ISSET(rel->flags,
+        .unmute = (rel && MSTDNT_FLAG_ISSET(rel->flags,
+                                            MSTDNT_RELATIONSHIP_MUTING)
+                   ? "un" : ""),
+        .mute_text = (rel && MSTDNT_FLAG_ISSET(rel->flags,
                                                MSTDNT_RELATIONSHIP_MUTING)
                       ? L10N[page->locale][L10N_UNMUTE] : L10N[page->locale][L10N_MUTE]),
-                     L10N[page->locale][L10N_TAB_STATUSES],
-                     page->statuses_count,
-                     L10N[page->locale][L10N_TAB_FOLLOWING],
-                     page->following_count,
-                     L10N[page->locale][L10N_TAB_FOLLOWERS],
-                     page->followers_count,
-                     STR_NULL_EMPTY(follow_btn),
-                     page->profile_image,
-                     STR_NULL_EMPTY(info_html),
-                     config_url_prefix,
-                     page->acct,
-                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_STATUSES),
-                     L10N[page->locale][L10N_TAB_STATUSES],
-                     config_url_prefix,
-                     page->acct,
-                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_SCROBBLES),
-                     L10N[page->locale][L10N_TAB_SCROBBLES],
-                     config_url_prefix,
-                     page->acct,
-                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_MEDIA),
-                     L10N[page->locale][L10N_TAB_MEDIA],
-                     config_url_prefix,
-                     page->acct,
-                     MAKE_FOCUSED_IF(page->tab, ACCT_TAB_PINNED),
-                     L10N[page->locale][L10N_TAB_PINNED],
-                     content);
+        .tab_statuses_text = L10N[page->locale][L10N_TAB_STATUSES],
+        .statuses_count = page->statuses_count,
+        .tab_following_text = L10N[page->locale][L10N_TAB_FOLLOWING],
+        .following_count = page->following_count,
+        .tab_followers_count = L10N[page->locale][L10N_TAB_FOLLOWERS],
+        .followers_count = page->followers_count,
+        .follow_button = follow_btn,
+        .avatar = page->profile_image,
+        .info = info_html,
+        .tab_status_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_STATUSES),
+        .tab_statuses_text = L10N[page->locale][L10N_TAB_STATUSES],
+        .tab_scrobbles_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_SCROBBLES),
+        .tab_scrobbles_text = L10N[page->locale][L10N_TAB_SCROBBLES],
+        .tab_media_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_MEDIA),
+        .tab_media_text = L10N[page->locale][L10N_TAB_MEDIA],
+        .tab_pinned_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_PINNED),
+        .tab_pinned_text = L10N[page->locale][L10N_TAB_PINNED],
+        .acct_content = content
+    };
 
+    *result = tmpl_gen_account(&acct_data, &size);
+    
     if (info_html) free(info_html);
     if (follows_you) free(follows_you);
     if (follow_btn) free(follow_btn);
@@ -331,19 +316,14 @@ char* construct_account(mastodont_t* api,
                         uint8_t flags,
                         int* size)
 {
-    char* acct_html;
+    struct account_stub_template data = {
+        .prefix = config_url_prefix,
+        .acct = acct->acct,
+        .avatar = acct->avatar,
+        .display_name = acct->display_name
+    };
 
-    size_t s = easprintf(&acct_html, data_account_stub_html,
-                         config_url_prefix,
-                         acct->acct,
-                         acct->avatar,
-                         config_url_prefix,
-                         acct->acct,
-                         acct->display_name,
-                         acct->acct);
-
-    if (size) *size = s;
-    return acct_html;
+    return tmpl_gen_account_stub(&data, size);
 }
 
 static char* construct_account_voidwrap(void* passed, size_t index, int* res)
@@ -530,9 +510,12 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
                                                   statuses[status_count-1].id,
                                                   NULL);
     }
-    
-    easprintf(&output, data_bookmarks_page_html, status_format,
-              STR_NULL_EMPTY(navigation_box));
+
+    struct bookmarks_page_template data = {
+        .statuses = status_format,
+        .navigation = navigation_box
+    };
+    output = tmpl_gen_bookmarks_page(&data, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_BOOKMARKS,
@@ -590,8 +573,12 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
                                                   statuses[status_count-1].id,
                                                   NULL);
     }
-    easprintf(&output, data_favourites_page_html, status_format,
-              navigation_box ? navigation_box : "");
+
+    struct favourites_page_template data = {
+        .statuses = status_format,
+        .navigation = navigation_box
+    };
+    output = tmpl_gen_favourites_page(&data, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_FAVOURITES,
