@@ -8,7 +8,7 @@ const char* unrepeat;
 const char* repeat_active;
 const char* repeats_count;
 const char* repeat_text;
-const char* favourite;
+const char* unfavourite;
 const char* favourite_active;
 const char* favourites_count;
 const char* favourites_text;
@@ -18,7 +18,7 @@ const char* rel_time;
 };
 char* tmpl_gen_interaction_buttons(struct interaction_buttons_template* data, unsigned* size){
 char* ret;
-unsigned s = easprintf(&ret, data_interaction_buttons, data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->status_id?data->status_id:"", data->reply_count?data->reply_count:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->unrepeat?data->unrepeat:"", data->repeat_active?data->repeat_active:"", data->repeats_count?data->repeats_count:"", data->repeat_text?data->repeat_text:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->favourite?data->favourite:"", data->favourite_active?data->favourite_active:"", data->favourites_count?data->favourites_count:"", data->favourites_text?data->favourites_text:"", data->likeboost_btn?data->likeboost_btn:"", data->reactions_btn?data->reactions_btn:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->status_id?data->status_id:"", data->rel_time?data->rel_time:"");
+unsigned s = easprintf(&ret, data_interaction_buttons, data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->status_id?data->status_id:"", data->reply_count?data->reply_count:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->unrepeat?data->unrepeat:"", data->repeat_active?data->repeat_active:"", data->repeats_count?data->repeats_count:"", data->repeat_text?data->repeat_text:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->unfavourite?data->unfavourite:"", data->favourite_active?data->favourite_active:"", data->favourites_count?data->favourites_count:"", data->favourites_text?data->favourites_text:"", data->likeboost_btn?data->likeboost_btn:"", data->reactions_btn?data->reactions_btn:"", data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->status_id?data->status_id:"", data->rel_time?data->rel_time:"");
 if (size) *size = s;
 return ret;
 }

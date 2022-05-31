@@ -1,0 +1,13 @@
+#ifndef __emoji
+#define __emoji
+static const char data_emoji[] = {0X3C,0X61,0X20,0X68,0X72,0X65,0X66,0X3D,0X22,0X2F,0X73,0X74,0X61,0X74,0X75,0X73,0X2F,0X25,0X73,0X2F,0X72,0X65,0X61,0X63,0X74,0X2F,0X25,0X73,0X22,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X65,0X6D,0X6F,0X6A,0X69,0X22,0X3E,0X25,0X73,0X3C,0X2F,0X61,0X3E,0};
+struct emoji_template {const char* status_id;
+const char* emoji;
+};
+char* tmpl_gen_emoji(struct emoji_template* data, unsigned* size){
+char* ret;
+unsigned s = easprintf(&ret, data_emoji, data->status_id?data->status_id:"", data->emoji?data->emoji:"", data->emoji?data->emoji:"");
+if (size) *size = s;
+return ret;
+}
+#endif

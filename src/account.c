@@ -31,13 +31,13 @@
 #include "navigation.h"
 
 // Files
-#include "../static/account.chtml"
-#include "../static/account_info.chtml"
-#include "../static/account_follow_btn.chtml"
-#include "../static/favourites_page.chtml"
-#include "../static/bookmarks_page.chtml"
-#include "../static/account_stub.chtml"
-#include "../static/account_sidebar.chtml"
+#include "../static/account.ctmpl"
+#include "../static/account_info.ctmpl"
+#include "../static/account_follow_btn.ctmpl"
+#include "../static/favourites_page.ctmpl"
+#include "../static/bookmarks_page.ctmpl"
+#include "../static/account_stub.ctmpl"
+#include "../static/account_sidebar.ctmpl"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 

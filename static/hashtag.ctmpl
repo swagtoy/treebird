@@ -1,0 +1,13 @@
+#ifndef __hashtag
+#define __hashtag
+static const char data_hashtag[] = {0X3C,0X61,0X20,0X68,0X72,0X65,0X66,0X3D,0X22,0X25,0X73,0X2F,0X74,0X61,0X67,0X2F,0X25,0X73,0X22,0X20,0X73,0X74,0X79,0X6C,0X65,0X3D,0X22,0X66,0X6F,0X6E,0X74,0X2D,0X73,0X69,0X7A,0X65,0X3A,0X20,0X25,0X75,0X70,0X78,0X3B,0X22,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X68,0X61,0X73,0X68,0X74,0X61,0X67,0X2D,0X69,0X74,0X65,0X6D,0X22,0X3E,0X23,0X25,0X73,0X3C,0X2F,0X61,0X3E,0};
+struct hashtag_template {const char* prefix;
+const char* tag;
+};
+char* tmpl_gen_hashtag(struct hashtag_template* data, unsigned* size){
+char* ret;
+unsigned s = easprintf(&ret, data_hashtag, data->prefix?data->prefix:"", data->tag?data->tag:"", data->tag?data->tag:"");
+if (size) *size = s;
+return ret;
+}
+#endif

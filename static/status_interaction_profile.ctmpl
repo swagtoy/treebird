@@ -1,0 +1,13 @@
+#ifndef __status_interaction_profile
+#define __status_interaction_profile
+static const char data_status_interaction_profile[] = {0X3C,0X69,0X6D,0X67,0X20,0X74,0X69,0X74,0X6C,0X65,0X3D,0X22,0X25,0X73,0X22,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X70,0X66,0X70,0X2D,0X69,0X6E,0X74,0X65,0X72,0X61,0X63,0X74,0X69,0X6F,0X6E,0X22,0X20,0X73,0X72,0X63,0X3D,0X22,0X25,0X73,0X22,0X3E,0};
+struct status_interaction_profile_template {const char* acct;
+const char* avatar;
+};
+char* tmpl_gen_status_interaction_profile(struct status_interaction_profile_template* data, unsigned* size){
+char* ret;
+unsigned s = easprintf(&ret, data_status_interaction_profile, data->acct?data->acct:"", data->avatar?data->avatar:"");
+if (size) *size = s;
+return ret;
+}
+#endif

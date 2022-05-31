@@ -1,0 +1,16 @@
+#ifndef __emoji_reaction
+#define __emoji_reaction
+static const char data_emoji_reaction[] = {0X3C,0X61,0X20,0X68,0X72,0X65,0X66,0X3D,0X22,0X25,0X73,0X2F,0X73,0X74,0X61,0X74,0X75,0X73,0X2F,0X25,0X73,0X2F,0X72,0X65,0X61,0X63,0X74,0X2F,0X25,0X73,0X22,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X65,0X6D,0X6F,0X6A,0X69,0X2D,0X72,0X65,0X61,0X63,0X74,0X2D,0X62,0X6F,0X78,0X20,0X62,0X74,0X6E,0X20,0X62,0X74,0X6E,0X2D,0X61,0X6C,0X74,0X20,0X25,0X73,0X22,0X3E,0X3C,0X73,0X70,0X61,0X6E,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X65,0X6D,0X6F,0X6A,0X69,0X22,0X3E,0X25,0X73,0X3C,0X2F,0X73,0X70,0X61,0X6E,0X3E,0X20,0X3C,0X73,0X70,0X61,0X6E,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X65,0X6D,0X6F,0X6A,0X69,0X2D,0X6E,0X75,0X6D,0X22,0X3E,0X25,0X75,0X3C,0X73,0X70,0X61,0X6E,0X3E,0X3C,0X2F,0X61,0X3E,0};
+struct emoji_reaction_template {const char* prefix;
+const char* status_id;
+const char* emoji;
+const char* emoji_active;
+unsigned emoji_count;
+};
+char* tmpl_gen_emoji_reaction(struct emoji_reaction_template* data, unsigned* size){
+char* ret;
+unsigned s = easprintf(&ret, data_emoji_reaction, data->prefix?data->prefix:"", data->status_id?data->status_id:"", data->emoji?data->emoji:"", data->emoji_active?data->emoji_active:"", data->emoji?data->emoji:"", data->emoji_count);
+if (size) *size = s;
+return ret;
+}
+#endif

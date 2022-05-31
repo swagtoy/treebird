@@ -35,7 +35,8 @@ enum tmpl_type
     TMPL_INT,
     TMPL_UINT,
     TMPL_STR,
-    TMPL_STRLEN
+    TMPL_STRLEN,
+    TMPL_FLOAT,
 };
 
 struct tmpl_token
@@ -86,6 +87,8 @@ char* tkn_typetostr(enum tmpl_type tkn)
         return "char*";
     case TMPL_UINT:
         return "unsigned";
+    case TMPL_FLOAT:
+        return "float";
     }
     return "";
 }
@@ -108,6 +111,9 @@ enum tmpl_type tkn_type(char* str)
              strcmp(str, "uint") == 0 ||
              strcmp(str, "%u") == 0)
         return TMPL_UINT;
+    else if (strcmp(str, "float") == 0 ||
+             strcmp(str, "%f") == 0)
+        return TMPL_FLOAT;
 
     // TODO Real error handling
     return TMPL_INT;
@@ -185,6 +191,9 @@ void print_template(char* var, char* buf)
             break;
         case TMPL_UINT:
             chexput("%u", 2);
+            break;
+        case TMPL_FLOAT:
+            chexput("%f", 2);
             break;
         }
     }
