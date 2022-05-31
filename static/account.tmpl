@@ -1,0 +1,64 @@
+{{%s:is_blocked}}
+<div class="account">
+  <div class="acct-banner" style="background-image:url('{{%s:header}}');">
+    {{%s:follows_you}}
+    <div class="acct-info-data">
+      <span class="acct-displayname">{{%s:display_name}}</span>
+      <span class="acct-username">{{%s:acct}}</span>
+    </div>
+
+    <span class="menu-container user-options-btn">
+      Menu
+      <div class="menu menu-options">
+        <ul>
+          <li><a class="nolink" href="{{%s:prefix}}/user/{{%s:userid}}/action/{{%s:unsubscribe}}subscribe"><input class="btn-menu" type="button" value="{{%s:subscribe_text}}"></a></li>
+          <li><a class="nolink" href="{{%s:prefix}}/user/{{%s:userid}}/action/{{%s:unblock}}block"><input class="btn-menu" type="button" value="{{%s:block_text}}"></a></li>
+          <li><a class="nolink" href="{{%s:prefix}}/user/{{%s:userid}}/action/{{%s:unmute}}mute"><input class="btn-menu" type="button" value="{{%s:mute_text}}"></a></li>
+        </ul>
+      </div>
+    </span>
+  </div>
+  
+  <div class="acct-header">
+    <a href="#" class="header-btn btn">
+      <span class="btn-header">{{%s:tab_statuses_text}}</span>
+      <span class="btn-content">{{%d:statuses_count}}</span>
+    </a>
+    
+    <a href="#" class="header-btn btn">
+      <span class="btn-header">{{%s:tab_following_count}}</span>
+      <span class="btn-content">{{%d:following_count}}</span>
+    </a>
+
+    <a href="#" class="header-btn btn">
+      <span class="btn-header">{{%s:tab_followers_count}}</span>
+      <span class="btn-content">{{%d:followers_count}}</span>
+    </a>
+    
+    {{%s:follow_btn}}
+  </div>
+  <img class="acct-pfp" src="{{%s:avatar}}">
+</div>
+
+{{%s:info}}
+
+<table class="tabs ui-table">
+  <tr>
+    <td>
+      <a href="{{%s:prefix}}/@{{%s:acct}}/statuses"><input class="tab-btn btn {{%s:tab_statuses_focused}}" type="button" value="{{%s:tab_statuses_text}}"></a>
+    </td>
+    <td>
+      <a href="{{%s:prefix}}/@{{%s:acct}}/scrobbles"><input class="tab-btn btn {{%s:tab_scrobbles_focused}}" type="button" value="{{%s:tab_scrobbles_text}}"></a>
+    </td>
+    <td>
+      <a href="{{%s:prefix}}/@{{%s:acct}}/media"><input class="tab-btn btn {{%s:tab_media_focused}}" type="button" value="{{%s:tab_media_text}}"></a>
+    </td>
+    <td>
+      <a href="{{%s:prefix}}/@{{%s:acct}}/pinned"><input class="tab-btn btn {{%s:tab_pinned_focused}}" type="button" value="{{%s:tab_pinned_text}}"></a>
+    </td>
+  </tr>
+</table>
+
+<div class="account-content">
+  {{%s:acct_content}}
+</div>

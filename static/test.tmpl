@@ -1,0 +1,52 @@
+<div class="simple-page">
+  <h1>Test page</h1>
+  <p>Test your nginx/apache and browser here</p>
+  <form action="test" method="get">
+    <input name="value" type="text">
+    <input type="submit" value="GET">
+  </form>
+
+  <form action="test" method="post">
+    <input name="value" type="text">
+    <input type="submit" value="POST">
+  </form>
+  
+  <table id="env-table" class="present">
+    <tr>
+      <th><b>ENV</b></th>
+      <th><b>Value</b></th>
+    </tr>
+    <tr>
+      <td>HTTP_COOKIE</td>
+      <td>{{%s:HTTP_COOKIE}}</td>
+    </tr>
+    <tr>
+      <td>PATH_INFO</td>
+      <td>{{%s:PATH_INFO}}</td>
+    </tr>
+    <tr>
+      <td>QUERY_STRING</td>
+      <td>{{%s:QUERY_STRING}}</td>
+    </tr>
+    <tr>
+      <td>REQUEST_METHOD</td>
+      <td>{{%s:REQUEST_METHOD}}</td>
+    </tr>
+    <tr>
+      <td>SCRIPT_NAME</td>
+      <td>{{%s:SCRIPT_NAME}}</td>
+    </tr>
+    <tr>
+      <td>HTTP_REFERER</td>
+      <td>{{%s:HTTP_REFERER}}</td>
+    </tr>
+    <tr>
+      <td>HTTP_USER_AGENT</td>
+      <td>{{%s:HTTP_USER_AGENT}}</td>
+    </tr>
+    <tr>
+      <td>CONTENT_LENGTH</td>
+      <td>{{%s:CONTENT_LENGTH}}</td>
+    </tr>
+  </table>
+</div>

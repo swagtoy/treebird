@@ -1,0 +1,77 @@
+<div class="simple-page">
+  <form action="general" method="post">
+    <!-- Lets server know we sent it -->
+    <input type="hidden" name="set" value="1">
+    <h1>General</h1>
+    <input class="btn btn-single" type="submit" value="Save">
+    <h3>JavaScript</h3>
+    <ul>
+      <li>
+        <input type="checkbox" id="cfgjs" name="js" value="1" {{%s:js_on}}>
+        <label for="cfgjs">Enable JavaScript - If disabled, overrides options below</label>
+      </li>
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfgjsactions" name="jsactions" value="1" {{%s:jsactions_on}}> -->
+      <!--   <label for="cfgjsactions">Quick actions - Likes, Boosts, etc done in background</label> -->
+      <!-- </li> -->
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfgjsreply" name="jsreply" value="1" {{%s:jsreply_on}}> -->
+      <!--   <label for="cfgjsreply">Quick reply - Replies don't require redirects</label> -->
+      <!-- </li> -->
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfgjslive" name="jslive" value="1" {{%s:jslive_on}}> -->
+      <!--   <label for="cfgjslive">Live update - Statuses, chats, and reactions fetch on the fly</label> -->
+      <!-- </li> -->
+    </ul>
+
+    <h3>Statuses</h3>
+    <ul>
+      <li>
+        <input type="checkbox" id="cfgstatattachments" name="statattachments" value="1" {{%s:status_attachments_on}}>
+        <label for="cfgstatattachments">Show attachments - If disabled, attachments are links instead</label>
+      </li>
+      <li>
+        <input type="checkbox" id="cfgstatgreentexts" name="statgreentexts" value="1" {{%s:status_greentexts_on}}>
+        <label for="cfgstatgreentexts">Show greentexts</label>
+      </li>
+      <li>
+        <input type="checkbox" id="cfgstatdope" name="statdope" value="1" {{%s:status_dopameme_on}}>
+        <label for="cfgstatdope">Show dopameme numbers - Likes, comments, and boost counts</label>
+      </li>
+      <li>
+        <input type="checkbox" id="cfgstatoneclicksoftware" name="statoneclicksoftware" value="1" {{%s:status_oneclicksoftware_on}}>
+        <label for="cfgstatoneclicksoftware">Show Like-Boost button - Show a button in the status which likes and boosts a post</label>
+      </li>
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfgstatemojolikes" name="statemojolikes" value="1" {{%s:status_emojo_likes_on}}> -->
+      <!--   <label for="cfgstatemojolikes">Convert Emoji reacts to likes - Also disables the emoji reaction button</label> -->
+      <!-- </li> -->
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfgstathidemuted" name="stathidemuted" value="1" {{%s:status_hide_muted_on}}> -->
+      <!--   <label for="cfgstathidemuted">Hide statuses from muted users and threads - If disabled, statuses will appear collapsed</label> -->
+      <!-- </li> -->
+    </ul>
+
+    <h3>Instance</h3>
+    <ul>
+      <!-- <li> -->
+      <!--   <input type="checkbox" id="cfginstanceshowshoutbox" name="instanceshowshoutbox" value="1" {{%s:instance_show_shoutbox_on}}> -->
+      <!--   <label for="cfginstanceshowshoutbox">Show instance shoutbox (JS required)</label> -->
+      <!-- </li> -->
+      <li>
+        <input type="checkbox" id="cfginstancepanel" name="instancepanel" value="1" {{%s:instance_panel_on}}>
+        <label for="cfginstancepanel">Show instance panel - <em>Admins should <strong>not</strong> use the instance panel for major announcements</em></label>
+      </li>
+    </ul>
+
+    <h3>Notifications</h3>
+    <ul>
+      <li>
+        <input type="checkbox" id="cfgnotifembed" name="notifembed" value="1" {{%s:notifications_embed_on}}>
+        <label for="cfgnotifembed">Display notifications in iFrame - iFrames separate loading from the main page</label>
+      </li>
+    </ul>
+
+    <input class="btn btn-single" type="submit" value="Save">
+  </form>
+</div>

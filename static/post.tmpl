@@ -1,0 +1,22 @@
+<form action="{{%s:prefix}}/status/create" method="post" enctype="multipart/form-data">
+  {{%s:reply_input}}
+  <div class="statusbox">
+    <textarea name="content" placeholder="Just landed in N.Y." rows="5" tabindex="1">{{%s:content}}</textarea>
+    <div class="statusfooter">
+      <div class="statusfooter-left">
+        <select tabindex="3" name="visibility" id="visibility">
+          <option value="public">Public</option>
+          <option value="unlisted">Unlisted</option>
+          <option value="private">Private</option>
+          <option value="direct">Direct</option>
+          <option value="local">Local</option>
+          <!-- TODO generate lists -->
+        </select>
+        <input type="file" name="file" tabindex="4" multiple>
+      </div>
+      <div class="statusfooter-right">
+        <input type="submit" value="Post" tabindex="2" class="btn post-btn">
+      </div>
+    </div>
+  </div>
+</form>

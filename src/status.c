@@ -44,7 +44,7 @@
 #include "../static/status_interaction_profile.chtml"
 #include "../static/likeboost.chtml"
 #include "../static/reactions_btn.chtml"
-#include "../static/interaction_buttons.chtml"
+#include "../static/interaction_buttons.ctmpl"
 #include "../static/menu_item.chtml"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
@@ -222,32 +222,28 @@ char* construct_interaction_buttons(struct session* ssn,
               status->id);
 
     time_str = reltime_to_str(status->created_at);
-    
-    s = easprintf(&interaction_html, data_interaction_buttons_html,
-                  config_url_prefix,
-                  status->id,
-                  status->id,
-                  reply_count ? reply_count : "",
-                  config_url_prefix,
-                  status->id,
-                  status->reblogged ? "un" : "",
-                  status->reblogged ? "active" : "",
-                  repeat_count ? repeat_count : "",
-                  config_url_prefix,
-                  status->id,
-                  status->favourited ? "un" : "",
-                  status->favourited ? "active" : "",
-                  favourites_count ? favourites_count : "",
-                  (likeboost_html &&
-                   ssn->config.stat_oneclicksoftware &&
-                   (flags & STATUS_NO_LIKEBOOST) != STATUS_NO_LIKEBOOST ? likeboost_html : ""),
-                  reactions_btn_html ? reactions_btn_html : "",
-                  config_url_prefix,
-                  status->id,
-                  status->id,
-                  time_str);
-    if (size) *size = s;
 
+    struct interaction_buttons_template data = {
+        .prefix = config_url_prefix,
+        .status_id = status->id,
+        .reply_count = reply_count,
+        .unrepeat = status->reblogged ? "un" : "",
+        .repeat_active = status->reblogged ? "active" : "",
+        .repeats_count = repeat_count,
+        .repeat_text = "Repeat",
+        .unfavourite = status->favourited ? "un" : "",
+        .favourite_active = status->favourited ? "active" : "",
+        .favourites_count = favourites_count,
+        .favourites_text = "Favorite",
+        .likeboost_btn = (likeboost_html &&
+                          ssn->config.stat_oneclicksoftware &&
+                          (flags & STATUS_NO_LIKEBOOST) != STATUS_NO_LIKEBOOST ? likeboost_html : ""),
+        .reactions_btn = reactions_btn_html,
+        .rel_tilm = time_str
+    }
+
+    interaction_html = tmpl_gen_interaction_buttons(&data, size);
+    
     // Cleanup
     free(emoji_picker_html);
     free(reply_count);

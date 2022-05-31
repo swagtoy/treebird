@@ -1,0 +1,43 @@
+<div class="status-interact">
+  <table class="ui-table">
+    <tr>
+      <td>
+        <a target="_parent" href="{{%s:prefix}}/status/{{%s:status_id}}/reply#{{%s:status_id}}" class="pointer statbtn reply-btn">
+          <svg class="reply" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg>
+            <span class="count">{{%s:reply_count}}</span>
+          </label>
+        </form>
+      </td>
+      <td>
+        <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
+          <input type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
+          <label class="repeat-btn pointer statbtn">
+            <svg class="repeat {{%s:repeat_active}}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12.2v-2a4 4 0 0 1 4-4h12.8M7 21.9l-4-4 4-4"/><path d="M21 11.8v2a4 4 0 0 1-4 4H4.2"/></svg>
+            <span class="count">{{%s:repeats_count}}</span>
+            <input class="hidden" type="submit" value="{{%s:repeat_text}}">
+          </label>
+        </form>
+      </td>
+      <td>
+        <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
+          <input type="hidden" name="itype" value="{{%s:unfavourite}}like">
+          <label class="pointer statbtn like-btn">
+            <svg class="like {{%s:favourite_active}}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span class="count">{{%s:favourites_count}}</span>
+            <input class="hidden" type="submit" value="{{%s:favourites_text}}">
+          </label>
+        </form>
+      </td>
+      {{%s:likeboost_btn}}
+      {{%s:reactions_btn}}
+      <td>
+        <a target="_parent" href="{{%s:prefix}}/status/{{%s:status_id}}#{{%s:status_id}}" class="pointer statbtn view-btn">
+          <svg class="expand" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg>
+        </a>
+      </td>
+      <td>
+        <span class="time">{{%s:rel_time}}</span>
+      </td>
+    </tr>
+  </table>
+</div>

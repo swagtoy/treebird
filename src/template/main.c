@@ -191,47 +191,52 @@ void print_template(char* var, char* buf)
 
     // Print remainder if any
     chexput(buf_prev, strlen(buf_prev));
-    printf("0};\n"
-           "struct %s_template {", var);
+    puts("0};");
 
-    int should_print = 0;
-    // Print tokens
-    for (size_t i = 0; i < tokens_len; ++i)
+    // Only create struct and function when there are tokens detected
+    if (tokens_len)
     {
-        should_print = 1;
-        // Check if used
-        for (size_t j = 0; j < tokens_len; ++j)
-        {
-            if (i != j &&
-                strcmp(tokens[i].token, tokens[j].token) == 0 &&
-                tokens[j].used)
-                should_print = 0;
-        }
-        if (should_print)
-        {
-            printf("%s %s;\n", tkn_typetostr(tokens[i].type), tokens[i].token);
-            if (tokens[i].type == TMPL_STRLEN)
-                printf("unsigned %s_len;\n", tokens[i].token);
-            tokens[i].used = 1;
-        }
-    }
+        printf("struct %s_template {", var);
 
-    // Generate function
-    printf("};\n"
-           "char* tmpl_gen_%s(struct %s_template* data, unsigned* size){\n"
-           "char* ret;\n"
-           "unsigned s = easprintf(&ret, data_%s, ", var, var, var);
-    for (size_t i = 0; i < tokens_len; ++i)
-    {
-        printf("data->%s", tokens[i].token);
-        // No (null) strings, make them empty
-        if (tokens[i].type == TMPL_STR || tokens[i].type == TMPL_STRLEN)
-            printf("?data->%s:\"\"", tokens[i].token);
-        fputs(i < tokens_len-1 ? ", " : "", stdout);
+        int should_print = 0;
+        // Print tokens
+        for (size_t i = 0; i < tokens_len; ++i)
+        {
+            should_print = 1;
+            // Check if used
+            for (size_t j = 0; j < tokens_len; ++j)
+            {
+                if (i != j &&
+                    strcmp(tokens[i].token, tokens[j].token) == 0 &&
+                    tokens[j].used)
+                    should_print = 0;
+            }
+            if (should_print)
+            {
+                printf("%s %s;\n", tkn_typetostr(tokens[i].type), tokens[i].token);
+                if (tokens[i].type == TMPL_STRLEN)
+                    printf("unsigned %s_len;\n", tokens[i].token);
+                tokens[i].used = 1;
+            }
+        }
+
+        // Generate function
+        printf("};\n"
+               "char* tmpl_gen_%s(struct %s_template* data, unsigned* size){\n"
+               "char* ret;\n"
+               "unsigned s = easprintf(&ret, data_%s, ", var, var, var);
+        for (size_t i = 0; i < tokens_len; ++i)
+        {
+            printf("data->%s", tokens[i].token);
+            // No (null) strings, make them empty
+            if (tokens[i].type == TMPL_STR || tokens[i].type == TMPL_STRLEN)
+                printf("?data->%s:\"\"", tokens[i].token);
+            fputs(i < tokens_len-1 ? ", " : "", stdout);
+        }
+        fputs(");\n"
+              "if (size) *size = s;\n"
+              "return ret;\n}", stdout);
     }
-    fputs(");\n"
-          "if (size) *size = s;\n"
-          "return ret;\n}", stdout);
 
     // Done!
     puts("\n#endif");
