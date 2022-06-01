@@ -28,7 +28,7 @@ char* construct_func_strings(char* (*func)(void*, size_t, size_t*),
                              size_t* ret_size)
 {
     char* res_html, *result = NULL;
-    int curr_parse_size = 0, last_parse_size, parse_size;
+    size_t curr_parse_size = 0, last_parse_size, parse_size;
 
     if (strings_len <= 0) return NULL;
 
