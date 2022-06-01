@@ -2,49 +2,49 @@
   <table class="tabs ui-table">
     <tr>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="0">
           <input class="tab-btn btn btn-alt {{%s:cat_smileys}}" type="submit" value="😃">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:animals}}">
           <input class="tab-btn btn btn-alt {{%s:cat_animals}}" type="submit" value="🐻">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:food}}">
           <input class="tab-btn btn btn-alt {{%s:cat_food}}" type="submit" value="🍔">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:travel}}">
           <input class="tab-btn btn btn-alt {{%s:cat_travel}}" type="submit" value="🚀">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:activities}}">
           <input class="tab-btn btn btn-alt {{%s:cat_activities}}" type="submit" value="⚽">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:objects}}">
           <input class="tab-btn btn btn-alt {{%s:cat_objects}}" type="submit" value="🔧">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:symbols}}">
           <input class="tab-btn btn btn-alt {{%s:cat_symbols}}" type="submit" value="🔢">
         </form>
       </td>
       <td>
-        <form action="#id" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <input type="hidden" name="emojoindex" value="{{%d:flags}}">
           <input class="tab-btn btn btn-alt {{%s:cat_flags}}" type="submit" value="🎌">
         </form>
@@ -60,7 +60,7 @@
   <table class="navigation ui-table">
     <tr>
       <td class="nav-prev btn">
-        <form action="#id-{{%s:status_id}}" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <label class="pointer">
             <input type="hidden" name="emojoindex" value="{{%u:index_previous}}">
             <span class="nav-btn {{%s:previous_enabled}}">Previous</span>
@@ -69,7 +69,7 @@
         </form>
       </td>
       <td class="nav-next btn">
-        <form action="#id-{{%s:status_id}}" method="post">
+        <form action="#{{%s:status_id}}" method="post">
           <label class="pointer">
             <input type="hidden" name="emojoindex" value="{{%u:index_next}}">
             <span class="nav-btn">Next</span>

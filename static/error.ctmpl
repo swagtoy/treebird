@@ -1,14 +1,10 @@
 #ifndef __error
 #define __error
+#include <stddef.h>
 static const char data_error[] = {0X3C,0X73,0X70,0X61,0X6E,0X20,0X63,0X6C,0X61,0X73,0X73,0X3D,0X22,0X65,0X2D,0X25,0X73,0X20,0X25,0X73,0X22,0X3E,0X25,0X73,0X3C,0X2F,0X73,0X70,0X61,0X6E,0X3E,0};
 struct error_template {const char* err_type;
 const char* is_padded;
 const char* error;
 };
-char* tmpl_gen_error(struct error_template* data, unsigned* size){
-char* ret;
-unsigned s = easprintf(&ret, data_error, data->err_type?data->err_type:"", data->is_padded?data->is_padded:"", data->error?data->error:"");
-if (size) *size = s;
-return ret;
-}
+char* tmpl_gen_error(struct error_template* data, size_t* size);
 #endif

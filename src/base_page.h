@@ -50,9 +50,10 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
 /**
  * Outputs HTML in format for CGI. This can only be called once!
  *
+ * @param content_type The Content-Type to display, if NULL, assume "text/html"
  * @param data HTML content
  * @param data_len Length of data.
  */
-void render_html(char* data, size_t data_len);
+void render_html(char* content_type, char* data, size_t data_len);
 
 #endif // BASE_PAGE_H

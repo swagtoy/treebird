@@ -21,7 +21,7 @@
 #include "easprintf.h"
 
 // Pages
-#include "../static/navigation.chtml"
+#include "../static/navigation.ctmpl"
 
 #define SUBMIT_HTML "<input type=\"submit\" class=\"hidden\">"
 
@@ -30,19 +30,14 @@ char* construct_navigation_box(char* start_id,
                                char* next_id,
                                size_t* size)
 {
-    char* nav_html;
-
     int is_start = start_id && prev_id ? strcmp(start_id, prev_id) == 0 : 0;
 
-    size_t s = easprintf(&nav_html, data_navigation_html,
-                         start_id,
-                         prev_id,
-                         // Disable button if at start
-                         is_start ? "btn-disabled" : "",
-                         is_start ? "" : SUBMIT_HTML,
-                         // If user pressed next, reserve start state
-                         start_id,
-                         next_id);
-    if (size) *size = s;
-    return nav_html;
+    struct navigation_template tdata = {
+        .start_id = start_id,
+        .min_id = prev_id,
+        .prev_active = is_start ? "btn-disabled" : NULL,
+        .prev_submit = is_start ? "" : SUBMIT_HTML,
+        .max_id = next_id
+    };
+    return tmpl_gen_navigation(&tdata, size);
 }

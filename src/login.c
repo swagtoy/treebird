@@ -29,7 +29,7 @@
 #include "http.h"
 
 // Files
-#include "../static/login.chtml"
+#include "../static/login.ctmpl"
 
 #define LOGIN_SCOPE "read+write+follow+push"
 
@@ -192,17 +192,18 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
     }
 
     // Concat
-    easprintf(&page, data_login_html,
-              L10N[L10N_EN_US][L10N_LOGIN],
-              error ? error : "",
-              config_url_prefix,
-              L10N[L10N_EN_US][L10N_USERNAME],
-              L10N[L10N_EN_US][L10N_PASSWORD],
-              L10N[L10N_EN_US][L10N_LOGIN_BTN],
-              "Or",
-              config_url_prefix,
-              "Instance url",
-              "Authorize");
+    struct login_template tdata = {
+        .login_header = L10N[L10N_EN_US][L10N_LOGIN],
+        .error = error,
+        .prefix = config_url_prefix,
+        .username = L10N[L10N_EN_US][L10N_USERNAME],
+        .password = L10N[L10N_EN_US][L10N_PASSWORD],
+        .login_submit = L10N[L10N_EN_US][L10N_LOGIN_BTN],
+        .instance_text = "Or",
+        .instance_url = "Instance url",
+        .instance_submit = "Authorize"
+    };
+    page = tmpl_gen_login(&tdata, NULL);
     
     struct base_page b = {
         .category = BASE_CAT_NONE,

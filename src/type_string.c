@@ -19,9 +19,9 @@
 #include "type_string.h"
 
 // Icons
-#include "../static/like_svg.chtml"
-#include "../static/repeat_svg.chtml"
-#include "../static/follow_svg.chtml"
+#include "../static/like_svg.ctmpl"
+#include "../static/repeat_svg.ctmpl"
+#include "../static/follow_svg.ctmpl"
 
 const char* notification_type_str(mstdnt_notification_t type)
 {
@@ -56,10 +56,10 @@ const char* notification_type_svg(mstdnt_notification_t type)
 {
     switch (type)
     {
-    case MSTDNT_NOTIFICATION_FOLLOW: return data_follow_svg_html;
+    case MSTDNT_NOTIFICATION_FOLLOW: return data_follow_svg;
     case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return "";
-    case MSTDNT_NOTIFICATION_REBLOG: return data_repeat_svg_html;
-    case MSTDNT_NOTIFICATION_FAVOURITE: return data_like_svg_html;
+    case MSTDNT_NOTIFICATION_REBLOG: return data_repeat_svg;
+    case MSTDNT_NOTIFICATION_FAVOURITE: return data_like_svg;
     case MSTDNT_NOTIFICATION_POLL: return "";
     case MSTDNT_NOTIFICATION_EMOJI_REACT: return "";
     default: return "";

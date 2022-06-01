@@ -29,9 +29,9 @@
 #include "error.h"
 #include "string_helpers.h"
 
-#include "../static/navigation.chtml"
-#include "../static/directs_page.chtml"
-#include "../static/hashtag_page.chtml"
+#include "../static/navigation.ctmpl"
+#include "../static/directs_page.ctmpl"
+#include "../static/hashtag_page.ctmpl"
 
 /* TODO Clean these up and make a meta function, i'm just lazy */
 
@@ -146,8 +146,11 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     easprintf(&page, "%s%s",
               STR_NULL_EMPTY(status_format),
               STR_NULL_EMPTY(navigation_box));
-    
-    easprintf(&output, data_directs_page_html, page);
+
+    struct directs_page_template tdata = {
+        .direct_content = page,
+    };
+    output = tmpl_gen_directs_page(&tdata, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_DIRECT,
@@ -213,6 +216,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
                                                   statuses[status_count-1].id,
                                                   NULL);
     }
+    
     easprintf(&output, "%s%s%s",
               post_box,
               STR_NULL_EMPTY(status_format),
@@ -335,10 +339,14 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
                                                   statuses[status_count-1].id,
                                                   NULL);
     }
-    easprintf(&output, data_hashtag_page_html,
-              tag_id,
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
+
+    struct hashtag_page_template tdata = {
+        .tag = tag_id,
+        .statuses = status_format,
+        .navigation = navigation_box
+    };
+
+    output = tmpl_gen_hashtag_page(&tdata, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_NONE,

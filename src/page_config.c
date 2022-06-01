@@ -31,9 +31,9 @@
 #include "l10n.h"
 
 // Pages
-#include "../static/config_general.chtml"
-#include "../static/config_appearance.chtml"
-#include "../static/config_sidebar.chtml"
+#include "../static/config_general.ctmpl"
+#include "../static/config_appearance.ctmpl"
+#include "../static/config_sidebar.ctmpl"
 
 #define bool_checked(key) (ssn->config.key ? "checked" : "")
 
@@ -46,43 +46,40 @@ enum config_category
 
 static char* construct_config_sidebar(enum config_category cat, size_t* size)
 {
-    char* sidebar_html;
-    size_t s = easprintf(&sidebar_html, data_config_sidebar_html,
-                         CAT_TEXT(cat, CONFIG_CAT_GENERAL),
-                         config_url_prefix,
-                         L10N[L10N_EN_US][L10N_GENERAL],
-                         CAT_TEXT(cat, CONFIG_CAT_APPEARANCE),
-                         config_url_prefix,
-                         L10N[L10N_EN_US][L10N_APPEARANCE],
-                         CAT_TEXT(cat, CONFIG_CAT_ACCOUNT),
-                         config_url_prefix,
-                         L10N[L10N_EN_US][L10N_ACCOUNT]);
-    if (size) *size = s;
-    return sidebar_html;
+    struct config_sidebar_template tdata = {
+        .prefix = config_url_prefix,
+        .general_active = CAT_TEXT(cat, CONFIG_CAT_GENERAL),
+        .general = L10N[L10N_EN_US][L10N_GENERAL],
+        .appearance_active = CAT_TEXT(cat, CONFIG_CAT_APPEARANCE),
+        .appearance = L10N[L10N_EN_US][L10N_APPEARANCE],
+        .account_active = CAT_TEXT(cat, CONFIG_CAT_ACCOUNT),
+        .account = L10N[L10N_EN_US][L10N_ACCOUNT],
+    };
+    
+    return tmpl_gen_config_sidebar(&tdata, size);
 }
 
 void content_config_general(struct session* ssn, mastodont_t* api, char** data)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
-    
-    char* general_page;
 
-    easprintf(&general_page, data_config_general_html,
-              bool_checked(js),
-              bool_checked(jsactions),
-              bool_checked(jsreply),
-              bool_checked(jslive),
-              bool_checked(stat_attachments),
-              bool_checked(stat_greentexts),
-              bool_checked(stat_dope),
-              bool_checked(stat_oneclicksoftware),
-              bool_checked(stat_emojo_likes),
-              bool_checked(stat_hide_muted),
-              bool_checked(instance_show_shoutbox),
-              bool_checked(instance_panel),
-              bool_checked(notif_embed));
+    struct config_general_template tdata = {
+        .js_on = bool_checked(js),
+        .jsactions_on = bool_checked(jsactions),
+        .jsreply_on = bool_checked(jsreply),
+        .jslive_on = bool_checked(jslive),
+        .status_attachments_on = bool_checked(stat_attachments),
+        .status_greentexts_on = bool_checked(stat_greentexts),
+        .status_dopameme_on = bool_checked(stat_dope),
+        .status_oneclicksoftware_on = bool_checked(stat_oneclicksoftware),
+        .status_emojo_likes_on = bool_checked(stat_emojo_likes),
+        .status_hide_muted_on = bool_checked(stat_hide_muted),
+        .instance_show_shoutbox_on = bool_checked(instance_show_shoutbox),
+        .instance_panel_on = bool_checked(instance_panel),
+        .notifications_embed_on = bool_checked(notif_embed)
+    };
 
-    load_config(ssn, api);
+    char* general_page = tmpl_gen_config_general(&tdata, NULL);
     
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
@@ -102,12 +99,10 @@ void content_config_appearance(struct session* ssn, mastodont_t* api, char** dat
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_APPEARANCE, NULL);
 
-    load_config(ssn, api);
-
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
         .locale = L10N_EN_US,
-        .content = data_config_appearance_html,
+        .content = data_config_appearance,
         .sidebar_left = sidebar_html
     };
 

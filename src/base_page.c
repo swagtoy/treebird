@@ -31,7 +31,7 @@
 
 // Files
 #include "../static/index.ctmpl"
-#include "../static/quick_login.chtml"
+#include "../static/quick_login.ctmpl"
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
@@ -95,11 +95,13 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     }
     else {
         // Construct small login page
-        easprintf(&main_sidebar_str, data_quick_login_html,
-                  config_url_prefix,
-                  L10N[L10N_EN_US][L10N_USERNAME],
-                  L10N[L10N_EN_US][L10N_PASSWORD],
-                  L10N[L10N_EN_US][L10N_LOGIN_BTN]);
+        struct quick_login_template tdata = {
+            .prefix = config_url_prefix,
+            .username = L10N[locale][L10N_USERNAME],
+            .password = L10N[locale][L10N_PASSWORD],
+            .login = L10N[locale][L10N_LOGIN_BTN],
+        };
+        main_sidebar_str = tmpl_gen_quick_login(&tdata, NULL);
     }
 
     // Combine into sidebar
@@ -146,7 +148,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         .sidebar_rightbar = sidebar_str
     };
     
-    unsigned len;
+    size_t len;
     char* data = tmpl_gen_index(&index, &len);
     
     if (!data)
@@ -155,7 +157,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         goto cleanup;
     }
     
-    render_html(data, len);
+    render_html("text/html", data, len);
 
     // Cleanup
 /* cleanup_all: */
@@ -168,9 +170,11 @@ cleanup:
     free(instance_str);
 }
 
-void render_html(char* data, size_t data_len)
+void render_html(char* content_type, char* data, size_t data_len)
 {
-    fputs("Content-type: text/html\r\n", stdout);
-    printf("Content-Length: %d\r\n\r\n", data_len + 1);
+    printf("Content-type: %s\r\n"
+           "Content-Length: %d\r\n\r\n",
+           content_type ? content_type : "text/html",
+           data_len + 1);
     puts(data);    
 }

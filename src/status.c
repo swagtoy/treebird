@@ -37,15 +37,15 @@
 
 // Pages
 #include "../static/status.ctmpl"
-#include "../static/notification.chtml"
-#include "../static/in_reply_to.chtml"
-#include "../static/status_interactions_label.chtml"
-#include "../static/status_interactions.chtml"
-#include "../static/status_interaction_profile.chtml"
-#include "../static/likeboost.chtml"
-#include "../static/reactions_btn.chtml"
+#include "../static/notification.ctmpl"
+#include "../static/in_reply_to.ctmpl"
+#include "../static/status_interactions_label.ctmpl"
+#include "../static/status_interactions.ctmpl"
+#include "../static/status_interaction_profile.ctmpl"
+#include "../static/likeboost.ctmpl"
+#include "../static/reactions_btn.ctmpl"
 #include "../static/interaction_buttons.ctmpl"
-#include "../static/menu_item.chtml"
+#include "../static/menu_item.ctmpl"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
@@ -170,12 +170,11 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 
 char* construct_status_interactions_label(char* header, int val, size_t* size)
 {
-    char* html;
-    size_t s;
-    s = easprintf(&html, data_status_interactions_label_html,
-                  header, val);
-    if (size) *size = s;
-    return html;
+    struct status_interactions_label_template tdata = {
+        .header = header,
+        .value = val,
+    };
+    return tmpl_gen_status_interactions_label(&tdata, size);
 }
 
 char* construct_interaction_buttons(struct session* ssn,
@@ -201,11 +200,12 @@ char* construct_interaction_buttons(struct session* ssn,
         emoji_picker_html = construct_emoji_picker(status->id, keyint(ssn->post.emojoindex), NULL);
     }
 
-    easprintf(&reactions_btn_html, data_reactions_btn_html,
-              config_url_prefix,
-              status->id,
-              status->id,
-              emoji_picker_html ? emoji_picker_html : "");
+    struct reactions_btn_template tdata = {
+        .prefix = config_url_prefix,
+        .status_id = status->id,
+        .emoji_picker = emoji_picker_html
+    };
+    reactions_btn_html = tmpl_gen_reactions_btn(&tdata, NULL);
 
     if (show_nums)
     {
@@ -217,10 +217,11 @@ char* construct_interaction_buttons(struct session* ssn,
             easprintf(&favourites_count, NUM_STR, status->favourites_count);
     }
 
-    easprintf(&likeboost_html, data_likeboost_html,
-              config_url_prefix,
-              status->id);
-
+    struct likeboost_template lbdata = {
+        .prefix = config_url_prefix,
+        .status_id = status->id,
+    };
+    
     time_str = reltime_to_str(status->created_at);
 
     struct interaction_buttons_template data = {
@@ -239,8 +240,8 @@ char* construct_interaction_buttons(struct session* ssn,
                           ssn->config.stat_oneclicksoftware &&
                           (flags & STATUS_NO_LIKEBOOST) != STATUS_NO_LIKEBOOST ? likeboost_html : ""),
         .reactions_btn = reactions_btn_html,
-        .rel_tilm = time_str
-    }
+        .rel_time = time_str
+    };
 
     interaction_html = tmpl_gen_interaction_buttons(&data, size);
     
@@ -273,19 +274,19 @@ char* construct_status_interactions(int fav_count,
                                                            reblog_accounts_len,
                                                            fav_accounts_len,
                                                            NULL);
-    size_t s;
-    s = easprintf(&html, data_status_interactions_html,
-                  reblogs_label ? reblogs_label : "",
-                  favourites_label ? favourites_label : "",
-                  profiles ? profiles : "");
-    if (size) *size = s;
+    struct status_interactions_template tdata = {
+        .favourites_count = favourites_label,
+        .reblogs_count = reblogs_label,
+        .users = profiles
+    };
+    html = tmpl_gen_status_interactions(&tdata, size);
     if (reblogs_label) free(reblogs_label);
     if (favourites_label) free(favourites_label);
     if (profiles) free(profiles);
     return html;
 }
 
-char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size)
+char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, size_t* size)
 {
     size_t s = 0;
     // Might change
@@ -312,14 +313,19 @@ char* construct_status_interaction_profile(struct interact_profile_args* args, s
 
     // Usually means no reblogs if check_type is NULL
     if (check_type)
-        s = easprintf(&profile_html, data_status_interaction_profile_html,
-                      check_type[index].acct, check_type[index].avatar);
+    {
+        struct status_interaction_profile_template tdata = {
+            .acct = check_type[index].acct,
+            .avatar = check_type[index].avatar
+        };
+        profile_html = tmpl_gen_status_interaction_profile(&tdata, &s);
+    }
     
     if (size) *size = s;
     return profile_html;
 }
 
-static char* construct_status_interaction_profiles_voidwrap(void* passed, size_t index, int* res)
+static char* construct_status_interaction_profiles_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct interact_profile_args* args = passed;
     return construct_status_interaction_profile(args, index, res);
@@ -368,18 +374,14 @@ char* construct_in_reply_to(struct mstdnt_status* status,
                             struct mstdnt_account* account,
                             size_t* size)
 {
-    char* irt_html;
-    size_t s;
-    
-    s = easprintf(&irt_html, data_in_reply_to_html,
-                  config_url_prefix,
-                  status->in_reply_to_id,
-                  L10N[L10N_EN_US][L10N_IN_REPLY_TO],
-                  account ? account->acct : status->in_reply_to_id);
-    
-    if (size) *size = s;
+    struct in_reply_to_template tdata = {
+        .prefix = config_url_prefix,
+        .in_reply_to_text = L10N[L10N_EN_US][L10N_IN_REPLY_TO],
+        .acct = account ? account->acct : status->in_reply_to_id,
+        .status_id = status->in_reply_to_id
+    };
 
-    return irt_html;
+    return tmpl_gen_in_reply_to(&tdata, size);
 }
 
 #define REGEX_GREENTEXT "((?:^|<br/?>|\\s)&gt;.*?)(?:<br/?>|$)"
@@ -464,7 +466,7 @@ char* greentextify(char* content)
 char* construct_status(struct session* ssn,
                        mastodont_t* api,
                        struct mstdnt_status* local_status,
-                       int* size,
+                       size_t* size,
                        struct mstdnt_notification* local_notif,
                        struct construct_statuses_args* args,
                        uint8_t flags)
@@ -558,21 +560,30 @@ char* construct_status(struct session* ssn,
 
     // Delete status menu item, logged in only
     if (ssn->logged_in && strcmp(status->account.acct, ssn->acct.acct) == 0)
-        easprintf(&delete_status, data_menu_item_html,
-                  config_url_prefix, status->id, "delete", "Delete status");
+    {
+        struct menu_item_template mdata = {
+            .prefix = config_url_prefix,
+            .status_id = status->id,
+            .itype = "delete",
+            .text = "Delete status"
+        };
+        delete_status = tmpl_gen_menu_item(&mdata, NULL);
+    }
     
     if (status->media_attachments_len)
         attachments = construct_attachments(ssn, status->sensitive, status->media_attachments, status->media_attachments_len, NULL);
     if (status->pleroma.emoji_reactions_len)
         emoji_reactions = construct_emoji_reactions(status->id, status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
     if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
-        easprintf(&notif_info, data_notification_html,
-                  notif->account->avatar,
-                  notif->account->display_name,
-                  // Use compact type string, which looks better
-                  // for self-boosts
-                  local_status->reblog ? notification_type_compact_str(notif->type) : notification_type_str(notif->type),
-                  notification_type_svg(notif->type));
+    {
+        struct notification_template tdata = {
+            .avatar = notif->account->avatar,
+            .username = notif->account->display_name,
+            .action = (local_status->reblog ? notification_type_compact_str(notif->type) : notification_type_str(notif->type)),
+            .action_item = notification_type_svg(notif->type),
+        };
+        notif_info = tmpl_gen_notification(&tdata, NULL);
+    }
 
     if (status->in_reply_to_id && status->in_reply_to_account_id)
         in_reply_to_str = get_in_reply_to(api, status, NULL);
@@ -592,7 +603,7 @@ char* construct_status(struct session* ssn,
         .unpin = status->pinned ? "un" : "",
         .unpin_btn = status->pinned ? "Unpin" : "Pin",
         .unbookmark =  status->bookmarked ? "un" : "",
-        .unbookmark_btn = status->bookmarked ? "Remove Bookmark" : "Bookmark"
+        .unbookmark_btn = status->bookmarked ? "Remove Bookmark" : "Bookmark",
         .delete_status = delete_status,
         .in_reply_to_str = in_reply_to_str,
         .status_content = parse_content,
@@ -619,7 +630,7 @@ char* construct_status(struct session* ssn,
     return stat_html;
 }
 
-static char* construct_status_voidwrap(void* passed, size_t index, int* res)
+static char* construct_status_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct status_args* args = passed;
     return construct_status(args->ssn, args->api, args->status + index, res, NULL, args->args, 0);

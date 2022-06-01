@@ -10,6 +10,8 @@ HEADERS = $(wildcard src/*.h)
 PAGES_DIR = static
 PAGES = $(wildcard $(PAGES_DIR)/*.tmpl)
 PAGES_CMP = $(patsubst %.tmpl,%.ctmpl,$(PAGES))
+PAGES_C = $(patsubst %.tmpl, %.c,$(PAGES))
+PAGES_C_OBJ = $(patsubst %.c,%.o,$(PAGES_C))
 DIST = dist/
 PREFIX ?= /usr/local
 TARGET = treebird
@@ -19,8 +21,8 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 all: $(MASTODONT_DIR) dep_build $(TARGET)
 apache: all apache_start
 
-$(TARGET): filec template $(PAGES_CMP) $(OBJ) $(HEADERS)
-	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
+$(TARGET): filec template $(PAGES_CMP) $(PAGES_C) $(PAGES_C_OBJ)  $(OBJ) $(HEADERS)
+	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
 
 template: src/template/main.o
 	$(CC) $(LDFLAGS) -o template $<
@@ -32,8 +34,10 @@ emojitoc: scripts/emoji-to.o
 	$(CC) -o emojitoc $< $(LDFLAGS)
 	./emojitoc meta/emoji.json > src/emoji_codes.h
 
+# Redirect stdout and stderr into separate contents as a hack
+# Let bash do the work :)
 $(PAGES_DIR)/%.ctmpl: $(PAGES_DIR)/%.tmpl
-	./template $< $(notdir $*) > $@
+	./template $< $(notdir $*) 2> $(PAGES_DIR)/$(notdir $*).c 1> $@
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true

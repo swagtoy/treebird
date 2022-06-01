@@ -286,12 +286,12 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
         .statuses_count = page->statuses_count,
         .tab_following_text = L10N[page->locale][L10N_TAB_FOLLOWING],
         .following_count = page->following_count,
-        .tab_followers_count = L10N[page->locale][L10N_TAB_FOLLOWERS],
+        .tab_followers_text = L10N[page->locale][L10N_TAB_FOLLOWERS],
         .followers_count = page->followers_count,
-        .follow_button = follow_btn,
+        .follow_btn = follow_btn,
         .avatar = page->profile_image,
         .info = info_html,
-        .tab_status_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_STATUSES),
+        .tab_statuses_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_STATUSES),
         .tab_statuses_text = L10N[page->locale][L10N_TAB_STATUSES],
         .tab_scrobbles_focused = MAKE_FOCUSED_IF(page->tab, ACCT_TAB_SCROBBLES),
         .tab_scrobbles_text = L10N[page->locale][L10N_TAB_SCROBBLES],
@@ -511,11 +511,11 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
                                                   NULL);
     }
 
-    struct bookmarks_page_template data = {
+    struct bookmarks_page_template tdata = {
         .statuses = status_format,
         .navigation = navigation_box
     };
-    output = tmpl_gen_bookmarks_page(&data, NULL);
+    output = tmpl_gen_bookmarks_page(&tdata, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_BOOKMARKS,
@@ -574,11 +574,11 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
                                                   NULL);
     }
 
-    struct favourites_page_template data = {
+    struct favourites_page_template tdata = {
         .statuses = status_format,
         .navigation = navigation_box
     };
-    output = tmpl_gen_favourites_page(&data, NULL);
+    output = tmpl_gen_favourites_page(&tdata, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_FAVOURITES,

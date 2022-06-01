@@ -20,29 +20,26 @@
 #include "easprintf.h"
 #include "string_helpers.h"
 
-#include "../static/scrobble.chtml"
+#include "../static/scrobble.ctmpl"
 
 char* construct_scrobble(struct mstdnt_scrobble* scrobble, int* size)
 {
-    char* scrobble_html;
-    size_t s;
+    struct scrobble_template tdata = {
+        .scrobble_id = scrobble->id,
+        .avatar = scrobble->account.avatar,
+        .username = scrobble->account.display_name,
+        .activity = "is listening to...",
+        .title_key = "Title",
+        .title = scrobble->title,
+        .artist_key = "Artist",
+        .artist = scrobble->artist,
+        .album_key = "Album",
+        .album = scrobble->album,
+        .length_key = "Duration",
+        .length = scrobble->length
+    };
 
-    s = easprintf(&scrobble_html, data_scrobble_html,
-                  scrobble->id,
-                  scrobble->account.avatar,
-                  scrobble->account.display_name,
-                  "is listening to...",
-                  "Title",
-                  scrobble->title,
-                  "Artist",
-                  scrobble->artist,
-                  "Album",
-                  scrobble->album,
-                  "Duration",
-                  scrobble->length);
-
-    if (size) *size = s;
-    return scrobble_html;
+    return tmpl_gen_scrobble(&tdata, size);
 }
 
 static char* construct_scrobble_voidwrap(void* passed, size_t index, int* res)

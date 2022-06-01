@@ -23,12 +23,12 @@
 #include "string_helpers.h"
 
 // Pages
-#include "../static/attachments.chtml"
-#include "../static/attachment_image.chtml"
-#include "../static/attachment_gifv.chtml"
-#include "../static/attachment_video.chtml"
-#include "../static/attachment_link.chtml"
-#include "../static/attachment_audio.chtml"
+#include "../static/attachments.ctmpl"
+#include "../static/attachment_image.ctmpl"
+#include "../static/attachment_gifv.ctmpl"
+#include "../static/attachment_video.ctmpl"
+#include "../static/attachment_link.ctmpl"
+#include "../static/attachment_audio.ctmpl"
 
 struct attachments_args
 {
@@ -124,6 +124,8 @@ char* construct_attachment(struct session* ssn,
                            struct mstdnt_attachment* att,
                            int* str_size)
 {
+    // Due to how similar the attachment templates are, we're just going to use their data files
+    // and not generate any templates, saves some LOC!
     char* att_html;
     size_t s;
     const char* attachment_str;
@@ -133,19 +135,19 @@ char* construct_attachment(struct session* ssn,
         switch (att->type)
         {
         case MSTDNT_ATTACHMENT_IMAGE:
-            attachment_str = data_attachment_image_html; break;
+            attachment_str = data_attachment_image; break;
         case MSTDNT_ATTACHMENT_GIFV:
-            attachment_str = data_attachment_gifv_html; break;
+            attachment_str = data_attachment_gifv; break;
         case MSTDNT_ATTACHMENT_VIDEO:
-            attachment_str = data_attachment_video_html; break;
+            attachment_str = data_attachment_video; break;
         case MSTDNT_ATTACHMENT_AUDIO:
-            attachment_str = data_attachment_audio_html; break;
+            attachment_str = data_attachment_audio; break;
         case MSTDNT_ATTACHMENT_UNKNOWN: // Fall through
         default:
-            attachment_str = data_attachment_link_html; break;
+            attachment_str = data_attachment_link; break;
         }
     else
-        attachment_str = data_attachment_link_html;
+        attachment_str = data_attachment_link;
 
     // Images/visible content displays sensitive placeholder after
     if ((att->type == MSTDNT_ATTACHMENT_IMAGE ||
@@ -184,7 +186,7 @@ char* construct_attachments(struct session* ssn,
     char* elements = construct_func_strings(construct_attachments_voidwrap, &args, atts_len, &elements_size);
     char* att_view;
 
-    size_t s = easprintf(&att_view, data_attachments_html, elements);
+    size_t s = easprintf(&att_view, data_attachments, elements);
     if (str_size) *str_size = s;
     // Cleanup
     free(elements);

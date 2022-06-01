@@ -29,14 +29,14 @@
 #include "../config.h"
 
 // Pages
-#include "../static/notifications_page.chtml"
-#include "../static/notifications.chtml"
-#include "../static/notification_action.chtml"
-#include "../static/notification.chtml"
-#include "../static/notification_compact.chtml"
-#include "../static/like_svg.chtml"
-#include "../static/repeat_svg.chtml"
-#include "../static/notifications_embed.chtml"
+#include "../static/notifications_page.ctmpl"
+#include "../static/notifications.ctmpl"
+#include "../static/notification_action.ctmpl"
+#include "../static/notification.ctmpl"
+#include "../static/notification_compact.ctmpl"
+#include "../static/like_svg.ctmpl"
+#include "../static/repeat_svg.ctmpl"
+#include "../static/notifications_embed.ctmpl"
 
 struct notification_args
 {
@@ -68,21 +68,15 @@ char* construct_notification(struct session* ssn,
 
 char* construct_notification_action(struct mstdnt_notification* notif, int* size)
 {
-    char* notif_html;
-    int s;
-
-    s = easprintf(&notif_html, data_notification_action_html,
-                  notif->account->avatar,
-                  notif->account->acct,
-                  notif->account->display_name,
-                  notification_type_compact_str(notif->type),
-                  notification_type_svg(notif->type),
-                  config_url_prefix,
-                  notif->account->acct,
-                  notif->account->acct);
-
-    if (size) *size = s;
-    return notif_html;
+    struct notification_action_template tdata = {
+        .avatar = notif->account->avatar,
+        .acct = notif->account->acct,
+        .display_name = notif->account->display_name,
+        .prefix = config_url_prefix,
+        .action = notification_type_compact_str(notif->type),
+        .notif_svg = notification_type_svg(notif->type)
+    };
+    return tmpl_gen_notification_action(&tdata, size);
 }
 
 char* construct_notification_compact(struct session* ssn,
@@ -108,22 +102,20 @@ char* construct_notification_compact(struct session* ssn,
                                         notif->status->emojis_len);
     }
 
-    size_t s = easprintf(&notif_html, data_notification_compact_html,
-                         notif->account->avatar,
-                         /* If there is an icon, the text doesn't shift up relative to the SVG, this is a hack on the CSS side */
-                         strlen(type_svg) == 0 ? "" : "-with-icon",
-                         notif->account->acct,
-                         notif->account->display_name,
-                         type_str,
-                         type_svg,
-                         /* Might show follower address */
-                         notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
-                         notif->account->acct :
-                         status_format ? status_format : "",
-                         /* end */
-                         notif_stats ? notif_stats : "");
+    struct notification_compact_template tdata = {
+        .avatar = notif->account->avatar,
+        .has_icon = strlen(type_svg) == 0 ? "" : "-with-icon",
+        .acct = notif->account->acct,
+        .display_name = notif->account->display_name,
+        .action = type_str,
+        .notif_svg = type_svg,
+        /* Might show follower address */
+        .content = (notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
+                   notif->account->acct : status_format),
+        .stats = notif_stats
+    };
 
-    if (size) *size = s;
+    notif_html = tmpl_gen_notification_compact(&tdata, size);
 
     if (status_format &&
         status_format != notif->status->content) free(status_format);
@@ -212,10 +204,13 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
             notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
 
     }
- 
-    easprintf(&page, data_notifications_page_html,
-              notif_html ? notif_html : "",
-              navigation_box ? navigation_box : "");
+
+    struct notifications_page_template tdata = {
+        .notifications = notif_html,
+        .navigation = navigation_box
+    };
+
+    page = tmpl_gen_notifications_page(&tdata, NULL);
     
     struct base_page b = {
         .category = BASE_CAT_NOTIFICATIONS,
@@ -269,14 +264,18 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
             notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
 
     }
- 
-    size_t len = easprintf(&page, data_notifications_embed_html,
-                           ssn->config.theme,
-                           ssn->config.themeclr ? "-dark" : "",
-                           navigation_box ? navigation_box : "",
-                           notif_html ? notif_html : "");
 
-    render_html(page, len);
+    size_t len;
+    struct notifications_embed_template tdata = {
+        .theme = ssn->config.theme,
+        .theme_var = ssn->config.themeclr ? "-dark" : NULL,
+        .notifications = notif_html,
+        .navigation_box = navigation_box
+    };
+
+    page = tmpl_gen_notifications_embed(&tdata, &len);
+
+    render_html(NULL, page, len);
 
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);

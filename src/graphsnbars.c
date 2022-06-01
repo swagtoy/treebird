@@ -23,8 +23,8 @@
 #include "string_helpers.h"
 
 // Pages
-#include "../static/bar.chtml"
-#include "../static/bar_graph.chtml"
+#include "../static/bar.ctmpl"
+#include "../static/bar_graph.ctmpl"
 
 struct hashtags_graph_args
 {
@@ -37,23 +37,18 @@ struct hashtags_graph_args
 
 char* construct_bar_graph_container(char* bars, size_t* size)
 {
-    char* bar_graph_html;
-
-    size_t s = easprintf(&bar_graph_html, data_bar_graph_html, bars);
-    
-    if (size) *size = s;
-    return bar_graph_html;
+    struct bar_graph_template data = {
+        .graph = bars,
+    };
+    return tmpl_gen_bar_graph(&data, size);
 }
 
 char* construct_bar(float value, int* size)
 {
-    char* bar_html;
-
-    size_t s = easprintf(&bar_html, data_bar_html,
-                         value*100);
-
-    if (size) *size = s;
-    return bar_html;
+    struct bar_template data = {
+        .value = value * 100
+    };
+    return tmpl_gen_bar(&data, size);
 }
 
 static char* construct_hashgraph_voidwrap(void* passed, size_t index, int* res)

@@ -24,8 +24,8 @@
 #include "string_helpers.h"
 
 // Pages
-#include "../static/emoji.chtml"
-#include "../static/emoji_picker.chtml"
+#include "../static/emoji.ctmpl"
+#include "../static/emoji_picker.ctmpl"
 
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 {
@@ -67,16 +67,14 @@ struct construct_emoji_picker_args
 
 char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size)
 {
-    char* emoji_html;
-
     if (!emoji)
         return NULL;
 
-    size_t s = easprintf(&emoji_html, data_emoji_html,
-                         status_id, emoji->codes, emoji->codes);
-    
-    if (size) *size = s;
-    return emoji_html;
+    struct emoji_template data = {
+        .status_id = status_id,
+        .emoji = emoji->codes
+    };
+    return tmpl_gen_emoji(&data, size);
 }
 
 static char* construct_emoji_voidwrap(void* passed, size_t index, int* res)
@@ -97,32 +95,32 @@ char* construct_emoji_picker(char* status_id, unsigned index, size_t* size)
     char* emojis;
 
     emojis = construct_func_strings(construct_emoji_voidwrap, &args, EMOJI_FACTOR_NUM, NULL);
-
-    size_t s = easprintf(&emoji_picker_html, data_emoji_picker_html,
-                         ACTIVE_CONDITION(index >= 0 && index < EMOJO_CAT_ANIMALS),
-                         EMOJO_CAT_ANIMALS,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_ANIMALS && index < EMOJO_CAT_FOOD),
-                         EMOJO_CAT_FOOD,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_FOOD && index < EMOJO_CAT_TRAVEL),
-                         EMOJO_CAT_TRAVEL,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_TRAVEL && index < EMOJO_CAT_ACTIVITIES),
-                         EMOJO_CAT_ACTIVITIES,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_ACTIVITIES && index < EMOJO_CAT_OBJECTS),
-                         EMOJO_CAT_OBJECTS,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_OBJECTS && index < EMOJO_CAT_SYMBOLS),
-                         EMOJO_CAT_SYMBOLS,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_SYMBOLS && index < EMOJO_CAT_FLAGS),
-                         EMOJO_CAT_FLAGS,
-                         ACTIVE_CONDITION(index >= EMOJO_CAT_FLAGS && index < emojos_size),
-                         emojis ? emojis : "",
-                         // Index movements
-                         status_id,
-                         index > 0 ? index - EMOJI_FACTOR_NUM : 0,
-                         0 > index - EMOJI_FACTOR_NUM ? "disabled" : "",
-                         status_id,
-                         index + EMOJI_FACTOR_NUM);
-    free(emojis);
     
-    if (size) *size = s;
+    struct emoji_picker_template data = {
+        .cat_smileys = ACTIVE_CONDITION(index >= 0 && index < EMOJO_CAT_ANIMALS),
+        .animals = EMOJO_CAT_ANIMALS,
+        .cat_animals = ACTIVE_CONDITION(index >= EMOJO_CAT_ANIMALS && index < EMOJO_CAT_FOOD),
+        .food = EMOJO_CAT_FOOD,
+        .cat_food = ACTIVE_CONDITION(index >= EMOJO_CAT_FOOD && index < EMOJO_CAT_TRAVEL),
+        .travel = EMOJO_CAT_TRAVEL,
+        .cat_travel = ACTIVE_CONDITION(index >= EMOJO_CAT_TRAVEL && index < EMOJO_CAT_ACTIVITIES),
+        .activities = EMOJO_CAT_ACTIVITIES,
+        .cat_activities = ACTIVE_CONDITION(index >= EMOJO_CAT_ACTIVITIES && index < EMOJO_CAT_OBJECTS),
+        .objects = EMOJO_CAT_OBJECTS,
+        .cat_objects = ACTIVE_CONDITION(index >= EMOJO_CAT_OBJECTS && index < EMOJO_CAT_SYMBOLS),
+        .symbols = EMOJO_CAT_SYMBOLS,
+        .cat_symbols = ACTIVE_CONDITION(index >= EMOJO_CAT_SYMBOLS && index < EMOJO_CAT_FLAGS),
+        .flags = EMOJO_CAT_FLAGS,
+        .cat_flags = ACTIVE_CONDITION(index >= EMOJO_CAT_FLAGS && index < emojos_size),
+        .emojis = emojis,
+                         // Index movements
+        .status_id = status_id,
+        .index_previous = index > 0 ? index - EMOJI_FACTOR_NUM : 0,
+        .previous_enabled = 0 > index - EMOJI_FACTOR_NUM ? "disabled" : "",
+        .index_next = index + EMOJI_FACTOR_NUM
+    };
+
+    emoji_picker_html = tmpl_gen_emoji_picker(&data, size);
+    free(emojis);
     return emoji_picker_html;
 }

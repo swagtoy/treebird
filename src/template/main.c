@@ -159,6 +159,7 @@ void print_template(char* var, char* buf)
     
     printf("#ifndef __%s\n"
            "#define __%s\n"
+           "#include <stddef.h>\n"
            "static const char data_%s[] = {", var, var, var);
     
     while (1)
@@ -224,27 +225,34 @@ void print_template(char* var, char* buf)
             {
                 printf("%s %s;\n", tkn_typetostr(tokens[i].type), tokens[i].token);
                 if (tokens[i].type == TMPL_STRLEN)
-                    printf("unsigned %s_len;\n", tokens[i].token);
+                    printf("size_t %s_len;\n", tokens[i].token);
                 tokens[i].used = 1;
             }
         }
 
         // Generate function
-        printf("};\n"
-               "char* tmpl_gen_%s(struct %s_template* data, unsigned* size){\n"
-               "char* ret;\n"
-               "unsigned s = easprintf(&ret, data_%s, ", var, var, var);
+        printf("};\n");
+        printf("char* tmpl_gen_%s(struct %s_template* data, size_t* size);", var, var);
+
+        // Pipe the contents of the real function code into stderr, then we can redirect it
+        // We could also just write the file directly but this works better with the Makefile
+        // and I am lazy
+        fprintf(stderr, "#include \"%s.ctmpl\"\n"
+                "#include \"../src/easprintf.h\"\n"
+                "char* tmpl_gen_%s(struct %s_template* data, size_t* size){\n"
+                "char* ret;\n"
+                "size_t s = easprintf(&ret, data_%s, ", var, var, var, var);
         for (size_t i = 0; i < tokens_len; ++i)
         {
-            printf("data->%s", tokens[i].token);
+            fprintf(stderr, "data->%s", tokens[i].token);
             // No (null) strings, make them empty
             if (tokens[i].type == TMPL_STR || tokens[i].type == TMPL_STRLEN)
-                printf("?data->%s:\"\"", tokens[i].token);
-            fputs(i < tokens_len-1 ? ", " : "", stdout);
+                fprintf(stderr, "?data->%s:\"\"", tokens[i].token);
+            fputs(i < tokens_len-1 ? ", " : "", stderr);
         }
         fputs(");\n"
               "if (size) *size = s;\n"
-              "return ret;\n}", stdout);
+              "return ret;\n}", stderr);
     }
 
     // Done!

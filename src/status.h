@@ -55,7 +55,7 @@ char* construct_post_box(char* reply_id,
 char* construct_status(struct session* ssn,
                        mastodont_t* api,
                        struct mstdnt_status* status,
-                       int* size,
+                       size_t* size,
                        struct mstdnt_notification* notif,
                        struct construct_statuses_args* args,
                        uint8_t flags);
@@ -88,7 +88,7 @@ char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
                                             size_t reblogs_len,
                                             size_t favourites_len,
                                             size_t* ret_size);
-char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, int* size);
+char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, size_t* size);
 char* construct_status_interactions_label(char* header, int val, size_t* size);
 char* reformat_status(struct session* ssn,
                       char* content,

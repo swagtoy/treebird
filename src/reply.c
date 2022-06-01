@@ -24,7 +24,7 @@
 #include "../config.h"
 
 // Pages
-#include "../static/post.chtml"
+#include "../static/post.ctmpl"
 
 #define ID_REPLY_SIZE 256
 #define ID_RESPONSE "<input type=\"hidden\" name=\"replyid\" value=\"%s\">"
@@ -40,12 +40,12 @@ char* construct_post_box(char* reply_id,
     snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_id);
 
     // Construct box
-    size_t s = easprintf(&reply_html, data_post_html,
-                         config_url_prefix,
-                         reply_id ? id_reply : "",
-                         default_content);
-    if (size) *size = s;
-    return reply_html;
+    struct post_template tdata = {
+        .prefix = config_url_prefix,
+        .reply_input = reply_id ? id_reply : NULL,
+        .content = default_content
+    };
+    return tmpl_gen_post(&tdata, size);
 }
 
 /* Some comments:

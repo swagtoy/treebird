@@ -27,19 +27,18 @@
 #include "string_helpers.h"
 
 // Files
-#include "../static/account.chtml"
-#include "../static/list.chtml"
-#include "../static/lists.chtml"
+#include "../static/account.ctmpl"
+#include "../static/list.ctmpl"
+#include "../static/lists.ctmpl"
 
 char* construct_list(struct mstdnt_list* list, int* size)
 {
-    char* list_html;
-    size_t s = easprintf(&list_html, data_list_html,
-                         config_url_prefix,
-                         list->id,
-                         list->title);
-    if (size) *size = s;
-    return list_html;
+    struct list_template data = {
+        .list = list->title,
+        .prefix = config_url_prefix,
+        .list_id = list->id
+    };
+    return tmpl_gen_list(&data, size);
 }
 
 static char* construct_list_voidwrap(void* passed, size_t index, int* res)
@@ -54,10 +53,11 @@ char* construct_lists(struct mstdnt_list* lists, size_t size, size_t* ret_size)
 
 char* construct_lists_view(char* lists_string, int* size)
 {
-    char* list_string;
-    size_t s = easprintf(&list_string, data_lists_html, lists_string, config_url_prefix);
-    if (size) *size = s;
-    return list_string;
+    struct lists_template data = {
+        .lists = lists_string,
+        .prefix = config_url_prefix
+    };
+    return tmpl_gen_lists(&data, size);
 }
 
 void content_lists(struct session* ssn, mastodont_t* api, char** data)

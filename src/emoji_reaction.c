@@ -23,8 +23,8 @@
 #include "easprintf.h"
 
 // Templates
-#include "../static/emoji_reaction.chtml"
-#include "../static/emoji_reactions.chtml"
+#include "../static/emoji_reaction.ctmpl"
+#include "../static/emoji_reactions.ctmpl"
 
 struct construct_emoji_reactions_args
 {
@@ -34,12 +34,14 @@ struct construct_emoji_reactions_args
 
 char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, int* str_size)
 {
-    char* emo_html;
-
-    size_t s = easprintf(&emo_html, data_emoji_reaction_html,
-                         config_url_prefix, id, emo->name, emo->me ? "active" : "", emo->name, emo->count);
-    if (str_size) *str_size = s;
-    return emo_html;
+    struct emoji_reaction_template data = {
+        .prefix = config_url_prefix,
+        .status_id = id,
+        .emoji = emo->name,
+        .emoji_active = emo->me ? "active" : NULL,
+        .emoji_count = emo->count
+    };
+    return tmpl_gen_emoji_reaction(&data, str_size);
 }
 
 static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, int* res)
@@ -58,8 +60,10 @@ char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, si
     char* elements = construct_func_strings(construct_emoji_reactions_voidwrap, &args, emos_len, &elements_size);
     char* emos_view;
 
-    size_t s = easprintf(&emos_view, data_emoji_reactions_html, elements);
-    if (str_size) *str_size = s;
+    struct emoji_reactions_template data = {
+        .emojis = elements
+    };
+    emos_view = tmpl_gen_emoji_reactions(&data, str_size);
     // Cleanup
     free(elements);
     return emos_view;

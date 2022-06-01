@@ -22,12 +22,11 @@
 #include "l10n.h"
 
 // Pages
-#include "../static/error_404.chtml"
-#include "../static/error.chtml"
+#include "../static/error_404.ctmpl"
+#include "../static/error.ctmpl"
 
 char* construct_error(const char* error, enum error_type type, unsigned pad, size_t* size)
 {
-    char* error_html;
     char* class;
 
     switch (type)
@@ -39,20 +38,23 @@ char* construct_error(const char* error, enum error_type type, unsigned pad, siz
     case E_NOTICE:
         class = "notice"; break;
     }
-    size_t s = easprintf(&error_html, data_error_html,
-                         class,
-                         pad ? "error-pad" : "",
-                         error ? error : "An error occured");
-    if (size) *size = s;
-    return error_html;
+
+    struct error_template data = {
+        .err_type = class,
+        .is_padded = pad ? "error-pad" : NULL,
+        .error = error ? error : "An error occured",
+    };
+    
+    return tmpl_gen_error(&data, size);
 }
 
 void content_not_found(struct session* ssn, mastodont_t* api, char* path)
 {
     char* page;
-    easprintf(&page,
-              data_error_404_html,
-              L10N[L10N_EN_US][L10N_PAGE_NOT_FOUND]);
+    struct error_404_template data = {
+        .error = L10N[L10N_EN_US][L10N_PAGE_NOT_FOUND]
+    };
+    page = tmpl_gen_error_404(&data, NULL);
     
     struct base_page b = {
         .locale = L10N_EN_US,

@@ -26,7 +26,6 @@
 #define ACTIVE_CONDITION(cond) ((cond) ? "active" : "")
 #define CAT_TEXT(cat, cfg_cat) (((cat) == (cfg_cat)) ? "active" : "")
 
-
 /**
  * Constructs a string based on a function
  *
@@ -38,7 +37,7 @@
  *  results
  * @return The result, this MUST be free'd when finished and checked for NULL.
  */
-char* construct_func_strings(char* (*func)(void*, size_t, int*),
+char* construct_func_strings(char* (*func)(void*, size_t, size_t*),
                              void* strings,
                              size_t strings_len,
                              size_t* ret_size);

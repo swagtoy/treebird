@@ -24,7 +24,7 @@
 #include "easprintf.h"
 
 // Pages
-#include "../static/test.chtml"
+#include "../static/test.ctmpl"
 
 #define ENV_NOT_FOUND "<span style=\"color:red;\">ENV Not Found</span>"
 
@@ -56,16 +56,17 @@ void content_test(struct session* ssn, mastodont_t* api, char** data)
     };
     
     char* page;
-    easprintf(&page,
-              data_test_html,
-              ENV_TBL_GET(ENV_HTTP_COOKIE),
-              ENV_TBL_GET(ENV_PATH_INFO),
-              ENV_TBL_GET(ENV_QUERY_STRING),
-              ENV_TBL_GET(ENV_REQUEST_METHOD),
-              ENV_TBL_GET(ENV_SCRIPT_NAME),
-              ENV_TBL_GET(ENV_HTTP_REFERER),
-              ENV_TBL_GET(ENV_HTTP_USER_AGENT),
-              ENV_TBL_GET(ENV_CONTENT_LENGTH));
+    struct test_template tdata = {
+        .HTTP_COOKIE = ENV_TBL_GET(ENV_HTTP_COOKIE),
+        .PATH_INFO = ENV_TBL_GET(ENV_PATH_INFO),
+        .QUERY_STRING = ENV_TBL_GET(ENV_QUERY_STRING),
+        .REQUEST_METHOD = ENV_TBL_GET(ENV_REQUEST_METHOD),
+        .SCRIPT_NAME = ENV_TBL_GET(ENV_SCRIPT_NAME),
+        .HTTP_REFERER = ENV_TBL_GET(ENV_HTTP_REFERER),
+        .HTTP_USER_AGENT = ENV_TBL_GET(ENV_HTTP_USER_AGENT),
+        .CONTENT_LENGTH = ENV_TBL_GET(ENV_CONTENT_LENGTH)
+    };
+    page = tmpl_gen_test(&tdata, NULL);
     
     struct base_page b = {
         .category = BASE_CAT_NONE,

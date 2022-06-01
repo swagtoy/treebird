@@ -29,25 +29,23 @@
 #include "graphsnbars.h"
 
 // Pages
-#include "../static/search.chtml"
+#include "../static/search.ctmpl"
 
 void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, char* content)
 {
     char* out_data;
-    easprintf(&out_data, data_search_html,
-              config_url_prefix,
-              keystr(ssn->query.query),
-              MAKE_FOCUSED_IF(tab, SEARCH_STATUSES),
-              "Statuses",
-              config_url_prefix,
-              keystr(ssn->query.query),
-              MAKE_FOCUSED_IF(tab, SEARCH_ACCOUNTS),
-              "Accounts",
-              config_url_prefix,
-              keystr(ssn->query.query),
-              MAKE_FOCUSED_IF(tab, SEARCH_HASHTAGS),
-              "Hashtags",
-              content);
+    struct search_template tdata = {
+        .prefix = config_url_prefix,
+        .query = keystr(ssn->query.query),
+        .accounts_active = MAKE_FOCUSED_IF(tab, SEARCH_ACCOUNTS),
+        .accounts = "Accounts",
+        .hashtags_active = MAKE_FOCUSED_IF(tab, SEARCH_HASHTAGS),
+        .hashtags = "Hashtags",
+        .statuses_active = MAKE_FOCUSED_IF(tab, SEARCH_STATUSES),
+        .statuses = "Statuses",
+        .results = content
+    };
+    out_data = tmpl_gen_search(&tdata, NULL);
 
     struct base_page b = {
         .category = BASE_CAT_NONE,

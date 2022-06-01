@@ -22,7 +22,7 @@
 #include "string_helpers.h"
 #include "easprintf.h"
 
-char* construct_func_strings(char* (*func)(void*, size_t, int*),
+char* construct_func_strings(char* (*func)(void*, size_t, size_t*),
                              void* strings,
                              size_t strings_len,
                              size_t* ret_size)
