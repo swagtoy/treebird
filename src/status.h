@@ -107,4 +107,7 @@ void cleanup_media_ids(struct session* ssn, char** media_ids);
 // Redirects
 void notice_redirect(struct session* ssn, mastodont_t* api, char** data);
 
+// API
+void api_status_interact(struct session* ssn, mastodont_t* api, char** data);
+
 #endif // STATUS_H

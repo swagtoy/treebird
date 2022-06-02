@@ -165,7 +165,7 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
         res = mastodont_unmute_conversation(api, id, &storage, NULL);
 
     mastodont_storage_cleanup(&storage);
-    return ret;
+    return res;
 }
 
 char* construct_status_interactions_label(char* header, int val, size_t* size)
@@ -672,7 +672,7 @@ void status_interact(struct session* ssn, mastodont_t* api, char** data)
 
 void api_status_interact(struct session* ssn, mastodont_t* api, char** data)
 {
-    if (try_interact_status(ssn, api, ssn->post.id))
+    if (try_interact_status(ssn, api, keystr(ssn->post.id)))
     {
         send_result(NULL, "application/json", "{\"status\":\"Success\"}", 0);
     }
