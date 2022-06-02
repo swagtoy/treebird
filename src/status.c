@@ -594,6 +594,8 @@ char* construct_status(struct session* ssn,
         .focused = ((flags & STATUS_FOCUSED) == STATUS_FOCUSED ?
                    "focused" : ""),
         .notif_info = notif_info,
+        // TODO doesn't even need to be a hashtag, this is a temporary hack
+        .is_cat = status->account.note && strstr(status->account.note, "isCat") ? "is-cat" : NULL,
         .avatar = status->account.avatar,
         .username = formatted_display_name,
         .prefix = config_url_prefix,

@@ -94,9 +94,10 @@ int main(void)
         { "/notifications_compact", content_notifications_compact },
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },
+        // API
+        { "/treebird_api/v1/notifications", api_notifications }
     };
 
-    // API
     while (FCGI_Accept() >= 0)
     {
         // Default config

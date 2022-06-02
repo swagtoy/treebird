@@ -280,3 +280,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
     if (page) free(page);
 }
 
+void api_notifications(struct session* ssn, mastodont_t* api, char** data)
+{
+    render_html("application/json", "{\"error\":0}", 0);
+}

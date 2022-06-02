@@ -172,6 +172,7 @@ cleanup:
 
 void render_html(char* content_type, char* data, size_t data_len)
 {
+    if (data_len == 0) data_len = strlen(data_len);
     printf("Content-type: %s\r\n"
            "Content-Length: %d\r\n\r\n",
            content_type ? content_type : "text/html",
