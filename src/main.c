@@ -95,7 +95,8 @@ int main(void)
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },
         // API
-        { "/treebird_api/v1/notifications", api_notifications }
+        { "/treebird_api/v1/notifications", api_notifications },
+        { "/treebird_api/v1/interact", api_status_interact }
     };
 
     while (FCGI_Accept() >= 0)

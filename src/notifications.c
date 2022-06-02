@@ -282,5 +282,5 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
 void api_notifications(struct session* ssn, mastodont_t* api, char** data)
 {
-    render_html("application/json", "{\"error\":0}", 0);
+    render_html("application/json", "{\"status\":0}", 0);
 }

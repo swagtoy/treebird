@@ -133,39 +133,39 @@ void content_status_react(struct session* ssn, mastodont_t* api, char** data)
 
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 {
+    int res = 0;
     struct mstdnt_storage storage = { 0 };
     if (!(keystr(ssn->post.itype) && id)) return 1;
 
     // Pretty up the type
     if (strcmp(keystr(ssn->post.itype), "like") == 0 ||
         strcmp(keystr(ssn->post.itype), "likeboost") == 0)
-        mastodont_favourite_status(api, id, &storage, NULL);
+        res = mastodont_favourite_status(api, id, &storage, NULL);
     // Not else if because possibly a like-boost
     if (strcmp(keystr(ssn->post.itype), "repeat") == 0 ||
         strcmp(keystr(ssn->post.itype), "likeboost") == 0)
-        mastodont_reblog_status(api, id, &storage, NULL);
+        res = mastodont_reblog_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "bookmark") == 0)
-        mastodont_bookmark_status(api, id, &storage, NULL);
+        res = mastodont_bookmark_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "pin") == 0)
-        mastodont_pin_status(api, id, &storage, NULL);
+        res = mastodont_pin_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "mute") == 0)
-        mastodont_mute_conversation(api, id, &storage, NULL);
+        res = mastodont_mute_conversation(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "delete") == 0)
-        mastodont_delete_status(api, id, &storage, NULL);
+        res = mastodont_delete_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unlike") == 0)
-        mastodont_unfavourite_status(api, id, &storage, NULL);
+        res = mastodont_unfavourite_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unrepeat") == 0)
-        mastodont_unreblog_status(api, id, &storage, NULL);
+        res = mastodont_unreblog_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unbookmark") == 0)
-        mastodont_unbookmark_status(api, id, &storage, NULL);
+        res = mastodont_unbookmark_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unpin") == 0)
-        mastodont_unpin_status(api, id, &storage, NULL);
+        res = mastodont_unpin_status(api, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unmute") == 0)
-        mastodont_unmute_conversation(api, id, &storage, NULL);
+        res = mastodont_unmute_conversation(api, id, &storage, NULL);
 
     mastodont_storage_cleanup(&storage);
-
-    return 0;
+    return ret;
 }
 
 char* construct_status_interactions_label(char* header, int val, size_t* size)
@@ -668,6 +668,16 @@ void status_interact(struct session* ssn, mastodont_t* api, char** data)
            "Redirecting...",
            referer ? referer : "/",
            data[0]);
+}
+
+void api_status_interact(struct session* ssn, mastodont_t* api, char** data)
+{
+    if (try_interact_status(ssn, api, ssn->post.id))
+    {
+        render_html("application/json", "{\"status\":\"Success\"}", 0);
+    }
+    else
+        render_html("application/json", "{\"status\":\"Couldn't load status\"}", 0);
 }
 
 void status_view(struct session* ssn, mastodont_t* api, char** data)
