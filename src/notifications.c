@@ -273,7 +273,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
     page = tmpl_gen_notifications_embed(&tdata, &len);
 
-    render_html(NULL, page, len);
+    send_result(NULL, NULL, page, len);
 
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);
@@ -282,5 +282,5 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
 void api_notifications(struct session* ssn, mastodont_t* api, char** data)
 {
-    render_html("application/json", "{\"status\":0}", 0);
+    send_result(NULL, "application/json", "{\"status\":0}", 0);
 }

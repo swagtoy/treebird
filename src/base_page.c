@@ -157,7 +157,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         goto cleanup;
     }
     
-    render_html("text/html", data, len);
+    send_result(NULL, "text/html", data, len);
 
     // Cleanup
 /* cleanup_all: */
@@ -170,11 +170,13 @@ cleanup:
     free(instance_str);
 }
 
-void render_html(char* content_type, char* data, size_t data_len)
+void send_result(char* status, char* content_type, char* data, size_t data_len)
 {
     if (data_len == 0) data_len = strlen(data);
-    printf("Content-type: %s\r\n"
+    printf("Status: %s\r\n"
+           "Content-type: %s\r\n"
            "Content-Length: %d\r\n\r\n",
+           status ? status : "200 OK",
            content_type ? content_type : "text/html",
            data_len + 1);
     puts(data);    

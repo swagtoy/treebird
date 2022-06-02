@@ -674,10 +674,10 @@ void api_status_interact(struct session* ssn, mastodont_t* api, char** data)
 {
     if (try_interact_status(ssn, api, ssn->post.id))
     {
-        render_html("application/json", "{\"status\":\"Success\"}", 0);
+        send_result(NULL, "application/json", "{\"status\":\"Success\"}", 0);
     }
     else
-        render_html("application/json", "{\"status\":\"Couldn't load status\"}", 0);
+        send_result(NULL, "application/json", "{\"status\":\"Couldn't load status\"}", 0);
 }
 
 void status_view(struct session* ssn, mastodont_t* api, char** data)
