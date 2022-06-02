@@ -48,25 +48,23 @@ struct notification_args
 char* construct_notification(struct session* ssn,
                              mastodont_t* api,
                              struct mstdnt_notification* notif,
-                             int* size)
+                             size_t* size)
 {
     char* notif_html;
-    int s = 0;
 
     if (notif->status)
     {
         // Construct status with notification_info
-        notif_html = construct_status(ssn, api, notif->status, &s, notif, NULL, 0);
+        notif_html = construct_status(ssn, api, notif->status, size, notif, NULL, 0);
     }
     else {
-        notif_html = construct_notification_action(notif, &s);
+        notif_html = construct_notification_action(notif, size);
     }
 
-    if (size) *size = s;
     return notif_html;
 }
 
-char* construct_notification_action(struct mstdnt_notification* notif, int* size)
+char* construct_notification_action(struct mstdnt_notification* notif, size_t* size)
 {
     struct notification_action_template tdata = {
         .avatar = notif->account->avatar,
@@ -82,7 +80,7 @@ char* construct_notification_action(struct mstdnt_notification* notif, int* size
 char* construct_notification_compact(struct session* ssn,
                                      mastodont_t* api,
                                      struct mstdnt_notification* notif,
-                                     int* size)
+                                     size_t* size)
 {
     char* notif_html;
     char* status_format = NULL;
@@ -123,13 +121,13 @@ char* construct_notification_compact(struct session* ssn,
     return notif_html;
 }
 
-static char* construct_notification_voidwrap(void* passed, size_t index, int* res)
+static char* construct_notification_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct notification_args* args = passed;
     return construct_notification(args->ssn, args->api, args->notifs + index, res);
 }
 
-static char* construct_notification_compact_voidwrap(void* passed, size_t index, int* res)
+static char* construct_notification_compact_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct notification_args* args = passed;
     return construct_notification_compact(args->ssn, args->api, args->notifs + index, res);

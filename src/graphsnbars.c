@@ -43,7 +43,7 @@ char* construct_bar_graph_container(char* bars, size_t* size)
     return tmpl_gen_bar_graph(&data, size);
 }
 
-char* construct_bar(float value, int* size)
+char* construct_bar(float value, size_t* size)
 {
     struct bar_template data = {
         .value = value * 100
@@ -51,7 +51,7 @@ char* construct_bar(float value, int* size)
     return tmpl_gen_bar(&data, size);
 }
 
-static char* construct_hashgraph_voidwrap(void* passed, size_t index, int* res)
+static char* construct_hashgraph_voidwrap(void* passed, size_t index, size_t* res)
 {
     unsigned curr_sum = 0;
     struct hashtags_graph_args* args = passed;

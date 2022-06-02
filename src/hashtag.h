@@ -21,7 +21,7 @@
 #include <stddef.h>
 #include <mastodont.h>
 
-char* construct_hashtag(struct mstdnt_tag* hashtag, int* size);
+char* construct_hashtag(struct mstdnt_tag* hashtag, size_t* size);
 char* construct_hashtags(struct mstdnt_tag* hashtags, size_t size, size_t* ret_size);
 
 #endif /* HASHTAG_H */

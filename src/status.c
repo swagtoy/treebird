@@ -221,6 +221,7 @@ char* construct_interaction_buttons(struct session* ssn,
         .prefix = config_url_prefix,
         .status_id = status->id,
     };
+    likeboost_html = tmpl_gen_likeboost(&lbdata, NULL);
     
     time_str = reltime_to_str(status->created_at);
 

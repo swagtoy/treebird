@@ -18,11 +18,12 @@
 
 #ifndef REPLY_H
 #define REPLY_H
+#include <stddef.h>
 #include <mastodont.h>
 
 char* construct_post_box(char* reply_id,
                          char* default_content,
-                         int* size);
+                         size_t* size);
 
 char* reply_status(char* id, struct mstdnt_status* status);
 

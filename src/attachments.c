@@ -122,7 +122,7 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
 char* construct_attachment(struct session* ssn,
                            mstdnt_bool sensitive,
                            struct mstdnt_attachment* att,
-                           int* str_size)
+                           size_t* str_size)
 {
     // Due to how similar the attachment templates are, we're just going to use their data files
     // and not generate any templates, saves some LOC!
@@ -169,7 +169,7 @@ char* construct_attachment(struct session* ssn,
     return att_html;
 }
 
-static char* construct_attachments_voidwrap(void* passed, size_t index, int* res)
+static char* construct_attachments_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct attachments_args* args = passed;
     return construct_attachment(args->ssn, args->sensitive, args->atts + index, res);

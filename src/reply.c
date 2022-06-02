@@ -31,7 +31,7 @@
 
 char* construct_post_box(char* reply_id,
                          char* default_content,
-                         int* size)
+                         size_t* size)
 {
     char* reply_html;
     char id_reply[ID_REPLY_SIZE];

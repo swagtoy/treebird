@@ -65,7 +65,7 @@ struct construct_emoji_picker_args
     unsigned index;
 };
 
-char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size)
+char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size)
 {
     if (!emoji)
         return NULL;
@@ -77,7 +77,7 @@ char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size)
     return tmpl_gen_emoji(&data, size);
 }
 
-static char* construct_emoji_voidwrap(void* passed, size_t index, int* res)
+static char* construct_emoji_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct construct_emoji_picker_args* args = passed;
     size_t calc_index = index + args->index;

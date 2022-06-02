@@ -20,7 +20,7 @@
 #define SCROBBLE_H
 #include <mastodont.h>
 
-char* construct_scrobble(struct mstdnt_scrobble* scrobble, int* size);
+char* construct_scrobble(struct mstdnt_scrobble* scrobble, size_t* size);
 char* construct_scrobbles(struct mstdnt_scrobble* scrobbles, size_t scrobbles_len, size_t* ret_size);
 
 #endif /* SCROBBLE_H */

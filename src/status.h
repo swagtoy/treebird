@@ -49,9 +49,6 @@ void content_status_create(struct session* ssn, mastodont_t* api, char** data);
 void content_status_react(struct session* ssn, mastodont_t* api, char** data);
 
 // HTML Builders
-char* construct_post_box(char* reply_id,
-                         char* default_content,
-                         int* size);
 char* construct_status(struct session* ssn,
                        mastodont_t* api,
                        struct mstdnt_status* status,

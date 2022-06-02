@@ -59,7 +59,7 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size);
 char* construct_account(mastodont_t* api,
                         struct mstdnt_account* account,
                         uint8_t flags,
-                        int* size);
+                        size_t* size);
 char* construct_accounts(mastodont_t* api,
                          struct mstdnt_account* accounts,
                          size_t size,

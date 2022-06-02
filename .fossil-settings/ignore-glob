@@ -3,7 +3,8 @@ filec
 emojitoc
 **/*.cgi
 **/*.o
-**/*.chtml
+static/*.ctmpl
+static/*.c
 mastodont-c
 config.h
 treebird

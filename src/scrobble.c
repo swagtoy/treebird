@@ -22,7 +22,7 @@
 
 #include "../static/scrobble.ctmpl"
 
-char* construct_scrobble(struct mstdnt_scrobble* scrobble, int* size)
+char* construct_scrobble(struct mstdnt_scrobble* scrobble, size_t* size)
 {
     struct scrobble_template tdata = {
         .scrobble_id = scrobble->id,

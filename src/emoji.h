@@ -18,6 +18,7 @@
 
 #ifndef EMOJI_H
 #define EMOJI_H
+#include <stddef.h>
 #include <mastodont.h>
 #include "emoji_codes.h"
 
@@ -31,7 +32,7 @@ enum emoji_picker_cat
 };
 
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len);
-char* construct_emoji(struct emoji_info* emoji, char* status_id, int* size);
+char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size);
 char* construct_emoji_picker(char* status_id, unsigned index, size_t* size);
 
 #endif // EMOJI_H

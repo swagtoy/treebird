@@ -25,12 +25,12 @@
 char* construct_notification(struct session* ssn,
                              mastodont_t* api,
                              struct mstdnt_notification* notif,
-                             int* size);
-char* construct_notification_action(struct mstdnt_notification* notif, int* size);
+                             size_t* size);
+char* construct_notification_action(struct mstdnt_notification* notif, size_t* size);
 char* construct_notification_compact(struct session* ssn,
                                      mastodont_t* api,
                                      struct mstdnt_notification* notif,
-                                     int* size);
+                                     size_t* size);
 char* construct_notifications(struct session* ssn,
                               mastodont_t* api,
                               struct mstdnt_notification* notifs,

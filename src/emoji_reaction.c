@@ -32,7 +32,7 @@ struct construct_emoji_reactions_args
     char* id;
 };
 
-char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, int* str_size)
+char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, size_t* str_size)
 {
     struct emoji_reaction_template data = {
         .prefix = config_url_prefix,
@@ -44,7 +44,7 @@ char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, int*
     return tmpl_gen_emoji_reaction(&data, str_size);
 }
 
-static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, int* res)
+static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct construct_emoji_reactions_args* args = passed;
     return construct_emoji_reaction(args->id, args->emojis + index, res);

@@ -215,7 +215,7 @@ static void fetch_account_page(struct session* ssn,
 
 size_t construct_account_page(char** result, struct account_page* page, char* content)
 {
-    int size;
+    size_t size;
     struct mstdnt_relationship* rel = page->relationship;
     char* follow_btn = NULL, *follow_btn_text = NULL;
     char* follows_you = NULL;
@@ -314,7 +314,7 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
 char* construct_account(mastodont_t* api,
                         struct mstdnt_account* acct,
                         uint8_t flags,
-                        int* size)
+                        size_t* size)
 {
     struct account_stub_template data = {
         .prefix = config_url_prefix,
@@ -326,7 +326,7 @@ char* construct_account(mastodont_t* api,
     return tmpl_gen_account_stub(&data, size);
 }
 
-static char* construct_account_voidwrap(void* passed, size_t index, int* res)
+static char* construct_account_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct account_args* args = passed;
     return construct_account(args->api, args->accts + index, args->flags, res);

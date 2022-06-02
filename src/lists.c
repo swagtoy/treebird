@@ -31,7 +31,7 @@
 #include "../static/list.ctmpl"
 #include "../static/lists.ctmpl"
 
-char* construct_list(struct mstdnt_list* list, int* size)
+char* construct_list(struct mstdnt_list* list, size_t* size)
 {
     struct list_template data = {
         .list = list->title,
@@ -41,7 +41,7 @@ char* construct_list(struct mstdnt_list* list, int* size)
     return tmpl_gen_list(&data, size);
 }
 
-static char* construct_list_voidwrap(void* passed, size_t index, int* res)
+static char* construct_list_voidwrap(void* passed, size_t index, size_t* res)
 {
     return construct_list((struct mstdnt_list*)passed + index, res);
 }
@@ -51,7 +51,7 @@ char* construct_lists(struct mstdnt_list* lists, size_t size, size_t* ret_size)
     return construct_func_strings(construct_list_voidwrap, lists, size, ret_size);
 }
 
-char* construct_lists_view(char* lists_string, int* size)
+char* construct_lists_view(char* lists_string, size_t* size)
 {
     struct lists_template data = {
         .lists = lists_string,

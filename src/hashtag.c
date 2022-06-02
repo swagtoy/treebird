@@ -38,7 +38,7 @@ static unsigned hashtag_history_daily_uses(size_t max, struct mstdnt_history* hi
     return total;
 }
 
-char* construct_hashtag(struct mstdnt_tag* hashtag, int* size)
+char* construct_hashtag(struct mstdnt_tag* hashtag, size_t* size)
 {
     // Lol!
     unsigned hash_size = TAG_SIZE_INITIAL +

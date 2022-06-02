@@ -23,7 +23,7 @@
 #include "session.h"
 
 char* construct_bar_graph_container(char* bars, size_t* size);
-char* construct_bar(float value, int* size);
+char* construct_bar(float value, size_t* size);
 char* construct_hashtags_graph(struct mstdnt_tag* tags,
                                size_t tags_len,
                                size_t days,

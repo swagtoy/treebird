@@ -1,6 +1,0 @@
-#ifndef __instance
-#define __instance
-#include <stddef.h>
-static const char data_instance[] = {0X49,0X6E,0X73,0X74,0X61,0X6E,0X63,0X65,0X20,0X69,0X6E,0X66,0X6F,0X72,0X6D,0X61,0X74,0X69,0X6F,0X6E,0};
-
-#endif
