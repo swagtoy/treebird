@@ -359,7 +359,7 @@ char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* si
     struct mstdnt_account acct = { 0 };
     
     int res = mastodont_get_account(api,
-                                    config_experimental_lookup,
+                                    0,
                                     status->in_reply_to_account_id,
                                     &acct,
                                     &storage);

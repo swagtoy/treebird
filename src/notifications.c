@@ -26,6 +26,7 @@
 #include "navigation.h"
 #include "status.h"
 #include "error.h"
+#include "emoji.h"
 #include "../config.h"
 
 // Pages
@@ -66,14 +67,19 @@ char* construct_notification(struct session* ssn,
 
 char* construct_notification_action(struct mstdnt_notification* notif, size_t* size)
 {
+    char* display_name = emojify(notif->account->display_name,
+                                 notif->account->emojis,
+                                 notif->account->emojis_len);
     struct notification_action_template tdata = {
         .avatar = notif->account->avatar,
         .acct = notif->account->acct,
-        .display_name = notif->account->display_name,
+        .display_name = display_name,
         .prefix = config_url_prefix,
         .action = notification_type_compact_str(notif->type),
         .notif_svg = notification_type_svg(notif->type)
     };
+    if (display_name != notif->account->display_name)
+        free(display_name);
     return tmpl_gen_notification_action(&tdata, size);
 }
 
@@ -100,11 +106,14 @@ char* construct_notification_compact(struct session* ssn,
                                         notif->status->emojis_len);
     }
 
+    char* display_name = emojify(notif->account->display_name,
+                                 notif->account->emojis,
+                                 notif->account->emojis_len);
     struct notification_compact_template tdata = {
         .avatar = notif->account->avatar,
         .has_icon = strlen(type_svg) == 0 ? "" : "-with-icon",
         .acct = notif->account->acct,
-        .display_name = notif->account->display_name,
+        .display_name = display_name,
         .action = type_str,
         .notif_svg = type_svg,
         /* Might show follower address */
@@ -118,6 +127,8 @@ char* construct_notification_compact(struct session* ssn,
     if (status_format &&
         status_format != notif->status->content) free(status_format);
     if (notif_stats) free(notif_stats);
+    if (display_name != notif->account->display_name)
+        free(display_name);
     return notif_html;
 }
 

@@ -29,6 +29,7 @@
 #include "scrobble.h"
 #include "string_helpers.h"
 #include "navigation.h"
+#include "emoji.h"
 
 // Files
 #include "../static/account.ctmpl"
@@ -51,10 +52,17 @@ struct account_args
 char* load_account_info(struct mstdnt_account* acct,
                         size_t* size)
 {
+    char* info_html;
+    char* note = emojify(acct->note,
+                         acct->emojis,
+                         acct->emojis_len);
     struct account_info_template data = {
-        .acct_note = acct->note
+        .acct_note = note
     };
-    return tmpl_gen_account_info(&data, size);
+    info_html = tmpl_gen_account_info(&data, size);
+    if (note != acct->note)
+        free(note);
+    return info_html;
 }
 
 char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
@@ -215,12 +223,20 @@ static void fetch_account_page(struct session* ssn,
 
 size_t construct_account_page(char** result, struct account_page* page, char* content)
 {
+    if (!page->account)
+    {
+        *result = NULL;
+        return 0;
+    }
     size_t size;
     struct mstdnt_relationship* rel = page->relationship;
     char* follow_btn = NULL, *follow_btn_text = NULL;
     char* follows_you = NULL;
     char* info_html = NULL;
     char* is_blocked = NULL;
+    char* display_name = emojify(page->display_name,
+                                 page->account->emojis,
+                                 page->account->emojis_len);
 
     // Check if note is not empty
     if (page->note && strcmp(page->note, "") != 0)
@@ -260,10 +276,11 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
     struct account_template acct_data = {
         .block_text = STR_NULL_EMPTY(is_blocked),
         .header = page->header_image,
-        .display_name = page->display_name,
+        .display_name = display_name,
         .acct = page->acct,
         .prefix = config_url_prefix,
         .userid = page->id,
+        .follows_you = follows_you,
         .unsubscribe = (rel && MSTDNT_FLAG_ISSET(rel->flags,
                                                  MSTDNT_RELATIONSHIP_NOTIFYING)
                         ? "un" : ""),
@@ -304,10 +321,12 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
 
     *result = tmpl_gen_account(&acct_data, &size);
     
-    if (info_html) free(info_html);
-    if (follows_you) free(follows_you);
-    if (follow_btn) free(follow_btn);
-    if (is_blocked) free(is_blocked);
+    free(info_html);
+    free(follows_you);
+    free(follow_btn);
+    free(is_blocked);
+    if (display_name != page->display_name)
+        free(display_name);
     return size;
 }
 

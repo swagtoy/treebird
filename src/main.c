@@ -67,6 +67,7 @@ int main(void)
         { "/login", content_login },
         { "/test", content_test },
         { "/user/:/action/:", content_account_action },
+        { "/user/:", content_account_statuses },
         { "/@:/scrobbles", content_account_scrobbles },
         { "/@:/pinned", content_account_pinned },
         { "/@:/media", content_account_media },
