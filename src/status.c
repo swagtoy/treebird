@@ -596,6 +596,7 @@ char* construct_status(struct session* ssn,
         .notif_info = notif_info,
         // TODO doesn't even need to be a hashtag, this is a temporary hack
         .is_cat = status->account.note && strstr(status->account.note, "isCat") ? "is-cat" : NULL,
+        .is_bun = status->account.note && strstr(status->account.note, "isBun") ? " is-bun" : NULL,
         .avatar = status->account.avatar,
         .username = formatted_display_name,
         .prefix = config_url_prefix,
