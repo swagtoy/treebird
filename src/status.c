@@ -577,13 +577,18 @@ char* construct_status(struct session* ssn,
         emoji_reactions = construct_emoji_reactions(status->id, status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
     if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
     {
+        char* notif_display_name = emojify(notif->account->display_name,
+                                           notif->account->emojis,
+                                           notif->account->emojis_len);
         struct notification_template tdata = {
             .avatar = notif->account->avatar,
-            .username = notif->account->display_name,
+            .username = notif_display_name,
             .action = (local_status->reblog ? notification_type_compact_str(notif->type) : notification_type_str(notif->type)),
             .action_item = notification_type_svg(notif->type),
         };
         notif_info = tmpl_gen_notification(&tdata, NULL);
+        if (notif_display_name != notif->account->display_name)
+            free(notif_display_name);
     }
 
     if (status->in_reply_to_id && status->in_reply_to_account_id)
