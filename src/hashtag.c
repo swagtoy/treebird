@@ -52,7 +52,7 @@ char* construct_hashtag(struct mstdnt_tag* hashtag, size_t* size)
     return tmpl_gen_hashtag(&data, size);
 }
 
-static char* construct_hashtag_voidwrap(void* passed, size_t index, int* res)
+static char* construct_hashtag_voidwrap(void* passed, size_t index, size_t* res)
 {
     return construct_hashtag((struct mstdnt_tag*)passed + index, res);
 }

@@ -42,7 +42,7 @@ char* construct_scrobble(struct mstdnt_scrobble* scrobble, size_t* size)
     return tmpl_gen_scrobble(&tdata, size);
 }
 
-static char* construct_scrobble_voidwrap(void* passed, size_t index, int* res)
+static char* construct_scrobble_voidwrap(void* passed, size_t index, size_t* res)
 {
     return construct_scrobble((struct mstdnt_scrobble*)passed + index, res);
 }
