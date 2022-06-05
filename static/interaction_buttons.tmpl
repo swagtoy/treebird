@@ -10,7 +10,7 @@
       </td>
       <td>
         <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
-          <input type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
+          <input class="itype" type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
           <label class="repeat-btn pointer statbtn">
             <svg class="repeat {{%s:repeat_active}}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12.2v-2a4 4 0 0 1 4-4h12.8M7 21.9l-4-4 4-4"/><path d="M21 11.8v2a4 4 0 0 1-4 4H4.2"/></svg>
             <span class="count">{{%s:repeats_count}}</span>
@@ -20,7 +20,7 @@
       </td>
       <td>
         <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
-          <input type="hidden" name="itype" value="{{%s:unfavourite}}like">
+          <input class="itype" type="hidden" name="itype" value="{{%s:unfavourite}}like">
           <label class="pointer statbtn like-btn">
             <svg class="like {{%s:favourite_active}}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
             <span class="count">{{%s:favourites_count}}</span>

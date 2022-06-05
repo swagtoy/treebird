@@ -7,19 +7,18 @@
  * Nekobit <@neko@rdrama.cc>
    Created the Treebird frontend, created mastodont-c (A pleroma C library)
    Originally, this was called RatFE, but the name changed.
-   [ Producer ]
 
  * Grumbulon <@grumbulon@freecumextremist.com>
    Creator of the Logo and owns treebird.dev, made dark theme
-   [ Camera support ]
+
+ * Pacific Coast Highway <@pch_xyz@seediqbale.xyz>
+   Provided Chinese (Traditional) Translations
 
  * SamTherapy <@sam@froth.zone>
    Documentation and cleanup, fixed bugs
-   [ Support ]
 
- * Khan <@Khan@sleepy.cafe>
+ * Khan <@khan@sleepy.cafe>
    Helped with the old Treebird Husky fork (history lesson required)
-   [ Executive producer ]
 
                                       OTHER
                                 
@@ -27,5 +26,6 @@
  * ICONSVG Project
  * cJSON developers
  * Pleroma developers
- * Alex Gleason - For API assistance
+ * Alex Gleason - For occasional API assistance
  * You! :)
+ * Me

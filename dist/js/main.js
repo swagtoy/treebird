@@ -2,8 +2,6 @@ Element.prototype.insertAfter = function(element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 };
 
-
-
 function construct_quick_reply_form(replyid)
 {
     let src = document.createElement("form");
@@ -65,6 +63,16 @@ function construct_quick_reply_form(replyid)
     return src;
 }
 
+function status_interact_props(e)
+{
+    
+    e.preventDefault();
+    let interact = e.target.closest(".statbtn");
+    let type = interact.target.closest(".itype");
+    console.log([interact, type]);
+    return false;
+}
+
 function create_reply_form(e)
 {
     e.preventDefault();
@@ -87,9 +95,15 @@ function create_reply_form(e)
 // Main
 (function() {
     let reply_btn = document.getElementsByClassName("reply-btn");
+    let interact_btn = document.getElementsByClassName("statbtn");
 
     for (let i = 0; i < reply_btn.length; ++i)
     {
         reply_btn[i].addEventListener('click', create_reply_form);
+    }
+
+    for (let i = 0; i < interact_btn.length; ++i)
+    {
+        interact_btn[i].addEventListener('click', status_interact_props);
     }
 })();
