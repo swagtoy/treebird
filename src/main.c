@@ -107,6 +107,7 @@ int main(void)
             .config = {
                 .theme = "treebird20",
                 .themeclr = 0,
+                .lang = L10N_EN_US,
                 .jsactions = 1,
                 .jsreply = 1,
                 .jslive = 0,

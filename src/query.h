@@ -33,6 +33,7 @@ struct post_values
     // Config
     struct key theme; // String
     struct key themeclr; // Int
+    struct key lang; // Int
     struct key jsactions; // Int
     struct key jsreply; // Int
     struct key jslive; // Int

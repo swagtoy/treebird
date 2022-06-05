@@ -744,7 +744,6 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };

@@ -26,6 +26,7 @@ struct cookie_values
     struct key access_token;
     struct key logged_in;
     struct key theme;
+    struct key lang;
     struct key instance_url;
     struct key background_url;
     struct key client_id;

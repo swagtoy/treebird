@@ -68,7 +68,8 @@ char* construct_accounts(mastodont_t* api,
 
 size_t construct_account_page(char** result, struct account_page* page, char* content);
 
-char* load_account_page(mastodont_t* api,
+char* load_account_page(struct session* ssn,
+                        mastodont_t* api,
                         struct mstdnt_account* acct,
                         struct mstdnt_relationship* relationship,
                         enum account_tab tab,

@@ -40,7 +40,6 @@ enum base_category
 struct base_page
 {
     enum base_category category;
-    enum l10n_locale locale;
     char* content;
     char* sidebar_left;
 };

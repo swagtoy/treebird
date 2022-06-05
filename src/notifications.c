@@ -223,7 +223,6 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     
     struct base_page b = {
         .category = BASE_CAT_NOTIFICATIONS,
-        .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL
     };

@@ -2,8 +2,21 @@
   <form action="general" method="post">
     <!-- Lets server know we sent it -->
     <input type="hidden" name="set" value="1">
+
     <h1>General</h1>
     <input class="btn btn-single" type="submit" value="Save">
+    <h3>Locales</h3>
+    <ul>
+      <li>
+        <label for="cfglang">Language:</label>
+        <select name="lang" id="cfglang">
+          <option value="0">English</option>
+          <option value="1">Spanish</option>
+          <option value="2">Chinese (Traditional)</option>
+        </select>
+      </li>
+    </ul>
+
     <h3>JavaScript</h3>
     <ul>
       <li>

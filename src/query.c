@@ -87,6 +87,7 @@ char* read_post_data(struct post_values* post)
     struct key_value_refs refs[] = {
         { "set", &(post->set), key_int },
         { "content", &(post->content), key_string },
+        { "lang", &(post->lang), key_int },
         { "itype", &(post->itype), key_string },
         { "id", &(post->id), key_string },
         { "theme", &(post->theme), key_string },

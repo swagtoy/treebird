@@ -57,7 +57,6 @@ void content_not_found(struct session* ssn, mastodont_t* api, char* path)
     page = tmpl_gen_error_404(&data, NULL);
     
     struct base_page b = {
-        .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL
     };

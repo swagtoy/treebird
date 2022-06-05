@@ -2,6 +2,8 @@ Element.prototype.insertAfter = function(element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 };
 
+
+
 function construct_quick_reply_form(replyid)
 {
     let src = document.createElement("form");
@@ -88,6 +90,6 @@ function create_reply_form(e)
 
     for (let i = 0; i < reply_btn.length; ++i)
     {
-        reply_btn[i].onclick = create_reply_form;
+        reply_btn[i].addEventListener('click', create_reply_form);
     }
 })();

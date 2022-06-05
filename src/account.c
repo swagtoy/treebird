@@ -192,7 +192,8 @@ static void fetch_account_page(struct session* ssn,
         
         data = callback(ssn, api, 
                         &acct, args);
-        account_page = load_account_page(api,
+        account_page = load_account_page(ssn,
+                                         api,
                                          &acct,
                                          relationships,
                                          tab,
@@ -206,7 +207,6 @@ static void fetch_account_page(struct session* ssn,
 
     struct base_page b = {   
         .category = BASE_CAT_NONE,
-        .locale = L10N_EN_US,
         .content = account_page,
         .sidebar_left = NULL
     };
@@ -366,7 +366,8 @@ char* construct_accounts(mastodont_t* api,
     return construct_func_strings(construct_account_voidwrap, &acct_args, size, ret_size);
 }
 
-char* load_account_page(mastodont_t* api,
+char* load_account_page(struct session* ssn,
+                        mastodont_t* api,
                         struct mstdnt_account* acct,
                         struct mstdnt_relationship* relationship,
                         enum account_tab tab,
@@ -376,7 +377,7 @@ char* load_account_page(mastodont_t* api,
     size_t size;
     char* result;
     struct account_page page = {
-        .locale = L10N_EN_US,
+        .locale = l10n_normalize(ssn->config.lang),
         .account = acct,
         .header_image = acct->header,
         .profile_image = acct->avatar,
@@ -538,7 +539,6 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
 
     struct base_page b = {
         .category = BASE_CAT_BOOKMARKS,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };
@@ -601,7 +601,6 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
 
     struct base_page b = {
         .category = BASE_CAT_FAVOURITES,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };

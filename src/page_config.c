@@ -83,7 +83,6 @@ void content_config_general(struct session* ssn, mastodont_t* api, char** data)
     
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
-        .locale = L10N_EN_US,
         .content = general_page,
         .sidebar_left = sidebar_html
     };
@@ -101,7 +100,6 @@ void content_config_appearance(struct session* ssn, mastodont_t* api, char** dat
 
     struct base_page b = {
         .category = BASE_CAT_CONFIG,
-        .locale = L10N_EN_US,
         .content = data_config_appearance,
         .sidebar_left = sidebar_html
     };

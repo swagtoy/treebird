@@ -52,6 +52,7 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "access_token", &(cookies->access_token), key_string },
         { "logged_in", &(cookies->logged_in), key_string },
         { "theme", &(cookies->theme), key_string },
+        { "lang", &(cookies->lang), key_int },
         { "instance_url", &(cookies->instance_url), key_string },
         { "background_url", &(cookies->background_url), key_string },
         { "client_id", &(cookies->client_id), key_string },

@@ -85,7 +85,6 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
 
     struct base_page b = {
         .category = BASE_CAT_HOME,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };
@@ -154,7 +153,6 @@ void tl_direct(struct session* ssn, mastodont_t* api)
 
     struct base_page b = {
         .category = BASE_CAT_DIRECT,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };
@@ -224,7 +222,6 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
 
     struct base_page b = {
         .category = cat,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };
@@ -287,7 +284,6 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 
     struct base_page b = {
         .category = BASE_CAT_LISTS,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };
@@ -350,7 +346,6 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .locale = L10N_EN_US,
         .content = output,
         .sidebar_left = NULL
     };

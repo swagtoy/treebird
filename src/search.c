@@ -49,7 +49,6 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .locale = L10N_EN_US,
         .content = out_data,
         .sidebar_left = NULL
     };

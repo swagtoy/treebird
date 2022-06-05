@@ -38,7 +38,7 @@
 void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api)
 {
     char* cookie = getenv("HTTP_COOKIE");
-    enum l10n_locale locale = page->locale;
+    enum l10n_locale locale = l10n_normalize(ssn->config.lang);
     const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
     const char* sidebar_embed = "<iframe class=\"sidebar-frame\" src=\"/notifications_compact\"></iframe>";
     char* background_url_css = NULL;

@@ -70,7 +70,6 @@ void content_test(struct session* ssn, mastodont_t* api, char** data)
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .locale = L10N_EN_US,
         .content = page,
         .sidebar_left = NULL
     };

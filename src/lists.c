@@ -81,7 +81,6 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
 
     struct base_page b = {
         .category = BASE_CAT_LISTS,
-        .locale = L10N_EN_US,
         .content = lists_page,
         .sidebar_left = NULL
     };
