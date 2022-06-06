@@ -110,17 +110,17 @@ function change_count_text(val, sum)
     return val > 0 ? val.toString() : "";
 }
 
-function interact_action(xhr, arg)
+function interact_action(status, type)
 {
-    let like = arg.status.querySelector(".like");
-    let repeat = arg.status.querySelector(".repeat");
+    let like = status.querySelector(".like");
+    let repeat = status.querySelector(".repeat");
     
     let svg;
-    if (arg.type === "like" || arg.type === "unlike")
+    if (type.value === "like" || type.value === "unlike")
         svg = [ like ];
-    else if (arg.type === "repeat" || arg.type === "unrepeat")
+    else if (type.value === "repeat" || type.value === "unrepeat")
         svg = [ repeat ];
-    else if (arg.type === "likeboost")
+    else if (type.value === "likeboost")
         svg = [ like, repeat ];
     
     svg.forEach(that => {
@@ -130,6 +130,13 @@ function interact_action(xhr, arg)
         let is_active = that.classList.contains("active");
         
         that.classList.toggle("active");
+
+        // Flip itype value
+        if (type.value.substr(0, 2) === "un")
+            type.value = type.value.replace("un", "");
+        else
+            type.value = "un" + type.value;
+        
         counter.innerHTML = change_count_text(counter.innerHTML, is_active ? -1 : 1);
     });
 }
@@ -148,8 +155,15 @@ function status_interact_props(e)
                      itype: type.value
                  },
                  1,
-                 interact_action,
-                 { status: status, type: type.value });
+                 (xhr, args) => {
+                     if (xhr.status !== 200)
+                     {
+                         // Undo action if failure
+                         interact_action(status, type);
+                     }
+                 }, null);
+
+    interact_action(status, type);
     
     e.preventDefault();
     return false;

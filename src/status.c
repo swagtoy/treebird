@@ -596,8 +596,6 @@ char* construct_status(struct session* ssn,
 
     struct status_template tmpl = {
         .status_id = status->id,
-        .focused = ((flags & STATUS_FOCUSED) == STATUS_FOCUSED ?
-                   "focused" : ""),
         .notif_info = notif_info,
         // TODO doesn't even need to be a hashtag, this is a temporary hack
         .is_cat = status->account.note && strstr(status->account.note, "isCat") ? "is-cat" : NULL,

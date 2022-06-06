@@ -632,10 +632,12 @@ svg.in-reply-to-icon
     border-spacing: 0px;
 }
 
-.status.focused
+.status.focused,
+.status:target
 {
     background-color: #ffdddd;
     border-left: 3px solid #aa0000;
+    padding-left: 7px;
 }
 
 .notification-info + .status,
@@ -698,8 +700,9 @@ svg.in-reply-to-icon
 {
     color: #606060;
     vertical-align: middle;
-    font-size: 15px;
+    font-size: 14px;
     padding-left: 5px;
+    text-decoration: none;
 }
 
 .status .status-info,
@@ -1190,8 +1193,15 @@ p}
 .status-interact .statbtn
 {
     display: block;
-    padding: 3px 8px;
+    padding: 3px 2px 5px;
+    min-width: 43px;
 }
+
+.view-btn
+{
+    min-width: 25px !important;
+}
+
 
 .status-interact svg.repeat.active
 {

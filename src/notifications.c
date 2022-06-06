@@ -201,16 +201,21 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
         {
-            notif_html = construct_notifications(ssn, api, notifs, notifs_len, NULL);
-            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
-            navigation_box = construct_navigation_box(start_id,
-                                                      notifs[0].id,
-                                                      notifs[notifs_len-1].id,
-                                                      NULL);
-            mstdnt_cleanup_notifications(notifs, notifs_len);}
-                
+            if (notifs && notifs_len)
+            {
+                notif_html = construct_notifications(ssn, api, notifs, notifs_len, NULL);
+                start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
+                navigation_box = construct_navigation_box(start_id,
+                                                          notifs[0].id,
+                                                          notifs[notifs_len-1].id,
+                                                          NULL);
+                mstdnt_cleanup_notifications(notifs, notifs_len);
+            }
+            else
+                notif_html = construct_error("No notifications", E_NOTICE, 1, NULL);
+        }
         else
-            notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
+            notif_html = construct_error(storage.error, E_ERROR, 1, NULL);
 
     }
 
@@ -229,6 +234,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
     // Output
     render_base_page(&b, ssn, api);
+    mastodont_storage_cleanup(&storage);
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);
     if (page) free(page);
@@ -237,10 +243,10 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data)
 {
     char* page, *notif_html = NULL;
-    struct mstdnt_storage storage;
-    struct mstdnt_notification* notifs;
-    size_t notifs_len;
-    char* start_id;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_notification* notifs = NULL;
+    size_t notifs_len = 0;
+    char* start_id = NULL;
     char* navigation_box = NULL;
 
     if (keystr(ssn->cookies.logged_in))
@@ -260,16 +266,21 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
         if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
         {
-            notif_html = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
-            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
-            navigation_box = construct_navigation_box(start_id,
-                                                      notifs[0].id,
-                                                      notifs[notifs_len-1].id,
-                                                      NULL);
-            mstdnt_cleanup_notifications(notifs, notifs_len);}
-                
+            if (notifs && notifs_len)
+            {
+                notif_html = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
+                start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
+                navigation_box = construct_navigation_box(start_id,
+                                                          notifs[0].id,
+                                                          notifs[notifs_len-1].id,
+                                                          NULL);
+                mstdnt_cleanup_notifications(notifs, notifs_len);
+            }
+            else
+                notif_html = construct_error("No notifications", E_NOTICE, 1, NULL);
+        }   
         else
-            notif_html = construct_error(storage.error, E_NOTICE, 1, NULL);
+            notif_html = construct_error(storage.error, E_ERROR, 1, NULL);
 
     }
 
@@ -285,6 +296,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
     send_result(NULL, NULL, page, len);
 
+    mastodont_storage_cleanup(&storage);
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);
     if (page) free(page);
