@@ -394,20 +394,67 @@ char* reformat_status(struct session* ssn,
                       size_t emos_len)
 {
     if (!content) return NULL;
-    char* gt_res = NULL;
-    char* emo_res;
-    if (ssn->config.stat_greentexts)
-        gt_res = greentextify(content);
-    else
-        gt_res = content;
+    char* res = make_mentions_local(content);
+    char* gt_res, *emo_res;
     
     if (emos)
     {
-        emo_res = emojify(gt_res, emos, emos_len);
-        if (gt_res != content) free(gt_res);
-        return emo_res;
+        emo_res = emojify(res, emos, emos_len);
+        if (emo_res != content && res != content)
+            free(res);
+        res = emo_res;
     }
-    return gt_res;
+    
+    if (ssn->config.stat_greentexts)
+    {
+        gt_res = greentextify(res);
+        if (gt_res != res && res != content)
+            free(res);
+        res = gt_res;
+    }
+    
+    return res;
+}
+
+#define REGEX_MENTION "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>"
+
+char* make_mentions_local(char* content)
+{
+    char* url_format;
+    int error;
+    PCRE2_SIZE erroffset;
+    size_t res_len = 512;
+    char* res = malloc(res_len);
+    pcre2_code* re = pcre2_compile((PCRE2_SPTR)REGEX_MENTION,
+                                   PCRE2_ZERO_TERMINATED, 0,
+                                   &error, &erroffset, NULL);
+    if (re == NULL)
+    {
+        fprintf(stderr, "Couldn't parse regex at offset %ld: %d\n", erroffset, error);
+        pcre2_code_free(re);
+        return NULL;
+    }
+
+    int len = easprintf(&url_format,
+                        "<a class=\"mention\" href=\"http%s://%s/@$2@$1\">",
+                        config_host_url_insecure ? "" : "s",
+                        getenv("HTTP_HOST"));
+
+    int amt = pcre2_substitute(re,
+                               (PCRE2_SPTR)content,
+                               PCRE2_ZERO_TERMINATED,
+                               0,
+                               PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_GLOBAL,
+                               NULL,
+                               NULL,
+                               (PCRE2_SPTR)url_format,
+                               len,
+                               (PCRE2_UCHAR*)res,
+                               &res_len);
+    
+
+    free(url_format);
+    return amt ? res : content;
 }
 
 char* greentextify(char* content)

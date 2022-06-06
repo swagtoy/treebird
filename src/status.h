@@ -92,6 +92,7 @@ char* reformat_status(struct session* ssn,
                       struct mstdnt_emoji* emos,
                       size_t emos_len);
 char* greentextify(char* content);
+char* make_mentions_local(char* content);
 
 // Status frontends
 void status_view(struct session* ssn, mastodont_t* api, char** data);

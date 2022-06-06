@@ -8,13 +8,9 @@ For the following GNU/Linux distributions, you will need the following libraries
   - Debian: `libcurl4-gnutls-dev`
   - Arch: `curl`
   - Void: `libcurl libcurl-devel`
-- libcjson
-  - Debian: `libcjson-dev`
-  - Arch: `cjson`
-  - Void: `cJSON cJSON-devel`
-- libpcre
-  - Debian: `libpcre3-dev`
-  - Void: `libpcre2`
+- libpcre2
+  - Debian: `libpcre2-dev`
+  - Void: `pcre2 pcre2-devel`
 - libfcgi
   - Debian: `libfcgi-dev`
   - Void: `fcgi fcgi-devel`
