@@ -2,6 +2,14 @@ Element.prototype.insertAfter = function(element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 };
 
+function get_cookie(cookiestr)
+{
+    return document.cookie
+        .split(';')
+        .find(row => row.startsWith(cookiestr+'='))
+        .split('=')[1];
+}
+
 function construct_quick_reply_form(replyid)
 {
     let src = document.createElement("form");
@@ -63,13 +71,87 @@ function construct_quick_reply_form(replyid)
     return src;
 }
 
+function construct_query(query)
+{
+    query_string = "";
+    let keys = Object.keys(query);
+    let vals = Object.values(query);
+    const len = keys.length;
+
+    for (let i = 0; i < keys.length; ++i)
+    {
+        query_string += keys[i] + "=" + vals[i];
+        if (i !== keys.length-1)
+            query_string += "&";
+    }
+    return query_string;
+}
+
+function send_request(url, query, type, cb, cb_args)
+{
+    let query_str = construct_query(query);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE)
+            cb(this, cb_args);
+    };
+    xhr.send(query_str);
+}
+
+function change_count_text(val, sum)
+{
+    if (val === "")
+        val = 0
+    else
+        val = parseInt(val);
+    val += sum;
+    return val > 0 ? val.toString() : "";
+}
+
+function interact_action(xhr, arg)
+{
+    let like = arg.status.querySelector(".like");
+    let repeat = arg.status.querySelector(".repeat");
+    
+    let svg;
+    if (arg.type === "like" || arg.type === "unlike")
+        svg = [ like ];
+    else if (arg.type === "repeat" || arg.type === "unrepeat")
+        svg = [ repeat ];
+    else if (arg.type === "likeboost")
+        svg = [ like, repeat ];
+    
+    svg.forEach(that => {
+        let label = that.parentNode;
+        let counter = label.querySelector(".count");
+        
+        let is_active = that.classList.contains("active");
+        
+        that.classList.toggle("active");
+        counter.innerHTML = change_count_text(counter.innerHTML, is_active ? -1 : 1);
+    });
+}
+
 function status_interact_props(e)
 {
+    let interact = e.target.closest(".statbtn");
+    let type = interact.parentNode.querySelector(".itype");
+    if (type === null)
+        return true;
+    let status = interact.closest(".status");
+
+    send_request("/treebird_api/v1/interact",
+                 {
+                     id: status.id,
+                     itype: type.value
+                 },
+                 1,
+                 interact_action,
+                 { status: status, type: type.value });
     
     e.preventDefault();
-    let interact = e.target.closest(".statbtn");
-    let type = interact.target.closest(".itype");
-    console.log([interact, type]);
     return false;
 }
 

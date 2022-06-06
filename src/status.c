@@ -678,7 +678,7 @@ void status_interact(struct session* ssn, mastodont_t* api, char** data)
 
 void api_status_interact(struct session* ssn, mastodont_t* api, char** data)
 {
-    if (try_interact_status(ssn, api, keystr(ssn->post.id)))
+    if (try_interact_status(ssn, api, keystr(ssn->post.id)) == 0)
     {
         send_result(NULL, "application/json", "{\"status\":\"Success\"}", 0);
     }
