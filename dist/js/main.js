@@ -131,11 +131,19 @@ function interact_action(status, type)
         
         that.classList.toggle("active");
 
-        // Flip itype value
-        if (type.value.substr(0, 2) === "un")
+
+        if (is_active)
+        {
+            // Animation
+            that.classList.remove("active-anim");
+            
+            // Flip itype value
             type.value = type.value.replace("un", "");
-        else
+        }
+        else {
+            that.classList.add("active-anim");
             type.value = "un" + type.value;
+        }
         
         counter.innerHTML = change_count_text(counter.innerHTML, is_active ? -1 : 1);
     });

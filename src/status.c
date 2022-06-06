@@ -18,7 +18,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <pcre.h>
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
 #include "http.h"
 #include "base_page.h"
 #include "status.h"
@@ -386,7 +387,6 @@ char* construct_in_reply_to(struct mstdnt_status* status,
 }
 
 #define REGEX_GREENTEXT "((?:^|<br/?>|\\s)&gt;.*?)(?:<br/?>|$)"
-#define REGEX_GREENTEXT_LEN 6
 
 char* reformat_status(struct session* ssn,
                       char* content,
@@ -414,8 +414,8 @@ char* greentextify(char* content)
 {
     if (!content) return NULL;
     
-    const char* error;
-    int erroffset;
+    int error;
+    PCRE2_SIZE erroffset;
     int rc;
     int gt_off;
     int gt_len;
@@ -426,20 +426,25 @@ char* greentextify(char* content)
     char* gt_string;
     
     char* oldres = NULL;
-    int re_results[REGEX_GREENTEXT_LEN];
-    pcre* re = pcre_compile(REGEX_GREENTEXT, 0, &error, &erroffset, NULL);
+    PCRE2_SIZE* re_results;
+    pcre2_code* re = pcre2_compile((PCRE2_SPTR)REGEX_GREENTEXT, PCRE2_ZERO_TERMINATED, 0, &error, &erroffset, NULL);
+    pcre2_match_data* re_data;
     if (re == NULL)
     {
-        fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
-        pcre_free(re);
+        fprintf(stderr, "Couldn't parse regex at offset %ld: %d\n", erroffset, error);
+        pcre2_code_free(re);
         return res;
     }
 
+    re_data = pcre2_match_data_create_from_pattern(re, NULL);
+
     for (int ind = 0;;)
     {
-        rc = pcre_exec(re, NULL, res, strlen(res), ind, 0, re_results, REGEX_GREENTEXT_LEN);
+        rc = pcre2_match(re, (PCRE2_SPTR)res, strlen(res), ind, 0, re_data, NULL);
         if (rc < 0)
             break;
+
+        re_results = pcre2_get_ovector_pointer(re_data);
 
         // Store to last result
         gt_off = re_results[2];
@@ -458,9 +463,10 @@ char* greentextify(char* content)
         ind = re_results[2] + strlen(gt_string);
         free(reg_string);
         free(gt_string);
+        pcre2_match_data_free(re_data);
     }
 
-    pcre_free(re);
+    pcre2_code_free(re);
     return res;
 }
 

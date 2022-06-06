@@ -16,7 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <pcre.h>
+#define PCRE2_CODE_UNIT_WIDTH 8
+
+#include <pcre2.h>
 #include <stdlib.h>
 #include <string.h>
 #include "reply.h"
@@ -55,7 +57,6 @@ char* construct_post_box(char* reply_id,
  *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users
  */
 #define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
-#define REGEX_RESULTS_LEN 9
 
 char* reply_status(char* id, struct mstdnt_status* status)
 {
@@ -63,11 +64,13 @@ char* reply_status(char* id, struct mstdnt_status* status)
     size_t content_len = strlen(status->content);
     char* stat_reply;
     // Regex
-    pcre* re;
-    int re_results[REGEX_RESULTS_LEN];
+    pcre2_code* re;
+    PCRE2_SIZE* re_results;
+    pcre2_match_data* re_data;
+    // Regex data
     int rc;
-    const char* error;
-    int erroffset;
+    int error;
+    PCRE2_SIZE erroffset;
     int url_off, url_len, name_off, name_len;
     // Replies
     size_t replies_size, replies_size_orig;
@@ -79,19 +82,23 @@ char* reply_status(char* id, struct mstdnt_status* status)
     replies[replies_size-1] = ' ';
 
     // Compile regex
-    re = pcre_compile(REGEX_REPLY, 0, &error, &erroffset, NULL);
+    re = pcre2_compile((PCRE2_SPTR)REGEX_REPLY, PCRE2_ZERO_TERMINATED, 0, &error, &erroffset, NULL);
     if (re == NULL)
     {
-        fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", erroffset, error);
+        fprintf(stderr, "Couldn't parse regex at offset %ld: %d\n", erroffset, error);
         free(replies);
-        pcre_free(re);
+        pcre2_code_free(re);
     }
+
+    re_data = pcre2_match_data_create_from_pattern(re, NULL);
 
     for (int ind = 0;;)
     {
-        rc = pcre_exec(re, NULL, content, content_len, ind, 0, re_results, REGEX_RESULTS_LEN);
+        rc = pcre2_match(re, (PCRE2_SPTR)content, content_len, ind, 0, re_data, NULL);
         if (rc < 0)
             break;
+
+        re_results = pcre2_get_ovector_pointer(re_data);
 
         // Store to last result
         ind = re_results[5];
@@ -115,12 +122,14 @@ char* reply_status(char* id, struct mstdnt_status* status)
         replies[replies_size_orig+1+name_len] = '@';
         memcpy(replies + replies_size_orig + 1 + name_len + 1, content + url_off, url_len);
         replies[replies_size-1] = ' ';
+
+        pcre2_match_data_free(re_data);
     }
 
     replies[replies_size-1] = '\0';
     
     stat_reply = construct_post_box(id, replies, NULL);
     if (replies) free(replies);
-    pcre_free(re);
+    pcre2_code_free(re);
     return stat_reply;
 }
