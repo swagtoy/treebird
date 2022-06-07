@@ -416,14 +416,16 @@ char* reformat_status(struct session* ssn,
     return res;
 }
 
-#define REGEX_MENTION "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>"
+#define REGEX_MENTION "<a .*?mention.*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>"
 
 char* make_mentions_local(char* content)
 {
     char* url_format;
     int error;
     PCRE2_SIZE erroffset;
-    size_t res_len = 512;
+    // Initial size, will be increased by 30% if pcre2_substitute cannot fit into the size
+    // ...why can't pcre2 just allocate a string with the size for us? Thanks...
+    size_t res_len = 1024;
     char* res = malloc(res_len);
     pcre2_code* re = pcre2_compile((PCRE2_SPTR)REGEX_MENTION,
                                    PCRE2_ZERO_TERMINATED, 0,
@@ -436,25 +438,46 @@ char* make_mentions_local(char* content)
     }
 
     int len = easprintf(&url_format,
-                        "<a class=\"mention\" href=\"http%s://%s/@$2@$1\">",
+                        "<a target=\"_parent\" class=\"mention\" href=\"http%s://%s/@$2@$1\">",
                         config_host_url_insecure ? "" : "s",
                         getenv("HTTP_HOST"));
 
-    int amt = pcre2_substitute(re,
-                               (PCRE2_SPTR)content,
-                               PCRE2_ZERO_TERMINATED,
-                               0,
-                               PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_GLOBAL,
-                               NULL,
-                               NULL,
-                               (PCRE2_SPTR)url_format,
-                               len,
-                               (PCRE2_UCHAR*)res,
-                               &res_len);
-    
+    int rc = -1;
+    PCRE2_SIZE res_len_str;
+    while (rc < 0)
+    {
+        res_len_str = res_len;
+        rc = pcre2_substitute(
+            re,
+            (PCRE2_SPTR)content,
+            PCRE2_ZERO_TERMINATED,
+            0,
+            PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_GLOBAL,
+            NULL,
+            NULL,
+            (PCRE2_SPTR)url_format,
+            len,
+            (PCRE2_UCHAR*)res,
+            &res_len_str
+            );
+        if (rc < 0)
+        {
+            switch (rc)
+            {
+            case PCRE2_ERROR_NOMEMORY:
+                // Increase by 30% and try again
+                res_len = (float)res_len + ((float)res_len * .3);
+                res = realloc(res, res_len);
+                break;
+            default:
+                goto out;
+            }
+        }
+    }
 
+out:
     free(url_format);
-    return amt ? res : content;
+    return res && rc ? res : content;
 }
 
 char* greentextify(char* content)
@@ -510,9 +533,9 @@ char* greentextify(char* content)
         ind = re_results[2] + strlen(gt_string);
         free(reg_string);
         free(gt_string);
-        pcre2_match_data_free(re_data);
     }
 
+    pcre2_match_data_free(re_data);
     pcre2_code_free(re);
     return res;
 }

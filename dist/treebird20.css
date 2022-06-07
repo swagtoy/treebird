@@ -1191,6 +1191,11 @@ p}
     min-width: 25px !important;
 }
 
+.notification-compact .status-interact .statbtn
+{
+    min-width: 0px !important;
+}
+
 .active-anim
 {
     animation: interact .7s 1;
