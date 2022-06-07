@@ -779,7 +779,8 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
         stat_html = construct_status(ssn, api, &status, NULL, NULL, NULL, flags);
         if ((flags & STATUS_REPLY) == STATUS_REPLY)
         {
-            stat_reply = reply_status(data[0],
+            stat_reply = reply_status(ssn,
+                                      data[0],
                                       &status);
         }
     }

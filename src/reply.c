@@ -58,7 +58,7 @@ char* construct_post_box(char* reply_id,
  */
 #define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
 
-char* reply_status(char* id, struct mstdnt_status* status)
+char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
 {
     char* content = status->content;
     size_t content_len = strlen(status->content);
@@ -73,13 +73,32 @@ char* reply_status(char* id, struct mstdnt_status* status)
     PCRE2_SIZE erroffset;
     int url_off, url_len, name_off, name_len;
     // Replies
-    size_t replies_size, replies_size_orig;
-    char* replies = malloc(replies_size = strlen(status->account.acct)+2);
+    size_t replies_size = 0, replies_size_orig;
+    char* replies = NULL;
+    char* instance_domain = malloc(sizeof(config_instance_url)-1);
+
+    // sscanf instead of regex works here and requires less work, we just need to trim off the slash at the end
+    if (sscanf(config_instance_url, "https://%s/", instance_domain) == 0)
+        if (sscanf(config_instance_url, "http://%s/", instance_domain) == 0)
+        {
+            free(instance_domain);
+            return NULL;
+        }
+
+    instance_domain[strlen(instance_domain)-1] = '\0';
+    // Remove ports, if any. Needed for development or if
+    //  the server actually supports these
+    char* port_val = strchr(instance_domain, ':');
+    if (port_val) *port_val = '\0';
 
     // Load first reply
-    replies[0] = '@';
-    strcpy(replies+1, status->account.acct);
-    replies[replies_size-1] = ' ';
+    if (strcmp(status->account.acct, ssn->acct.acct) != 0)
+    {
+        replies = malloc(replies_size = strlen(status->account.acct)+2);
+        replies[0] = '@';
+        strcpy(replies+1, status->account.acct);
+        replies[replies_size-1] = ' ';
+    }
 
     // Compile regex
     re = pcre2_compile((PCRE2_SPTR)REGEX_REPLY, PCRE2_ZERO_TERMINATED, 0, &error, &erroffset, NULL);
@@ -109,27 +128,37 @@ char* reply_status(char* id, struct mstdnt_status* status)
         name_off = re_results[4];
         name_len = re_results[5] - name_off;
 
+        int instance_cmp = strncmp(instance_domain, content+url_off, url_len);
         // Is this the same as us?
-
+        // Cut off url_len by one to slice the '/' at the end
+        if (instance_cmp == 0 &&
+            strncmp(ssn->acct.acct, content+name_off, name_len) == 0)
+            continue;
+        
         replies_size_orig = replies_size;
-        replies_size += url_len+name_len+3;
+        replies_size += (instance_cmp!=0?url_len:0)+name_len+3-(instance_cmp==0); // Bool as int :^)
 
         // Realloc string
         replies = realloc(replies, replies_size+1);
 
         replies[replies_size_orig] = '@';
         memcpy(replies + replies_size_orig + 1, content + name_off, name_len);
-        replies[replies_size_orig+1+name_len] = '@';
-        memcpy(replies + replies_size_orig + 1 + name_len + 1, content + url_off, url_len);
+        if (instance_cmp != 0)
+        {
+            replies[replies_size_orig+1+name_len] = '@';
+            memcpy(replies + replies_size_orig + 1 + name_len + 1, content + url_off, url_len);
+        }
         replies[replies_size-1] = ' ';
-
-        pcre2_match_data_free(re_data);
     }
 
-    replies[replies_size-1] = '\0';
+    if (replies)
+        replies[replies_size-1] = '\0';
+
+    pcre2_match_data_free(re_data);
     
     stat_reply = construct_post_box(id, replies, NULL);
-    if (replies) free(replies);
     pcre2_code_free(re);
+    free(replies);
+    free(instance_domain);
     return stat_reply;
 }

@@ -18,6 +18,7 @@
 
 #ifndef REPLY_H
 #define REPLY_H
+#include "session.h"
 #include <stddef.h>
 #include <mastodont.h>
 
@@ -25,7 +26,9 @@ char* construct_post_box(char* reply_id,
                          char* default_content,
                          size_t* size);
 
-char* reply_status(char* id, struct mstdnt_status* status);
+char* reply_status(struct session* ssn,
+                   char* id,
+                   struct mstdnt_status* status);
 
 
 #endif // REPLY_H
