@@ -1183,7 +1183,7 @@ p}
 {
     display: block;
     padding: 3px 2px 5px;
-    min-width: 43px;
+    min-width: 39px;
 }
 
 .view-btn
@@ -1243,7 +1243,7 @@ p}
 
 .status-interact .count
 {
-    font-size: 14px;
+    font-size: 12px;
     padding-bottom: 3px;
     vertical-align: middle;
 }

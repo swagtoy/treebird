@@ -10,7 +10,22 @@ function get_cookie(cookiestr)
         .split('=')[1];
 }
 
-function construct_quick_reply_form(replyid)
+// TODO Check if logged in .acct value is the same
+function reply_get_mentions(reply, content)
+{
+    const regexpr = /<a target="_parent" class="mention" href="https?:\/\/.*?\/@(.*?)@(.*?)">.*?<\/a>/g;
+    const arr = [...content.matchAll(regexpr)];
+    let res = reply ? `@${reply} ` : "";
+    const matches = content.matchAll(regexpr);
+
+    for (let x of matches)
+    {
+        res += `@${x[1]}@${x[2]} `;
+    }
+    return res;
+}
+
+function construct_quick_reply_form(status)
 {
     let src = document.createElement("form");
     src.action = "/status/create";
@@ -20,7 +35,7 @@ function construct_quick_reply_form(replyid)
     let hiddeninput = document.createElement("input");
     hiddeninput.type = "hidden";
     hiddeninput.name = "replyid"
-    hiddeninput.value = replyid;
+    hiddeninput.value = status.id;
     let statusbox = document.createElement("div");
     statusbox.className = "statusbox statusbox-ani";
 
@@ -29,6 +44,13 @@ function construct_quick_reply_form(replyid)
     textarea.rows = 5;
     textarea.tabindex = 1;
     textarea.name = "content";
+
+    // Load placeholder text
+    let instance_info = status.querySelector(".instance-info");
+    textarea.innerText = reply_get_mentions(
+        instance_info ? instance_info.innerText : null,
+        status.querySelector(".status-content").innerHTML
+    );
 
     let statusfooter = document.createElement("div");
     statusfooter.className = "statusfooter";
@@ -187,9 +209,8 @@ function create_reply_form(e)
         status.nextSibling.remove();
     }
     else {
-        let form = construct_quick_reply_form(status.id);
+        let form = construct_quick_reply_form(status);
         form.insertAfter(status);
-        
     }
     
     
