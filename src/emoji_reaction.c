@@ -23,6 +23,7 @@
 #include "easprintf.h"
 
 // Templates
+#include "../static/custom_emoji_reaction.ctmpl"
 #include "../static/emoji_reaction.ctmpl"
 #include "../static/emoji_reactions.ctmpl"
 
@@ -34,14 +35,30 @@ struct construct_emoji_reactions_args
 
 char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, size_t* str_size)
 {
+    char* ret;
+    char* emoji = emo->name;
+    if (emo->url)
+    {
+        struct custom_emoji_reaction_template c_data = {
+            .url = emo->url,
+        };
+        emoji = tmpl_gen_custom_emoji_reaction(&c_data, NULL);
+    }
+    
     struct emoji_reaction_template data = {
         .prefix = config_url_prefix,
         .status_id = id,
+        .custom_emoji = emo->url ? "custom-emoji-container" : NULL,
         .emoji = emo->name,
+        .emoji_display = emoji,
         .emoji_active = emo->me ? "active" : NULL,
         .emoji_count = emo->count
     };
-    return tmpl_gen_emoji_reaction(&data, str_size);
+
+    ret = tmpl_gen_emoji_reaction(&data, str_size);
+    if (emoji != emo->name)
+        free(emoji);
+    return ret;
 }
 
 static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, size_t* res)

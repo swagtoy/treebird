@@ -1251,7 +1251,8 @@ p}
 /* Emoji */
 .status-content .emoji,
 .notification-content .emoji,
-.username .emoji
+.username .emoji,
+.custom-emoji-react
 {
     font-family: monospace;
     display: inline;
@@ -1263,10 +1264,16 @@ p}
     transition: transform .2s;
 }
 
+.custom-emoji-react
+{
+    width: 27px;
+    height: 27px;
+}
+
 .username .emoji
 {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
 }
 
 .status-content .emoji:hover,
@@ -1441,10 +1448,14 @@ p}
 {
     display: inline-block;
     list-style-type: none;    
-    padding: 3px 7px;
+    padding: 5px 7px;
     margin: 1px 2px;
     vertical-align: middle;
-        
+}
+
+.emoji-react-box.custom-emoji-container
+{
+    padding: 1px 5px;
 }
 
 .emoji
