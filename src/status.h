@@ -72,7 +72,8 @@ char* construct_in_reply_to(struct mstdnt_status* status,
                             struct mstdnt_account* account,
                             size_t* size);
 
-char* construct_status_interactions(int fav_count,
+char* construct_status_interactions(char* status_id,
+                                    int fav_count,
                                     int reblog_count,
                                     struct mstdnt_account* fav_accounts,
                                     size_t fav_accounts_len,
@@ -86,13 +87,26 @@ char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
                                             size_t favourites_len,
                                             size_t* ret_size);
 char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, size_t* size);
-char* construct_status_interactions_label(char* header, int val, size_t* size);
+char* construct_status_interactions_label(char* status_id,
+                                          int is_favourites,
+                                          char* header,
+                                          int val,
+                                          size_t* size);
 char* reformat_status(struct session* ssn,
                       char* content,
                       struct mstdnt_emoji* emos,
                       size_t emos_len);
 char* greentextify(char* content);
 char* make_mentions_local(char* content);
+
+void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data);
+void status_view_favourites(struct session* ssn, mastodont_t* api, char** data);
+
+void content_status_interactions(struct session* ssn,
+                                 mastodont_t* api,
+                                 char* label,
+                                 struct mstdnt_account* accts,
+                                 size_t accts_len);
 
 // Status frontends
 void status_view(struct session* ssn, mastodont_t* api, char** data);

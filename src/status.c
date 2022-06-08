@@ -35,6 +35,7 @@
 #include "type_string.h"
 #include "string.h"
 #include "emoji.h"
+#include "account.h"
 
 // Pages
 #include "../static/status.ctmpl"
@@ -43,6 +44,7 @@
 #include "../static/status_interactions_label.ctmpl"
 #include "../static/status_interactions.ctmpl"
 #include "../static/status_interaction_profile.ctmpl"
+#include "../static/interactions_page.ctmpl"
 #include "../static/likeboost.ctmpl"
 #include "../static/reactions_btn.ctmpl"
 #include "../static/interaction_buttons.ctmpl"
@@ -169,9 +171,16 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     return res;
 }
 
-char* construct_status_interactions_label(char* header, int val, size_t* size)
+char* construct_status_interactions_label(char* status_id,
+                                          int is_favourites,
+                                          char* header,
+                                          int val,
+                                          size_t* size)
 {
     struct status_interactions_label_template tdata = {
+        .prefix = config_url_prefix,
+        .status_id = status_id,
+        .action = is_favourites ? "favourited_by" : "reblogged_by",
         .header = header,
         .value = val,
     };
@@ -258,7 +267,8 @@ char* construct_interaction_buttons(struct session* ssn,
     return interaction_html;
 }
 
-char* construct_status_interactions(int fav_count,
+char* construct_status_interactions(char* status_id,
+                                    int fav_count,
                                     int reblog_count,
                                     struct mstdnt_account* fav_accounts,
                                     size_t fav_accounts_len,
@@ -268,9 +278,9 @@ char* construct_status_interactions(int fav_count,
 {
     char* html;
     char* reblogs_label = reblog_count ?
-        construct_status_interactions_label("Reblogs", reblog_count, NULL) : NULL;
+        construct_status_interactions_label(status_id, 0, "Reblogs", reblog_count, NULL) : NULL;
     char* favourites_label = fav_count ?
-        construct_status_interactions_label("Favorites", fav_count, NULL) : NULL;
+        construct_status_interactions_label(status_id, 1, "Favorites", fav_count, NULL) : NULL;
     char* profiles = construct_status_interaction_profiles(reblog_accounts,
                                                            fav_accounts,
                                                            reblog_accounts_len,
@@ -587,7 +597,8 @@ char* construct_status(struct session* ssn,
                                           &reblogs_storage,
                                           &reblogs,
                                           &reblogs_len);
-        interactions_html = construct_status_interactions(status->favourites_count,
+        interactions_html = construct_status_interactions(status->id,
+                                                          status->favourites_count,
                                                           status->reblogs_count,
                                                           favourites,
                                                           favourites_len,
@@ -775,6 +786,82 @@ void status_reply(struct session* ssn, mastodont_t* api, char** data)
     content_status(ssn, api, data, STATUS_FOCUSED | STATUS_REPLY);
 }
 
+void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_account* favourites = NULL;
+    struct mstdnt_storage storage = { 0 };
+    size_t favourites_len = 0;
+    char* status_id = data[0];
+
+    mastodont_status_reblogged_by(api,
+                                  status_id,
+                                  &storage,
+                                  &favourites,
+                                  &favourites_len);
+    
+    content_status_interactions(
+        ssn,
+        api,
+        "Reblogs",
+        favourites,
+        favourites_len);
+
+    mastodont_storage_cleanup(&storage);
+}
+
+void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_account* favourites = NULL;
+    struct mstdnt_storage storage = { 0 };
+    size_t favourites_len = 0;
+    char* status_id = data[0];
+
+    mastodont_status_favourited_by(api,
+                                   status_id,
+                                   &storage,
+                                   &favourites,
+                                   &favourites_len);
+    
+    content_status_interactions(
+        ssn,
+        api,
+        "Favorites",
+        favourites,
+        favourites_len);
+
+    mastodont_storage_cleanup(&storage);
+}
+
+void content_status_interactions(struct session* ssn,
+                                 mastodont_t* api,
+                                 char* label,
+                                 struct mstdnt_account* accts,
+                                 size_t accts_len)
+{
+    char* accounts_html = construct_accounts(api, accts, accts_len, 0, NULL);
+    if (!accounts_html)
+        accounts_html = construct_error("No accounts", E_NOTICE, 1, NULL);
+
+    struct interactions_page_template tmpl = {
+        .back_ref = getenv("HTTP_REFERER"),
+        .interaction_str = label,
+        .accts = accounts_html
+    };
+
+    char* output = tmpl_gen_interactions_page(&tmpl, NULL);
+
+    struct base_page page = {
+        .category = BASE_CAT_NONE,
+        .content = output,
+        .sidebar_left = NULL
+    };
+    render_base_page(&page, ssn, api);
+
+    // Cleanup
+    free(accounts_html);
+    free(output);
+}
+
 void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t flags)
 {
     char* output;
@@ -827,11 +914,12 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     render_base_page(&b, ssn, api);
 
     // Cleanup
-    if (before_html) free(before_html);
-    if (stat_html) free(stat_html);
-    if (after_html) free(after_html);
-    if (output) free(output);
-    if ((flags & STATUS_REPLY) == STATUS_REPLY) free(stat_reply);
+    free(before_html);
+    free(stat_html);
+    free(after_html);
+    free(output);
+    if ((flags & STATUS_REPLY) == STATUS_REPLY)
+        free(stat_reply);
     mstdnt_cleanup_statuses(statuses_before, stat_before_len);
     mstdnt_cleanup_statuses(statuses_after, stat_after_len);
     mstdnt_cleanup_status(&status);
