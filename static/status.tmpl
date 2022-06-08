@@ -20,17 +20,12 @@
                   </form>
                 </li>
                 <li>
-                  <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
-                    <input type="hidden" name="itype" value="{{%s:unpin}}pin">
-                    <input type="submit" class="btn-menu" value="{{%s:unpin_btn}}">
-                  </form>
-                </li>
-                <li>
                   <form action="{{%s:prefix}}/status/{{%s:status_id}/interact" method="post">
                     <input type="hidden" name="itype" value="{{%s:unbookmark}}bookmark">
                     <input type="submit" class="btn-menu" value="{{%s:unbookmark_btn}}">
                   </form>
                 </li>
+                {{%s:pin_status}}
                 {{%s:delete_status}}
               </ul>
             </div>

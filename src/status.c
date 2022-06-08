@@ -568,6 +568,7 @@ char* construct_status(struct session* ssn,
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
     char* delete_status = NULL;
+    char* pin_status = NULL;
     char* interactions_html = NULL;
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
@@ -646,7 +647,7 @@ char* construct_status(struct session* ssn,
         free(repl_str);
     }
 
-    // Delete status menu item, logged in only
+    // Delete status menu item and pinned, logged in only
     if (ssn->logged_in && strcmp(status->account.acct, ssn->acct.acct) == 0)
     {
         struct menu_item_template mdata = {
@@ -656,6 +657,10 @@ char* construct_status(struct session* ssn,
             .text = "Delete status"
         };
         delete_status = tmpl_gen_menu_item(&mdata, NULL);
+        
+        mdata.itype = status->pinned ? "unpin" : "pin";
+        mdata.text = status->pinned ? "Pin status" : "Unpin status";
+        pin_status = tmpl_gen_menu_item(&mdata, NULL);
     }
     
     if (status->media_attachments_len)
@@ -694,11 +699,10 @@ char* construct_status(struct session* ssn,
         .visibility = status->visibility,
         .unmute = status->muted ? "un" : "",
         .unmute_btn = status->muted ? "Unmute thread" : "Mute thread",
-        .unpin = status->pinned ? "un" : "",
-        .unpin_btn = status->pinned ? "Unpin" : "Pin",
         .unbookmark =  status->bookmarked ? "un" : "",
         .unbookmark_btn = status->bookmarked ? "Remove Bookmark" : "Bookmark",
         .delete_status = delete_status,
+        .pin_status = pin_status,
         .in_reply_to_str = in_reply_to_str,
         .status_content = parse_content,
         .attachments = attachments,
