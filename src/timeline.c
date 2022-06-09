@@ -29,196 +29,72 @@
 #include "error.h"
 #include "string_helpers.h"
 
+#include "../static/timeline_options.ctmpl"
 #include "../static/navigation.ctmpl"
-#include "../static/directs_page.ctmpl"
-#include "../static/hashtag_page.ctmpl"
 
-/* TODO Clean these up and make a meta function, i'm just lazy */
-
-void tl_home(struct session* ssn, mastodont_t* api, int local)
+void content_timeline(struct session* ssn,
+                      mastodont_t* api,
+                      struct mstdnt_storage* storage,
+                      struct mstdnt_status* statuses,
+                      size_t statuses_len,
+                      enum base_category cat,
+                      char* header_text,
+                      int show_post_box)
 {
-    size_t status_count = 0, statuses_html_count = 0;
-    struct mstdnt_status* statuses = NULL;
-    struct mstdnt_storage storage = { 0 };
+    size_t statuses_html_count = 0;
     char* status_format = NULL,
-        *post_box,
-        *navigation_box = NULL,
-        *output = NULL;
-    char* start_id;
+        * header = NULL,
+        * post_box = NULL,
+        * navigation_box = NULL,
+        * timeline_options,
+        * output = NULL,
+        * start_id;
 
-    struct mstdnt_timeline_args args = {
-        .with_muted = 1,
-        .local = local,
-        .max_id = keystr(ssn->post.max_id),
-        .since_id = NULL,
-        .min_id = keystr(ssn->post.min_id),
-        .limit = 20
-    };
-
-    try_post_status(ssn, api);
-    
-    if (mastodont_timeline_home(api, &args, &storage, &statuses, &status_count))
+    if (storage->error)
+        status_format = construct_error(storage->error, E_ERROR, 1, NULL);
+    else
     {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
         // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
+        status_format = construct_statuses(ssn, api, statuses, statuses_len, NULL, &statuses_html_count);
         if (!status_format)
-            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
+            status_format = construct_error("No statuses", E_NOTICE, 1, NULL);
     }
 
     // Create post box
-    post_box = construct_post_box(NULL, "", NULL);
-    if (statuses)
+    if (show_post_box)
     {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
+        post_box = construct_post_box(NULL, "", NULL);
+        if (statuses)
+        {
+            // If not set, set it
+            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
+            navigation_box = construct_navigation_box(start_id,
+                                                      statuses[0].id,
+                                                      statuses[statuses_len-1].id,
+                                                      NULL);
+        }
     }
-    easprintf(&output, "%s%s%s",
-              post_box,
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
 
-    struct base_page b = {
-        .category = BASE_CAT_HOME,
-        .content = output,
-        .sidebar_left = NULL
+    // Create timeline options/menubar
+    struct timeline_options_template todata = {
+        .only_media = "Only media?",
+        .replies = "Replies?",
+        .only_media_active = keyint(ssn->post.only_media) ? "checked" : NULL,
     };
 
-    // Output
-    render_base_page(&b, ssn, api);
+    timeline_options = tmpl_gen_timeline_options(&todata, NULL);
 
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    if (status_format) free(status_format);
-    if (post_box) free(post_box);
-    if (navigation_box) free(navigation_box);
-    if (output) free(output);
-}
-
-void tl_direct(struct session* ssn, mastodont_t* api)
-{
-    size_t status_count = 0, statuses_html_count = 0;
-    struct mstdnt_status* statuses = NULL;
-    struct mstdnt_storage storage = { 0 };
-    char* status_format = NULL,
-        *navigation_box = NULL,
-        *output = NULL,
-        *page = NULL;
-    char* start_id;
-
-    struct mstdnt_timeline_args args = {
-        .with_muted = 1,
-        .max_id = keystr(ssn->post.max_id),
-        .since_id = NULL,
-        .min_id = keystr(ssn->post.min_id),
-        .limit = 20,
-    };
-
-    if (mastodont_timeline_direct(api, &args, &storage, &statuses, &status_count))
+    // Display a header bar, usually customized for specific pages
+    if (header_text)
     {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
-    }
-
-    // Create post box
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
+        easprintf(&header, "<div class=\"simple-page\"><h1>%s</h1></div>",
+                  header_text);
     }
     
-    easprintf(&page, "%s%s",
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
-
-    struct directs_page_template tdata = {
-        .direct_content = page,
-    };
-    output = tmpl_gen_directs_page(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_DIRECT,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, ssn, api);
-
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    if (status_format) free(status_format);
-    if (navigation_box) free(navigation_box);
-    if (output) free(output);
-    if (page) free(page);
-}
-
-void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
-{
-    size_t status_count = 0, statuses_html_count = 0;
-    struct mstdnt_status* statuses = NULL;
-    struct mstdnt_storage storage = { 0 };
-    char* status_format = NULL,
-        *post_box,
-        *navigation_box = NULL,
-        *output = NULL;
-    char* start_id;
-
-    struct mstdnt_timeline_args args = {
-        .with_muted = 1,
-        .local = local,
-        .remote = 0,
-        .only_media = 0,
-        .max_id = keystr(ssn->post.max_id),
-        .since_id = NULL,
-        .min_id = keystr(ssn->post.min_id),
-        .limit = 20
-    };
-
-    try_post_status(ssn, api);
-    
-    if (mastodont_timeline_public(api, &args, &storage, &statuses, &status_count))
-    {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
-    }
-
-    // Create post box
-    post_box = construct_post_box(NULL, "", NULL);
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
-    }
-    
-    easprintf(&output, "%s%s%s",
-              post_box,
+    easprintf(&output, "%s%s%s%s%s",
+              STR_NULL_EMPTY(header),
+              STR_NULL_EMPTY(post_box),
+              STR_NULL_EMPTY(timeline_options),
               STR_NULL_EMPTY(status_format),
               STR_NULL_EMPTY(navigation_box));
 
@@ -232,140 +108,150 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
     render_base_page(&b, ssn, api);
 
     // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    if (status_format) free(status_format);
-    if (post_box) free(post_box);
-    if (navigation_box) free(navigation_box);
-    if (output) free(output);
+    mastodont_storage_cleanup(storage);
+    mstdnt_cleanup_statuses(statuses, statuses_len);
+    free(status_format);
+    free(post_box);
+    free(navigation_box);
+    free(output);
+}
+
+void tl_home(struct session* ssn, mastodont_t* api, int local)
+{
+    size_t statuses_len = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+
+    struct mstdnt_timeline_args args = {
+        .with_muted = 1,
+        .local = local,
+        // Converts to `enum mstdnt_reply_visibility' nicely
+        .reply_visibility = (ssn->post.replies_only.is_set ?
+                             keyint(ssn->post.replies_only) : 0),
+        .only_media = (ssn->post.only_media.is_set ?
+                       keyint(ssn->post.only_media) : 0),
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .limit = 20
+    };
+    
+    try_post_status(ssn, api);
+    
+    mastodont_timeline_home(api, &args, &storage, &statuses, &statuses_len);
+
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
+}
+
+void tl_direct(struct session* ssn, mastodont_t* api)
+{
+    size_t statuses_len = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+
+    struct mstdnt_timeline_args args = {
+        .with_muted = 1,
+        .max_id = keystr(ssn->post.max_id),
+        // Converts to `enum mstdnt_reply_visibility' nicely
+        .reply_visibility = (ssn->post.replies_only.is_set ?
+                             keyint(ssn->post.replies_only) : 0),
+        .only_media = (ssn->post.only_media.is_set ?
+                       keyint(ssn->post.only_media) : 0),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .limit = 20,
+    };
+    
+    try_post_status(ssn, api);
+    
+    mastodont_timeline_direct(api, &args, &storage, &statuses, &statuses_len);
+
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, NULL, 0);
+}
+
+void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+{
+    size_t statuses_len = 0;
+    struct mstdnt_status* statuses = NULL;
+    struct mstdnt_storage storage = { 0 };
+
+    struct mstdnt_timeline_args args = {
+        .with_muted = 1,
+        .local = local,
+        .remote = 0,
+        // Converts to `enum mstdnt_reply_visibility' nicely
+        .reply_visibility = (ssn->post.replies_only.is_set ?
+                             keyint(ssn->post.replies_only) : 0),
+        .only_media = (ssn->post.only_media.is_set ?
+                       keyint(ssn->post.only_media) : 0),
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .limit = 20
+    };
+
+    try_post_status(ssn, api);
+
+    mastodont_timeline_public(api, &args, &storage, &statuses, &statuses_len);
+
+    content_timeline(ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
 }
 
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 {
-    size_t status_count, statuses_html_count;
+    size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format, *post_box, *navigation_box = NULL, *start_id;
-    char* output = NULL;
 
     struct mstdnt_timeline_args args = {
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
+        // Converts to `enum mstdnt_reply_visibility' nicely
+        .reply_visibility = (ssn->post.replies_only.is_set ?
+                             keyint(ssn->post.replies_only) : 0),
+        .only_media = (ssn->post.only_media.is_set ?
+                       keyint(ssn->post.only_media) : 0),
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
     try_post_status(ssn, api);
     
-    if (mastodont_timeline_list(api, list_id, &args, &storage, &statuses, &status_count))
-    {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("No statuses", E_ERROR, 1, NULL);
-    }
+    mastodont_timeline_list(api, list_id, &args, &storage, &statuses, &statuses_len);
 
-    // Create post box
-    post_box = construct_post_box(NULL, "", NULL);
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
-    }
-    easprintf(&output, "%s%s%s",
-              post_box,
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
-
-    struct base_page b = {
-        .category = BASE_CAT_LISTS,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, ssn, api);
-
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    free(status_format);
-    if (post_box) free(post_box);
-    if (output) free(output);
-    if (navigation_box) free(navigation_box);
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, NULL, 0);
 }
 
 
 void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
 {
-    size_t status_count, statuses_html_count;
+    char* header;
+    size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format, *navigation_box = NULL, *start_id;
-    char* output = NULL;
 
     struct mstdnt_timeline_args args = {
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
+        // Converts to `enum mstdnt_reply_visibility' nicely
+        .reply_visibility = (ssn->post.replies_only.is_set ?
+                             keyint(ssn->post.replies_only) : 0),
+        .only_media = (ssn->post.only_media.is_set ?
+                       keyint(ssn->post.only_media) : 0),
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
 
-    if (mastodont_timeline_tag(api, tag_id, &args, &storage, &statuses, &status_count))
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("No statuses", E_ERROR, 1, NULL);
-    }
+    mastodont_timeline_tag(api, tag_id, &args, &storage, &statuses, &statuses_len);
 
-    // Create post box
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
-    }
+    easprintf(&header, "Hashtag - #%s", tag_id);
 
-    struct hashtag_page_template tdata = {
-        .tag = tag_id,
-        .statuses = status_format,
-        .navigation = navigation_box
-    };
-
-    output = tmpl_gen_hashtag_page(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, ssn, api);
-
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    free(status_format);
-    if (output) free(output);
-    if (navigation_box) free(navigation_box);
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0);
+    free(header);
 }
 
 void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
 {
-    (void)data;
     if (keystr(ssn->cookies.logged_in))
         tl_home(ssn, api, 0);
     else

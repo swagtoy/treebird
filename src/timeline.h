@@ -36,5 +36,13 @@ void content_tl_direct(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_local(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_list(struct session* ssn, mastodont_t* api, char** data);
 void content_tl_tag(struct session* ssn, mastodont_t* api, char** data);
+void content_timeline(struct session* ssn,
+                      mastodont_t* api,
+                      struct mstdnt_storage* storage,
+                      struct mstdnt_status* statuses,
+                      size_t statuses_len,
+                      enum base_category cat,
+                      char* header,
+                      int show_post_box);
 
 #endif // TIMELINE_H

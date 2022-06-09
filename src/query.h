@@ -48,6 +48,8 @@ struct post_values
     struct key instance_panel; // Int
     struct key notif_embed; // Int
     struct key set; // Int
+    struct key only_media; // Int
+    struct key replies_only; // Int
     
     struct key content; // String
     struct key itype; // String

@@ -1680,6 +1680,11 @@ ul.large-list li a
     text-decoration: none;
 }
 
+.menubar
+{
+    padding: 6px;
+}
+
 /******************************
  *         Scrobbles          *
  ******************************/

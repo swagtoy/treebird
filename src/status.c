@@ -634,12 +634,13 @@ char* construct_status(struct session* ssn,
     if (args && args->highlight_word && parse_content != status->content)
     {
         char* parse_content_tmp;
-        char* repl_str;
+        char* repl_str = NULL;
         easprintf(&repl_str, "<span class=\"search-highlight\">%s</span>", args->highlight_word);
         parse_content_tmp = parse_content;
         parse_content = strrepl(parse_content, args->highlight_word, repl_str, STRREPL_ALL);
         // Check if the old parse_content needed to be free'd
-        if (parse_content_tmp != status->content)
+        if (parse_content_tmp != status->content &&
+            parse_content != parse_content_tmp)
             free(parse_content_tmp);
         else // No results, move back
             parse_content = parse_content_tmp;
@@ -724,8 +725,8 @@ char* construct_status(struct session* ssn,
     if (notif) free(notif_info);
     free(delete_status);
     free(interactions_html);
-    if (parse_content != status->content &&
-        parse_content) free(parse_content);
+    if (parse_content != status->content)
+        free(parse_content);
     return stat_html;
 }
 

@@ -55,7 +55,6 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
 
     // Output
     render_base_page(&b, ssn, api);
-
     free(out_data);    
 }
 
