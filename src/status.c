@@ -689,6 +689,7 @@ char* construct_status(struct session* ssn,
     struct status_template tmpl = {
         .status_id = status->id,
         .notif_info = notif_info,
+        .thread_hidden = status->muted ? "checked" : "",
         // TODO doesn't even need to be a hashtag, this is a temporary hack
         .is_cat = status->account.note && strstr(status->account.note, "isCat") ? "is-cat" : NULL,
         .is_bun = status->account.note && strstr(status->account.note, "isBun") ? " is-bun" : NULL,

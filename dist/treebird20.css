@@ -1,5 +1,3 @@
-
-
 *
 {
     margin: 0;
@@ -632,6 +630,11 @@ svg.in-reply-to-icon
     border-spacing: 0px;
 }
 
+.status-hide:checked + .status
+{
+    padding: 5px 10px;
+}
+
 .status.focused,
 .status:target
 {
@@ -658,6 +661,45 @@ svg.in-reply-to-icon
     background-size: cover;
     border-radius: 4px;
     margin-bottom: 5px;
+}
+
+.status-view
+{
+    display: inline;
+    border: 1px solid #cacaca;
+    background-color: #f3f3f3;
+    border-radius: 3px;
+    width: 12px;
+    height: 12px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.status-view:hover
+{
+    background-color: #eaeaea;
+}
+
+.status-view:before
+{
+    content: "-";
+}
+
+.status-hide:checked + .status .status-view:before
+{
+    content: "+";
+}
+
+.status-hide
+{
+    display: none;
+}
+
+.status-hide:checked + .status .status-data,
+.status-hide:checked + .status .pfp-td
+{
+    display: none;
 }
 
 .pfp-td
@@ -745,12 +787,18 @@ svg.in-reply-to-icon
     max-width: 480px;
 }
 
+.status-hide:checked + .status .poster-stats
+{
+    max-width: 540px;
+}
+
 .poster-stats .alignend
 {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-end;
+    justify-content: flex-end;
 }
 
 .status .username,
@@ -780,9 +828,8 @@ svg.in-reply-to-icon
 {
     color: #808080;
     display: inline;
-    float: right;
     font-size: 12px;
-    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .status-interact
@@ -1572,7 +1619,7 @@ ul.large-list li a
 .menu-container:hover + .menu
 {
     position: absolute;
-    display: block;
+    display: inline-block;
 }
 
 .menu

@@ -1,3 +1,4 @@
+<input type="checkbox" class="status-hide" id="status-toggle-{{%s:status_id}}" {{ %s:thread_hidden }}>
 <table id="{{%s:status_id}}" class="status ui-table">
   {{ %s : notif_info }}
   <tr>
@@ -30,16 +31,19 @@
               </ul>
             </div>
           </div>
+          <label for="status-toggle-{{%s:status_id}}" class="status-view"></label>
         </span>
       </div>
-      {{%s:in_reply_to_str}}
-      <span class="status-content">
-        {{%s:status_content}}
-      </span>
-      {{%s:attachments}}
-      {{%s:interactions}}
-      {{%s:emoji_reactions}}
-      {{%s:interaction_btns}}
+      <div class="status-data">
+        {{%s:in_reply_to_str}}
+        <span class="status-content">
+          {{%s:status_content}}
+        </span>
+        {{%s:attachments}}
+        {{%s:interactions}}
+        {{%s:emoji_reactions}}
+        {{%s:interaction_btns}}
+      </div>
     </td>
   </tr>
 </table>

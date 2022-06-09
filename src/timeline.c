@@ -47,6 +47,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     char* start_id;
 
     struct mstdnt_timeline_args args = {
+        .with_muted = 1,
         .local = local,
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
@@ -113,7 +114,7 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     char* start_id;
 
     struct mstdnt_timeline_args args = {
-        .with_muted = 0,
+        .with_muted = 1,
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
         .min_id = keystr(ssn->post.min_id),
@@ -181,6 +182,7 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
     char* start_id;
 
     struct mstdnt_timeline_args args = {
+        .with_muted = 1,
         .local = local,
         .remote = 0,
         .only_media = 0,
