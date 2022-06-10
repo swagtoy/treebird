@@ -145,7 +145,10 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         .sidebar_leftbar = page->sidebar_left,
         .instance_panel = ssn->config.instance_panel ? instance_str : "",
         .main = page->content,
-        .sidebar_rightbar = sidebar_str
+        .sidebar_rightbar = sidebar_str,
+        .about_link_str = "About",
+        .license_link_str = "License",
+        .source_link_str = "Source code",
     };
     
     size_t len;

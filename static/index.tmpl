@@ -41,6 +41,13 @@
               </ul>
               {{ %s : sidebar_leftbar }}
               {{ %s : instance_panel }}
+              <div class="mini-links">
+                <a href="{{%s:prefix}}/about">{{ %s : about_link_str }}</a>
+                <span class="bullet-separate">&bull;</span>
+                <a href="{{%s:prefix}}/about/license">{{ %s : license_link_str }}</a>
+                <span class="bullet-separate">&bull;</span>
+                <a href="https://fossil.nekobit.net/treebird">{{ %s : source_link_str }}</a>
+              </div>
             </td>
             
             <!-- Display for posts -->

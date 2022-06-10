@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include "base_page.h"
 #include "about.h"
 
@@ -26,7 +27,7 @@ void content_about(struct session* ssn, mastodont_t* api, char** data)
 {
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = data_about,
+        .content = (char*)data_about,
         .sidebar_left = NULL
     };
 
@@ -37,13 +38,22 @@ void content_about(struct session* ssn, mastodont_t* api, char** data)
 
 void content_about_license(struct session* ssn, mastodont_t* api, char** data)
 {
+    char* page;
+    char* referer = getenv("HTTP_REFERER");
+    struct license_template tdata = {
+        .back_ref = referer,
+        .license_str = "License"
+    };
+    page = tmpl_gen_license(&tdata, NULL);
+    
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = data_license,
+        .content = page,
         .sidebar_left = NULL
     };
 
     // Output
     render_base_page(&b, ssn, api);
+    free(page);
 }
 
