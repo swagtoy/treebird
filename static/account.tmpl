@@ -21,17 +21,17 @@
   </div>
   
   <div class="acct-header">
-    <a href="#" class="header-btn btn">
+    <a href="{{%s:prefix}}/@{{%s:acct}}" class="header-btn btn">
       <span class="btn-header">{{%s:tab_statuses_text}}</span>
       <span class="btn-content">{{%d:statuses_count}}</span>
     </a>
     
-    <a href="#" class="header-btn btn">
+    <a href="{{%s:prefix}}/@{{%s:acct}}/following" class="header-btn btn">
       <span class="btn-header">{{%s:tab_following_text}}</span>
       <span class="btn-content">{{%d:following_count}}</span>
     </a>
 
-    <a href="#" class="header-btn btn">
+    <a href="{{%s:prefix}}/@{{%s:acct}}/followers" class="header-btn btn">
       <span class="btn-header">{{%s:tab_followers_text}}</span>
       <span class="btn-content">{{%d:followers_count}}</span>
     </a>

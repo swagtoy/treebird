@@ -71,6 +71,8 @@ int main(void)
         { "/@:/scrobbles", content_account_scrobbles },
         { "/@:/pinned", content_account_pinned },
         { "/@:/media", content_account_media },
+        { "/@:/following", content_account_following },
+        { "/@:/followers", content_account_followers },
         { "/@:", content_account_statuses },
         { "/status/:/react/:", content_status_react },
         { "/status/:/react", status_emoji },

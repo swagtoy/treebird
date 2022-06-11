@@ -69,6 +69,7 @@ char* load_account_info(struct mstdnt_account* acct,
 char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
 {
     struct account_sidebar_template data = {
+        .prefix = config_url_prefix,
         .avatar = acct->avatar,
         .username = acct->display_name,
         .statuses_text = L10N[L10N_EN_US][L10N_TAB_STATUSES],
@@ -76,9 +77,111 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
         .followers_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
         .statuses_count = acct->statuses_count,
         .following_count = acct->following_count,
-        .followers_count = acct->followers_count
+        .followers_count = acct->followers_count,
+        .acct = acct->acct,
     };
     return tmpl_gen_account_sidebar(&data, size);
+}
+
+// TODO put account stuff into one function to cleanup a bit
+static char* account_followers_cb(struct session* ssn,
+                                  mastodont_t* api,
+                                  struct mstdnt_account* acct,
+                                  void* _args)
+{
+    struct mstdnt_account_args args = {
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .offset = 0,
+        .limit = 0,
+        .with_relationships = 0,
+    };
+    char* accounts_html = NULL, *navigation_box = NULL;
+    char* output;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accounts = NULL;
+    size_t accts_len = 0;
+    char* start_id;
+    
+    if (mastodont_get_followers(api, acct->id, &args, &storage, &accounts, &accts_len))
+    {
+        accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        accounts_html = construct_accounts(api, accounts, accts_len, 0, NULL);
+        if (!accounts_html)
+            accounts_html = construct_error("No followers...", E_NOTICE, 1, NULL);
+    }
+
+    if (accounts)
+    {
+        // If not set, set it
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : accounts[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  accounts[0].id,
+                                                  accounts[accts_len-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, "%s%s",
+              STR_NULL_EMPTY(accounts_html),
+              STR_NULL_EMPTY(navigation_box));
+
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_accounts(accounts, accts_len);
+    if (accounts_html) free(accounts_html);
+    if (navigation_box) free(navigation_box);
+    return output;
+}
+
+static char* account_following_cb(struct session* ssn,
+                                  mastodont_t* api,
+                                  struct mstdnt_account* acct,
+                                  void* _args)
+{
+    struct mstdnt_account_args args = {
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .offset = 0,
+        .limit = 20,
+        .with_relationships = 0,
+    };
+    char* accounts_html = NULL, *navigation_box = NULL;
+    char* output;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accounts = NULL;
+    size_t accts_len = 0;
+    char* start_id;
+    
+    if (mastodont_get_following(api, acct->id, &args, &storage, &accounts, &accts_len))
+    {
+        accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        accounts_html = construct_accounts(api, accounts, accts_len, 0, NULL);
+        if (!accounts_html)
+            accounts_html = construct_error("Not following anyone", E_NOTICE, 1, NULL);
+    }
+
+    if (accounts)
+    {
+        // If not set, set it
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : accounts[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  accounts[0].id,
+                                                  accounts[accts_len-1].id,
+                                                  NULL);
+    }
+    easprintf(&output, "%s%s",
+              STR_NULL_EMPTY(accounts_html),
+              STR_NULL_EMPTY(navigation_box));
+
+    mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_accounts(accounts, accts_len);
+    if (accounts_html) free(accounts_html);
+    if (navigation_box) free(navigation_box);
+    return output;    
 }
 
 static char* account_statuses_cb(struct session* ssn,
@@ -91,7 +194,7 @@ static char* account_statuses_cb(struct session* ssn,
     struct mstdnt_account_statuses_args* args = _args;
     char* statuses_html = NULL, *navigation_box = NULL;
     char* output;
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage = { 0 };
     struct mstdnt_status* statuses = NULL;
     size_t statuses_len = 0;
     char* start_id;
@@ -132,7 +235,7 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
     (void)ssn;
     (void)_args;
     char* scrobbles_html = NULL;
-    struct mstdnt_storage storage;
+    struct mstdnt_storage storage = { 0 };
     struct mstdnt_scrobble* scrobbles = NULL;
     size_t scrobbles_len = 0;
     struct mstdnt_get_scrobbles_args args = {
@@ -287,6 +390,7 @@ size_t construct_account_page(struct session* ssn,
     if (is_same_user)
     {
         struct account_current_menubar_template acmdata = {
+            .prefix = config_url_prefix,
             .blocked_str = "Blocks",
             .muted_str = "Mutes",
             .favourited_str = "Favorites",
@@ -422,11 +526,8 @@ char* load_account_page(struct session* ssn,
     return result;
 }
 
-
-
 void content_account_statuses(struct session* ssn, mastodont_t* api, char** data)
 {
-    
     struct mstdnt_account_statuses_args args = {
         .pinned = 0,
         .only_media = 0,
@@ -440,7 +541,18 @@ void content_account_statuses(struct session* ssn, mastodont_t* api, char** data
         .offset = 0,
         .limit = 20,
     };
+    
     fetch_account_page(ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
+}
+
+void content_account_followers(struct session* ssn, mastodont_t* api, char** data)
+{
+    fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
+}
+
+void content_account_following(struct session* ssn, mastodont_t* api, char** data)
+{
+    fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
 }
 
 void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** data)

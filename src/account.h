@@ -29,10 +29,11 @@
 
 enum account_tab
 {
+    ACCT_TAB_NONE,
     ACCT_TAB_STATUSES,
     ACCT_TAB_SCROBBLES,
     ACCT_TAB_PINNED,
-    ACCT_TAB_MEDIA
+    ACCT_TAB_MEDIA,
 };
 
 struct account_page
@@ -82,6 +83,8 @@ char* load_account_page(struct session* ssn,
 char* load_account_info(struct mstdnt_account* acct,
                         size_t* size);
 
+void content_account_followers(struct session* ssn, mastodont_t* api, char** data);
+void content_account_following(struct session* ssn, mastodont_t* api, char** data);
 void content_account_statuses(struct session* ssn, mastodont_t* api, char** data);
 void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** data);
 void content_account_pinned(struct session* ssn, mastodont_t* api, char** data);
