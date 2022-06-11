@@ -94,7 +94,7 @@ static char* account_followers_cb(struct session* ssn,
         .since_id = NULL,
         .min_id = keystr(ssn->post.min_id),
         .offset = 0,
-        .limit = 0,
+        .limit = 20,
         .with_relationships = 0,
     };
     char* accounts_html = NULL, *navigation_box = NULL;
@@ -174,6 +174,7 @@ static char* account_following_cb(struct session* ssn,
                                                   NULL);
     }
     easprintf(&output, "%s%s",
+              STR_NULL_EMPTY(navigation_box),
               STR_NULL_EMPTY(accounts_html),
               STR_NULL_EMPTY(navigation_box));
 
