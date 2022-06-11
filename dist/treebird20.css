@@ -1697,19 +1697,23 @@ ul.large-list li a
 
 .mini-links
 {
-    margin: 10px 8px;
+    margin: 16px 8px;
     text-align: center;
-    color: #909090;
+    color: #aaa;
     font-size: 10px;
 }
 
 .mini-links .bullet-separate
 {
-    color: #909090;
-    font-size: 10px;
+    color: #ccc;
+    font-size: 8px;
     margin: unset;
 }
 
+#instance-panel + .mini-links
+{
+    margin: 10px 8px;
+}
 
 /******************************
  *         Scrobbles          *

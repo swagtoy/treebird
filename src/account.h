@@ -66,7 +66,10 @@ char* construct_accounts(mastodont_t* api,
                          uint8_t flags,
                          size_t* ret_size);
 
-size_t construct_account_page(char** result, struct account_page* page, char* content);
+size_t construct_account_page(struct session *ssn,
+                              char** result,
+                              struct account_page* page,
+                              char* content);
 
 char* load_account_page(struct session* ssn,
                         mastodont_t* api,

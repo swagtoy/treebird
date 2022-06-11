@@ -39,6 +39,7 @@
 #include "../static/bookmarks_page.ctmpl"
 #include "../static/account_stub.ctmpl"
 #include "../static/account_sidebar.ctmpl"
+#include "../static/account_current_menubar.ctmpl"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
@@ -221,7 +222,10 @@ static void fetch_account_page(struct session* ssn,
     free(account_page);
 }
 
-size_t construct_account_page(char** result, struct account_page* page, char* content)
+size_t construct_account_page(struct session* ssn,
+                              char** result,
+                              struct account_page* page,
+                              char* content)
 {
     if (!page->account)
     {
@@ -230,13 +234,18 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
     }
     size_t size;
     struct mstdnt_relationship* rel = page->relationship;
-    char* follow_btn = NULL, *follow_btn_text = NULL;
-    char* follows_you = NULL;
-    char* info_html = NULL;
-    char* is_blocked = NULL;
-    char* display_name = emojify(page->display_name,
-                                 page->account->emojis,
-                                 page->account->emojis_len);
+    int is_same_user = ssn->logged_in && strcmp(ssn->acct.acct, page->acct) == 0;
+    char* follow_btn = NULL,
+        * follow_btn_text = NULL,
+        * follows_you = NULL,
+        * info_html = NULL,
+        * is_blocked = NULL,
+        * menubar = NULL,
+        * display_name = NULL;
+    
+    emojify(page->display_name,
+            page->account->emojis,
+            page->account->emojis_len);
 
     // Check if note is not empty
     if (page->note && strcmp(page->note, "") != 0)
@@ -244,7 +253,8 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
         info_html = load_account_info(page->account, NULL);
     }
 
-    if (rel)
+    // Display follow button only if not the same user
+    if (rel && !is_same_user)
     {
         if (MSTDNT_FLAG_ISSET(rel->flags, MSTDNT_RELATIONSHIP_FOLLOWED_BY))
             easprintf(&follows_you, FOLLOWS_YOU_HTML, L10N[page->locale][L10N_FOLLOWS_YOU]);
@@ -273,9 +283,22 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
         follow_btn = tmpl_gen_account_follow_btn(&data, NULL);
     }
 
+    // Display menubar with extra options for access if same user
+    if (is_same_user)
+    {
+        struct account_current_menubar_template acmdata = {
+            .blocked_str = "Blocks",
+            .muted_str = "Mutes",
+            .favourited_str = "Favorites",
+        };
+
+        menubar = tmpl_gen_account_current_menubar(&acmdata, NULL);
+    }
+
     struct account_template acct_data = {
         .block_text = STR_NULL_EMPTY(is_blocked),
         .header = page->header_image,
+        .menubar = menubar,
         .display_name = display_name,
         .acct = page->acct,
         .prefix = config_url_prefix,
@@ -325,6 +348,7 @@ size_t construct_account_page(char** result, struct account_page* page, char* co
     free(follows_you);
     free(follow_btn);
     free(is_blocked);
+    free(menubar);
     if (display_name != page->display_name)
         free(display_name);
     return size;
@@ -392,7 +416,7 @@ char* load_account_page(struct session* ssn,
         .relationship = relationship,
     };
 
-    size = construct_account_page(&result, &page, content);
+    size = construct_account_page(ssn, &result, &page, content);
 
     if (res_size) *res_size = size;
     return result;

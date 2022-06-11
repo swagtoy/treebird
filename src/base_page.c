@@ -110,9 +110,10 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
               main_sidebar_str ? main_sidebar_str : "");
 
     // Create instance panel
-    easprintf(&instance_str, "<div class=\"static-html\" id=\"instance-panel\">%s</div>",
-              (g_cache.panel_html.response ?
-               g_cache.panel_html.response : ""));
+    if (g_cache.panel_html.response)
+        easprintf(&instance_str, "<div class=\"static-html\" id=\"instance-panel\">%s</div>",
+                  (g_cache.panel_html.response ?
+                   g_cache.panel_html.response : ""));
 
     struct index_template index = {
         .title = L10N[locale][L10N_APP_NAME],
