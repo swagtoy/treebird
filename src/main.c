@@ -97,6 +97,8 @@ int main(void)
         { "/local", content_tl_local },
         { "/bookmarks", content_account_bookmarks },
         { "/favourites", content_account_favourites },
+        { "/blocked", content_account_blocked },
+        { "/muted", content_account_muted },
         { "/notifications_compact", content_notifications_compact },
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },

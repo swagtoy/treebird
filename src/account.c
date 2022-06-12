@@ -40,6 +40,7 @@
 #include "../static/account_stub.ctmpl"
 #include "../static/account_sidebar.ctmpl"
 #include "../static/account_current_menubar.ctmpl"
+#include "../static/basic_page.ctmpl"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
@@ -174,7 +175,6 @@ static char* account_following_cb(struct session* ssn,
                                                   NULL);
     }
     easprintf(&output, "%s%s",
-              STR_NULL_EMPTY(navigation_box),
               STR_NULL_EMPTY(accounts_html),
               STR_NULL_EMPTY(navigation_box));
 
@@ -684,9 +684,81 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     // Cleanup
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, status_count);
-    if (status_format) free(status_format);
-    if (navigation_box) free(navigation_box);
-    if (output) free(output);
+    free(status_format);
+    free(navigation_box);
+    free(output);
+}
+
+static void accounts_page(mastodont_t* api,
+                          struct session* ssn,
+                          struct mstdnt_storage* storage,
+                          char* header,
+                          struct mstdnt_account* accts,
+                          size_t accts_len)
+{
+    char* output;
+    char* content = construct_accounts(api, accts, accts_len, 0, NULL);
+    if (!content)
+        content = construct_error("No accounts here!", E_NOTICE, 1, NULL);
+    
+    struct basic_page_template tdata = {
+        .back_ref = getenv("HTTP_REFERER"),
+        .page_title = header,
+        .page_content = content,
+    };
+    output = tmpl_gen_basic_page(&tdata, NULL);
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = output,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, ssn, api);
+
+    mastodont_storage_cleanup(storage);
+    free(output);
+    free(content);
+}
+                                    
+
+void content_account_blocked(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_account_args args = {
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .offset = 0,
+        .limit = 20,
+        .with_relationships = 0,
+    };
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accts = NULL;
+    size_t accts_len = 0;
+    
+    mastodont_get_blocks(api, &args, &storage, &accts, &accts_len);
+
+    accounts_page(api, ssn, &storage, "Blocked users", accts, accts_len);
+}
+
+void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_account_args args = {
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .offset = 0,
+        .limit = 20,
+        .with_relationships = 0,
+    };
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accts = NULL;
+    size_t accts_len = 0;
+    
+    mastodont_get_mutes(api, &args, &storage, &accts, &accts_len);
+
+    accounts_page(api, ssn, &storage, "Muted users", accts, accts_len);    
 }
 
 void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)
