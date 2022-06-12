@@ -561,7 +561,6 @@ void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** dat
     fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
 }
 
-
 void content_account_pinned(struct session* ssn, mastodont_t* api, char** data)
 {
     struct mstdnt_account_statuses_args args = {
@@ -580,7 +579,6 @@ void content_account_pinned(struct session* ssn, mastodont_t* api, char** data)
     
     fetch_account_page(ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
 }
-
 
 void content_account_media(struct session* ssn, mastodont_t* api, char** data)
 {
