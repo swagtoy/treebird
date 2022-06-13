@@ -62,13 +62,13 @@ char* construct_lists_view(char* lists_string, size_t* size)
 
 void content_lists(struct session* ssn, mastodont_t* api, char** data)
 {
-    struct mstdnt_list* lists;
+    struct mstdnt_list* lists = NULL;
     size_t size_list = 0;
     struct mstdnt_storage storage = { 0 };
     char* lists_format = NULL;
     char* lists_page = NULL;
 
-    if (mastodont_get_lists(api, &lists, &storage, &size_list))
+    if (mastodont_get_lists(api, &storage, &lists, &size_list))
     {
         lists_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -92,4 +92,5 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     mastodont_storage_cleanup(&storage);
     if (lists_format) free(lists_format);
     if (lists_page) free(lists_page);
+    mstdnt_cleanup_lists(lists);
 }
