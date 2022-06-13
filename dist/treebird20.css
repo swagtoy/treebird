@@ -49,8 +49,8 @@ ul
     width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
-    border-width: 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(200, 200, 200, 0.7);
     border-radius: 5px;
 }
 
@@ -1531,15 +1531,29 @@ ul.large-list
 
 ul.large-list li
 {
+    display: block;
     list-style-type: none;
     margin: 0;
 }
 
 ul.large-list li a
 {
-    display: block;
+    display: inline-block;
     padding: 15px;
     list-style-type: none;
+}
+
+ul.large-list li a.list-item
+{
+    width: 406px;
+}
+
+ul.large-list li a.edit-list-btn
+{
+    border-left: 1px solid #eaeaea;
+    background: linear-gradient(#f8f8fc, #efeff2);
+    color: #505050;
+    width: 33px;
 }
 
 .lists-view-header
@@ -1556,6 +1570,24 @@ ul.large-list li a
 .lists-view-container ul li:not(:last-child)
 {
     border-bottom: 1px solid #dadada;
+}
+
+.create-list-form
+{
+    width: 380px;
+    margin: 0;
+    padding: 8px;
+    border: 0;
+}
+
+.create-list-btn
+{
+    width: 104px;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
 }
 
 /* Navigation */

@@ -6,8 +6,12 @@
       {{%s:lists}}
     </ul>
 
-    <ul class="large-list center">
-      <li><a href="{{%s:prefix}}/lists/create" class="btn split center-text bold-text">Create new list</a></li>
+    <ul class="large-list center create-list">
+      <form action="{{%s:prefix}}/lists/create" method="post">
+        <li>
+          <input type="text" class="create-list-form"><input type="submit" value="Create list" class="create-list-btn btn">
+        </li>
+      </form>
     </ul>
   </div>
 </div>
