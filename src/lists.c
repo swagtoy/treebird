@@ -68,6 +68,17 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     char* lists_format = NULL;
     char* lists_page = NULL;
 
+    if (ssn->post.title.is_set)
+    {
+        struct mstdnt_storage create_storage = { 0 };
+        struct mstdnt_list_args args = {
+            .title = keystr(ssn->post.title),
+            .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
+        };
+        mastodont_create_list(api, &args, &create_storage, NULL);
+        mastodont_storage_cleanup(&create_storage);
+    }
+
     if (mastodont_get_lists(api, &storage, &lists, &size_list))
     {
         lists_page = construct_error(storage.error, E_ERROR, 1, NULL);

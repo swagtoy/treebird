@@ -34,6 +34,7 @@ struct post_values
     struct key theme; // String
     struct key themeclr; // Int
     struct key lang; // Int
+    struct key title; // String
     struct key jsactions; // Int
     struct key jsreply; // Int
     struct key jslive; // Int
