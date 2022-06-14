@@ -347,9 +347,9 @@ size_t construct_account_page(struct session* ssn,
         * menubar = NULL,
         * display_name = NULL;
     
-    emojify(page->display_name,
-            page->account->emojis,
-            page->account->emojis_len);
+    display_name = emojify(page->display_name,
+                           page->account->emojis,
+                           page->account->emojis_len);
 
     // Check if note is not empty
     if (page->note && strcmp(page->note, "") != 0)

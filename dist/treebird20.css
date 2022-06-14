@@ -1115,7 +1115,7 @@ p}
     display: inline-block;
     white-space: nowrap;
     text-overflow: ellipsis;
-    padding: 6px 6px 8px;
+    padding: 7px 6px 3px;
     overflow: hidden;
     max-width: 420px !important;
     color: #fff;
@@ -1300,7 +1300,10 @@ p}
 .status-content .emoji,
 .notification-content .emoji,
 .username .emoji,
-.custom-emoji-react
+.custom-emoji-react,
+.account-info .emoji,
+.poll .emoji,
+.acct-displayname .emoji
 {
     font-family: monospace;
     display: inline;
