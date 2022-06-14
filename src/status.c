@@ -134,6 +134,27 @@ void content_status_react(struct session* ssn, mastodont_t* api, char** data)
     redirect(REDIRECT_303, referer);
 }
 
+const char* status_visibility_str(enum l10n_locale loc,
+                                  enum mstdnt_visibility_type vis)
+{
+    switch (vis)
+    {
+    case MSTDNT_VISIBILITY_UNLISTED:
+        return L10N[loc][L10N_VIS_UNLISTED];
+    case MSTDNT_VISIBILITY_PRIVATE:
+        return L10N[loc][L10N_VIS_PRIVATE];
+    case MSTDNT_VISIBILITY_DIRECT:
+        return L10N[loc][L10N_VIS_DIRECT];
+    case MSTDNT_VISIBILITY_LOCAL:
+        return L10N[loc][L10N_VIS_LOCAL];
+    case MSTDNT_VISIBILITY_LIST:
+        return L10N[loc][L10N_VIS_LIST];
+    case MSTDNT_VISIBILITY_PUBLIC:
+    default:
+        return L10N[loc][L10N_VIS_PUBLIC];
+    }
+}
+
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 {
     int res = 0;
@@ -570,6 +591,7 @@ char* construct_status(struct session* ssn,
     char* delete_status = NULL;
     char* pin_status = NULL;
     char* interactions_html = NULL;
+    enum l10n_locale locale = l10n_normalize(ssn->config.lang);
     struct mstdnt_status* status = local_status;
     // Create a "fake" notification header which contains information for
     // the reblogged status
@@ -698,7 +720,7 @@ char* construct_status(struct session* ssn,
         .username = formatted_display_name,
         .prefix = config_url_prefix,
         .acct = status->account.acct,
-        .visibility = status->visibility,
+        .visibility = status_visibility_str(locale, status->visibility),
         .unmute = status->muted ? "un" : "",
         .unmute_btn = status->muted ? "Unmute thread" : "Mute thread",
         .unbookmark =  status->bookmarked ? "un" : "",

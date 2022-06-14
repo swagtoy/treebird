@@ -20,6 +20,7 @@
 #define STATUS_H
 #include <stdint.h>
 #include <mastodont.h>
+#include "l10n.h"
 #include "session.h"
 
 // Flags
@@ -101,6 +102,8 @@ char* make_mentions_local(char* content);
 
 void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data);
 void status_view_favourites(struct session* ssn, mastodont_t* api, char** data);
+
+const char* status_visibility_str(enum l10n_locale locale, enum mstdnt_visibility_type visibility);
 
 void content_status_interactions(struct session* ssn,
                                  mastodont_t* api,

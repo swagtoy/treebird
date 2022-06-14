@@ -100,6 +100,7 @@ enum l10n_string
     L10N_VIS_PRIVATE,
     L10N_VIS_DIRECT,
     L10N_VIS_LOCAL,
+    L10N_VIS_LIST,
 
     /* LOGIN */
     L10N_LOGIN,
@@ -200,6 +201,7 @@ static const char* const L10N[][_L10N_LEN] = {
         "Private",
         "Direct",
         "Local",
+        "List",
 
         /* LOGIN */
         "Login",
@@ -297,6 +299,7 @@ static const char* const L10N[][_L10N_LEN] = {
         "Private",
         "Direct",
         "Local",
+        "List",
 
         /* LOGIN */
         "Login",
@@ -394,6 +397,7 @@ static const char* const L10N[][_L10N_LEN] = {
         "私密",
         "私訊",
         "本地",
+        "List",
 
         /* LOGIN */
         "登入",
