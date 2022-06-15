@@ -1858,6 +1858,13 @@ ul.large-list li a.edit-list-btn
     display: inline;
     margin-right: 16px;
     vertical-align: middle;
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+#about-icon:hover
+{
+    box-shadow: 0px 2px 5px red;
 }
 
 .about-header h1
@@ -1947,4 +1954,56 @@ ul.large-list li a.edit-list-btn
     50% { transform: rotate(-20deg) skew(-30deg); }
     70% { transform: rotate(-0deg) skew(-30deg); }
     100% { transform: rotate(-35deg) skew(-30deg); }
+}
+
+/* Wormle stuff - If you're a theme dev just ignore this honestly */
+
+.wormle-view
+{
+    position: relative;
+    border: 1px solid #505050;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    height: 400px;
+    margin: auto;
+}
+
+.wormle-view h1
+{
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.wormle-body
+{
+    z-index: 3;
+    position: absolute;
+    background-color: #dd0000;
+    border: 1px solid #aa0000;
+    border-radius: 4px;
+}
+
+.wormle-view .wormle-body:last-child
+{
+    transition: left .2s linear, top .2s linear;
+}
+
+.wormle-score
+{
+    z-index: 9;
+    position: absolute;
+    right: 5px;
+    font-size: 18px;
+    color: black;
+}
+
+.wormle-title
+{
+    z-index: 9;
+    margin-top: 140px;
+    text-align: center;
+    display: block;
 }
