@@ -1981,15 +1981,26 @@ ul.large-list li a.edit-list-btn
 {
     z-index: 3;
     position: absolute;
-    background-color: #dd0000;
-    border: 1px solid #aa0000;
+
     border-radius: 4px;
 }
 
-.wormle-view .wormle-body:last-child
+.wormle-player
 {
-    transition: left .2s linear, top .2s linear;
+    background-color: #00dd00;
+    border: 1px solid #00aa00;
 }
+
+.wormle-apple
+{
+    background-color: #dd0000;
+    border: 1px solid #aa0000;
+}
+
+/* .wormle-view .wormle-body:last-child */
+/* { */
+/*     transition: left .2s linear, top .2s linear; */
+/* } */
 
 .wormle-score
 {

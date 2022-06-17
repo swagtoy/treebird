@@ -19,9 +19,6 @@ class Wormle
 
         // State
         this.state = STATE_START;
-
-        // Reset to blank game state
-        this.reset();
         
         this.grid_size = opts.grid_size;
         this.view_size = opts.view_size;
@@ -48,23 +45,64 @@ class Wormle
         this.pos = this.spawn_pos = { x: 3, y: 3 };
         this.direction = RIGHT;
         this.direction_queue = [];
+        this.apples = [];
+        this.add_apple()
+    }
+
+    obj_rand_position()
+    {
+        let x = 0, y = 0;
+        do
+        {
+            x = Math.floor(Math.random() * this.grid_size[0]);
+            y = Math.floor(Math.random() * this.grid_size[1]);
+        } while (this.check_collision(x, y));
+        return [x, y];
+    }
+
+    create_body(name, x, y)
+    {
+        let body = document.createElement("div");
+        body.className = "wormle-body "+(name ? "wormle-"+name : "");
+        body.style.left = x * this.tile_size[0] + "px";
+        body.style.top = y * this.tile_size[1] + "px";
+        body.style.width = this.tile_size[0] + "px";
+        body.style.height = this.tile_size[1] + "px";
+        return body;
     }
 
     worm_grow()
     {
         // If anything else, assume we are starting
-        let { x, y } = this.pos;
+        let { x, y } = this.spawn_pos;
 
-        let body = document.createElement("div");
-        body.className = "wormle-body wormle-body-" + this.body.length;
-        body.style.left = x * this.tile_size[0] + "px";
-        body.style.top = y * this.tile_size[1] + "px";
-        body.style.width = this.tile_size[0] + "px";
-        body.style.height = this.tile_size[1] + "px";
+        if (this.body.length)
+        {
+            x = this.body[this.body.length-1].pos.x;
+            y = this.body[this.body.length-1].pos.y;
+        }
+
+        let body = this.create_body("player", x, y);
         this.view.appendChild(body);
 
-        this.body.unshift({
+        this.body.push({
             pos: { x, y },
+            elem: body,
+        });
+    }
+
+    add_apple()
+    {
+        let pos = this.obj_rand_position();
+
+        let body = this.create_body("apple", pos[0], pos[1]);
+        this.view.appendChild(body);
+
+        this.apples.push({
+            pos: {
+                x: pos[0],
+                y: pos[1],
+            },
             elem: body,
         });
     }
@@ -73,37 +111,31 @@ class Wormle
     {
         const DIR_QUEUE_MAX = 4;
         if (this.direction_queue.length < DIR_QUEUE_MAX)
+        {
             this.direction_queue.push(dir);
+        }
     }
 
     worm_update()
     {
-        if (this.body.length === this.body_len)
+        // Yeah this is ugly and i don't care its just an easter egg...
+        for (let i = this.body.length-1; i >= 1; --i)
         {
-            // Yeah this is ugly and i don't care its just an easter egg...
-            for (let i = this.body.length-1; i >= 1; --i)
-            {
-                // Shift position forward
-                this.body[i].elem.style.left =
-                    this.body[i-1].pos.x * this.tile_size[0] + "px";
-                this.body[i].elem.style.top =
-                    this.body[i-1].pos.y * this.tile_size[1] + "px";
-                
-                this.body[i].pos.x = this.body[i-1].pos.x;
-                this.body[i].pos.y = this.body[i-1].pos.y;
-            }
-
-            this.body[0].pos.x = this.pos.x;
-            this.body[0].pos.y = this.pos.y;
-            this.body[0].elem.style.left = this.pos.x * this.tile_size[0] + "px";
-            this.body[0].elem.style.top = this.pos.y * this.tile_size[1] + "px";
+            // Shift position forward
+            this.body[i].elem.style.left =
+                this.body[i-1].pos.x * this.tile_size[0] + "px";
+            this.body[i].elem.style.top =
+                this.body[i-1].pos.y * this.tile_size[1] + "px";
             
-            // // First head is profile picture
-            // if (!this.body.length)
-            //     body.style.background = "url('" + document.querySelector(".account-sidebar .acct-info .acct-pfp").src + "')";
-            
-
+            this.body[i].pos.x = this.body[i-1].pos.x;
+            this.body[i].pos.y = this.body[i-1].pos.y;
         }
+
+        this.body[0].pos.x = this.pos.x;
+        this.body[0].pos.y = this.pos.y;
+        this.body[0].elem.style.left = this.pos.x * this.tile_size[0] + "px";
+        this.body[0].elem.style.top = this.pos.y * this.tile_size[1] + "px";
+
     }
 
     handle_movement()
@@ -164,6 +196,12 @@ class Wormle
         this.state_handle();
     }
 
+    update_score(amount = 1)
+    {
+        this.score += amount;
+        this.score_text.innerHTML = this.score;
+    }
+
     state_handle()
     {
         switch (this.state)
@@ -183,29 +221,55 @@ class Wormle
         }
     }
 
-    check_collision()
+    get_head()
+    {
+        let index = this.body.length-1 >= 0 ? this.body.length-1 : 0;
+        return this.body[index];
+    }
+
+    check_collision(x = this.body[0].pos.x, y = this.body[0].pos.y)
     {
         for (let i = 1; i < this.body.length; ++i)
         {
-            if (this.body[0].pos.x === this.body[i].pos.x &&
-                this.body[0].pos.y === this.body[i].pos.y)
+            if (x === this.body[i].pos.x &&
+                y === this.body[i].pos.y)
             {
-                this.state = STATE_GAME_OVER;
-                this.state_handle();
+                return true;
             }
         }
+        return false
     }
 
     update()
     {
+        const APPLE_MULTIPLIER = 1;
         if (this.state == STATE_PLAYING)
         {
             if (this.body.length < this.body_len)
                 this.worm_grow();
 
             this.handle_movement();
-            this.check_collision();
             this.worm_update();
+
+            // Apple collision
+            for (let apple of this.apples)
+            {
+                if (this.body[0].pos.x === apple.pos.x &&
+                    this.body[0].pos.y === apple.pos.y)
+                {
+                    apple.elem.remove();
+                    this.update_score();
+                    this.body_len += APPLE_MULTIPLIER;
+                    this.add_apple();
+                }
+            }
+            
+            // Game over?
+            if (this.check_collision())
+            {
+                this.state = STATE_GAME_OVER;
+                this.state_handle();
+            }
         }
     }
 }
