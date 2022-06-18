@@ -29,7 +29,7 @@ enum search_tab
 };
 
 void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, char* content);
-
+void content_search_all(struct session* ssn, mastodont_t* api, char** data);
 void content_search_statuses(struct session* ssn, mastodont_t* api, char** data);
 void content_search_accounts(struct session* ssn, mastodont_t* api, char** data);
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data);

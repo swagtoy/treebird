@@ -56,9 +56,15 @@ ul
     border-radius: 5px;
 }
 
-.hidden
+.hidden,
+.search-page-hidden + .search-page
 {
     display: none;
+}
+
+.search-page-hidden:checked + .search-page
+{
+    display: block;
 }
 
 .pointer
