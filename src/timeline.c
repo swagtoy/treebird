@@ -62,17 +62,16 @@ void content_timeline(struct session* ssn,
 
     // Create post box
     if (show_post_box)
-    {
         post_box = construct_post_box(NULL, "", NULL);
-        if (statuses)
-        {
-            // If not set, set it
-            start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-            navigation_box = construct_navigation_box(start_id,
-                                                      statuses[0].id,
-                                                      statuses[statuses_len-1].id,
-                                                      NULL);
-        }
+
+    if (statuses)
+    {
+        // If not set, set it
+        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
+        navigation_box = construct_navigation_box(start_id,
+                                                  statuses[0].id,
+                                                  statuses[statuses_len-1].id,
+                                                  NULL);
     }
 
     // Create timeline options/menubar
@@ -87,7 +86,7 @@ void content_timeline(struct session* ssn,
     // Display a header bar, usually customized for specific pages
     if (header_text)
     {
-        easprintf(&header, "<div class=\"simple-page\"><h1>%s</h1></div>",
+        easprintf(&header, "<div class=\"simple-page simple-page-header\"><h1>%s</h1></div>",
                   header_text);
     }
     
@@ -166,7 +165,7 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     
     mastodont_timeline_direct(api, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, NULL, 0);
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
 }
 
 void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)

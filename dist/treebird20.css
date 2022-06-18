@@ -1415,7 +1415,7 @@ p}
 .simple-page h1
 {
     padding-left: 12px;
-    padding-bottom: 6px;
+    padding-bottom: 7px;
     border-bottom: 1px solid #cacaca;
 }
 
@@ -1428,6 +1428,16 @@ p}
 {
     list-style-type: none;
     padding-left: 15px;
+}
+
+.simple-page-header
+{
+    padding: 0;
+}
+
+.simple-page-header h1
+{
+    margin-bottom: 0;
 }
 
 .simple-page p
