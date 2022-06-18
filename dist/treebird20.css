@@ -592,8 +592,7 @@ svg.in-reply-to-icon
 
 .notification-info
 {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 9px;
 }
 
 .notification-info img,
@@ -602,6 +601,7 @@ svg.in-reply-to-icon
     margin-left: 41px;
     width: 24px;
     height: 24px;
+    margin-right: 6px;
     border-radius: 3px;
     vertical-align: middle;
     object-fit: cover;
@@ -622,7 +622,7 @@ svg.in-reply-to-icon
 /***************************
  *      Statuses           *
  **************************/
-.status,
+.status .status-table,
 .notification-regular,
 .scrobble
 {
@@ -632,7 +632,7 @@ svg.in-reply-to-icon
     border-spacing: 0px;
 }
 
-.status-hide:checked + .status
+.status-hide:checked + .status .status-table
 {
     padding: 5px 10px;
 }
@@ -699,7 +699,8 @@ svg.in-reply-to-icon
 }
 
 .status-hide:checked + .status .status-data,
-.status-hide:checked + .status .pfp-td
+.status-hide:checked + .status .pfp-td,
+.status-hide:checked + .status .notification-info
 {
     display: none;
 }
@@ -719,7 +720,7 @@ svg.in-reply-to-icon
     object-fit: cover;
 }
 
-.status tr
+.status table tr
 {
     width: auto;
 }

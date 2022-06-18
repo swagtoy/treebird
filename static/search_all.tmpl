@@ -1,0 +1,18 @@
+<table class="tabs ui-table">
+  <tr>
+    <td>
+      <label
+      <a href="{{%s:prefix}}/search/statuses?q={{%s:query}}"><input class="tab-btn btn {{%s:statuses_active}}" type="button" value="{{%s:statuses}}"></a>
+    </td>
+    <td>
+      <a href="{{%s:prefix}}/search/accounts?q={{%s:query}}"><input class="tab-btn btn {{%s:accounts_active}}" type="button" value="{{%s:accounts}}"></a>
+    </td>
+    <td>
+      <a href="{{%s:prefix}}/search/hashtags?q={{%s:query}}"><input class="tab-btn btn {{%s:hashtags_active}}" type="button" value="{{%s:hashtags}}"></a>
+    </td>
+  </tr>
+</table>
+
+<div class="search-results">
+  {{%s:results}}
+</div>
