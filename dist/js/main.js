@@ -177,7 +177,7 @@ function status_interact_props(e)
     let type = interact.parentNode.querySelector(".itype");
     if (type === null)
         return true;
-    let status = interact.closest(".status");
+    let status = interact.closest(".status .status-table");
 
     send_request("/treebird_api/v1/interact",
                  {
