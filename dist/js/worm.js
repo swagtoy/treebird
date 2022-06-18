@@ -8,6 +8,9 @@ const LEFT = 3;
 const STATE_START = 0;
 const STATE_PLAYING = 1;
 const STATE_GAME_OVER = 2;
+const STATE_GAME_WIN = 3;
+
+let started = false;
 
 class Wormle
 {
@@ -27,8 +30,10 @@ class Wormle
 
         // Apply class to get properties
         this.view.className = "wormle-view";
+        this.apples = [];
 
         this.state_handle();
+        this.loop = null;
     }
     
     reset()
@@ -37,16 +42,26 @@ class Wormle
         this.body = [];
         this.body_len = 8;
         this.score = 0;
-        this.food_sum = 4;
         this.level = 0;
-        this.tickspeed = 400;
+        this.tickspeed = 280;
 
         // Controls
         this.pos = this.spawn_pos = { x: 3, y: 3 };
         this.direction = RIGHT;
         this.direction_queue = [];
+        this.clear_apples();
         this.apples = [];
-        this.add_apple()
+        this.add_apple();
+    }
+
+    clear_apples()
+    {
+        const len = this.apples.length
+        for (let i = 0; i < len; ++i)
+        {
+            this.apples[this.apples.length-1].elem.remove();
+            this.apples.pop();
+        }
     }
 
     obj_rand_position()
@@ -116,6 +131,14 @@ class Wormle
         }
     }
 
+    last_dir()
+    {
+        if (this.direction_queue.length)
+            return this.direction_queue[this.direction_queue-1];
+        else
+            return this.direction;
+    }
+
     worm_update()
     {
         // Yeah this is ugly and i don't care its just an easter egg...
@@ -176,22 +199,38 @@ class Wormle
 <p>Press any key...</p>`;
     }
 
+    game_win()
+    {
+        this.title.innerHTML = `<h1>You won Wormle!</h1>
+<p>Pat yourself on the back...</p>
+<img src="../img/noname.png"> <img src="../img/noname.png"> <img src="../img/noname.png"> `;
+    }
+
     start()
     {
-        this.title.innerHTML = `<h1>Wormle</h1>
-<p>Press any key...</p>`;
-        this.reset();
-
         for (let i of document.querySelectorAll(".wormle-body"))
         {
             i.remove();
         }
+
+        this.title.innerHTML = `<h1>Wormle</h1>
+<input type="button" value="Play" class="wormle-play-btn">`;
+        this.reset();
+
+        // Play button
+        let btn = this.title.querySelector(".wormle-play-btn");
+        let that = this;
+        if (btn)
+            btn.addEventListener("click", () => {
+                that.next_state();
+                this.view.focus();
+            });
     }
 
     next_state()
     {
         this.state++;
-        if (this.state > STATE_GAME_OVER)
+        if (this.state >= STATE_GAME_OVER)
             this.state = 0;
         this.state_handle();
     }
@@ -214,6 +253,10 @@ class Wormle
             this.game_over();
             break;
 
+            case STATE_GAME_WIN:
+            this.game_win();
+            break;
+
             default:
             this.score_text.innerHTML = this.score;
             this.title.innerHTML = '';
@@ -227,12 +270,22 @@ class Wormle
         return this.body[index];
     }
 
+    next_level()
+    {
+        if (this.level > 6) return;
+        this.level++;
+        this.tickspeed -= 25;
+        if (this.level % 2 == 0) this.add_apple();
+    }
+
     check_collision(x = this.body[0].pos.x, y = this.body[0].pos.y)
     {
         for (let i = 1; i < this.body.length; ++i)
         {
             if (x === this.body[i].pos.x &&
-                y === this.body[i].pos.y)
+                y === this.body[i].pos.y ||
+                x >= this.grid_size[0] || x < 0 ||
+                y >= this.grid_size[1] || y < 0)
             {
                 return true;
             }
@@ -252,15 +305,30 @@ class Wormle
             this.worm_update();
 
             // Apple collision
-            for (let apple of this.apples)
+            for (let i = 0; i < this.apples.length; ++i)
             {
-                if (this.body[0].pos.x === apple.pos.x &&
-                    this.body[0].pos.y === apple.pos.y)
+                if (this.body[0].pos.x === this.apples[i].pos.x &&
+                    this.body[0].pos.y === this.apples[i].pos.y)
                 {
-                    apple.elem.remove();
+                    // Delete apple
+                    this.apples[i].elem.remove();
+                    this.apples.splice(i, 1);
+                    
                     this.update_score();
                     this.body_len += APPLE_MULTIPLIER;
                     this.add_apple();
+
+                    // Check if max size
+                    if (this.body_len >= this.grid_size[0] * this.grid_size[1])
+                    {
+                        this.state = STATE_GAME_WIN;
+                        this.state_handle();
+                    }
+
+                    if (this.score % 10 === 0)
+                    {
+                        this.next_level();
+                    }
                 }
             }
             
@@ -276,6 +344,9 @@ class Wormle
 
 function start_wormle()
 {
+    if (started)
+        return;
+    started = true;
     let wormle_view = document.createElement("div");
     wormle_view.tabIndex = 1;
     let title = document.createElement("span");
@@ -288,10 +359,13 @@ function start_wormle()
         grid_size: [16, 16], // Tiles
         view_size: [400, 400], // Px
     });
-    
-    setInterval(() => {
+
+    let callback = () => {
         game.update();
-    }, game.tickspeed);
+        game.loop = setTimeout(callback, game.tickspeed);
+    };
+    
+    game.loop = setTimeout(callback, game.tickspeed);
 
     document.addEventListener("keydown", (e) => {
         // Fallback incase
@@ -305,22 +379,23 @@ function start_wormle()
             {
                 // Left
                 case 37: {
-                    game.move(LEFT);
+                    if (game.last_dir() !== RIGHT) game.move(LEFT);
                     break;
                 }
                 // Up
                 case 38: {
-                    game.move(UP);
+                    if (game.last_dir() !== DOWN) game.move(UP);
                     break;
                 }
                 // Right
                 case 39: {
-                    game.move(RIGHT);
+                    if (game.last_dir() !== LEFT) game.move(RIGHT);
                     break;
                 }
                 // Down
                 case 40: {
-                    game.move(DOWN);
+                    if (game.last_dir() !== UP)
+                        game.move(DOWN);
                     break;
                 }
             }

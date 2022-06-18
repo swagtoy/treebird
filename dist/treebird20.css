@@ -1975,14 +1975,25 @@ ul.large-list li a.edit-list-btn
     border: 0;
     padding: 0;
     margin: 0;
+    font-size: 54px;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.wormle-view h1,
+.wormle-view p,
+.wormle-view .wormle-score,
+.wormle-view input
+{
+    position: relative;
+    z-index: 999;
 }
 
 .wormle-body
 {
     z-index: 3;
     position: absolute;
-
-    border-radius: 4px;
+    border-radius: 7px;
+    /* border-radius: 4px; */
 }
 
 .wormle-player
@@ -1995,19 +2006,41 @@ ul.large-list li a.edit-list-btn
 {
     background-color: #dd0000;
     border: 1px solid #aa0000;
+    border-radius: 100%;
+    box-shadow: 0px 0px 20px 4px rgba(200, 0, 0, 0.4);
 }
 
-/* .wormle-view .wormle-body:last-child */
-/* { */
-/*     transition: left .2s linear, top .2s linear; */
-/* } */
+.wormle-play-btn
+{
+    margin-top: 12px;
+    padding: 68px 0px 72px;
+    border: none !important;
+    border-bottom: 4px solid #009000 !important;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(#00ee00, #00cc00);
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, .6);
+    font-size: 34px;
+    font-family: monospace;
+    color: #fff;
+    border-radius: 6px;
+    transition: .1s;
+    cursor: pointer;
+}
+
+.wormle-play-btn:hover
+{
+    margin-top: 16px;
+    border-bottom: 0px solid #009000 !important;
+    box-shadow: none;
+}
 
 .wormle-score
 {
     z-index: 9;
+    padding-right: 4px;
     position: absolute;
-    right: 5px;
-    font-size: 18px;
+    float: right;
+    font-size: 20px;
     color: black;
 }
 
