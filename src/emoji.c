@@ -48,7 +48,7 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
         coloned[sc_len+1] = ':';
         coloned[sc_len+2] = '\0';
 
-        easprintf(&emoji_url_str, "<img class=\"emoji\" src=\"%s\">", emos[i].url);
+        easprintf(&emoji_url_str, "<img class=\"emoji\" src=\"%s\" loading=\"lazy\">", emos[i].url);
         
         res = strrepl(res, coloned, emoji_url_str, STRREPL_ALL);
         if (oldres != content && res != oldres) free(oldres);
