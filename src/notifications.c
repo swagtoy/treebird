@@ -67,6 +67,7 @@ char* construct_notification(struct session* ssn,
 
 char* construct_notification_action(struct mstdnt_notification* notif, size_t* size)
 {
+    char* res;
     char* display_name = emojify(notif->account->display_name,
                                  notif->account->emojis,
                                  notif->account->emojis_len);
@@ -78,9 +79,10 @@ char* construct_notification_action(struct mstdnt_notification* notif, size_t* s
         .action = notification_type_compact_str(notif->type),
         .notif_svg = notification_type_svg(notif->type)
     };
+    res = tmpl_gen_notification_action(&tdata, size);
     if (display_name != notif->account->display_name)
         free(display_name);
-    return tmpl_gen_notification_action(&tdata, size);
+    return res;
 }
 
 char* construct_notification_compact(struct session* ssn,

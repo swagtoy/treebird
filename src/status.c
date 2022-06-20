@@ -431,7 +431,7 @@ char* reformat_status(struct session* ssn,
     if (emos)
     {
         emo_res = emojify(res, emos, emos_len);
-        if (emo_res != content && res != content)
+        if (emo_res != res && res != content)
             free(res);
         res = emo_res;
     }
