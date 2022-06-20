@@ -1,3 +1,8 @@
 <li>
-  <a href="{{%s:prefix}}/lists/for/{{%s:list_id}}" class="btn split list-item">{{%s:list}}</a><a href="{{%s:prefix}}/lists/edit/{{%s:list_id}}" class="btn edit-list-btn">Edit</a>
+  <a href="{{%s:prefix}}/lists/for/{{%s:list_id}}" class="btn split list-item">{{%s:list}}</a><label for="list-edit-{{%s:list_id}}"><span class="btn edit-list-btn">Edit</span></label>
+
+  <input type="checkbox" id="list-edit-{{%s:list_id}}" class="list-radio-show hidden" name="list-radio" class="hidden">
+  <div class="list-edit-content">
+    Content
+  </div>
 </li>

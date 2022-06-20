@@ -1566,17 +1566,19 @@ ul.large-list li a
     list-style-type: none;
 }
 
-ul.large-list li a.list-item
+ul.large-list li .list-item
 {
     width: 406px;
 }
 
-ul.large-list li a.edit-list-btn
+ul.large-list li .edit-list-btn
 {
+    display: inline-block;
     border-left: 1px solid #eaeaea;
     background: linear-gradient(#f8f8fc, #efeff2);
     color: #505050;
     width: 33px;
+    padding: 15px;
 }
 
 .lists-view-header
@@ -1593,6 +1595,19 @@ ul.large-list li a.edit-list-btn
 .lists-view-container ul li:not(:last-child)
 {
     border-bottom: 1px solid #dadada;
+}
+
+.list-radio-show:not(:checked) + .list-edit-content
+{
+    display: none;
+}
+
+.list-edit-content
+{
+    background-color: #fff;
+    color: #000;
+    padding: 8px;
+    border-top: 1px solid #dadada;
 }
 
 .create-list-form
@@ -1897,6 +1912,7 @@ ul.large-list li a.edit-list-btn
     margin-right: 32px;
 }
 
+/****** FUN STUFF ******/
 .is-cat:before,
 .is-cat:after,
 .is-bun:before,
@@ -1974,7 +1990,6 @@ ul.large-list li a.edit-list-btn
 }
 
 /* Wormle stuff - If you're a theme dev just ignore this honestly */
-
 .wormle-view
 {
     position: relative;
