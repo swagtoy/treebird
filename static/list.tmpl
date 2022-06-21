@@ -3,6 +3,13 @@
 
   <input type="checkbox" id="list-edit-{{%s:list_id}}" class="list-radio-show hidden" name="list-radio" class="hidden">
   <div class="list-edit-content">
-    Content
+    <form action="{{%s:prefix}}/lists/edit/{{%s:list_id}}">
+      <input type="text" name="title">
+      <select name="replies_policy">
+        <option value="0">None</option>
+        <option value="1">List</option>
+        <option value="2">Followed</option>
+      </select>
+    </form>
   </div>
 </li>
