@@ -202,7 +202,7 @@ function status_interact_props(e)
 function create_reply_form(e)
 {
     e.preventDefault();
-    let status = e.target.closest(".status");
+    let status = e.target.closest(".status-table");
 
     if (status.nextSibling.className === "statusbox-quickreply")
     {
