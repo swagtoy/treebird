@@ -51,6 +51,7 @@ struct post_values
     struct key set; // Int
     struct key only_media; // Int
     struct key replies_only; // Int
+    struct key replies_policy; // Int
     
     struct key content; // String
     struct key itype; // String

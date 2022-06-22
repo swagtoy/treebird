@@ -91,6 +91,7 @@ char* read_post_data(struct post_values* post)
         { "itype", &(post->itype), key_string },
         { "id", &(post->id), key_string },
         { "title", &(post->title), key_string },
+        { "replies_policy", &(post->replies_policy), key_int },
         { "theme", &(post->theme), key_string },
         { "themeclr", &(post->themeclr), key_int },
         { "jsactions", &(post->jsactions), key_int },

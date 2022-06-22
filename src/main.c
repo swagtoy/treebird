@@ -90,6 +90,7 @@ int main(void)
         { "/search/accounts", content_search_accounts },
         { "/search/hashtags", content_search_hashtags },
         { "/search", content_search_all },
+        { "/lists/edit/:", list_edit },
         { "/lists/for/:", content_tl_list },
         { "/lists", content_lists },
         { "/federated", content_tl_federated },

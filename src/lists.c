@@ -25,7 +25,7 @@
 #include "status.h"
 #include "lists.h"
 #include "string_helpers.h"
-
+#include "http.h"
 // Files
 #include "../static/account.ctmpl"
 #include "../static/list.ctmpl"
@@ -104,4 +104,24 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     if (lists_format) free(lists_format);
     if (lists_page) free(lists_page);
     mstdnt_cleanup_lists(lists);
+}
+
+void list_edit(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_storage storage = { 0 };
+    char* referer = getenv("HTTP_REFERER");
+    char* id = data[0];
+
+    struct mstdnt_list_args args = {
+        .title = keystr(ssn->post.title),
+        .replies_policy = keyint(ssn->post.replies_policy)
+    };
+
+    mastodont_update_list(api,
+                          id,
+                          &args,
+                          &storage,
+                          NULL);
+
+    redirect(REDIRECT_303, referer);
 }
