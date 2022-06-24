@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "helpers.h"
 #include "base_page.h"
 #include "error.h"
 #include "../config.h"
@@ -98,6 +99,8 @@ static char* account_followers_cb(struct session* ssn,
         .limit = 20,
         .with_relationships = 0,
     };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* accounts_html = NULL, *navigation_box = NULL;
     char* output;
     struct mstdnt_storage storage = { 0 };
@@ -105,7 +108,7 @@ static char* account_followers_cb(struct session* ssn,
     size_t accts_len = 0;
     char* start_id;
     
-    if (mastodont_get_followers(api, acct->id, &args, &storage, &accounts, &accts_len))
+    if (mastodont_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len))
     {
         accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -148,6 +151,8 @@ static char* account_following_cb(struct session* ssn,
         .limit = 20,
         .with_relationships = 0,
     };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* accounts_html = NULL, *navigation_box = NULL;
     char* output;
     struct mstdnt_storage storage = { 0 };
@@ -155,7 +160,7 @@ static char* account_following_cb(struct session* ssn,
     size_t accts_len = 0;
     char* start_id;
     
-    if (mastodont_get_following(api, acct->id, &args, &storage, &accounts, &accts_len))
+    if (mastodont_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len))
     {
         accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -191,7 +196,8 @@ static char* account_statuses_cb(struct session* ssn,
                                  void* _args)
 
 {
-    (void)ssn;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_account_statuses_args* args = _args;
     char* statuses_html = NULL, *navigation_box = NULL;
     char* output;
@@ -200,7 +206,7 @@ static char* account_statuses_cb(struct session* ssn,
     size_t statuses_len = 0;
     char* start_id;
     
-    if (mastodont_get_account_statuses(api, acct->id, args, &storage, &statuses, &statuses_len))
+    if (mastodont_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len))
     {
         statuses_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -233,7 +239,6 @@ static char* account_statuses_cb(struct session* ssn,
 
 static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, void* _args)
 {
-    (void)ssn;
     (void)_args;
     char* scrobbles_html = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -246,8 +251,10 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
         .offset = 0,
         .limit = 20
     };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     
-    if (mastodont_get_scrobbles(api, acct->id, &args, &storage, &scrobbles, &scrobbles_len))
+    if (mastodont_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len))
     {
         scrobbles_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -264,7 +271,9 @@ static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct 
 
 void get_account_info(mastodont_t* api, struct session* ssn)
 {
-    if (mastodont_verify_credentials(api, &(ssn->acct), &(ssn->acct_storage)) == 0)
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    if (mastodont_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
     {
         ssn->logged_in = 1;
     }
@@ -284,16 +293,18 @@ static void fetch_account_page(struct session* ssn,
     struct mstdnt_account acct = { 0 };
     struct mstdnt_relationship* relationships = NULL;
     size_t relationships_len = 0;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
-    if (mastodont_get_account(api, lookup_type, id, &acct, &storage))
+    if (mastodont_get_account(api, &m_args, lookup_type, id, &acct, &storage))
     {
         account_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
         // Relationships may fail
-        mastodont_get_relationships(api, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+        mastodont_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
         
         data = callback(ssn, api, 
                         &acct, args);
@@ -603,24 +614,26 @@ void content_account_action(struct session* ssn, mastodont_t* api, char** data)
 {
     char* referer = getenv("HTTP_REFERER");
     struct mstdnt_storage storage = { 0 };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_relationship acct = { 0 };
     
     if (strcmp(data[1], "follow") == 0)
-        mastodont_follow_account(api, data[0], &storage, &acct);
+        mastodont_follow_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unfollow") == 0)
-        mastodont_unfollow_account(api, data[0], &storage, &acct);
+        mastodont_unfollow_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "mute") == 0)
-        mastodont_mute_account(api, data[0], &storage, &acct);
+        mastodont_mute_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unmute") == 0)
-        mastodont_unmute_account(api, data[0], &storage, &acct);
+        mastodont_unmute_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "block") == 0)
-        mastodont_block_account(api, data[0], &storage, &acct);
+        mastodont_block_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unblock") == 0)
-        mastodont_unblock_account(api, data[0], &storage, &acct);
+        mastodont_unblock_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "subscribe") == 0)
-        mastodont_subscribe_account(api, data[0], &storage, &acct);
+        mastodont_subscribe_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unsubscribe") == 0)
-        mastodont_unsubscribe_account(api, data[0], &storage, &acct);
+        mastodont_unsubscribe_account(api, &m_args, data[0], &storage, &acct);
 
     mastodont_storage_cleanup(&storage);
 
@@ -643,8 +656,10 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
 
-    if (mastodont_get_bookmarks(api, &args, &storage, &statuses, &status_count))
+    if (mastodont_get_bookmarks(api, &m_args, &args, &storage, &statuses, &status_count))
     {
         status_format = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -736,8 +751,10 @@ void content_account_blocked(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_account* accts = NULL;
     size_t accts_len = 0;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     
-    mastodont_get_blocks(api, &args, &storage, &accts, &accts_len);
+    mastodont_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
 
     accounts_page(api, ssn, &storage, "Blocked users", accts, accts_len);
 }
@@ -755,8 +772,10 @@ void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_account* accts = NULL;
     size_t accts_len = 0;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     
-    mastodont_get_mutes(api, &args, &storage, &accts, &accts_len);
+    mastodont_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
 
     accounts_page(api, ssn, &storage, "Muted users", accts, accts_len);    
 }
@@ -777,8 +796,10 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
 
-    if (mastodont_get_favourites(api, &args, &storage, &statuses, &status_count))
+    if (mastodont_get_favourites(api, &m_args, &args, &storage, &statuses, &status_count))
     {
         status_format = construct_error(storage.error, E_ERROR, 1, NULL);
     }

@@ -16,25 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef HELPERS_H
+#define HELPERS_H
 #include <mastodont.h>
-#include "query.h"
-#include "local_config.h"
-#include "cookie.h"
+#include "session.h"
 
-struct session
-{
-    struct post_values post;
-    struct get_values query;
-    struct cookie_values cookies;
-    struct local_config config;
-    int logged_in;
-    struct mstdnt_account acct;
-    struct mstdnt_storage acct_storage;
-};
+void set_mstdnt_args(struct mstdnt_args* args, struct session* ssn);
 
-const char* const get_instance(struct session* ssn);
-const char* const get_token(struct session* ssn);
-
-#endif // SESSION_H
+#endif /* HELPERS_H */

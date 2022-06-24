@@ -49,8 +49,7 @@ int main(void)
 
     // Initiate mastodont library
     mastodont_t api;
-    mastodont_init(&api, MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags);
-    api.url = config_instance_url;
+    mastodont_init(&api);
 
     // Fetch information about the current instance
     load_instance_info_cache(&api);
@@ -142,14 +141,6 @@ int main(void)
         char* cookies_str = read_cookies_env(&(ssn.cookies));
         char* post_str = read_post_data(&(ssn.post));
         char* get_str = read_get_data(&(ssn.query));
-
-        // Instance info temp stuff
-        if (keystr(ssn.cookies.instance_url))
-            api.url = keystr(ssn.cookies.instance_url);
-        else
-            api.url = config_instance_url;
-        
-        api.token = keystr(ssn.cookies.access_token); // Load token now
 
         // Read config options
         load_config(&ssn, &api);

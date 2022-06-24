@@ -16,25 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SESSION_H
-#define SESSION_H
-#include <mastodont.h>
-#include "query.h"
-#include "local_config.h"
-#include "cookie.h"
+#include "../config.h"
+#include "helpers.h"
 
-struct session
+void set_mstdnt_args(struct mstdnt_args* args, struct session* ssn)
 {
-    struct post_values post;
-    struct get_values query;
-    struct cookie_values cookies;
-    struct local_config config;
-    int logged_in;
-    struct mstdnt_account acct;
-    struct mstdnt_storage acct_storage;
-};
+    args->url = get_instance(ssn);
+    args->token = get_token(ssn);
+    args->flags = MSTDNT_FLAG_NO_URI_SANITIZE | config_library_flags;
+}
 
-const char* const get_instance(struct session* ssn);
-const char* const get_token(struct session* ssn);
-
-#endif // SESSION_H

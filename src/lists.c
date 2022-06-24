@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include "helpers.h"
 #include "base_page.h"
 #include "../config.h"
 #include "account.h"
@@ -62,6 +63,8 @@ char* construct_lists_view(char* lists_string, size_t* size)
 
 void content_lists(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_list* lists = NULL;
     size_t size_list = 0;
     struct mstdnt_storage storage = { 0 };
@@ -75,11 +78,11 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
             .title = keystr(ssn->post.title),
             .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
         };
-        mastodont_create_list(api, &args, &create_storage, NULL);
+        mastodont_create_list(api, &m_args, &args, &create_storage, NULL);
         mastodont_storage_cleanup(&create_storage);
     }
 
-    if (mastodont_get_lists(api, &storage, &lists, &size_list))
+    if (mastodont_get_lists(api, &m_args, &storage, &lists, &size_list))
     {
         lists_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
@@ -108,6 +111,8 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
 
 void list_edit(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
     char* referer = getenv("HTTP_REFERER");
     char* id = data[0];
@@ -118,6 +123,7 @@ void list_edit(struct session* ssn, mastodont_t* api, char** data)
     };
 
     mastodont_update_list(api,
+                          &m_args,
                           id,
                           &args,
                           &storage,

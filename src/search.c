@@ -61,6 +61,8 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
 
 void content_search_all(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* out_data = NULL;
     char* statuses_html = NULL;
     char* accounts_html = NULL;
@@ -84,6 +86,7 @@ void content_search_all(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
+                         &m_args,
                          keystr(ssn->query.query),
                          &storage,
                          &args,
@@ -139,8 +142,7 @@ void content_search_all(struct session* ssn, mastodont_t* api, char** data)
 
     // Output
     render_base_page(&b, ssn, api);
-    free(out_data);
-    
+    free(out_data);    
     free(statuses_html);
     free(accounts_html);
     free(tags_html);
@@ -152,6 +154,8 @@ void content_search_all(struct session* ssn, mastodont_t* api, char** data)
 
 void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* statuses_html;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
@@ -169,6 +173,7 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
+                         &m_args,
                          keystr(ssn->query.query),
                          &storage,
                          &args,
@@ -193,6 +198,8 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
 
 void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* accounts_html;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
@@ -210,6 +217,7 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
+                         &m_args,
                          keystr(ssn->query.query),
                          &storage,
                          &args,
@@ -231,6 +239,8 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
 
 void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* tags_html;
     char* tags_graph = NULL;
     char* tags_bars = NULL;
@@ -251,6 +261,7 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_search_results results = { 0 };
 
     if (mastodont_search(api,
+                         &m_args,
                          keystr(ssn->query.query),
                          &storage,
                          &args,

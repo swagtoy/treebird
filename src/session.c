@@ -16,25 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SESSION_H
-#define SESSION_H
-#include <mastodont.h>
-#include "query.h"
-#include "local_config.h"
-#include "cookie.h"
+#include "session.h"
+#include "../config.h"
 
-struct session
+const char* const get_instance(struct session* ssn)
 {
-    struct post_values post;
-    struct get_values query;
-    struct cookie_values cookies;
-    struct local_config config;
-    int logged_in;
-    struct mstdnt_account acct;
-    struct mstdnt_storage acct_storage;
-};
+    return keystr(ssn->cookies.instance_url) ?
+        keystr(ssn->cookies.instance_url) : config_instance_url;
+}
 
-const char* const get_instance(struct session* ssn);
-const char* const get_token(struct session* ssn);
-
-#endif // SESSION_H
+const char* const get_token(struct session* ssn)
+{
+    return keystr(ssn->cookies.access_token);
+}

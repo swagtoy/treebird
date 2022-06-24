@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "helpers.h"
 #include "notifications.h"
 #include "base_page.h"
 #include "string_helpers.h"
@@ -179,6 +180,8 @@ char* construct_notifications_compact(struct session* ssn,
 
 void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* page, *notif_html = NULL;
     struct mstdnt_storage storage;
     struct mstdnt_notification* notifs;
@@ -201,7 +204,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
             .limit = 20,
         };
 
-        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        if (mastodont_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len) == 0)
         {
             if (notifs && notifs_len)
             {
@@ -244,6 +247,8 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
 void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* page, *notif_html = NULL;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
@@ -266,7 +271,12 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
             .limit = 20,
         };
 
-        if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+        if (mastodont_get_notifications(api,
+                                        &m_args,
+                                        &args,
+                                        &storage,
+                                        &notifs,
+                                        &notifs_len) == 0)
         {
             if (notifs && notifs_len)
             {

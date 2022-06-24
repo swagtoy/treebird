@@ -117,6 +117,8 @@ void content_timeline(struct session* ssn,
 
 void tl_home(struct session* ssn, mastodont_t* api, int local)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -137,13 +139,15 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     
     try_post_status(ssn, api);
     
-    mastodont_timeline_home(api, &args, &storage, &statuses, &statuses_len);
+    mastodont_timeline_home(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
 }
 
 void tl_direct(struct session* ssn, mastodont_t* api)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -163,13 +167,15 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     
     try_post_status(ssn, api);
     
-    mastodont_timeline_direct(api, &args, &storage, &statuses, &statuses_len);
+    mastodont_timeline_direct(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
 }
 
 void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -191,13 +197,15 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
 
     try_post_status(ssn, api);
 
-    mastodont_timeline_public(api, &args, &storage, &statuses, &statuses_len);
+    mastodont_timeline_public(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
 }
 
 void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
@@ -216,7 +224,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 
     try_post_status(ssn, api);
     
-    mastodont_timeline_list(api, list_id, &args, &storage, &statuses, &statuses_len);
+    mastodont_timeline_list(api, &m_args, list_id, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, NULL, 0);
 }
@@ -224,6 +232,8 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
 
 void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* header;
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
@@ -241,7 +251,7 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
         .limit = 20,
     };
 
-    mastodont_timeline_tag(api, tag_id, &args, &storage, &statuses, &statuses_len);
+    mastodont_timeline_tag(api, &m_args, tag_id, &args, &storage, &statuses, &statuses_len);
 
     easprintf(&header, "Hashtag - #%s", tag_id);
 

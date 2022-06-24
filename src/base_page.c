@@ -37,6 +37,8 @@
 
 void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = l10n_normalize(ssn->config.lang);
     const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
@@ -84,7 +86,12 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                 .limit = 8,
             };
         
-            if (mastodont_get_notifications(api, &args, &storage, &notifs, &notifs_len) == 0)
+            if (mastodont_get_notifications(api,
+                                            &m_args,
+                                            &args,
+                                            &storage,
+                                            &notifs,
+                                            &notifs_len) == 0)
             {
                 main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
             }

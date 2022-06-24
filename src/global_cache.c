@@ -16,14 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../config.h"
 #include "global_cache.h"
 
 struct global_cache g_cache = { 0 };
 
 void load_instance_info_cache(mastodont_t* api)
 {
-    mastodont_instance_panel(api, &(g_cache.panel_html));
-    mastodont_terms_of_service(api, &(g_cache.tos_html));
+    struct mstdnt_args m_args = {
+        .url = config_instance_url,
+        .token = 0,
+        .flags = config_library_flags,
+    };
+    mastodont_instance_panel(api, &m_args, &(g_cache.panel_html));
+    mastodont_terms_of_service(api, &m_args, &(g_cache.tos_html));
 }
 
 void free_instance_info_cache()

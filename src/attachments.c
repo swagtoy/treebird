@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "helpers.h"
 #include "easprintf.h"
 #include "attachments.h"
 #include "string_helpers.h"
@@ -43,6 +44,8 @@ int try_upload_media(struct mstdnt_storage** storage,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     size_t size = keyfile(ssn->post.files).array_size;
     if (!FILES_READY(ssn))
         return 1;
@@ -68,6 +71,7 @@ int try_upload_media(struct mstdnt_storage** storage,
         };
         
         if (mastodont_upload_media(api,
+                                   &m_args,
                                    &args,
                                    *storage + i,
                                    *attachments + i))

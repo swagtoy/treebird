@@ -20,6 +20,7 @@
 #include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "helpers.h"
 #include "query.h"
 #include "base_page.h"
 #include "login.h"
@@ -44,10 +45,12 @@ void apply_access_token(char* token)
 
 void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 }, oauth_storage = { 0 };
     struct mstdnt_app app;
     struct mstdnt_oauth_token token;
-    char* orig_url = api->url;
+    const char* orig_url = m_args.url;
     char* redirect_url = getenv("SERVER_NAME");
     char* decode_url = NULL;
     char* urlify_redirect_url = NULL;
@@ -57,7 +60,7 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
 
     if (keystr(ssn->query.code))
     {
-        struct mstdnt_args args_token = {
+        struct mstdnt_application_args args_token = {
             .grant_type = "authorization_code",
             .client_id = keystr(ssn->cookies.client_id),
             .client_secret = keystr(ssn->cookies.client_secret),
@@ -66,7 +69,10 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
             .code = keystr(ssn->query.code),
         };
 
-        if (mastodont_obtain_oauth_token(api, &args_token, &oauth_storage,
+        if (mastodont_obtain_oauth_token(api,
+                                         &m_args,
+                                         &args_token,
+                                         &oauth_storage,
                                          &token) == 0)
         {
             apply_access_token(token.access_token);
@@ -75,16 +81,20 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
     else if (keystr(ssn->post.instance))
     {
         decode_url = curl_easy_unescape(api->curl, keystr(ssn->post.instance), 0, NULL);
-        api->url = decode_url;
+        m_args.url = decode_url;
         
-        struct mstdnt_args args_app = {
+        struct mstdnt_application_args args_app = {
             .client_name = "Treebird",
             .redirect_uris = urlify_redirect_url,
             .scopes = "read+write+follow+push",
             .website = keystr(ssn->post.instance)
         };
 
-        if (mastodont_register_app(api, &args_app, &storage, &app) == 0)
+        if (mastodont_register_app(api,
+                                   &m_args,
+                                   &args_app,
+                                   &storage,
+                                   &app) == 0)
         {
             char* url;
             char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
@@ -102,7 +112,7 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
         }
     }
 
-    api->url = orig_url;
+    m_args.url = orig_url;
     
     redirect(REDIRECT_303, config_url_prefix &&
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
@@ -115,6 +125,8 @@ void content_login_oauth(struct session* ssn, mastodont_t* api, char** data)
 
 void content_login(struct session* ssn, mastodont_t* api, char** data)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 }, oauth_store = { 0 };
     struct mstdnt_app app;
     struct mstdnt_oauth_token token;
@@ -124,7 +136,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
     if (keystr(ssn->post.username) && keystr(ssn->post.password))
     {
         // Getting the client id/secret
-        struct mstdnt_args args_app = {
+        struct mstdnt_application_args args_app = {
             .client_name = "Treebird",
             .redirect_uris = "http://localhost/",
             .scopes = LOGIN_SCOPE,
@@ -134,7 +146,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
         // Check if the username contains an @ symbol
         char* address = strstr(keystr(ssn->post.username), "%40");
         // If it fails, we need to restore
-        char* orig_url = api->url;
+        const char* orig_url = m_args.url;
         char* url_link = NULL;
         if (address)
         {
@@ -142,19 +154,19 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
             *address = '\0';
             address += sizeof("%40")-1;
             easprintf(&url_link, "https://%s/", address);
-            api->url = url_link;
+            m_args.url = url_link;
         }
         else {
             // Reset to instance url
-            api->url = config_instance_url;
+            m_args.url = config_instance_url;
         }
 
-        if (mastodont_register_app(api, &args_app, &storage, &app) != 0)
+        if (mastodont_register_app(api, &m_args, &args_app, &storage, &app) != 0)
         {
             error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
         }
         else {
-            struct mstdnt_args args_token = {
+            struct mstdnt_application_args args_token = {
                 .grant_type = "password",
                 .client_id = app.client_id,
                 .client_secret = app.client_secret,
@@ -165,7 +177,10 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                 .password = keystr(ssn->post.password)
             };
 
-            if (mastodont_obtain_oauth_token(api, &args_token, &oauth_store,
+            if (mastodont_obtain_oauth_token(api,
+                                             &m_args,
+                                             &args_token,
+                                             &oauth_store,
                                              &token) != 0 && oauth_store.error)
             {
                 error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
@@ -178,7 +193,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
                     printf("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
 
                 apply_access_token(token.access_token);
-                if (url_link) free(url_link);
+                free(url_link);
                 return;
             }
         }
@@ -186,7 +201,7 @@ void content_login(struct session* ssn, mastodont_t* api, char** data)
         if (url_link)
         {
             // Restore and cleanup, an error occured
-            api->url = orig_url;
+            m_args.url = orig_url;
             free(url_link);
         }
     }

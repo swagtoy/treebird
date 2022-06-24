@@ -68,7 +68,10 @@ char* construct_interaction_buttons(struct session* ssn,
                                     size_t* size,
                                     uint8_t flags);
 // Reply to
-char* get_in_reply_to(mastodont_t* api, struct mstdnt_status* status, size_t* size);
+char* get_in_reply_to(mastodont_t* api,
+                      struct session* ssn,
+                      struct mstdnt_status* status,
+                      size_t* size);
 char* construct_in_reply_to(struct mstdnt_status* status,
                             struct mstdnt_account* account,
                             size_t* size);
