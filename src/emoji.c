@@ -27,6 +27,19 @@
 #include "../static/emoji.ctmpl"
 #include "../static/emoji_picker.ctmpl"
 
+enum emoji_categories
+{
+    EMO_CAT_SMILEYS,
+    EMO_CAT_ANIMALS,
+    EMO_CAT_FOOD,
+    EMO_CAT_TRAVEL,
+    EMO_CAT_ACTIVITIES,
+    EMO_CAT_OBJECTS,
+    EMO_CAT_SYMBOLS,
+    EMO_CAT_FLAGS,
+    EMO_CAT_LEN
+};
+
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len)
 {
     if (!content) return NULL;
@@ -81,46 +94,52 @@ static char* construct_emoji_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct construct_emoji_picker_args* args = passed;
     size_t calc_index = index + args->index;
-    return calc_index < 0 || calc_index >= emojos_size ? NULL :
-        construct_emoji(emojos + calc_index, args->status_id, res);
+    return construct_emoji(emojos + calc_index, args->status_id, res);
 }
 
-char* construct_emoji_picker(char* status_id, unsigned index, size_t* size)
-{
-    struct construct_emoji_picker_args args = {
-        .status_id = status_id,
-        .index = index
-    };
-    char* emoji_picker_html;
-    char* emojis;
+#define EMOJI_PICKER_ARGS(this_index) { .status_id = status_id, .index = this_index }
 
-    emojis = construct_func_strings(construct_emoji_voidwrap, &args, EMOJI_FACTOR_NUM, NULL);
+char* construct_emoji_picker(char* status_id, size_t* size)
+{
+    
+    char* emoji_picker_html;
+    
+    struct construct_emoji_picker_args args[EMO_CAT_LEN] = {
+        EMOJI_PICKER_ARGS(EMOJO_CAT_SMILEY),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_ANIMALS),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_FOOD),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_TRAVEL),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_ACTIVITIES),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_OBJECTS),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_SYMBOLS),
+        EMOJI_PICKER_ARGS(EMOJO_CAT_FLAGS),
+    };
+    
+    char* emojis[EMO_CAT_LEN];
+
+    // TODO refactor to use #define lol
+    emojis[EMO_CAT_SMILEYS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_SMILEYS, EMOJO_CAT_ANIMALS - EMOJO_CAT_SMILEY, NULL);
+    emojis[EMO_CAT_ANIMALS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_ANIMALS, EMOJO_CAT_FOOD - EMOJO_CAT_ANIMALS, NULL);
+    emojis[EMO_CAT_FOOD] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FOOD, EMOJO_CAT_TRAVEL - EMOJO_CAT_FOOD, NULL);
+    emojis[EMO_CAT_TRAVEL] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_TRAVEL, EMOJO_CAT_ACTIVITIES - EMOJO_CAT_TRAVEL, NULL);
+    emojis[EMO_CAT_ACTIVITIES] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_ACTIVITIES, EMOJO_CAT_OBJECTS - EMOJO_CAT_ACTIVITIES, NULL);
+    emojis[EMO_CAT_OBJECTS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_OBJECTS, EMOJO_CAT_SYMBOLS - EMOJO_CAT_OBJECTS, NULL);
+    emojis[EMO_CAT_SYMBOLS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_SYMBOLS, EMOJO_CAT_FLAGS - EMOJO_CAT_SYMBOLS, NULL);
+    emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, 30 /* TODO there are not 100 flags */, NULL);
     
     struct emoji_picker_template data = {
-        .cat_smileys = ACTIVE_CONDITION(index >= 0 && index < EMOJO_CAT_ANIMALS),
-        .animals = EMOJO_CAT_ANIMALS,
-        .cat_animals = ACTIVE_CONDITION(index >= EMOJO_CAT_ANIMALS && index < EMOJO_CAT_FOOD),
-        .food = EMOJO_CAT_FOOD,
-        .cat_food = ACTIVE_CONDITION(index >= EMOJO_CAT_FOOD && index < EMOJO_CAT_TRAVEL),
-        .travel = EMOJO_CAT_TRAVEL,
-        .cat_travel = ACTIVE_CONDITION(index >= EMOJO_CAT_TRAVEL && index < EMOJO_CAT_ACTIVITIES),
-        .activities = EMOJO_CAT_ACTIVITIES,
-        .cat_activities = ACTIVE_CONDITION(index >= EMOJO_CAT_ACTIVITIES && index < EMOJO_CAT_OBJECTS),
-        .objects = EMOJO_CAT_OBJECTS,
-        .cat_objects = ACTIVE_CONDITION(index >= EMOJO_CAT_OBJECTS && index < EMOJO_CAT_SYMBOLS),
-        .symbols = EMOJO_CAT_SYMBOLS,
-        .cat_symbols = ACTIVE_CONDITION(index >= EMOJO_CAT_SYMBOLS && index < EMOJO_CAT_FLAGS),
-        .flags = EMOJO_CAT_FLAGS,
-        .cat_flags = ACTIVE_CONDITION(index >= EMOJO_CAT_FLAGS && index < emojos_size),
-        .emojis = emojis,
-                         // Index movements
-        .status_id = status_id,
-        .index_previous = index > 0 ? index - EMOJI_FACTOR_NUM : 0,
-        .previous_enabled = 0 > index - EMOJI_FACTOR_NUM ? "disabled" : "",
-        .index_next = index + EMOJI_FACTOR_NUM
+        .emojis_smileys = emojis[EMO_CAT_SMILEYS],
+        .emojis_animals = emojis[EMO_CAT_ANIMALS],
+        .emojis_food = emojis[EMO_CAT_FOOD],
+        .emojis_travel = emojis[EMO_CAT_TRAVEL],
+        .emojis_activities = emojis[EMO_CAT_ACTIVITIES],
+        .emojis_objects = emojis[EMO_CAT_OBJECTS],
+        .emojis_symbols = emojis[EMO_CAT_SYMBOLS],
+        .emojis_flags = emojis[EMO_CAT_FLAGS],
     };
 
     emoji_picker_html = tmpl_gen_emoji_picker(&data, size);
-    free(emojis);
+    for (size_t i = 0; i < EMO_CAT_LEN; ++i)
+        free(emojis[i]);
     return emoji_picker_html;
 }

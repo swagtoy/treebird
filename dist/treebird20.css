@@ -1371,7 +1371,13 @@ p}
     background-color: #fff;
     background: linear-gradient(#fff, #f3f3f3);
     border-radius: 8px;
+    z-index: 5;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.emoji-picker .tabs .btn
+{
+    display: inline-block;
 }
 
 .emoji-picker .navigation
@@ -1385,6 +1391,7 @@ p}
     text-align: center;
     vertical-align: center;
     padding: 8px 0;
+    max-width: 28px;
 }
 
 .emoji-picker .emoji:hover
@@ -1396,6 +1403,19 @@ p}
 {
     transition: 0.1s transform;
     transform: scale(1.0);
+}
+
+.emoji-picker-emojos-wrapper
+{
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 180px;
+    max-height: 180px;
+}
+
+input[type=radio].hidden:not(:checked) + .emoji-picker-emojos 
+{
+    display: none;
 }
 
 .emoji-picker-emojos
@@ -1597,7 +1617,7 @@ ul.large-list li .edit-list-btn
     border-bottom: 1px solid #dadada;
 }
 
-.list-radio-show:not(:checked) + .list-edit-content
+.input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     display: none;
 }
@@ -1657,7 +1677,8 @@ ul.large-list li .edit-list-btn
     text-shadow: unset;
 }
 
-.tabs .tab-btn.active
+.tabs .tab-btn.active,
+.tabs .tab-btn:checked
 {
     background: linear-gradient(#fff, #f7f7f7);
     box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.15);

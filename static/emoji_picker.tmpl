@@ -2,81 +2,80 @@
   <table class="tabs ui-table">
     <tr>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="0">
-          <input class="tab-btn btn btn-alt {{%s:cat_smileys}}" type="submit" value="😃">
-        </form>
+        <label for="cat-smileys">
+          <span class="tab-btn btn btn-alt">😃</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:animals}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_animals}}" type="submit" value="🐻">
-        </form>
+        <label for="cat-animals">
+          <span class="tab-btn btn btn-alt">🐻</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:food}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_food}}" type="submit" value="🍔">
-        </form>
+        <label for="cat-food">
+          <span class="tab-btn btn btn-alt">🍔</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:travel}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_travel}}" type="submit" value="🚀">
-        </form>
+        <label for="cat-travel">
+          <span class="tab-btn btn btn-alt">🚀</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:activities}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_activities}}" type="submit" value="⚽">
-        </form>
+        <label for="cat-activities">
+          <span class="tab-btn btn btn-alt">⚽</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:objects}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_objects}}" type="submit" value="🔧">
-        </form>
+        <label for="cat-objects">
+          <span class="tab-btn btn btn-alt">🔧</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:symbols}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_symbols}}" type="submit" value="🔢">
-        </form>
+        <label for="cat-symbols">
+          <span class="tab-btn btn btn-alt">🔢</span>
+        </label>
       </td>
       <td>
-        <form action="#{{%s:status_id}}" method="post">
-          <input type="hidden" name="emojoindex" value="{{%d:flags}}">
-          <input class="tab-btn btn btn-alt {{%s:cat_flags}}" type="submit" value="🎌">
-        </form>
+        <label for="cat-flags">
+          <span class="tab-btn btn btn-alt">🎌</span>
+        </label>
       </td>
     </tr>
   </table>
 
-  
-  <div class="emoji-picker-emojos">
-    {{%s:emojis}}
+  <div class="emoji-picker-emojos-wrapper">
+    <input type="radio" class="hidden" id="cat-smileys" name="emoji-cat" checked>
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_smileys}}
+    </div>
+    <input type="radio" class="hidden" id="cat-animals" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_animals}}
+    </div>
+    <input type="radio" class="hidden" id="cat-food" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_food}}
+    </div>
+    <input type="radio" class="hidden" id="cat-travel" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_travel}}
+    </div>
+    <input type="radio" class="hidden" id="cat-activities" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_activities}}
+    </div>
+    <input type="radio" class="hidden" id="cat-objects" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_objects}}
+    </div>
+    <input type="radio" class="hidden" id="cat-symbols" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_symbols}}
+    </div>
+    <input type="radio" class="hidden" id="cat-flags" name="emoji-cat">
+    <div class="emoji-picker-emojos">
+      {{%s:emojis_flags}}
+    </div>
   </div>
-  
-  <table class="navigation ui-table">
-    <tr>
-      <td class="nav-prev btn">
-        <form action="#{{%s:status_id}}" method="post">
-          <label class="pointer">
-            <input type="hidden" name="emojoindex" value="{{%u:index_previous}}">
-            <span class="nav-btn {{%s:previous_enabled}}">Previous</span>
-            <input type="submit" class="hidden">
-          </label>
-        </form>
-      </td>
-      <td class="nav-next btn">
-        <form action="#{{%s:status_id}}" method="post">
-          <label class="pointer">
-            <input type="hidden" name="emojoindex" value="{{%u:index_next}}">
-            <span class="nav-btn">Next</span>
-            <input type="submit" class="hidden">
-          </label>
-        </form>
-      </td>
-    </tr>
-  </table>
 </div>

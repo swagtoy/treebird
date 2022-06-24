@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include "helpers.h"
 #include "search.h"
 #include "easprintf.h"
 #include "../config.h"

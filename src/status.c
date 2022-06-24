@@ -241,7 +241,7 @@ char* construct_interaction_buttons(struct session* ssn,
     // Emojo picker
     if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
     {
-        emoji_picker_html = construct_emoji_picker(status->id, keyint(ssn->post.emojoindex), NULL);
+        emoji_picker_html = construct_emoji_picker(status->id, NULL);
     }
 
     struct reactions_btn_template tdata = {
