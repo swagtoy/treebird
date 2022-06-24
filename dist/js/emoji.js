@@ -1,3 +1,5 @@
+let emojo_json = null;
+
 // Get emojis from file
 function get_emojo_json(callback)
 {
@@ -10,8 +12,9 @@ function get_emojo_json(callback)
     xhr.send();
 }
 
-function construct_emojo_picker()
+function construct_emojo_picker(e)
 {
+    let index = 0;
     let emoji_picker = document.createElement("div");
     emoji_picker.className = "emoji-picker";
     emoji_picker.innerHTML = `<table class="tabs ui-table">
@@ -61,37 +64,21 @@ function construct_emojo_picker()
 
   <div class="emoji-picker-emojos-wrapper">
     <input type="radio" class="hidden" id="cat-smileys" name="emoji-cat" checked>
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_smileys}}
-    </div>
+    ${construct_emojis("Smileys & Emotion").outerHTML}
     <input type="radio" class="hidden" id="cat-animals" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_animals}}
-    </div>
+    ${construct_emojis("Animals & Nature", index).outerHTML}
     <input type="radio" class="hidden" id="cat-food" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_food}}
-    </div>
+    ${construct_emojis("Food & Drink", index).outerHTML}
     <input type="radio" class="hidden" id="cat-travel" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_travel}}
-    </div>
+    ${construct_emojis("Travel & Places", index).outerHTML}
     <input type="radio" class="hidden" id="cat-activities" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_activities}}
-    </div>
+    ${construct_emojis("Activities", index).outerHTML}
     <input type="radio" class="hidden" id="cat-objects" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_objects}}
-    </div>
+    ${construct_emojis("Objects", index).outerHTML}
     <input type="radio" class="hidden" id="cat-symbols" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_symbols}}
-    </div>
+    ${construct_emojis("Symbols", index).outerHTML}
     <input type="radio" class="hidden" id="cat-flags" name="emoji-cat">
-    <div class="emoji-picker-emojos">
-      {{%s:emojis_flags}}
-    </div>
+    ${construct_emojis("Flags", index).outerHTML}
   </div>
 </div>
 `;
@@ -99,7 +86,21 @@ function construct_emojo_picker()
     return emoji_picker;
 }
 
+function construct_emojis(category, start_index = 0)
+{
+    let emoji_picker_div = document.createElement("div");
+    emoji_picker_div.className = "emoji-picker-emojos";
+
+    for (let i = 0; i < emojo_json.length; ++i)
+    {
+        if (emojo_json[i].group === category)
+            emoji_picker_div.innerHTML += `<span class="emoji">${emojo_json[i].char}</span>`;
+    }
+
+    return emoji_picker_div;
+}
+
 get_emojo_json((emojo_json_str) => {
-    const emojo_json = JSON.parse(emojo_json_str);
-    console.log(emojo_json);
+    emojo_json = JSON.parse(emojo_json_str);
+    document.body.appendChild(construct_emojo_picker(emojo_json));
 });

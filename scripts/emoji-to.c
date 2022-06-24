@@ -111,10 +111,11 @@ int main(int argc, char** argv)
             printf("#define EMOJO_CAT_SYMBOLS %d\n", i);
         }
         else if (strcmp(group->valuestring, "Flags") == 0 && cat == 6) {
+            cat = 7;
             printf("#define EMOJO_CAT_FLAGS %d\n", i);
-            break;
         }
     }
+    printf("#define EMOJO_CAT_MAX %d\n", i);
     
     printf("static struct emoji_info emojos[] = {");
     i = 0;

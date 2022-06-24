@@ -125,7 +125,7 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     emojis[EMO_CAT_ACTIVITIES] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_ACTIVITIES, EMOJO_CAT_OBJECTS - EMOJO_CAT_ACTIVITIES, NULL);
     emojis[EMO_CAT_OBJECTS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_OBJECTS, EMOJO_CAT_SYMBOLS - EMOJO_CAT_OBJECTS, NULL);
     emojis[EMO_CAT_SYMBOLS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_SYMBOLS, EMOJO_CAT_FLAGS - EMOJO_CAT_SYMBOLS, NULL);
-    emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, 30 /* TODO there are not 100 flags */, NULL);
+    emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, EMOJO_CAT_MAX - EMOJO_CAT_FLAGS, NULL);
     
     struct emoji_picker_template data = {
         .emojis_smileys = emojis[EMO_CAT_SMILEYS],

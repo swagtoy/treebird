@@ -10,6 +10,7 @@
 #define EMOJO_CAT_OBJECTS 3715
 #define EMOJO_CAT_SYMBOLS 4014
 #define EMOJO_CAT_FLAGS 4315
+#define EMOJO_CAT_MAX 4590
 static struct emoji_info emojos[] = {{"😀","grinning face" }, /*0 : Smileys & Emotion*/
 {"😃","grinning face with big eyes" }, /*1 : Smileys & Emotion*/
 {"😄","grinning face with smiling eyes" }, /*2 : Smileys & Emotion*/
