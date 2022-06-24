@@ -410,7 +410,7 @@ char* get_in_reply_to(mastodont_t* api,
     
     int res = mastodont_get_account(api,
                                     &m_args,
-                                    0,
+                                    1,
                                     status->in_reply_to_account_id,
                                     &acct,
                                     &storage);

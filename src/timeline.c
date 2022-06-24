@@ -226,7 +226,7 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     
     mastodont_timeline_list(api, &m_args, list_id, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, NULL, 0);
+    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0);
 }
 
 
