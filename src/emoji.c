@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "base_page.h"
 #include "string.h"
 #include "emoji.h"
 #include "easprintf.h"
@@ -25,6 +26,7 @@
 
 // Pages
 #include "../static/emoji.ctmpl"
+#include "../static/emoji_plain.ctmpl"
 #include "../static/emoji_picker.ctmpl"
 
 enum emoji_categories
@@ -83,11 +85,20 @@ char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size)
     if (!emoji)
         return NULL;
 
-    struct emoji_template data = {
-        .status_id = status_id,
-        .emoji = emoji->codes
-    };
-    return tmpl_gen_emoji(&data, size);
+    if (status_id)
+    {
+        struct emoji_template data = {
+            .status_id = status_id,
+            .emoji = emoji->codes
+        };
+        return tmpl_gen_emoji(&data, size);
+    }
+    else {
+        struct emoji_plain_template data = {
+            .emoji = emoji->codes
+        };
+        return tmpl_gen_emoji_plain(&data, size);
+    }
 }
 
 static char* construct_emoji_voidwrap(void* passed, size_t index, size_t* res)
@@ -98,6 +109,15 @@ static char* construct_emoji_voidwrap(void* passed, size_t index, size_t* res)
 }
 
 #define EMOJI_PICKER_ARGS(this_index) { .status_id = status_id, .index = this_index }
+
+void content_emoji_picker(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* picker = construct_emoji_picker(NULL, NULL);
+
+    send_result(NULL, NULL, picker, 0);
+
+    free(picker);
+}
 
 char* construct_emoji_picker(char* status_id, size_t* size)
 {

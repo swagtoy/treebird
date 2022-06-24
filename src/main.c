@@ -25,6 +25,7 @@
 #include "page_config.h"
 #include "path.h"
 #include "account.h"
+#include "emoji.h"
 #include "login.h"
 #include "local_config.h"
 #include "cookie.h"
@@ -89,6 +90,7 @@ int main(void)
         { "/search/accounts", content_search_accounts },
         { "/search/hashtags", content_search_hashtags },
         { "/search", content_search_all },
+        { "/emoji_picker", content_emoji_picker },
         { "/lists/edit/:", list_edit },
         { "/lists/for/:", content_tl_list },
         { "/lists", content_lists },

@@ -33,6 +33,7 @@ enum emoji_picker_cat
 
 char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len);
 char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size);
+void content_emoji_picker(struct session* ssn, mastodont_t* api, char** data);
 char* construct_emoji_picker(char* status_id, size_t* size);
 
 #endif // EMOJI_H
