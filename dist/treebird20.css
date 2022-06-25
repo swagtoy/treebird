@@ -1617,7 +1617,7 @@ ul.large-list li .edit-list-btn
     border-bottom: 1px solid #dadada;
 }
 
-.input[type=checkbox].hidden:not(:checked) + .list-edit-content
+input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     display: none;
 }
