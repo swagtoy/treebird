@@ -1873,6 +1873,16 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     font-weight: bold;
 }
 
+.emoji-picker
+{
+    display: none;
+}
+
+.status-interact .emoji-picker
+{
+    display: block;
+}
+
 .emoji-picker .navigation .nav-btn
 {
     padding: 4px;
