@@ -125,7 +125,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     struct mstdnt_storage storage = { 0 };
 
     struct mstdnt_timeline_args args = {
-        .with_muted = 1,
+        .with_muted = MSTDNT_TRUE,
         .local = local,
         // Converts to `enum mstdnt_reply_visibility' nicely
         .reply_visibility = (ssn->post.replies_only.is_set ?
@@ -135,7 +135,9 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
         .min_id = keystr(ssn->post.min_id),
-        .limit = 20
+        .offset = 4,
+        .limit = 20,
+        .remote = MSTDNT_BOOL_UNSET,
     };
     
     try_post_status(ssn, api);

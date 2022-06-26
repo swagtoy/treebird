@@ -11,5 +11,5 @@ function get_emojo_picker(callback)
 }
 
 get_emojo_picker((emojo_picker_str) => {
-    document.body.innerHTML += emojo_picker_str;
+    document.body.insertAdjacentHTML('beforeend', emojo_picker_str);
 });
