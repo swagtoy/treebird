@@ -658,8 +658,8 @@ svg.in-reply-to-icon
     padding: 5px 10px;
 }
 
-.status.focused,
-.status:target
+.status-table.focused,
+.status-table:target
 {
     background-color: #ffdddd;
     border-left: 3px solid #aa0000;
