@@ -334,6 +334,20 @@ table.present th, table.present td
 
 }
 
+.menu .btn-menu
+{
+    background: unset;
+    background-color: unset;
+    display: block;
+    padding: 3px 12px;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+
 
 /*************************************************
  *                  BUTTONS                      *
@@ -347,7 +361,8 @@ table.present th, table.present td
 }
 
 .btn:hover,
-.btn:active
+.btn:active,
+.btn-menu:hover
 { 
     background: linear-gradient(#606060, #d3d3d3);
     box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2);
@@ -835,6 +850,7 @@ svg.in-reply-to-icon
 
 .status-visibility
 {
+    cursor: pointer;
     color: #808080;
     display: inline;
     font-size: 12px;
@@ -1240,7 +1256,7 @@ p}
 {
     display: block;
     padding: 3px 2px 5px;
-    min-width: 39px;
+    min-width: 42px;
 }
 
 .view-btn
@@ -1300,6 +1316,7 @@ p}
 
 .status-interact .count
 {
+    padding-top: 3px;
     font-size: 12px;
     padding-bottom: 3px;
     vertical-align: middle;
@@ -1664,24 +1681,24 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 .tabs .tab-btn
 {
     display: block;
-    padding: 8px;
+    padding: 6px;
 }
 
 .tabs .tab-btn
 {
     width: 100%;
     border: 0;
-    transition: .1s box-shadow, .1s border-color;
+    transition: .1s border-color;
     border-bottom: 2px solid #f7f7f7;
     color: #101010;
     text-shadow: unset;
+    box-shadow: none;
 }
 
 .tabs .tab-btn.active,
 .tabs .tab-btn:checked
 {
     background: linear-gradient(#fff, #f7f7f7);
-    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.15);
     border-color: #aa0000;
 }
 
@@ -1689,7 +1706,6 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 .tabs .tab-btn:active
 {
     background: linear-gradient(#fff, #f7f7f7);
-    box-shadow: inset 0px 1px 4px rgba(0, 0, 0, 0.08);
     border-color: #aa0000;
 }
 
@@ -1705,22 +1721,24 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 }
 
 /* MENUS */
-
 .menu-container:hover .menu,
 .menu-container:hover + .menu
 {
     position: absolute;
-    display: inline-block;
+    display: block;
 }
 
 .menu
 {
-    z-index: 5;
+    z-index: 10;
     display: none;
+    cursor: default;
     background: #fafafa;
     color: #000;
     border-radius: 4px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ddd;
+    margin-left: -5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .menu ul
@@ -1735,22 +1753,10 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     display: block;
 }
 
-.menu .btn-menu
-{
-    background: unset;
-    background-color: unset;
-    display: block;
-    padding: 6px 12px;
-    width: 100%;
-    border: 0;
-    cursor: pointer;
-    text-align: left;
-    box-sizing: border-box;
-}
-
 .user-options-btn
 {
-    padding: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
     border-radius: 64px;
     margin: 8px;
     float: right;
@@ -1760,11 +1766,11 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     background-color: rgba(0, 0, 0, .7);
 }
 
-.menu .btn-menu:hover
-{
-    background-color: #eaeaea;
-    color: #000;
-}
+/* .menu .btn-menu:hover */
+/* { */
+/*     background-color: #eaeaea; */
+/*     color: #000; */
+/* } */
 
 .nolink
 {
