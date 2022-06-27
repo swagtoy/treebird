@@ -183,9 +183,9 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     char* page, *notif_html = NULL;
-    struct mstdnt_storage storage;
-    struct mstdnt_notification* notifs;
-    size_t notifs_len;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_notification* notifs = NULL;
+    size_t notifs_len = 0;
     char* start_id;
     char* navigation_box = NULL;
 
