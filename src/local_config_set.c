@@ -95,5 +95,6 @@ void load_config(struct session* ssn, mastodont_t* api)
     set_config_int(LOAD_CFG_SIM("instanceshowshoutbox", instance_show_shoutbox));
     set_config_int(LOAD_CFG_SIM("instancepanel",        instance_panel));
     set_config_int(LOAD_CFG_SIM("notifembed",           notif_embed));
+    set_config_int(LOAD_CFG_SIM("interact_img",         interact_img));
     set_config_int(LOAD_CFG_SIM("lang",                 lang));
 }

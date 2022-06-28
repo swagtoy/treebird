@@ -36,6 +36,7 @@ struct cookie_values
     struct key jsreply;
     struct key jslive;
     struct key js;
+    struct key interact_img;
     struct key stat_attachments;
     struct key stat_greentexts;
     struct key stat_dope;

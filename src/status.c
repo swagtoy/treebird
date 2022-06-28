@@ -50,6 +50,14 @@
 #include "../static/reactions_btn.ctmpl"
 #include "../static/interaction_buttons.ctmpl"
 #include "../static/menu_item.ctmpl"
+#include "../static/like_btn.ctmpl"
+#include "../static/repeat_btn.ctmpl"
+#include "../static/reply_btn.ctmpl"
+#include "../static/expand_btn.ctmpl"
+#include "../static/like_btn_img.ctmpl"
+#include "../static/repeat_btn_img.ctmpl"
+#include "../static/reply_btn_img.ctmpl"
+#include "../static/expand_btn_img.ctmpl"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
@@ -226,7 +234,10 @@ char* construct_interaction_buttons(struct session* ssn,
                                     size_t* size,
                                     uint8_t flags)
 {
+    int use_img = ssn->config.interact_img;
     char* interaction_html;
+    char* repeat_btn;
+    char* like_btn;
     char* likeboost_html = NULL;
     char* reply_count = NULL;
     char* repeat_count = NULL;
@@ -269,16 +280,35 @@ char* construct_interaction_buttons(struct session* ssn,
     
     time_str = reltime_to_str(status->created_at);
 
+    // TODO cleanup?
+    if (use_img)
+    {
+        struct repeat_btn_img_template rpbdata = { .prefix = config_url_prefix, .repeat_active = status->reblogged ? "active" : "" };
+        repeat_btn = tmpl_gen_repeat_btn_img(&rpbdata, NULL);
+        struct like_btn_img_template ldata = { .prefix = config_url_prefix, .favourite_active = status->favourited ? "active" : "" };
+        like_btn = tmpl_gen_like_btn_img(&ldata, NULL);
+    }
+    else {
+        struct repeat_btn_template rpbdata = { .repeat_active = status->reblogged ? "active" : "" };
+        repeat_btn = tmpl_gen_repeat_btn(&rpbdata, NULL);
+        struct like_btn_template ldata = { .favourite_active = status->favourited ? "active" : "" };
+        like_btn = tmpl_gen_like_btn(&ldata, NULL);
+    }
+
     struct interaction_buttons_template data = {
+        // Icons
+        .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
+        .expand_btn = use_img ? data_expand_btn_img : data_expand_btn,
+        .repeat_btn = repeat_btn,
+        .like_btn = like_btn,
+        // Interactions data
         .prefix = config_url_prefix,
         .status_id = status->id,
         .reply_count = reply_count,
         .unrepeat = status->reblogged ? "un" : "",
-        .repeat_active = status->reblogged ? "active" : "",
         .repeats_count = repeat_count,
         .repeat_text = "Repeat",
         .unfavourite = status->favourited ? "un" : "",
-        .favourite_active = status->favourited ? "active" : "",
         .favourites_count = favourites_count,
         .favourites_text = "Favorite",
         .likeboost_btn = (likeboost_html &&
@@ -298,6 +328,8 @@ char* construct_interaction_buttons(struct session* ssn,
     free(reactions_btn_html);
     free(likeboost_html);
     free(time_str);
+    free(like_btn);
+    free(repeat_btn);
     return interaction_html;
 }
 

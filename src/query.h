@@ -39,6 +39,7 @@ struct post_values
     struct key jsreply; // Int
     struct key jslive; // Int
     struct key js; // Int
+    struct key interact_img; // Int
     struct key stat_attachments; // Int
     struct key stat_greentexts; // Int
     struct key stat_dope; // Int

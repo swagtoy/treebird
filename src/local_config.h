@@ -31,6 +31,7 @@ struct local_config
     int jsreply;
     int jslive;
     int js;
+    int interact_img;
     int stat_attachments;
     int stat_greentexts;
     int stat_dope;

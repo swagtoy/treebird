@@ -55,6 +55,7 @@ char* read_cookies_env(struct cookie_values* cookies)
         { "lang", &(cookies->lang), key_int },
         { "instance_url", &(cookies->instance_url), key_string },
         { "background_url", &(cookies->background_url), key_string },
+        { "interact_img", &(cookies->interact_img), key_int },
         { "client_id", &(cookies->client_id), key_string },
         { "client_secret", &(cookies->client_secret), key_string },
         { "themeclr", &(cookies->themeclr), key_int },

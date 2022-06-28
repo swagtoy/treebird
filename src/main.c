@@ -121,6 +121,7 @@ int main(void)
                 .jsreply = 1,
                 .jslive = 0,
                 .js = 1,
+                .interact_img = 0,
                 .stat_attachments = 1,
                 .stat_greentexts = 1,
                 .stat_dope = 1,

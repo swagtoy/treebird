@@ -108,6 +108,7 @@ char* read_post_data(struct post_values* post)
         { "emojoindex", &(post->emojoindex), key_int },
         { "only_media", &(post->only_media), key_int },
         { "replies_only", &(post->replies_only), key_int },
+        { "interact_img", &(post->interact_img), key_int },
         { "js", &(post->js), key_int },
         { "statattachments", &(post->stat_attachments), key_int },
         { "statgreentexts", &(post->stat_greentexts), key_int },
