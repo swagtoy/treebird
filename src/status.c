@@ -745,7 +745,7 @@ char* construct_status(struct session* ssn,
         delete_status = tmpl_gen_menu_item(&mdata, NULL);
         
         mdata.itype = status->pinned ? "unpin" : "pin";
-        mdata.text = status->pinned ? "Pin status" : "Unpin status";
+        mdata.text = status->pinned ? "Unpin status" : "Pin status";
         pin_status = tmpl_gen_menu_item(&mdata, NULL);
     }
     

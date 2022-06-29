@@ -23,25 +23,16 @@
 #include "account.h"
 #include "error.h"
 
-enum path_state
-{
-    PARSE_NEUTRAL,
-    PARSE_READ,
-};
-
 int parse_path(struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info)
 {
     int res = 0;
     int fail = 0, fin = 0;
-    enum path_state state = PARSE_NEUTRAL;
     char* p = path_info->path + 1;
     char* p2 = getenv("PATH_INFO") + 1;
-    size_t p2_len = strlen(getenv("PATH_INFO")) - 1;
 
     // Stored into data
-    int str_size = 0;
     char* tmp = NULL;
     char** data = NULL;
     size_t size = 0;
