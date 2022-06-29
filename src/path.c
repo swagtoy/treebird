@@ -38,84 +38,58 @@ int parse_path(struct session* ssn,
     enum path_state state = PARSE_NEUTRAL;
     char* p = path_info->path + 1;
     char* p2 = getenv("PATH_INFO") + 1;
+    size_t p2_len = strlen(getenv("PATH_INFO")) - 1;
 
     // Stored into data
     int str_size = 0;
     char* tmp = NULL;
     char** data = NULL;
     size_t size = 0;
+
+    char* after_str = 0;
+    size_t read_len;
     
-    for (int i = 0, j = 0;;)
-    {
+    for (int i = 0, j = 0; p[j] || p2[i]; (++i, ++j))
         switch (p[j])
         {
-        case '\0':
-            fin = 1;
-            // fall
-        case '/':
-            if (state == PARSE_READ)
-            {
-                state = PARSE_NEUTRAL;
-
-                // Set value and move on
-                data = realloc(data, ++size * sizeof(tmp));
-                data[size-1] = tmp;
-                tmp = NULL;
-                str_size = 0;
-            }
-            else if (state == PARSE_NEUTRAL && fin != 1) {
-                if (p[j] == p2[i])
-                    break;
-                else {
-                    fail = 1;
-                    goto breakpt;
-                }
-            }
-            
-            if (fin) goto breakpt;
-            break;
         case ':':
-            state = PARSE_READ;
-            /* Abort early */
-            if (p2[j] == '\0')
+            // TODO null check
+            if (p[j+1] == '\0')
+            {
+                after_str = strchr(p2 + i, '/');
+                if (!after_str)
+                    after_str = p2+i + strlen(p2+i);
+                fin = 1;
+            }
+            else
+                after_str = strstr(p2 + i, "/");
+            if (!after_str)
             {
                 fail = 1;
                 goto breakpt;
             }
-            // fall
+
+            read_len = (size_t)after_str - (size_t)(p2 + j);
+            // Copy in new data from the string we just read
+            tmp = malloc(read_len+1);
+            strncpy(tmp, after_str - read_len, read_len);
+            tmp[read_len] = '\0';
+            // Add our new string
+            data = realloc(data, ++size * sizeof(tmp));
+            data[size-1] = tmp;
+            // Move ahead (-1 because we move again)
+            i += read_len - 1;
+            if (fin) goto breakpt;
+            break;
         default:
-            if (state == PARSE_NEUTRAL)
+            if (p2[i] == '/' && p[j] == '\0') goto breakpt;
+            if (p[j] != p2[i])
             {
-                if (p[j] == p2[i])
-                    break;
-                else {
-                    fail = 1;
-                    goto breakpt;
-                }
+                fail = 1;
+                goto breakpt;
             }
-            else {
-                // Don't realloc, we already have a space for our final character
-                if (p2[i] == '\0' || p2[i] == '/')
-                {
-                    tmp[str_size] = '\0';
-                    ++j;
-                    // Move --i back one to counter the upcoming ++i
-                    // If we don't, then we are one step too far
-                    --i;
-                }
-                else {
-                    tmp = realloc(tmp, ++str_size + 1);
-                    tmp[str_size-1] = p2[i];
-                }
-            }
-                    
-                
             break;
         }
-
-        if (state == PARSE_NEUTRAL) ++j; // Used for p
-        ++i; // Used for p2
-    }
 breakpt:
     if (!fail)
     {
@@ -127,11 +101,11 @@ breakpt:
     }
 
     // Cleanup
-    /* for (size_t i = 0; i < size; ++i) */
-    /* { */
-    /*     free(data[i]); */
-    /* } */
-    /* if (data) free(data); */
+    for (size_t i = 0; i < size; ++i)
+    {
+        free(data[i]);
+    }
+    if (data) free(data);
     return res;
 }
 

@@ -26,7 +26,7 @@
 
 char* read_get_data(struct get_values* query)
 {
-    struct http_query_info info;
+    struct http_query_info info = { 0 };
     char* query_string = getenv("QUERY_STRING");
     char* get_query = NULL, *g_query_read;
 
@@ -189,7 +189,7 @@ char* read_post_data(struct post_values* post)
 char* parse_query(char* begin, struct http_query_info* info)
 {
     int end = 0;
-    char* val_begin;
+    char* val_begin = NULL;
     info->key = begin;
     for (; *begin != '&' && *begin != '\0'; ++begin)
     {

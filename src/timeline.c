@@ -112,6 +112,7 @@ void content_timeline(struct session* ssn,
     mstdnt_cleanup_statuses(statuses, statuses_len);
     free(status_format);
     free(post_box);
+    free(timeline_options);
     free(navigation_box);
     free(output);
 }

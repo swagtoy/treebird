@@ -73,6 +73,7 @@ int main(void)
         { "/@:/media", content_account_media },
         { "/@:/following", content_account_following },
         { "/@:/followers", content_account_followers },
+        { "/@:/statuses", content_account_statuses },
         { "/@:", content_account_statuses },
         { "/status/:/react/:", content_status_react },
         { "/status/:/react", status_emoji },

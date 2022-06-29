@@ -505,6 +505,7 @@ char* make_mentions_local(char* content)
     char* url_format;
     int error;
     PCRE2_SIZE erroffset;
+    int substitute_success = 0;
     // Initial size, will be increased by 30% if pcre2_substitute cannot fit into the size
     // ...why can't pcre2 just allocate a string with the size for us? Thanks...
     size_t res_len = 1024;
@@ -555,11 +556,16 @@ char* make_mentions_local(char* content)
                 goto out;
             }
         }
+        else
+            substitute_success = 1;
     }
 
 out:
+    if (!substitute_success)
+        free(res);
     free(url_format);
-    return res && rc ? res : content;
+    pcre2_code_free(re);
+    return substitute_success ? res : content;
 }
 
 char* greentextify(char* content)
