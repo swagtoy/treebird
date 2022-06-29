@@ -130,4 +130,5 @@ void list_edit(struct session* ssn, mastodont_t* api, char** data)
                           NULL);
 
     redirect(REDIRECT_303, referer);
+    mastodont_storage_cleanup(&storage);
 }

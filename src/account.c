@@ -757,6 +757,7 @@ void content_account_blocked(struct session* ssn, mastodont_t* api, char** data)
     mastodont_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
 
     accounts_page(api, ssn, &storage, "Blocked users", accts, accts_len);
+    mstdnt_cleanup_accounts(accts, accts_len);
 }
 
 void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
@@ -777,7 +778,8 @@ void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
     
     mastodont_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
 
-    accounts_page(api, ssn, &storage, "Muted users", accts, accts_len);    
+    accounts_page(api, ssn, &storage, "Muted users", accts, accts_len);
+    mstdnt_cleanup_accounts(accts, accts_len);
 }
 
 void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)

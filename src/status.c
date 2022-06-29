@@ -693,6 +693,9 @@ char* construct_status(struct session* ssn,
                                                           NULL);
         mastodont_storage_cleanup(&reblogs_storage);
         mastodont_storage_cleanup(&favourites_storage);
+        
+        mstdnt_cleanup_accounts(favourites, favourites_len);
+        mstdnt_cleanup_accounts(reblogs, reblogs_len);
     }
 
     // Repoint value if it's a reblog
@@ -809,6 +812,7 @@ char* construct_status(struct session* ssn,
     free(emoji_reactions);
     if (notif) free(notif_info);
     free(delete_status);
+    free(pin_status);
     free(interactions_html);
     if (parse_content != status->content)
         free(parse_content);
@@ -881,26 +885,27 @@ void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_account* favourites = NULL;
+    struct mstdnt_account* reblogs = NULL;
     struct mstdnt_storage storage = { 0 };
-    size_t favourites_len = 0;
+    size_t reblogs_len = 0;
     char* status_id = data[0];
 
     mastodont_status_reblogged_by(api,
                                   &m_args,
                                   status_id,
                                   &storage,
-                                  &favourites,
-                                  &favourites_len);
+                                  &reblogs,
+                                  &reblogs_len);
     
     content_status_interactions(
         ssn,
         api,
         "Reblogs",
-        favourites,
-        favourites_len);
+        reblogs,
+        reblogs_len);
 
     mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_accounts(reblogs, reblogs_len);
 }
 
 void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
@@ -927,6 +932,7 @@ void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
         favourites_len);
 
     mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_accounts(favourites, favourites_len);
 }
 
 void content_status_interactions(struct session* ssn,

@@ -75,7 +75,7 @@ char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
     // Replies
     size_t replies_size = 0, replies_size_orig;
     char* replies = NULL;
-    char* instance_domain = malloc(sizeof(config_instance_url)-1);
+    char* instance_domain = malloc(sizeof(config_instance_url)+sizeof("https:///")+1);
 
     // sscanf instead of regex works here and requires less work, we just need to trim off the slash at the end
     if (sscanf(config_instance_url, "https://%s/", instance_domain) == 0)
@@ -85,7 +85,7 @@ char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
             return NULL;
         }
 
-    instance_domain[strlen(instance_domain)-1] = '\0';
+    instance_domain[strlen(instance_domain)] = '\0';
     // Remove ports, if any. Needed for development or if
     //  the server actually supports these
     char* port_val = strchr(instance_domain, ':');
