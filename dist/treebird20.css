@@ -119,6 +119,27 @@ table.ui-table td
     z-index: 999;
 }
 
+
+#navbar .navbar-btn
+{
+    width: 20px;
+    height: 20px;
+}
+
+#navbar .leftbar-btn
+{
+    float: left;
+    margin: 10px 0 10px 15px;
+    width: 30px;
+    height: 30px;
+}
+
+#navbar .rightbar-btn
+{
+    float: right;
+    margin: 15px;
+}
+
 #navbar img
 {
     vertical-align: middle;
@@ -137,16 +158,15 @@ table.ui-table td
 
 #navbar-right-container
 {
-    width: 795px;
     display: inline-block;
     position: relative;
-    top: 9px;
-    align-items: center;
+    float: right;
+    margin: 11px;
 }
 
 #navbar-right form
 {
-    float: right;
+    display: inline-block;
 }
 
 #navbar-right
@@ -168,8 +188,7 @@ table.ui-table td
 #main
 {
     width: 568px;
-    max-width: 568px !important;
-    min-width: 568px;
+    max-width: 568px;
     border-collapse: collapse !important;
     background-color: #fafafa;
     padding: 0;
@@ -688,7 +707,7 @@ svg.in-reply-to-icon
 
 .status-view
 {
-    display: inline;
+    display: inline-block;
     border: 1px solid #cacaca;
     background-color: #f3f3f3;
     border-radius: 3px;
@@ -775,6 +794,7 @@ svg.in-reply-to-icon
 .notification-info-format,
 .notification-content
 {
+    position: relative;
     min-width: 0;
     width: auto;
     padding: 0 0 0 10px;
@@ -806,8 +826,8 @@ svg.in-reply-to-icon
 
 .status .poster-stats
 {
-    display: flex;
-    align-items: center;
+    position: relative;
+    display: block;
     max-width: 480px;
 }
 
@@ -818,11 +838,11 @@ svg.in-reply-to-icon
 
 .poster-stats .alignend
 {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
+    background-color: #fafafa;
+    display: inline-block;
+    right: 0px;
+    padding: 1px 5px;
+    position: absolute;
 }
 
 .status .username,
@@ -1430,7 +1450,7 @@ p}
     max-height: 180px;
 }
 
-input[type=radio].hidden:not(:checked) + .emoji-picker-emojos 
+input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 {
     display: none;
 }
@@ -2119,4 +2139,99 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     margin-top: 140px;
     text-align: center;
     display: block;
+}
+
+/****************************************
+ *           Responsiveness             *
+ ****************************************/
+@media only screen and (max-width: 1000px)
+{
+    #main-page, #navbar
+    {
+        width: 750px;
+    }
+
+    input[type=checkbox].hidden#rightbar-show:not(:checked) + .ui-table #rightbar
+    {
+        display: none;
+    }
+
+    #rightbar
+    {
+        position: fixed;
+        right: 0px;
+        height: 100%;
+        z-index: 100;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+}
+
+
+/* Requires flexbox */
+@media only screen and (max-width: 760px)
+{
+    input[type=checkbox].hidden#leftbar-show:not(:checked) + input + .ui-table #leftbar
+    {
+        display: none;
+    }
+    
+    #main-page-container
+    {
+        padding: 0;
+        margin: 0;
+    }
+    
+    #main-page, #navbar
+    {
+        width: 100%;
+    }
+
+    #main-page { border: 0; }
+    #main { width: 100%; max-width: 100%; }
+
+    #navbar
+    {
+        position: sticky;
+        top: 0px;
+        border-radius: 0;
+        border-top: 0;
+    }
+
+    #leftbar
+    {
+        position: fixed;
+        left: 0px;
+        height: 100%;
+        z-index: 100;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+
+    #navbar-right-container
+    {
+        width: 100%;
+        padding: 12px;
+        background-color: #efefef;
+        border-top: 1px solid #cacaca;
+        border-bottom: 1px solid #cacaca;
+        text-align: center;
+        margin: 0;
+    }
+
+    .statusbox textarea
+    {
+        width: calc(100% - 11px);
+        max-width: unset;
+        min-width: unset;
+    }
+
+    .status .poster-stats
+    {
+        max-width: unset;
+    }
+
+    .status .status-content
+    {
+        width: unset;
+    }
 }
