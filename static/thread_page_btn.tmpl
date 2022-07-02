@@ -1,0 +1,16 @@
+<table class="navigation ui-table">
+  <tr>
+    <td class="thread-nav-stub">
+      <a class="thread-nav-btn btn" href="{{ %s : prefix }}/status/{{ %s : status_first }}#{{ %s : status_first }}"><span class="nav-symbol">&uarr;&uarr;</span></a>
+    </td>
+    <td class="thread-nav-td">
+      <a class="thread-nav-btn btn" href="{{ %s : prefix }}/status/{{ %s : status_before }}#{{ %s : status_before }}"><span class="nav-symbol">&uarr;</span> Up</a>
+    </td>
+    <td class="thread-nav-td">
+      <a class="thread-nav-btn btn" href="{{ %s : prefix }}/status/{{ %s : status_after }}#{{ %s : status_after }}"><span class="nav-symbol">&darr;</span> Down</a>
+    </td>
+    <td class="thread-nav-stub">
+      <a class="thread-nav-btn btn thread-nav-stub" href="{{ %s : prefix }}/status/{{ %s : status_last }}#{{ %s : status_last }}"><span class="nav-symbol">&darr;&darr;</span></a>
+    </td>
+  </tr>
+</table>

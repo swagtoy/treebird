@@ -1704,12 +1704,39 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     box-shadow: 0px 1px 0px #dadada;
 }
 
+.navigation a.btn
+{
+    display: block;
+}
+
 .navigation .nav-btn,
 .tabs .tab-btn
 {
     display: block;
     padding: 6px;
 }
+
+.nav-symbol
+{
+    color: #505050;
+    margin-right: 7px;
+}
+
+.navigation .nav-symbol
+{
+    position: relative;
+    top: -2px;
+}
+
+.thread-nav-td
+{
+    width: 42%;
+}
+
+/* .thread-nav-stub */
+/* { */
+/*     width: 10%; */
+/* } */
 
 .tabs .tab-btn
 {

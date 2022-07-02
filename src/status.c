@@ -58,6 +58,7 @@
 #include "../static/repeat_btn_img.ctmpl"
 #include "../static/reply_btn_img.ctmpl"
 #include "../static/expand_btn_img.ctmpl"
+#include "../static/thread_page_btn.ctmpl"
 
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
@@ -984,7 +985,13 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
         *statuses_after = NULL,
         status = { 0 };
     size_t stat_before_len = 0, stat_after_len = 0;
-    char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL;
+    char* before_html = NULL, *stat_html = NULL, *after_html = NULL, *stat_reply = NULL,
+        * thread_pagination = NULL;
+
+    int stat_after_limit = 15;
+    int stat_before_limit = 15;
+#define enough_statuses_before (stat_before_len > stat_before_limit)
+#define enough_statuses_after (stat_after_len > stat_after_limit)
 
     try_post_status(ssn, api);
     mastodont_get_status_context(api,
@@ -1000,7 +1007,12 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
         stat_html = construct_error("Status not found", E_ERROR, 1, NULL);
     }
     else {
-        before_html = construct_statuses(ssn, api, statuses_before, stat_before_len, NULL, 0);
+        before_html = construct_statuses(ssn, api,
+                                         (enough_statuses_before ?
+                                          statuses_before + (stat_before_len - stat_before_limit) : statuses_before),
+                                         (enough_statuses_before ?
+                                          stat_before_limit : stat_before_len),
+                                         NULL, 0);
 
         // Current status
         stat_html = construct_status(ssn, api, &status, NULL, NULL, NULL, flags);
@@ -1013,13 +1025,33 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     }
 
     // After...
-    after_html = construct_statuses(ssn, api, statuses_after, stat_after_len, NULL, 0);
+    // For pagination, we already start at the first, so no math required here
+    after_html = construct_statuses(ssn, api, statuses_after,
+                                    (enough_statuses_after ? stat_after_limit : stat_after_len),
+                                    NULL, 0);
 
-    easprintf(&output, "%s%s%s%s",
+    // Thread pagination buttons
+    if (statuses_before || statuses_after)
+    {
+        struct thread_page_btn_template pagination_tmpl = {
+            .prefix = config_url_prefix,
+            .status_first = (statuses_before ? statuses_before[0].id : "deadbeef"),
+            .status_last = (statuses_after ? statuses_after[stat_after_len-1].id : "deadbeef"),
+            .status_before = (statuses_before && enough_statuses_before ? statuses_before[stat_before_len - stat_before_limit].id : "deadbeef"),
+            .status_after = (statuses_after && enough_statuses_after ?
+                             statuses_after[stat_after_limit].id : "deadbeef"),
+        };
+        thread_pagination = tmpl_gen_thread_page_btn(&pagination_tmpl, NULL);
+    }
+        
+
+    easprintf(&output, "%s%s%s%s%s%s",
+              thread_pagination ? thread_pagination : "",
               before_html ? before_html : "",
               stat_html ? stat_html : "",
               stat_reply ? stat_reply : "",
-              after_html ? after_html : "");
+              after_html ? after_html : "",
+              thread_pagination ? thread_pagination : "");
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
@@ -1035,6 +1067,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     free(stat_html);
     free(after_html);
     free(output);
+    free(thread_pagination);
     if ((flags & STATUS_REPLY) == STATUS_REPLY)
         free(stat_reply);
     mstdnt_cleanup_statuses(statuses_before, stat_before_len);
