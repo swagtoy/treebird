@@ -60,7 +60,7 @@ int parse_path(struct session* ssn,
                 goto breakpt;
             }
 
-            read_len = (size_t)after_str - (size_t)(p2 + j);
+            read_len = (size_t)after_str - (size_t)(p2 + i);
             // Copy in new data from the string we just read
             tmp = malloc(read_len+1);
             strncpy(tmp, after_str - read_len, read_len);
