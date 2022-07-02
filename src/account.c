@@ -26,6 +26,7 @@
 #include "easprintf.h"
 #include "status.h"
 #include "http.h"
+#include "string.h"
 #include "base_page.h"
 #include "scrobble.h"
 #include "string_helpers.h"
@@ -70,10 +71,20 @@ char* load_account_info(struct mstdnt_account* acct,
 
 char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
 {
+    char* result = NULL;
+    char* sanitized_display_name = NULL;
+    char* display_name = NULL;
+    if (acct->display_name)
+    {
+        sanitized_display_name = sanitize_html(acct->display_name);
+        display_name = emojify(sanitized_display_name,
+                               acct->emojis,
+                               acct->emojis_len);
+    }
     struct account_sidebar_template data = {
         .prefix = config_url_prefix,
         .avatar = acct->avatar,
-        .username = acct->display_name,
+        .username = display_name,
         .statuses_text = L10N[L10N_EN_US][L10N_TAB_STATUSES],
         .following_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWING],
         .followers_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
@@ -82,7 +93,12 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
         .followers_count = acct->followers_count,
         .acct = acct->acct,
     };
-    return tmpl_gen_account_sidebar(&data, size);
+    result = tmpl_gen_account_sidebar(&data, size);
+    if (sanitized_display_name != acct->display_name) free(sanitized_display_name);
+    if (display_name != sanitized_display_name &&
+        display_name != acct->display_name)
+        free(display_name);
+    return result;
 }
 
 // TODO put account stuff into one function to cleanup a bit
@@ -273,7 +289,7 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    if (mastodont_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
+    if (ssn->cookies.access_token.is_set && mastodont_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
     {
         ssn->logged_in = 1;
     }
@@ -356,9 +372,11 @@ size_t construct_account_page(struct session* ssn,
         * info_html = NULL,
         * is_blocked = NULL,
         * menubar = NULL,
-        * display_name = NULL;
-    
-    display_name = emojify(page->display_name,
+        * display_name = NULL,
+        * sanitized_display_name = NULL;
+
+    sanitized_display_name = sanitize_html(page->display_name);
+    display_name = emojify(sanitized_display_name,
                            page->account->emojis,
                            page->account->emojis_len);
 
@@ -412,7 +430,7 @@ size_t construct_account_page(struct session* ssn,
     }
 
     struct account_template acct_data = {
-        .block_text = STR_NULL_EMPTY(is_blocked),
+        .is_blocked = STR_NULL_EMPTY(is_blocked),
         .header = page->header_image,
         .menubar = menubar,
         .display_name = display_name,
@@ -465,7 +483,9 @@ size_t construct_account_page(struct session* ssn,
     free(follow_btn);
     free(is_blocked);
     free(menubar);
-    if (display_name != page->display_name)
+    if (sanitized_display_name != page->display_name) free(sanitized_display_name);
+    if (display_name != page->display_name &&
+        display_name != sanitized_display_name)
         free(display_name);
     return size;
 }
@@ -475,14 +495,18 @@ char* construct_account(mastodont_t* api,
                         uint8_t flags,
                         size_t* size)
 {
+    char* result;
+    char* sanitized_display_name = sanitize_html(acct->display_name);
     struct account_stub_template data = {
         .prefix = config_url_prefix,
         .acct = acct->acct,
         .avatar = acct->avatar,
-        .display_name = acct->display_name
+        .display_name = sanitized_display_name,
     };
 
-    return tmpl_gen_account_stub(&data, size);
+    result = tmpl_gen_account_stub(&data, size);
+    if (sanitized_display_name != acct->display_name) free(sanitized_display_name);
+    return result;
 }
 
 static char* construct_account_voidwrap(void* passed, size_t index, size_t* res)
@@ -550,7 +574,7 @@ void content_account_statuses(struct session* ssn, mastodont_t* api, char** data
         .max_id = keystr(ssn->post.max_id),
         .min_id = keystr(ssn->post.min_id),
         .since_id = NULL,
-        .offset = 0,
+        .offset = keyint(ssn->query.offset),
         .limit = 20,
     };
     

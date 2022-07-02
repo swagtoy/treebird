@@ -55,7 +55,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
 
-    if (ssn->config.logged_in)
+    if (keyint(ssn->cookies.logged_in))
         login_string = "";
 
     if (ssn->config.background_url)

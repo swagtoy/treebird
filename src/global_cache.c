@@ -19,7 +19,7 @@
 #include "../config.h"
 #include "global_cache.h"
 
-struct global_cache g_cache = { 0 };
+struct global_cache g_cache = { {} };
 
 void load_instance_info_cache(mastodont_t* api)
 {

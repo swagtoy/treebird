@@ -120,7 +120,7 @@ void content_timeline(struct session* ssn,
 
 void tl_home(struct session* ssn, mastodont_t* api, int local)
 {
-    struct mstdnt_args m_args;
+    struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
@@ -137,7 +137,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
         .min_id = keystr(ssn->post.min_id),
-        .offset = 4,
+        .offset = 0,
         .limit = 20,
         .remote = MSTDNT_BOOL_UNSET,
     };
@@ -151,7 +151,7 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
 
 void tl_direct(struct session* ssn, mastodont_t* api)
 {
-    struct mstdnt_args m_args;
+    struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
@@ -179,7 +179,7 @@ void tl_direct(struct session* ssn, mastodont_t* api)
 
 void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
-    struct mstdnt_args m_args;
+    struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;

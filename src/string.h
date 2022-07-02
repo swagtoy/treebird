@@ -39,4 +39,6 @@ int strneql(char* cmp1, char* cmp2, size_t cmp1_n);
 char* strnstr(const char* haystack, const char* needle, size_t s);
 char* strrepl(char* source, char* find, char* replace, int flags);
 
+char* sanitize_html(char* html);
+
 #endif // TREE_STRING_H

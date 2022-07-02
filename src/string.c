@@ -128,3 +128,15 @@ char* strrepl(char* source, char* find, char* repl, int flags)
     return result ? result : source;
 }
 
+char* sanitize_html(char* html)
+{
+    char* amp = strrepl(html, "&", "&amp;", STRREPL_ALL);
+    char* left = strrepl(amp, "<", "&lt;", STRREPL_ALL);
+    char* right = strrepl(left, ">", "&gt;", STRREPL_ALL);
+    char* quot = strrepl(right, "\"", "&quot;", STRREPL_ALL);
+    if (quot != right && right != html && right != left) free(right);
+    if (left != html && left != amp) free(left);
+    if (amp != html) free(amp);
+    
+    return quot;
+}

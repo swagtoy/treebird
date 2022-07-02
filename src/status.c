@@ -644,6 +644,7 @@ char* construct_status(struct session* ssn,
     char* formatted_display_name = NULL;
     char* attachments = NULL;
     char* emoji_reactions = NULL;
+    char* serialized_display_name = NULL;
     char* interaction_btns = NULL;
     char* notif_info = NULL;
     char* in_reply_to_str = NULL;
@@ -709,10 +710,10 @@ char* construct_status(struct session* ssn,
     }
 
     // Format username with emojis
-    formatted_display_name = emojify(status->account.display_name,
+    serialized_display_name = sanitize_html(status->account.display_name);
+    formatted_display_name = emojify(serialized_display_name,
                                      status->account.emojis,
                                      status->account.emojis_len);
-
     // Format status
     char* parse_content = reformat_status(ssn, status->content, status->emojis, status->emojis_len);
 
@@ -758,7 +759,8 @@ char* construct_status(struct session* ssn,
         emoji_reactions = construct_emoji_reactions(status->id, status->pleroma.emoji_reactions, status->pleroma.emoji_reactions_len, NULL);
     if (notif && notif->type != MSTDNT_NOTIFICATION_MENTION)
     {
-        char* notif_display_name = emojify(notif->account->display_name,
+        char* notif_serialized_name = sanitize_html(notif->account->display_name);
+        char* notif_display_name = emojify(notif_serialized_name,
                                            notif->account->emojis,
                                            notif->account->emojis_len);
         struct notification_template tdata = {
@@ -770,6 +772,9 @@ char* construct_status(struct session* ssn,
         notif_info = tmpl_gen_notification(&tdata, NULL);
         if (notif_display_name != notif->account->display_name)
             free(notif_display_name);
+        if (notif_serialized_name != notif_display_name &&
+            notif_serialized_name != notif->account->display_name)
+            free(notif_serialized_name);
     }
 
     if (status->in_reply_to_id && status->in_reply_to_account_id)
@@ -805,7 +810,10 @@ char* construct_status(struct session* ssn,
     
     // Cleanup
     if (formatted_display_name != status->account.display_name &&
-        formatted_display_name) free(formatted_display_name);
+        formatted_display_name != serialized_display_name)
+        free(formatted_display_name);
+    if (serialized_display_name != status->account.display_name)
+        free(serialized_display_name);
     free(interaction_btns);
     free(in_reply_to_str);
     free(attachments);

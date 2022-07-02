@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "string.h"
 #include "helpers.h"
 #include "notifications.h"
 #include "base_page.h"
@@ -69,7 +70,8 @@ char* construct_notification(struct session* ssn,
 char* construct_notification_action(struct mstdnt_notification* notif, size_t* size)
 {
     char* res;
-    char* display_name = emojify(notif->account->display_name,
+    char* serialized_display_name = sanitize_html(notif->account->display_name);
+    char* display_name = emojify(serialized_display_name,
                                  notif->account->emojis,
                                  notif->account->emojis_len);
     struct notification_action_template tdata = {
@@ -81,8 +83,12 @@ char* construct_notification_action(struct mstdnt_notification* notif, size_t* s
         .notif_svg = notification_type_svg(notif->type)
     };
     res = tmpl_gen_notification_action(&tdata, size);
-    if (display_name != notif->account->display_name)
+    /* // Cleanup */
+    if (display_name != notif->account->display_name &&
+        display_name != serialized_display_name)
         free(display_name);
+    if (serialized_display_name != notif->account->display_name)
+        free(serialized_display_name);
     return res;
 }
 
@@ -109,7 +115,8 @@ char* construct_notification_compact(struct session* ssn,
                                         notif->status->emojis_len);
     }
 
-    char* display_name = emojify(notif->account->display_name,
+    char* serialized_display_name = sanitize_html(notif->account->display_name);
+    char* display_name = emojify(serialized_display_name,
                                  notif->account->emojis,
                                  notif->account->emojis_len);
     struct notification_compact_template tdata = {
@@ -130,7 +137,10 @@ char* construct_notification_compact(struct session* ssn,
     if (status_format &&
         status_format != notif->status->content) free(status_format);
     if (notif_stats) free(notif_stats);
-    if (display_name != notif->account->display_name)
+    if (serialized_display_name != notif->account->display_name)
+        free(serialized_display_name);
+    if (display_name != notif->account->display_name &&
+        display_name != serialized_display_name)
         free(display_name);
     return notif_html;
 }

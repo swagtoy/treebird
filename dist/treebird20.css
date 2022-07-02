@@ -6,9 +6,8 @@
 
 html, body
 {
-    margin: 0;
+    margin: 5px;
     padding: 0;
-    margin-top: 0px;
 }
 
 html
@@ -37,11 +36,6 @@ h1, h2, h3, h4
 ul
 {
     margin: 12px;
-}
-
-#main-page-container
-{
-    padding: 8px;
 }
 
 #main-page
@@ -119,7 +113,6 @@ table.ui-table td
     z-index: 999;
 }
 
-
 #navbar .navbar-btn
 {
     width: 20px;
@@ -129,15 +122,22 @@ table.ui-table td
 #navbar .leftbar-btn
 {
     float: left;
-    margin: 10px 0 10px 15px;
-    width: 30px;
-    height: 30px;
+    margin: 15px 0px 15px 15px;
+    /* width: 30px; */
+    /* height: 30px; */
 }
 
 #navbar .rightbar-btn
 {
     float: right;
-    margin: 15px;
+    margin: 16px 15px 15px 7px;
+}
+
+#navbar .search-btn-show
+{
+    float: right;
+    display: none;
+    margin: 16px 12px 15px 16px;
 }
 
 #navbar img
@@ -173,6 +173,13 @@ table.ui-table td
 {
     display: inline-block;
     float: right;
+}
+
+/* Only show these on mobile */
+.leftbar-btn, .rightbar-btn
+{
+    display: none;
+    stroke: #404040;
 }
 
 #login-header
@@ -2164,18 +2171,34 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
         z-index: 100;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     }
+    
+    .rightbar-btn
+    {
+        display: inline-block;
+    }
+
+    .menu
+    {
+        margin-left: -30px;
+    }
 }
 
 
 /* Requires flexbox */
 @media only screen and (max-width: 760px)
 {
+    html, body
+    {
+        margin: 0;
+        padding: 0;
+    }
+    
     input[type=checkbox].hidden#leftbar-show:not(:checked) + input + .ui-table #leftbar
     {
         display: none;
     }
     
-    #main-page-container
+    #main-page
     {
         padding: 0;
         margin: 0;
@@ -2205,8 +2228,17 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
         z-index: 100;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     }
-    
 
+    .leftbar-btn
+    {
+        display: inline-block;
+    }
+
+    #navbar .search-btn-show
+    {
+        display: inline-block;
+    }
+    
     #navbar-right-container
     {
         width: 100%;
@@ -2217,6 +2249,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
         text-align: center;
         margin: 0;
     }
+
+    input[type=checkbox].hidden#searchbar-show:not(:checked) + #navbar-right-container
+    {
+        display: none;
+    }
+
 
     .statusbox textarea
     {

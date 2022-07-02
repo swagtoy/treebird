@@ -23,6 +23,7 @@
 #include "account.h"
 #include "easprintf.h"
 #include "error.h"
+#include "string.h"
 #include "status.h"
 #include "lists.h"
 #include "string_helpers.h"
@@ -34,12 +35,18 @@
 
 char* construct_list(struct mstdnt_list* list, size_t* size)
 {
+    char* result;
+    char* title = list->title;
+    char* list_name = sanitize_html(title);
     struct list_template data = {
-        .list = list->title,
+        .list = list_name,
         .prefix = config_url_prefix,
         .list_id = list->id
     };
-    return tmpl_gen_list(&data, size);
+    result = tmpl_gen_list(&data, size);
+    if (list_name != title)
+        free(list_name);
+    return result;
 }
 
 static char* construct_list_voidwrap(void* passed, size_t index, size_t* res)
