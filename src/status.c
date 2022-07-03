@@ -516,8 +516,7 @@ char* make_mentions_local(char* content)
                                    &error, &erroffset, NULL);
     if (re == NULL)
     {
-        char* v;
-        easprintf(&v, "Couldn't parse regex at offset %d: %s\n", error, REGEX_MENTION + erroffset);
+        fprintf(stderr, "Couldn't parse regex at offset %d: %s\n", error, REGEX_MENTION + erroffset);
         pcre2_code_free(re);
         return NULL;
     }
