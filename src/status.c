@@ -499,7 +499,7 @@ char* reformat_status(struct session* ssn,
     return res;
 }
 
-#define REGEX_MENTION "<a .*?mention.*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>"
+#define REGEX_MENTION "(?=<a .*?mention.*?)<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users\\/)?(.*?)?\".*?>"
 
 char* make_mentions_local(char* content)
 {
@@ -512,11 +512,12 @@ char* make_mentions_local(char* content)
     size_t res_len = 1024;
     char* res = malloc(res_len);
     pcre2_code* re = pcre2_compile((PCRE2_SPTR)REGEX_MENTION,
-                                   PCRE2_ZERO_TERMINATED, 0,
+                                   PCRE2_ZERO_TERMINATED, PCRE2_MULTILINE,
                                    &error, &erroffset, NULL);
     if (re == NULL)
     {
-        fprintf(stderr, "Couldn't parse regex at offset %ld: %d\n", erroffset, error);
+        char* v;
+        easprintf(&v, "Couldn't parse regex at offset %d: %s\n", error, REGEX_MENTION + erroffset);
         pcre2_code_free(re);
         return NULL;
     }
@@ -554,7 +555,11 @@ char* make_mentions_local(char* content)
                 res = realloc(res, res_len);
                 break;
             default:
+            {
+                char buf[256];
+                pcre2_get_error_message(rc, buf, 256);
                 goto out;
+            }
             }
         }
         else

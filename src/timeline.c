@@ -186,8 +186,8 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
     struct mstdnt_storage storage = { 0 };
 
     struct mstdnt_timeline_args args = {
-        .with_muted = 1,
-        .local = local,
+        .with_muted = MSTDNT_TRUE,
+        .local = local ? MSTDNT_TRUE : MSTDNT_FALSE,
         .remote = 0,
         // Converts to `enum mstdnt_reply_visibility' nicely
         .reply_visibility = (ssn->post.replies_only.is_set ?
