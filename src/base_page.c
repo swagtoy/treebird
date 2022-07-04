@@ -149,6 +149,8 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         .bookmarks = L10N[locale][L10N_BOOKMARKS],
         .active_direct = CAT_TEXT(page->category, BASE_CAT_DIRECT),
         .direct = L10N[locale][L10N_DIRECT],
+        .active_chats = CAT_TEXT(page->category, BASE_CAT_CHATS),
+        .chats = "Chats",
         .active_config = CAT_TEXT(page->category, BASE_CAT_CONFIG),
         .config = L10N[locale][L10N_CONFIG],
         .sidebar_leftbar = page->sidebar_left,

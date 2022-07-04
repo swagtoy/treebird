@@ -34,6 +34,7 @@ enum base_category
     BASE_CAT_FAVOURITES,
     BASE_CAT_BOOKMARKS,
     BASE_CAT_DIRECT,
+    BASE_CAT_CHATS,
     BASE_CAT_CONFIG,
 };
 

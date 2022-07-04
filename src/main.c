@@ -40,6 +40,7 @@
 #include "about.h"
 #include "local_config_set.h"
 #include "global_cache.h"
+#include "conversations.h"
 
 int main(void)
 {
@@ -105,6 +106,7 @@ int main(void)
         { "/notifications_compact", content_notifications_compact },
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },
+        { "/chats", content_chats },
         // API
         { "/treebird_api/v1/notifications", api_notifications },
         { "/treebird_api/v1/interact", api_status_interact }
