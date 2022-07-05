@@ -27,6 +27,14 @@
 // Files
 #include "../static/chat.ctmpl"
 #include "../static/chats_page.ctmpl"
+#include "../static/message.ctmpl"
+
+struct construct_message_args
+{
+    struct mstdnt_message* msg;
+    struct mstdnt_account* you;
+    struct mstdnt_account* them;
+};
 
 char* construct_chat(struct mstdnt_chat* chat, size_t* size)
 {
@@ -51,6 +59,40 @@ static char* construct_chat_voidwrap(void* passed, size_t index, size_t* res)
 char* construct_chats(struct mstdnt_chat* chats, size_t size, size_t* ret_size)
 {
     return construct_func_strings(construct_chat_voidwrap, chats, size, ret_size);
+}
+
+char* construct_message(struct mstdnt_message* msg,
+                        struct mstdnt_account* you,
+                        struct mstdnt_account* them,
+                        size_t* size)
+{
+    char* result;
+    struct message_template data = {
+        .id = msg->id,
+        .content = msg->content
+    };
+    result = tmpl_gen_message(&data, size);
+    return result;
+}
+
+static char* construct_message_voidwrap(void* passed, size_t index, size_t* res)
+{
+    struct construct_message_args* args = passed;
+    return construct_message(args->msg + index, args->you, args->them, res);
+}
+
+char* construct_messages(struct mstdnt_message* messages,
+                         struct mstdnt_account* you,
+                         struct mstdnt_account* them,
+                         size_t size,
+                         size_t* ret_size)
+{
+    struct construct_message_args args = {
+        .msg = messages,
+        .you = you,
+        .them = them,
+    };
+    return construct_func_strings(construct_message_voidwrap, &args, size, ret_size);
 }
 
 char* construct_chats_view(char* lists_string, size_t* size)
@@ -106,3 +148,57 @@ void content_chats(struct session* ssn, mastodont_t* api, char** data)
     free(chats_html);
     // TOOD cleanup chats
 }
+
+void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_message* messages = NULL;
+    /* struct mstdnt_account acct; */
+    size_t messages_len = 0;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_storage acct_storage = { 0 };
+    // char* chats_page = NULL;
+    char* messages_html = NULL;
+
+    struct mstdnt_chats_args args = {
+        .with_muted = MSTDNT_TRUE,
+        .max_id = keystr(ssn->post.max_id),
+        .since_id = NULL,
+        .min_id = keystr(ssn->post.min_id),
+        .offset = keyint(ssn->query.offset),
+        .limit = 20,
+    };
+
+
+    if (mastodont_get_chat_messages(api, &m_args, data[0],
+                                    &args, &storage, &messages, &messages_len))
+    {
+        messages_html = construct_error(storage.error, E_ERROR, 1, NULL);
+    }
+    else {
+        // Get other account
+        /* if (messages_len) */
+        /*     mastodont_get_account(api, &m_args, 1, messages[0].account_id */
+        messages_html = construct_messages(messages, &(ssn->acct), NULL, messages_len, NULL);
+        if (!messages_html)
+            messages_html = construct_error("This is the start of something new...", E_NOTICE, 1, NULL);
+        /* messages_html = construct_chats_view(chats_html, NULL); */
+    }
+
+    struct base_page b = {
+        .category = BASE_CAT_CHATS,
+        .content = messages_html,
+        .sidebar_left = NULL
+    };
+    
+    // Outpuot
+    render_base_page(&b, ssn, api);
+
+    // Cleanup
+    mastodont_storage_cleanup(&storage);
+    //free(chats_page);
+    free(messages_html);
+    // TOOD cleanup chats
+}
+

@@ -25,7 +25,18 @@
 char* construct_chat(struct mstdnt_chat* chat, size_t* size);
 char* construct_chats(struct mstdnt_chat* chats, size_t size, size_t* ret_size);
 char* construct_chats_view(char* lists_string, size_t* size);
+// Message
+char* construct_message(struct mstdnt_message* message,
+                        struct mstdnt_account* your_profile,
+                        struct mstdnt_account* their_profile,
+                        size_t* size);
+char* construct_messages(struct mstdnt_message* message,
+                         struct mstdnt_account* your_profile,
+                         struct mstdnt_account* their_profile,
+                         size_t size,
+                         size_t* ret_size);
 
 void content_chats(struct session* ssn, mastodont_t* api, char** data);
+void content_chat_view(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // LISTS_H

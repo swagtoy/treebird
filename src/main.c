@@ -106,6 +106,7 @@ int main(void)
         { "/notifications_compact", content_notifications_compact },
         { "/notifications", content_notifications },
         { "/tag/:", content_tl_tag },
+        { "/chats/:", content_chat_view },
         { "/chats", content_chats },
         // API
         { "/treebird_api/v1/notifications", api_notifications },
