@@ -34,6 +34,7 @@ struct construct_message_args
     struct mstdnt_message* msg;
     struct mstdnt_account* you;
     struct mstdnt_account* them;
+    size_t msg_size; // Read messages backwards
 };
 
 char* construct_chat(struct mstdnt_chat* chat, size_t* size)
@@ -67,9 +68,13 @@ char* construct_message(struct mstdnt_message* msg,
                         size_t* size)
 {
     char* result;
+    if (!(you && them)) return NULL;
+    int is_you = strcmp(you->id, msg->account_id) == 0;
     struct message_template data = {
         .id = msg->id,
-        .content = msg->content
+        .content = msg->content,
+        .is_you = is_you ? "message-you" : NULL,
+        .avatar = is_you ? you->avatar : them->avatar
     };
     result = tmpl_gen_message(&data, size);
     return result;
@@ -78,7 +83,7 @@ char* construct_message(struct mstdnt_message* msg,
 static char* construct_message_voidwrap(void* passed, size_t index, size_t* res)
 {
     struct construct_message_args* args = passed;
-    return construct_message(args->msg + index, args->you, args->them, res);
+    return construct_message(args->msg + (args->msg_size - index - 1), args->you, args->them, res);
 }
 
 char* construct_messages(struct mstdnt_message* messages,
@@ -91,6 +96,7 @@ char* construct_messages(struct mstdnt_message* messages,
         .msg = messages,
         .you = you,
         .them = them,
+        .msg_size = size
     };
     return construct_func_strings(construct_message_voidwrap, &args, size, ret_size);
 }
@@ -156,7 +162,8 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_message* messages = NULL;
     /* struct mstdnt_account acct; */
     size_t messages_len = 0;
-    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_storage storage = { 0 }, storage_chat = { 0 };
+    struct mstdnt_chat chat;
     struct mstdnt_storage acct_storage = { 0 };
     // char* chats_page = NULL;
     char* messages_html = NULL;
@@ -172,15 +179,14 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
 
 
     if (mastodont_get_chat_messages(api, &m_args, data[0],
-                                    &args, &storage, &messages, &messages_len))
+                                    &args, &storage, &messages, &messages_len) ||
+        mastodont_get_chat(api, &m_args, data[0],
+                           &storage_chat, &chat))
     {
         messages_html = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
-        // Get other account
-        /* if (messages_len) */
-        /*     mastodont_get_account(api, &m_args, 1, messages[0].account_id */
-        messages_html = construct_messages(messages, &(ssn->acct), NULL, messages_len, NULL);
+        messages_html = construct_messages(messages, &(ssn->acct), &(chat.account), messages_len, NULL);
         if (!messages_html)
             messages_html = construct_error("This is the start of something new...", E_NOTICE, 1, NULL);
         /* messages_html = construct_chats_view(chats_html, NULL); */
