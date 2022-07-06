@@ -28,6 +28,7 @@
 #include "../static/chat.ctmpl"
 #include "../static/chats_page.ctmpl"
 #include "../static/message.ctmpl"
+#include "../static/chat_view.ctmpl"
 
 struct construct_message_args
 {
@@ -165,7 +166,7 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
     struct mstdnt_storage storage = { 0 }, storage_chat = { 0 };
     struct mstdnt_chat chat;
     struct mstdnt_storage acct_storage = { 0 };
-    // char* chats_page = NULL;
+    char* chats_page = NULL;
     char* messages_html = NULL;
 
     struct mstdnt_chats_args args = {
@@ -176,7 +177,6 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
         .offset = keyint(ssn->query.offset),
         .limit = 20,
     };
-
 
     if (mastodont_get_chat_messages(api, &m_args, data[0],
                                     &args, &storage, &messages, &messages_len) ||
@@ -190,11 +190,21 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
         if (!messages_html)
             messages_html = construct_error("This is the start of something new...", E_NOTICE, 1, NULL);
         /* messages_html = construct_chats_view(chats_html, NULL); */
+
+        struct chat_view_template tmpl = {
+            .prefix = config_url_prefix,
+            .avatar = chat.account.avatar,
+            .acct = chat.account.acct,
+            .messages = messages_html
+        };
+
+        chats_page = tmpl_gen_chat_view(&tmpl, NULL);
     }
+
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
-        .content = messages_html,
+        .content = chats_page,
         .sidebar_left = NULL
     };
     
@@ -203,7 +213,8 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    //free(chats_page);
+    mastodont_storage_cleanup(&acct_storage);
+    free(chats_page);
     free(messages_html);
     // TOOD cleanup chats
 }

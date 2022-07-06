@@ -301,7 +301,7 @@ table.present th, table.present td
 .e-error
 {
     display: block;
-    background-color: #fcb0b0;
+    background: linear-gradient(#fba0a0, #fcb0b0);
     color: #000;
     border: 1px solid #bb1c1f;
     padding: 15px;
@@ -317,9 +317,9 @@ table.present th, table.present td
 .e-notice
 {
     display: block;
-    background-color: #ddeeff;
+    background: linear-gradient(#ddeeff, #ccddff);
     color: #000;
-    border: 1px solid #66ccff;
+    border: 1px solid #80ccff;
     padding: 15px;
     font-weight: bold;
 }
