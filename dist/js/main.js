@@ -177,7 +177,7 @@ function status_interact_props(e)
     let type = interact.parentNode.querySelector(".itype");
     if (type === null)
         return true;
-    let status = interact.closest(".status-table");
+    let status = interact.closest(".status");
 
     send_request("/treebird_api/v1/interact",
                  {
@@ -202,7 +202,7 @@ function status_interact_props(e)
 function create_reply_form(e)
 {
     e.preventDefault();
-    let status = e.target.closest(".status-table");
+    let status = e.target.closest(".status");
 
     if (status.nextSibling.className === "statusbox-quickreply")
     {

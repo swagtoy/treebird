@@ -71,12 +71,9 @@ a, a:visited, a:hover, a:active
 
 .mention
 {
-    color: #cc0000;
+    color: #808080;
     text-decoration: none;
-    background-color: #ffcccc;
     border-radius: 3px;
-    padding-left: 2px;
-    padding-right: 2px;
 }
 
 .greentext
@@ -95,7 +92,6 @@ table.ui-table td
 
 #content
 {
-    overflow: hidden;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
@@ -416,7 +412,14 @@ table.present th, table.present td
     box-sizing: border-box;
 }
 
-
+select
+{
+    background: linear-gradient(#f8f8f8, #d8d8d8);
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 3px;
+    min-width: 100px;
+}
 
 /*************************************************
  *                  BUTTONS                      *
@@ -641,8 +644,10 @@ svg.in-reply-to-icon
     stroke: #606060;
 }
 
-.in-reply-to
+.in-reply-to,
+.in-reply-to a
 {
+    font-size: 0.9rem;
     color: #606060;
 }
 
@@ -682,13 +687,13 @@ svg.in-reply-to-icon
 
 .notification-info
 {
-    margin-top: 9px;
+    margin-left: 28px;
+    margin-bottom: 7px;
 }
 
 .notification-info img,
 .notification-info-format img
 {
-    margin-left: 41px;
     width: 24px;
     height: 24px;
     margin-right: 6px;
@@ -712,12 +717,16 @@ svg.in-reply-to-icon
 /***************************
  *      Statuses           *
  **************************/
+.status
+{
+    padding: 11px 0px 0px 11px;
+    border-bottom: 1px dashed #cacaca;
+}
+
 .status .status-table,
 .notification-regular,
 .scrobble
 {
-    padding: 10px 10px 0 10px;
-    border-bottom: 1px dashed #cacaca;
     width: 100%;
     border-spacing: 0px;
 }
@@ -727,8 +736,8 @@ svg.in-reply-to-icon
     padding: 5px 10px;
 }
 
-.status-table.focused,
-.status-table:target
+.status.focused,
+.status:target
 {
     background-color: #ffdddd;
     border-left: 3px solid #aa0000;
@@ -745,9 +754,9 @@ svg.in-reply-to-icon
 .account-sidebar .acct-pfp
 {
     display: inline-block;
-    width: 52px;
-    min-width: 52px;
-    height: 52px;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -765,6 +774,7 @@ svg.in-reply-to-icon
     height: 12px;
     font-size: 10px;
     text-align: center;
+    vertical-align: middle;
     cursor: pointer;
 }
 
@@ -797,7 +807,7 @@ svg.in-reply-to-icon
 
 .pfp-td
 {
-    width: 56px;
+    width: 52px;
     border-collapse: collapse !important;
     padding: 6px;
 }
@@ -805,8 +815,8 @@ svg.in-reply-to-icon
 .pfp-td img
 {
     border-radius: 5px;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     object-fit: cover;
 }
 
@@ -868,24 +878,23 @@ svg.in-reply-to-icon
 
 .status .instance-info
 {
-    font-style: italic;
     text-decoration: none;
     font-size: 14px;
     vertical-align: middle;
     padding: 0 6px;
-    color: #303030;
+    color: #505050;
 }
 
 .status .poster-stats
 {
     position: relative;
     display: block;
-    max-width: 480px;
+    max-width: 490px;
 }
 
 .status-hide:checked + .status .poster-stats
 {
-    max-width: 540px;
+    max-width: 550px;
 }
 
 .poster-stats .alignend
@@ -895,6 +904,12 @@ svg.in-reply-to-icon
     right: 0px;
     padding: 1px 5px;
     position: absolute;
+}
+
+.static.focused .poster-stats .alignend,
+.status:target .poster-stats .alignend
+{
+    background-color: #ffdddd;
 }
 
 .status .username,
@@ -909,9 +924,10 @@ svg.in-reply-to-icon
 
 .status .status-content
 {
-    margin: 2px 0 0 0;
+    margin: 4px 0 0 0;
     overflow-wrap: anywhere;
-    width: 480px;
+    width: 490px;
+    line-height: 1.2;
     display: block;
 }
 
@@ -1222,7 +1238,6 @@ p}
     overflow: hidden;
 }
 
-
 .acct-displayname
 {
     font-size: 26px;
@@ -1348,6 +1363,12 @@ p}
     min-width: 42px;
 }
 
+.status-interact .statbtn svg
+{
+    width: 18px;
+    height: 18px;
+}
+
 .view-btn
 {
     min-width: 25px !important;
@@ -1356,6 +1377,11 @@ p}
 .notification-compact .status-interact .statbtn
 {
     min-width: 0px !important;
+}
+
+.status-interact svg
+{
+    stroke: #303030;
 }
 
 .active-anim

@@ -1,7 +1,7 @@
 <input type="checkbox" class="status-hide" id="status-toggle-{{%s:status_id}}" {{ %s:thread_hidden }}>
-<div class="status">
+<div class="status" id="{{%s:status_id}}">
   {{ %s : notif_info }}
-  <table id="{{%s:status_id}}" class="status-table ui-table">
+  <table class="status-table ui-table">
     <tr>
       <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
         <img src="{{%s:avatar}}" loading="lazy">
