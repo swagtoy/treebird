@@ -1,0 +1,40 @@
+waifuism.life {
+    reverse_proxy 127.0.0.1:4000
+}
+
+treebird.waifuism.life {
+    route {
+        handle /js/* {
+            root * /usr/local/share/treebird
+            try_files {path}
+            file_server
+        }
+        handle /img/* {
+            root * /usr/local/share/treebird
+            try_files {path}
+            file_server
+        }
+        handle /svg/* {
+            root * /usr/local/share/treebird
+            try_files {path}
+            file_server
+        }
+        handle /*.css {
+            root * /usr/local/share/treebird
+            try_files {path}
+            file_server
+        }
+        handle /*.png {
+            root * /usr/local/share/treebird
+            try_files {path}
+            file_server
+        }
+        handle /* {
+            reverse_proxy * unix//var/run/fcgiwrap.socket {
+                transport fastcgi {
+                    env SCRIPT_FILENAME /usr/local/bin/treebird.cgi
+                }
+            }
+        }
+    }
+}

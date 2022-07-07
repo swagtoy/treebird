@@ -7,7 +7,6 @@
     color: #FBF5D9;
 }
 
-
 html, body
 {
     margin: 0;
@@ -18,6 +17,7 @@ html, body
 html
 {
     height: 100%;
+    background-color: #00232B;
 }
 
 body
@@ -25,8 +25,7 @@ body
     background-attachment: fixed !important;
     background-size: cover !important;
     background-color: unset;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #00232B;
+    font-family: Helvetica, sans-serif, Arial;
     min-height: 100%;
     line-height: 1.65;
 }
@@ -45,7 +44,8 @@ ul
 
 select
 {
-    background-color: #00232B;
+    background-color: #004B5D;
+    color: #F7EDBE;
 }
 
 #main-page-container
@@ -57,16 +57,22 @@ select
 {
     margin: 0 auto 8px;
     width: 1000px;
-    background-color: #202020;
+    background-color: #004B5D;
     border-top: 0 !important;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
     border-width: 0;
     border-radius: 3px;
 }
 
-.hidden
+.hidden,
+.search-page-hidden + .search-page
 {
     display: none;
+}
+
+.search-page-hidden:checked + .search-page
+{
+    display: block;
 }
 
 .pointer
@@ -87,6 +93,10 @@ a, a:visited, a:hover, a:active
     padding-left: 2px;
     padding-right: 2px;
     border: 1px solid #CA545C;
+}
+
+.mention, mention a, .mention span {
+    color: #F7EDBE !important;
 }
 
 .greentext
@@ -111,8 +121,6 @@ table.ui-table td
 }
 
 #navbar {
-    position: sticky;
-    top: 0;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border-top: 1px solid #00232B;
@@ -157,10 +165,6 @@ table.ui-table td
 {
     display: inline-block;
     float: right;
-    padding-right: 8px;
-    flex: 1;
-    flex-direction: row;
-    align-items: center;
 }
 
 #login-header
@@ -174,20 +178,11 @@ table.ui-table td
     color: #FBF5D9;
 }
 
-.alignend
-{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
-}
-
 #main
 {
-    width: 623px;
-    max-width: 623px !important;
-    min-width: 623px;
+    width: 568px;
+    max-width: 568px;
+    min-width: 568px;
     border-collapse: collapse !important;
     background-color: #002B36;
     padding: 0;
@@ -201,15 +196,52 @@ table.ui-table td
 
 .sidebar
 {
-    background-color: #002B36;
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    min-height: 600px;
+    background-color: #00232B;
+}
+
+.sidebar-frame
+{
+    border: none;
+    width: 100%;
+    min-height: 600px;
+    border-bottom: 1px dashed #004B5D;
+}
+
+.sidebar-embed-container .navigation
+{
+    position: sticky;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(234, 236, 240, .7);
+    padding: 0;
+}
+
+.sidebar-embed-container .btn,
+.sidebar-embed-container .nav-btn
+{
+    background: unset;
+    padding: 2px !important;
+    font-size: 13px;
+}
+
+.sidebar-embed-container .btn-disabled
+{
+    background: unset;
+}
+
+.sidebar-embed-container .btn:hover
+{
+    background: unset;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 #leftbar
 {
-    width: 130px;
-    min-height: 600px;
-    max-width: 130px;
-    min-width: 130px;
     border-right: 1px solid #004B5D;
 }
 
@@ -227,13 +259,10 @@ table.ui-table td
 
 #rightbar
 {
-    width: 245px;
-    min-height: 600px;
-    max-width: 245px;
-    min-width: 245px;
     border-left: 1px solid #004B5D;
+    min-width: 250px;
+    max-width: 250px;
 }
-
 
 /*************************************************
  *               COMMON ELEMENTS                 *
@@ -254,7 +283,7 @@ table.present th, table.present td
     margin-top: 5px;
 }
 
-.error
+.e-error
 {
     display: block;
     background-color: #fcb0b0;
@@ -280,43 +309,98 @@ table.present th, table.present td
     font-weight: bold;
 }
 
+.search-highlight
+{
+    background-color: #EAB86E;
+}
+
+.bar-graph
+{
+    background: linear-gradient(#fff, #f7f7f7);
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #004B5D;
+    border-radius: 8px;
+    height: 100px;
+    margin: 4px;
+}
+
+.bar
+{
+    flex-grow: 1;
+    border-radius: 8px;
+    background-color: #efefef;
+    border: 1px solid #004B5D;
+    margin: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.bar div
+{
+    flex-grow: 1;
+    background: linear-gradient(#aa0000, #600000);
+    border-radius: 8px;
+}
+
 input[type=textbox]
 {
     background-color: #00232B;
     color: #c3e3d3;
 }
 
+.menu .btn-menu                                                           
+{
+    background: unset;
+    background-color: unset;
+    display: block;          
+    padding: 3px 12px;
+    width: 100%;                                                          
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;                                               
+}
+
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
-.sidebarbtn:hover, .sidebarbtn-sub:hover
-{
-    border-top: 1px solid #5FB4BF !important;
-    border-bottom: 1px solid #5FB4BF !important;
-}
-
-.sidebarbtn, .btn
+.btn
 { 
     background: #00232B;
     color: #F7EDBE;
     text-decoration: none;
+    padding: 6px 12px;
     border-color: #004B5D;
 }
 
-.sidebarbtn:hover, .btn:hover
+.btn:hover,
+.btn:active
 { 
     background: #42838c;
-    border-color: #5FB4BF !important;
+    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.6) !important;
     color: #FBF5D9;
     cursor: pointer;
 }
 
-.sidebarbtn:active, .btn:active
-{ 
-    background: #42838c;
-    border-color: #5FB4BF;
-    color: #FBF5D9;
-    cursor: pointer;
+.btn.active
+{
+    background: #EAB86E !important;
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
+    color: #F7EDBE;
+}
+
+.btn-alt.active,
+.btn-alt:active
+{
+    background: #EAB86E;
+    color: #00232B;
+}
+
+.btn-alt:hover
+{
+    background: #5FB4BF;
 }
 
 .btn-disabled
@@ -332,33 +416,55 @@ input[type=textbox]
 
 .btn-disabled:active
 {
-    background: #00232B;
+    background: #486c5c;
 }
-
 
 input[type=button], input[type=submit]
 {
-    background: #00232B;
-    border: 1px solid #00232B;
+    border: 1px solid #004B5D;
     padding: 3px 15px;
 }
 
-/* Make first button glue to header */
-#leftbar ul:first-child .sidebarbtn
+.post-btn
 {
-    border-top: 0;
+    background: #EAB86E !important;
+    padding: 2px 25px 3px !important;
+    font-size: 15px;
+    border-radius: 3px;
+    border: none !important; 
+    color: #00232B !important;
+    text-shadow: unset !important;
+}
+
+.btn-single
+{
+    border-radius: 3px;
+    border: 1px solid #004B5D;
 }
 
 .sidebarbtn
 {
+    background: #00232B;
     display: block;
+    padding: 13px 18px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #F7EDBE;
     border-bottom: 1px solid #004B5D;
-    padding: 8px 8px 8px 16px;
 }
 
-.sidebarbtn.focused
+.sidebarbtn.active
 {
-    border-right: 3px solid #ECBA71 !important;
+    background: #EAB86E !important;
+    color: #002B36 !important;
+}
+
+.sidebarbtn:active, 
+.sidebarbtn:hover
+{
+    background: #42838c;
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
+    color: #002B36;
 }
 
 .sidebarbtn-sub
@@ -373,8 +479,8 @@ input[type=button], input[type=submit]
 .sidebar-config
 {
     background-color: #002B36;
-    border-left: 3px solid #ECBA71;
-    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid #EAB86E;
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.22);
 }
 
 .sidebarbtn-sub.focused
@@ -387,9 +493,9 @@ input[type=button], input[type=submit]
     background-color: #42838c;
 }
 
-ul li:first-child a.sidebarbtn
+.sidebar-login
 {
-    border-top: 1px solid #00232B;
+    padding: 18px;
 }
 
 /****************************
@@ -421,6 +527,11 @@ ul li:first-child a.sidebarbtn
     min-width: 100%;
 }
 
+.notification-compact p
+{
+    margin: 0;
+}
+
 .notification-compact .notification-content
 {
     max-height: 100px;
@@ -433,10 +544,6 @@ ul li:first-child a.sidebarbtn
     overflow: hidden;
 }
 
-.notification-compact p
-{
-    margin: 0;
-}
 .notification-compact .notification-info
 {
     font-size: 12px;
@@ -446,11 +553,20 @@ ul li:first-child a.sidebarbtn
     font-weight: bold;
 }
 
+.notification-compact .notification-info .username  
+{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
+    display: inline-block;
+}
+
 .notification-info svg,
 .notification-info-format svg
 {
     width: 16px;
     height: 16px;
+    stroke: #C89851;
 }
 
 .notification-table-bit
@@ -467,11 +583,11 @@ ul li:first-child a.sidebarbtn
 .notification-info svg.like,
 .notification-info-format svg.like
 {
-    fill: #ECBA71;
-    stroke: #ECBA71;
+    fill: #EAB86E;
+    stroke: #EAB86E;
 }
 
-svg.like, svg.repeat, svg.follow, svg.reply, svg.in-reply-to-icon, svg.one-click-software, svg.expand
+svg.like, svg.repeat, svg.follow, svg.reply, svg.in-reply-to-icon, svg.one-click-software, svg.expand, svg.emoji-btn
 {
     vertical-align: middle;
     stroke: #d1cdb7;
@@ -510,6 +626,22 @@ svg.in-reply-to-icon
     font-size: 10px;
 }
 
+.notification-compact .notification-stats .status-interact
+{
+    margin-top: 2px;
+}
+
+.notification-compact .notification-stats svg
+{
+    width: 15px;
+    height: 15px;
+}
+
+.notification-compact .notification-stats .statbtn
+{
+    padding: 2px 6px;
+}
+
 .notification-info
 {
     margin-top: 7px;
@@ -517,39 +649,51 @@ svg.in-reply-to-icon
 
 .notification-info img,
 .notification-info-format img
-{
-    margin-left: 38px;
-    width: 24px;
-    height: 24px;
+{                             
+    margin: auto 6px auto 38px;
+    width: 24px;       
+    height: 24px; 
+    border-radius: 3px;                                                   
+    vertical-align: middle;
     object-fit: cover;
 }
 
 .notification-info .notification-user,
-.notification-info-format .notification-user
+.notification-info-format .notification-user                              
 {
-    display: inline;
+    display: inline;      
+}
+                                                                          
+.notification-text-group-with-icon,
+.notification-text-group                                                  
+{
     vertical-align: middle;
-    position: relative;
-    top: -8px;
-    left: 2px;
 }
 
 /***************************
  *      Statuses           *
  **************************/
-.status,
-.notification-regular
+.status .status-table,
+.notification-regular,
+.scrobble
 {
     padding: 6px 2px 0 6px;
     border-bottom: 1px solid #004B5D !important;
     width: 100%;
     border-spacing: 0px;
 }
-
-.status.focused
+                                                                          
+.status-hide:checked + .status .status-table
 {
-    background-color: #00232B;
-    border-left: 3px solid #ECBA71;
+    padding: 5px 10px;
+}
+                                                                          
+.status-table.focused,
+.status-table:target
+{
+    background-color: #004B5D;
+    border-left: 3px solid #EAB86E;
+    padding-left: 7px;
 }
 
 .notification-info + .status,
@@ -558,7 +702,8 @@ svg.in-reply-to-icon
     padding-top: 0;
 }
 
-.status .profile-picture
+.status .profile-picture,
+.account-sidebar .acct-pfp
 {
     display: inline-block;
     width: 52px;
@@ -571,11 +716,53 @@ svg.in-reply-to-icon
     margin-bottom: 5px;
 }
 
+.status-view                                                              
+{
+    display: inline;                                                      
+    border: 1px solid #004B5D;                                            
+    background-color: #00232B;
+    border-radius: 3px;                                                   
+    width: 12px;                                                          
+    height: 12px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0 1px 3px 2px;
+    margin-left: 10px;
+}                                                                         
+                                                                          
+.status-view:hover
+{
+    background-color: #42838c;
+}
+                                                                          
+.status-view:before                                                       
+{
+    content: "-";
+}
+                                                                          
+.status-hide:checked + .status .status-view:before
+{
+    content: "+";
+}
+                                                                          
+.status-hide
+{
+    display: none;
+}
+                                                                          
+.status-hide:checked + .status .status-data,
+.status-hide:checked + .status .pfp-td,
+.status-hide:checked + .status .notification-info
+{
+    display: none;
+}
+
 .pfp-td
 {
     width: 56px;
     border-collapse: collapse !important;
-    padding: 6px !important;
+    padding: 6px;
 }
 
 .pfp-td img
@@ -591,6 +778,30 @@ svg.in-reply-to-icon
     width: auto;
 }
 
+.seperator
+{
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #004B5D;
+    vertical-align: middle;
+    font-size: 10px;
+}
+
+.time::before
+{
+    content: "•";
+    padding-right: 10px;
+    font-size: 10px;
+}
+
+.time
+{
+    color: #D1CDB7;
+    vertical-align: middle;
+    font-size: 15px;
+    padding-left: 5px;
+    text-decoration: none;
+}
 
 .status .status-info,
 .notification-info-format,
@@ -612,23 +823,38 @@ svg.in-reply-to-icon
     border-spacing: 0px;
     padding: 0 8px;
     margin: 0;
+    vertical-align: middle;
 }
 
 .status .instance-info
 {
     font-style: italic;
     text-decoration: none;
-    margin: 0 4px 0 6px;
     font-size: 14px;
-    padding-top: 1px;
+    vertical-align: middle;
+    padding-left: 4px;
     color: #d1cdb7;
 }
 
 .status .poster-stats
 {
-    /* To maintain compatibility while keeping it a flexbox, we have to 
-     * hardcode the width, sorry! Tables are just weird and I hate CSS */
-    max-width: 520px;
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+}
+
+.status-hide:checked + .status .poster-stats
+{
+    max-width: 540px;
+}
+
+.poster-stats .alignend
+{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 .status .username,
@@ -637,8 +863,6 @@ svg.in-reply-to-icon
     display: inline-block;
     font-weight: bold;
     text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: 350px;
     white-space: nowrap;
     vertical-align: middle;
     color: #d1cdb7;
@@ -648,7 +872,7 @@ svg.in-reply-to-icon
 {
     margin: 8px 0;
     overflow-wrap: break-word;
-    width: 520px;
+    width: 480px;
     color: #FBF5D9;
     display: block;
 }
@@ -658,18 +882,25 @@ svg.in-reply-to-icon
     margin: 2px 0 0 0;
 }
 
+.status-content pre, .notification pre
+{
+    width: 100%;
+    max-width: 100%;
+    overflow-x: scroll;
+}
+
 .status-visibility
 {
+    cursor: pointer;
     color: #d1cdb7;
     display: inline;
-    float: right;
     font-size: 12px;
-    margin: 3px 0 0 3px;
+    margin-left: 5px;
 }
 
 .status-interact
 {
-    margin: 8px 0 0 0;
+    margin: 6px 0 0 0;
 }
 
 .status-interact table.ui-table
@@ -682,6 +913,11 @@ svg.in-reply-to-icon
 {
     border-collapse: collapse !important;
     padding: 0;
+}
+
+.status-interact table.ui-table td
+{
+    vertical-align: middle; /* Exception in notifications sidebar */
 }
 
 /***************************
@@ -701,7 +937,6 @@ svg.in-reply-to-icon
     padding-left: 5px;
     border-right: 0px;
     height: 26px;
-    background: #00232B;
 }
 
 .group-left
@@ -742,18 +977,69 @@ svg.in-reply-to-icon
     padding-left: 15px;
 }
 
+/*********************
+ *   Interactions    *
+ *********************/
+.status-interactions
+{
+    border-bottom: 1px solid #004B5D;
+    margin-top: 2px;
+}
+
+.status-interactions-labels
+{
+    display: inline-block;
+    vertical-align: middle;
+    color: #FBF5D9;
+}
+
+.status-interactions-labels .header-btn
+{
+    padding: 8px 12px;
+    font-size: 15px;
+}
+
+.status-interactions-labels .header-btn .btn-content
+{
+    text-align: left;
+    color: #C4BA8A;
+    font-weight: bold;
+}
+
+.status-interactions .status-interactions-pfps
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 2px;
+}
+
+.status-interactions .pfp-interaction
+{
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: 1px;
+    object-fit: cover;
+}
+
 /**********************
  *    Profiles        *
  **********************/
 .header-btn
 {
-    display: inline-block;
     padding: 8px 15px;
     margin: 0;
     background: inherit;
     text-decoration: none;
-    color: #606060;
+    color: #C4BA8A;
     font-size: 14px;
+}
+
+/* Make inline when not in table */
+.account .header-btn,
+.status .header-btn
+{
+    display: inline-block;
 }
 
 .header-btn .btn-content
@@ -779,6 +1065,35 @@ svg.in-reply-to-icon
     background-repeat: no-repeat;
     background-size: cover;
     height: 256px;
+}
+
+.account-stub-info
+{
+    padding-left: 4px;
+}
+
+.account-stub
+{
+    padding: 4px 4px 0;
+    width: 100%;
+}
+
+.account-stub-top,
+.account-stub-bottom
+{
+    display: block;
+}
+
+.account-stub-bottom
+{
+    color: #C4BA8A;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.search-results .account-stub:not(:last-child)
+{
+    border-bottom: 1px solid #004B5D;
 }
 
 .account
@@ -815,12 +1130,12 @@ svg.in-reply-to-icon
     overflow: auto;
 }
 
-.acct-pfp
+.account .acct-pfp
 {
     position: absolute;
     display: inline;
     z-index: 100;
-    border: 3px solid #ECBA71;
+    border: 3px solid #EAB86E;
     background-color: #004B5D;
     border-radius: 8px;
     width: 100px;
@@ -856,7 +1171,6 @@ svg.in-reply-to-icon
     overflow: hidden;
 }
 
-
 .acct-displayname
 {
     font-size: 26px;
@@ -879,6 +1193,38 @@ svg.in-reply-to-icon
     text-shadow: 0px 0px 5px #000;
 }
 
+.account-sidebar .acct-pfp,
+.account-sidebar .username
+{
+    vertical-align: top;
+}
+
+.account-sidebar .username
+{
+    position: relative;
+    top: 5px;
+    margin-left: 5px;
+}
+
+.account-sidebar .acct-stats
+{
+    margin: auto;
+    table-layout: fixed;
+}
+
+.account-sidebar
+{
+    padding: 7px 7px 3px;
+    background-color: #00232B;
+    border-bottom: 1px dashed #004B5D;
+}
+
+.account-sidebar .header-btn
+{
+    padding: 4px;
+    border-radius: 4px;
+}
+
 .follow-btn
 {
     margin-left: auto;
@@ -889,36 +1235,43 @@ svg.in-reply-to-icon
     padding: 5px 20px;
     border-radius: 3px;
     background: inherit;
-    box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.4);
+    text-shadow: unset !important;
 }
 
 .follow-btn.active
 {
-    box-shadow: unset;
-    color: #FBF5D9;
+    /*box-shadow: unset;*/
+    color: #00232B !important;
     background: #B6C1A2;
 }
 
 /****************
  *   Statusbox  *
  ****************/
+
 .statusbox
 {
     display: block;
     flex-direction: column;
-    padding: 5px;
+    background: #00232B;
+    padding: 10px;
+    border-bottom: 1px dashed #004B5D;
 }
 
 .statusbox textarea
 {
     display: block;
-    border: 1px solid #004B5D;
-    width: 592px;
-    max-width: 592px;
-    min-width: 592px;
+    width: 536px;
+    max-width: 536px;
+    min-width: 536px;
     background: #00232B;
     margin-bottom: 5px;
-    padding: 2px;
+    font: 14px Helvetica, sans-serif, Arial;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid #004B5D;
+    border-radius: 3px;
+    padding: 5px;
 }
 
 .statusbox .statusfooter
@@ -937,10 +1290,32 @@ svg.in-reply-to-icon
     float: right;
 }
 
-.status-interact label
+.status-interact .statbtn
 {
     display: block;
-    padding: 3px 8px;
+    padding: 3px 2px 5px;
+    min-width: 42px;
+}
+
+.view-btn
+{
+    min-width: 25px !important;
+}
+
+.notification-compact .status-interact .statbtn                           
+{                                                                         
+    min-width: 0px !important;
+}
+
+.active-anim
+{                                                                         
+    animation: interact .7s 1;
+}                                                                         
+
+@keyframes interact
+{                          
+    0% { transform: rotateZ(0deg); }
+    100% { transform: rotateZ(360deg); }
 }
 
 .status-interact svg.repeat.active
@@ -950,15 +1325,15 @@ svg.in-reply-to-icon
 
 .status-interact svg.like.active
 {
-    fill: #ECBA71;
-    stroke: #ECBA71;
+    fill: #EAB86E;
+    stroke: #EAB86E;
 }
 
 .status-interact svg.like:hover,
 .status-interact svg.like:active,
 .status-interact svg.like:focus
 {
-    stroke: #ECBA71;
+    stroke: #EAB86E;
     pointer: select;
 }
 
@@ -978,23 +1353,44 @@ svg.in-reply-to-icon
 }
 
 /* Emoji */
-.emoji
+.status-content .emoji,
+.notification-content .emoji,
+.username .emoji,
+.custom-emoji-react,                                                      
+.account-info .emoji,                                                     
+.poll .emoji,
+.acct-displayname .emoji
 {
     font-family: monospace;
     display: inline;
     width: 32px;
     height: 32px;
     vertical-align: middle;
+    margin: 0;
     object-fit: contain;
     transition: transform .2s;
 }
 
-.emoji:hover
+.custom-emoji-react
+{
+    width: 27px;
+    height: 27px;
+}
+
+.username .emoji
+{
+    width: 26px;
+    height: 26px;
+}
+
+.status-content .emoji:hover,
+.notification-content .emoji:hover,
 {
     transform: scale(1.5);
 }
 
-.emoji:active
+.status-content .emoji:active,
+.notification-content .emoji:active,
 {
     transform: scale(2.7);
 }
@@ -1005,11 +1401,83 @@ svg.in-reply-to-icon
     border: 1px solid #004B5D;
 }
 
-.form-group
+.emoji-btn
 {
-    padding: 5px;
-    display: block;
+    position: relative;
+    top: 2px;
 }
+
+/* Emojo picker */
+.emoji-picker
+{
+    overflow: hidden;
+    position: absolute;
+    margin-left: -15px;
+    width: 260px;
+    border: 1px solid #004B5D;
+    background: #004B5D;
+    border-radius: 8px;
+    z-index: 5;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.emoji-picker .tabs .btn
+{
+    display: inline-block;
+} 
+
+.emoji-picker .navigation
+{
+    border-top: 1px solid #004B5D;
+    text-align: center;
+}
+
+.emoji-picker .emoji
+{
+    font-size: 18px;
+    text-align: center;
+    vertical-align: center;
+    padding: 8px 0;
+    max-width: 28px;
+}
+
+.emoji-picker .emoji:hover
+{
+    transform: scale(1.2);
+}
+
+.emoji-picker .emoji:active
+{
+    transition: 0.1s transform;
+    transform: scale(1.0);
+}
+
+.emoji-picker-emojos-wrapper
+{
+    overflow-y: auto;                                                     
+    overflow-x: hidden;                                                   
+    height: 180px;
+    max-height: 180px;
+}
+                                                                          
+input[type=radio].hidden:not(:checked) + .emoji-picker-emojos             
+{                                                                         
+    display: none;
+}                                                                         
+                                                                          
+.emoji-picker-emojos
+{
+    display: grid;                                                        
+    grid-template-columns: repeat(8, 1fr);                                
+    padding: 0px 8px;
+    z-index: 999;                                                         
+}                                                                         
+                                                                          
+.form-group                                                               
+{                                                                         
+    padding: 5px;
+    display: block;                                                       
+}                                                                         
 
 /* Simple page layout */
 .simple-page
@@ -1035,10 +1503,19 @@ svg.in-reply-to-icon
     padding-left: 15px;
 }
 
+.simple-page-header                                                       
+{                                                                         
+    padding: 0;
+}                                                                         
+                                                                          
+.simple-page-header h1
+{
+    margin-bottom: 0;                                                     
+}                                                                         
+                                                                          
 .simple-page p
 {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 14px;
 }
 
 /* Attachments */
@@ -1054,25 +1531,42 @@ svg.in-reply-to-icon
 
 .attachment-container
 {
-    z-index: 3;
+    position: relative;
+    z-index: 1;
     display: inline-block;
     overflow: hidden;
 }
 
-.sensitive
+.sensitive-contain.sensitive
 {
-    z-index: 2;
-    filter: blur(16px);
-    transition: filter .4s;
+    background: #00232B;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
-.sensitive:hover
+.attachment-link                                                      
 {
-    filter: none;
+    font-weight: bold;
+    font-size: 14px;
 }
 
-textarea {
-    color: #FBF5D9;
+.sensitive.attachment-link::after,
+.sensitive.attachment-audio::after
+{
+    content: " (Sensitive)";
+}
+
+.attachment-container:hover .sensitive
+{
+    display: none;
+}
+
+.statusbox textarea
+{
+    border: 1px solid #004B5D;
 }
 
 /* Emoji reacts */
@@ -1089,15 +1583,26 @@ textarea {
 
 .emoji-react-box
 {
-    display: inline-block;
-    list-style-type: none;    
+    display: inline-block;                                                
+    list-style-type: none;                                                
     padding: 3px 7px;
-    margin: 2px 4px;
+    margin: 1px 2px;
+    vertical-align: middle;
 }
-
+                                                                          
+.emoji-react-box.custom-emoji-container                                   
+{
+    padding: 1px 5px;
+}
+                                                                          
 .emoji
 {
     font-family: Emoji;
+}
+
+.emoji-num
+{
+    vertical-align: middle;
 }
 
 /*************************************************
@@ -1106,8 +1611,8 @@ textarea {
 ul.large-list
 {
     width: 500px;
-    border-radius: 6px;
-    background-color: #42838C;
+    border-radius: 8px;
+    background-color: #00232B;
     border: 1px solid #004B5D;
     padding: 0;
     overflow: hidden;
@@ -1121,9 +1626,21 @@ ul.large-list li
 
 ul.large-list li a
 {
-    display: block;
+    display: inline-block;
     padding: 15px;
     list-style-type: none;
+}
+
+ul.large-list li .list-item
+{
+    width: 406px;
+}
+
+ul.large-list li .edit-list-btn
+{
+    display: inline-block;
+    width: 33px;
+    padding: 15px;
 }
 
 .lists-view-header
@@ -1140,6 +1657,36 @@ ul.large-list li a
 .lists-view-container ul li:not(:last-child)
 {
     border-bottom: 1px solid #004B5D;
+}
+
+.hidden:not(:checked) + .list-edit-content
+{
+    display: none;
+}
+                                                                          
+.list-edit-content
+{
+    background-color: #00232B;
+    padding: 8px;
+    border-top: 1px solid #004B5D;
+}
+                                                                          
+.create-list-form
+{                                                                         
+    width: 380px;                                                         
+    margin: 0;
+    padding: 8px;
+    border: 0;
+}
+                                                                          
+.create-list-btn                                                          
+{                                                                         
+    width: 104px;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+    padding-top: 8px !important;                                          
+    padding-bottom: 8px !important;                                       
 }
 
 /* Navigation */
@@ -1165,17 +1712,20 @@ ul.large-list li a
 {
     width: 100%;
     border: 0;
+    transition: .1s box-shadow, .1s border-color;
+    text-shadow: unset;
 }
 
-.tabs .tab-btn.focused
+.tabs .tab-btn.active
 {
-    border-bottom: 3px solid #ECBA71;
+    background: #EAB86E !important;
+    color: #00232B;
 }
 
 .tabs .tab-btn:hover,
 .tabs .tab-btn:active
 {
-    border-bottom: 3px solid #42838c;
+    background: #42838c;
 }
 
 
@@ -1203,15 +1753,16 @@ ul.large-list li a
 {
     z-index: 5;
     display: none;
+    cursor: default;
     background: #004B5D;
     color: #FBF5D9;
     border-radius: 4px;
+    border: 1px solid #004B5D;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .menu ul
 {
-    background-color: #004B5D;
     margin: 0;
     padding: 4px 0 4px 0;
 }
@@ -1220,19 +1771,6 @@ ul.large-list li a
 {
     list-style-type: none;
     display: block;
-}
-
-.menu .btn-menu
-{
-    background: unset;
-    background-color: unset;
-    display: block;
-    padding: 6px 12px;
-    width: 100%;
-    border: 0;
-    cursor: pointer;
-    text-align: left;
-    box-sizing: border-box;
 }
 
 .user-options-btn
@@ -1250,7 +1788,6 @@ ul.large-list li a
 .menu .btn-menu:hover
 {
     background-color: #00232B;
-    color: #FBF5D9;
 }
 
 .nolink
@@ -1258,9 +1795,335 @@ ul.large-list li a
     text-decoration: none;
 }
 
-.status-content pre, .notification pre
+.bullet-separate
+{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.menubar
+{
+    background: #002B36;
+    border-bottom: 1px solid #004B5D;
+    padding: 6px;
+    /* box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); */
+}
+
+.mini-links
+{
+    margin: 16px 8px;
+    text-align: center;
+    color: #d1cdb7;
+    font-size: 10px;
+}
+
+.mini-links .bullet-separate
+{
+    color: #d1cdb7;
+    font-size: 8px;
+    margin: unset;
+}
+
+#instance-panel + .mini-links
+{
+    margin: 10px 8px;
+}
+
+/******************************
+ *         Scrobbles          *
+ ******************************/
+
+.scrobblist-info
+{
+    padding: 4px;
+    border-collapse: collapse;
+    border-bottom: 1px solid #004B5D;
+    width: 100%;
+}
+
+.scrobblist-info .username
+{
+    font-weight: bold;
+}
+
+.pfp-img-scrobble
+{
+    position: relative;
+    top: 2px;
+    left: 2px;
+}
+
+.scrobblist-info-text
+{
+    position: relative;
+    top: 5px;
+    left: 6px;
+}
+
+.scrobble
+{
+    padding: 0px;
+}
+
+.scrobbles
+{
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+}
+
+.scrobbles tr td
+{
+    padding: 8px 10px;
+    margin: 0;
+}
+
+.scrobble-value
 {
     width: 100%;
-    max-width: 100%;
-    overflow-x: scroll;
+    border-right: 0;
+    color: #004B5D;
+}
+
+.scrobble-key
+{
+    border-right: 1px solid #004B5D;
+    background-color: #00232B;
+    color: #004B5D;
+    font-weight: bold;
+}
+
+.emoji-picker
+{
+    display: none;
+}
+
+.status-interact .emoji-picker
+{
+    display: block;
+}
+
+.emoji-picker .navigation .nav-btn
+{
+    padding: 4px;
+}
+
+/* Instance information */
+#instance-panel
+{
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 0;
+    margin-top: 10px;
+    border-top: 1px dashed #004B5D;
+    border-bottom: 1px dashed #004B5D;
+    background: #004B5D;
+    text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.static-html h2
+{
+    margin-top: 0px;
+}
+
+/* About page */
+#about-icon
+{
+    width: 72px;
+    height: 72px;
+    display: inline;
+    margin-right: 16px;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+#about-icon:hover
+{
+    box-shadow: 0px 2px 5px #EAB86E;
+}
+
+.about-header h1
+{
+    text-align: center;
+    padding-bottom: 16px;
+    font-size: 42px;
+}
+
+.about-header h1 span
+{
+    vertical-align: middle;
+    margin-right: 32px;
+}
+
+/****** FUN STUFF ******/
+.is-cat:before,
+.is-cat:after,
+.is-bun:before,
+.is-bun:after
+{
+    content: "";
+    display: block;
+    border: 3px solid #ececec !important;
+    background-color: #E6C6E6 !important;
+    width: 24px;
+    height: 30px;
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 0;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.is-cat img,
+.is-bun img
+{
+    overflow: visible;
+    border-radius: 100% !important;
+    z-index: 3;
+    position: absolute;
+}
+
+.is-cat:before,
+.is-bun:before
+{
+    transform: rotate(33deg) skew(30deg);
+    border-radius: 0 75% 75% 75%;
+    margin-left: 1px;
+}
+
+.is-cat:after,
+.is-bun:after
+{
+    transform: rotate(-33deg) skew(-30deg);
+    border-radius: 75% 0 75% 75%;
+    margin-left: 31px;
+}
+
+.is-bun:before, .is-bun:after
+{
+    border-radius: 75% 75% 75% 75%;
+    margin-top: -5px;
+}
+
+.is-cat:hover:before,
+.is-bun:hover:before
+{
+    animation: earwiggleleft 1s infinite;
+}
+
+.is-cat:hover:after,
+.is-bun:hover:after
+{
+    animation: earwiggleright 1s infinite;
+}
+
+@keyframes earwiggleleft {
+    0% { transform: rotate(35deg) skew(30deg); }
+    25% { transform: rotate(10deg) skew(30deg); }
+    50% { transform: rotate(20deg) skew(30deg); }
+    75% { transform: rotate(0deg) skew(30deg); }
+    100% { transform: rotate(35deg) skew(30deg); }
+}
+
+@keyframes earwiggleright {
+    0% { transform: rotate(-35deg) skew(-30deg); }
+    27% { transform: rotate(-10deg) skew(-30deg); }
+    50% { transform: rotate(-20deg) skew(-30deg); }
+    70% { transform: rotate(-0deg) skew(-30deg); }
+    100% { transform: rotate(-35deg) skew(-30deg); }
+}
+
+/* Wormle stuff - If you're a theme dev just ignore this honestly */
+.wormle-view
+{
+    position: relative;
+    border: 1px solid #505050;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    height: 400px;
+    margin: auto;
+}
+
+.wormle-view h1
+{
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 54px;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.wormle-view h1,
+.wormle-view p,
+.wormle-view .wormle-score,
+.wormle-view input
+{
+    position: relative;
+    z-index: 999;
+}
+
+.wormle-body
+{
+    z-index: 3;
+    position: absolute;
+    border-radius: 7px;
+    /* border-radius: 4px; */
+}
+
+.wormle-player
+{
+    background-color: #00dd00;
+    border: 1px solid #00aa00;
+}
+
+.wormle-apple
+{
+    background-color: #dd0000;
+    border: 1px solid #aa0000;
+    border-radius: 100%;
+    box-shadow: 0px 0px 20px 4px rgba(200, 0, 0, 0.4);
+}
+
+.wormle-play-btn
+{
+    margin-top: 12px;
+    padding: 68px 0px 72px;
+    border: none !important;
+    border-bottom: 4px solid #009000 !important;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(#00ee00, #00cc00);
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, .6);
+    font-size: 34px;
+    font-family: monospace;
+    color: #fff;
+    border-radius: 6px;
+    transition: .1s;
+    cursor: pointer;
+}
+
+.wormle-play-btn:hover
+{
+    margin-top: 16px;
+    border-bottom: 0px solid #009000 !important;
+    box-shadow: none;
+}
+
+.wormle-score
+{
+    z-index: 9;
+    padding-right: 4px;
+    position: absolute;
+    float: right;
+    font-size: 20px;
+    color: black;
+}
+
+.wormle-title
+{
+    z-index: 9;
+    margin-top: 140px;
+    text-align: center;
+    display: block;
 }
