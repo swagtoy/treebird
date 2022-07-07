@@ -340,7 +340,7 @@ table.present th, table.present td
 .e-error
 {
     display: block;
-    background: linear-gradient(#fba0a0, #fcb0b0);
+    background: linear-gradient(#ffb0b0, #fba0a0);
     color: #000;
     border: 1px solid #bb1c1f;
     padding: 15px;
@@ -587,13 +587,8 @@ input[type=button], input[type=submit]
 .notification-compact .notification-content
 {
     max-height: 100px;
-    overflow: hidden;
-}
-
-.notification-compact:hover .notification-content
-{
-    max-height: unset;
-    overflow: hidden;
+    overflow: auto;
+    margin-left: 2px;
 }
 
 .notification-compact .notification-info
@@ -604,6 +599,12 @@ input[type=button], input[type=submit]
     margin-top: 0;
     vertical-align: middle;
     font-weight: bold;
+}
+
+.notification-compact .username .emoji
+{
+    width: 16px;
+    height: 16px;
 }
 
 .notification-info svg,
@@ -691,8 +692,16 @@ svg.in-reply-to-icon
     margin-bottom: 7px;
 }
 
-.notification-info img,
-.notification-info-format img
+.notification-compact .notification-info
+{
+    margin-left: unset;
+    margin-bottom: unset;
+}
+
+
+.notification-info img.avatar,
+.notification-info .pfp-compact-td img,
+.notification-info-format .pfp-compact-td img
 {
     width: 24px;
     height: 24px;
@@ -2037,7 +2046,6 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 }
 
 /* Chats */
-
 .message-container
 {
     position: relative;
@@ -2154,6 +2162,7 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     overflow: auto;
     height: 550px;
     min-height: 400px;
+    overflow-anchor: none;
 }
 
 .chatbox
@@ -2185,6 +2194,13 @@ input[type=submit].chatbox-btn
     display: block;
     border: unset;
     padding: 12px 0px;
+}
+
+/* Anchor lets us stay scroll at the bottom if in view */
+.anchor
+{
+    overflow-anchor: auto;
+    height: 1px;
 }
 
 /* Instance information */
