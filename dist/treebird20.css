@@ -910,9 +910,25 @@ svg.in-reply-to-icon
 .status .status-content
 {
     margin: 2px 0 0 0;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     width: 480px;
     display: block;
+}
+
+.status .status-content p,
+.status .status-content a
+{
+    /* overflow-wrap: anywhere; */
+}
+
+.status .status-content pre
+{
+    overflow: scroll;
+    display: block;
+    padding: 8px;
+    background-color: #f3f3f3;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 .status .status-content p
@@ -1149,8 +1165,9 @@ p}
 
 .account-note
 {
-    word-break: break-all;
+    word-break: break-word;
     text-align: center;
+    overflow-wrap: break-word;
 }
 
 .account-info
