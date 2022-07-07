@@ -29,6 +29,7 @@
 #include "../static/chats_page.ctmpl"
 #include "../static/message.ctmpl"
 #include "../static/chat_view.ctmpl"
+#include "../static/embed.ctmpl"
 
 struct construct_message_args
 {
@@ -156,7 +157,7 @@ void content_chats(struct session* ssn, mastodont_t* api, char** data)
     // TOOD cleanup chats
 }
 
-void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
+char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -177,45 +178,72 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
         .offset = keyint(ssn->query.offset),
         .limit = 20,
     };
+    
+    if (len) *len = 0;
 
-    if (mastodont_get_chat_messages(api, &m_args, data[0],
+    if (mastodont_get_chat_messages(api, &m_args, id,
                                     &args, &storage, &messages, &messages_len) ||
-        mastodont_get_chat(api, &m_args, data[0],
+        mastodont_get_chat(api, &m_args, id,
                            &storage_chat, &chat))
     {
-        messages_html = construct_error(storage.error, E_ERROR, 1, NULL);
+        chats_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
         messages_html = construct_messages(messages, &(ssn->acct), &(chat.account), messages_len, NULL);
         if (!messages_html)
             messages_html = construct_error("This is the start of something new...", E_NOTICE, 1, NULL);
-        /* messages_html = construct_chats_view(chats_html, NULL); */
 
         struct chat_view_template tmpl = {
+            .back_link = "/chats",
             .prefix = config_url_prefix,
             .avatar = chat.account.avatar,
             .acct = chat.account.acct,
             .messages = messages_html
         };
 
-        chats_page = tmpl_gen_chat_view(&tmpl, NULL);
+        chats_page = tmpl_gen_chat_view(&tmpl, len);
     }
 
+    mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&acct_storage);
+    free(messages_html);
+    return chats_page;
+}
+
+void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
+{
+    char* chat_view = construct_chat_view(ssn, api, data[0], NULL);
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
-        .content = chats_page,
+        .content = chat_view,
         .sidebar_left = NULL
     };
     
-    // Outpuot
+    // Output
     render_base_page(&b, ssn, api);
+    
+    free(chat_view);
+}
 
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&acct_storage);
-    free(chats_page);
-    free(messages_html);
-    // TOOD cleanup chats
+
+void content_chat_embed(struct session* ssn, mastodont_t* api, char** data)
+{
+    size_t result_len;
+    char* result;
+    char* chat_view = construct_chat_view(ssn, api, data[0], NULL);
+
+    struct embed_template tmpl = {
+        .stylesheet = "treebird20",
+        .embed = chat_view,
+    };
+
+    result = tmpl_gen_embed(&tmpl, &result_len);
+    
+    // Output
+    send_result(NULL, NULL, result, result_len);
+    
+    free(chat_view);
+    free(result);
 }
 

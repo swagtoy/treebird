@@ -92,7 +92,7 @@ char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
     if (port_val) *port_val = '\0';
 
     // Load first reply
-    if (strcmp(status->account.acct, ssn->acct.acct) != 0)
+    if (ssn->logged_in && strcmp(status->account.acct, ssn->acct.acct) != 0)
     {
         replies = malloc(replies_size = strlen(status->account.acct)+2);
         replies[0] = '@';

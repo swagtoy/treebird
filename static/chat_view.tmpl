@@ -1,15 +1,20 @@
 <div class="page-header">
-  <span class="page-header-button">&larr;</span>
-  <img src="{{ %s : avatar }}" class="page-header-image">
+  <a href="{{ %s : prefix }}{{ %s : back_link }}" class="page-header-button">&larr;</a>
+  <img src="{{ %s : avatar }}" class="page-header-image avatar">
   <a href="{{ %s : prefix }}/@{{%s:acct}}" class="page-header-title">{{ %s : acct }}</a>
 </div>
 <div class="chat-view">
   {{ %s : messages }}
+</div>
+<form action="" method="post">
   <table class="chatbox ui-table">
     <tr>
       <td>
         <textarea></textarea>
       </td>
+      <td>
+        <input type="submit" class="chatbox-btn btn" value="Send">
+      </td>
     </tr>
   </table>
-</div>
+</form>

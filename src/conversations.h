@@ -37,6 +37,8 @@ char* construct_messages(struct mstdnt_message* message,
                          size_t* ret_size);
 
 void content_chats(struct session* ssn, mastodont_t* api, char** data);
+char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len);
+void content_chat_embed(struct session* ssn, mastodont_t* api, char** data);
 void content_chat_view(struct session* ssn, mastodont_t* api, char** data);
 
 #endif // LISTS_H

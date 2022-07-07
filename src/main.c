@@ -108,6 +108,7 @@ int main(void)
         { "/tag/:", content_tl_tag },
         { "/chats/:", content_chat_view },
         { "/chats", content_chats },
+        { "/chats_embed/:", content_chat_embed },
         // API
         { "/treebird_api/v1/notifications", api_notifications },
         { "/treebird_api/v1/interact", api_status_interact }
