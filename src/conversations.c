@@ -39,29 +39,74 @@ struct construct_message_args
     size_t msg_size; // Read messages backwards
 };
 
-char* construct_chat(struct mstdnt_chat* chat, size_t* size)
+struct construct_chats_args
+{
+    mastodont_t* api;
+    struct mstdnt_args* args;
+    struct mstdnt_chat* chats;
+};
+
+char* construct_chat(mastodont_t* api,
+                     struct mstdnt_args* m_args,
+                     struct mstdnt_chat* chat,
+                     size_t* size)
 {
     char* result;
+    char* msg_id = NULL;
+    char* last_message = "<span class=\"empty-chat-text\">Chat created</span>";
+
+    // Get latest message
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_message* messages = NULL;
+    size_t messages_len = 0;
+    
+    struct mstdnt_chats_args args = {
+        .with_muted = MSTDNT_TRUE,
+        .offset = 0,
+        .limit = 1,
+    };
+
+    if (mastodont_get_chat_messages(api, m_args, chat->id, &args, &storage,
+                                    &messages, &messages_len) == 0 && messages_len == 1)
+    {
+        last_message = messages[0].content;
+        msg_id = messages[0].id;
+    }
+    
     struct chat_template data = {
         .id = chat->id,
         .prefix = config_url_prefix,
         .acct = chat->account.acct,
         .avatar = chat->account.avatar,
         .display_name = chat->account.display_name,
-        .last_message = "",
+        .message_id = msg_id,
+        .last_message = last_message,
     };
     result = tmpl_gen_chat(&data, size);
+    mastodont_storage_cleanup(&storage);
+    // TODO cleanup messages
     return result;
 }
 
 static char* construct_chat_voidwrap(void* passed, size_t index, size_t* res)
 {
-    return construct_chat((struct mstdnt_chat*)passed + index, res);
+    struct construct_chats_args* args = passed;
+    return construct_chat(args->api, args->args, args->chats + index, res);
 }
 
-char* construct_chats(struct mstdnt_chat* chats, size_t size, size_t* ret_size)
+char* construct_chats(mastodont_t* api,
+                      struct mstdnt_args* m_args,
+                      struct mstdnt_chat* chats,
+                      size_t size,
+                      size_t* ret_size)
 {
-    return construct_func_strings(construct_chat_voidwrap, chats, size, ret_size);
+    struct construct_chats_args args = {
+        .api = api,
+        .args = m_args,
+        .chats = chats,
+    };
+            
+    return construct_func_strings(construct_chat_voidwrap, &args, size, ret_size);
 }
 
 char* construct_message(struct mstdnt_message* msg,
@@ -135,7 +180,7 @@ void content_chats(struct session* ssn, mastodont_t* api, char** data)
         chats_page = construct_error(storage.error, E_ERROR, 1, NULL);
     }
     else {
-        chats_html = construct_chats(chats, chats_len, NULL);
+        chats_html = construct_chats(api, &m_args, chats, chats_len, NULL);
         if (!chats_html)
             chats_html = construct_error("No chats", E_NOTICE, 1, NULL);
         chats_page = construct_chats_view(chats_html, NULL);
@@ -207,6 +252,7 @@ char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&acct_storage);
     free(messages_html);
+    // TODO cleanup messages
     return chats_page;
 }
 

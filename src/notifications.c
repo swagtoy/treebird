@@ -126,6 +126,8 @@ char* construct_notification_compact(struct session* ssn,
         .display_name = display_name,
         .action = type_str,
         .notif_svg = type_svg,
+        .is_status = (notif->type == MSTDNT_NOTIFICATION_STATUS ||
+                      notif->type == MSTDNT_NOTIFICATION_MENTION ? "is-mention" : NULL),
         /* Might show follower address */
         .content = (notif->type == MSTDNT_NOTIFICATION_FOLLOW ?
                    notif->account->acct : status_format),

@@ -1,16 +1,15 @@
-<a href="{{%s:prefix}}/chats/{{%s:id}}">
-  <table class="account-stub">
+<a href="{{%s:prefix}}/chats/{{%s:id}}#{{%s:message_id}}">
+  <table class="contact">
     <tr>
       <td class="pfp-td">
         <img src="{{%s:avatar}}">
       </td>
-      <td class="account-stub-info-wrapper">
-        <div class="account-stub-info">
-          <div class="account-stub-top">
-            <span class="username">{{%s:display_name}}</span>
-            <span class="instance-info">@{{%s:acct}}</span>
+      <td class="contact-right-td">
+        <div class="contact-right">
+          <div class="contact-info">
+            <span class="username" title="{{%s:acct}}">{{%s:display_name}}</span>
           </div>
-          <div class="account-stub-bottom">
+          <div class="last-message">
             <span class="chat-msg-preview">{{ %s : last_message }}</span>
           </div>
         </div>

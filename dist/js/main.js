@@ -134,8 +134,8 @@ function change_count_text(val, sum)
 
 function interact_action(status, type)
 {
-    let like = status.querySelector(".like");
-    let repeat = status.querySelector(".repeat");
+    let like = status.querySelector(".statbtn .like");
+    let repeat = status.querySelector(".statbtn .repeat");
     
     let svg;
     if (type.value === "like" || type.value === "unlike")

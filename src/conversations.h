@@ -22,8 +22,15 @@
 #include <mastodont.h>
 #include "session.h"
 
-char* construct_chat(struct mstdnt_chat* chat, size_t* size);
-char* construct_chats(struct mstdnt_chat* chats, size_t size, size_t* ret_size);
+char* construct_chat(mastodont_t* api,
+                     struct mstdnt_args* m_args,
+                     struct mstdnt_chat* chat,
+                     size_t* size);
+char* construct_chats(mastodont_t* api,
+                      struct mstdnt_args* m_args,
+                      struct mstdnt_chat* chats,
+                      size_t size,
+                      size_t* ret_size);
 char* construct_chats_view(char* lists_string, size_t* size);
 // Message
 char* construct_message(struct mstdnt_message* message,
