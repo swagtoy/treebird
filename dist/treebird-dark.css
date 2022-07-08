@@ -1,0 +1,218 @@
+/* Dark color overrides */
+
+html
+{
+    background-color: #202020;
+}
+
+body
+{
+    color: #fcfcfc;
+}
+
+#main-page
+{
+    border: 1px solid rgba(60, 60, 60, 0.8);
+}
+
+#navbar
+{
+    border-top: 2px solid #5e5e5e;
+    background: linear-gradient(#3e3e3e, #262626);
+    border-bottom: 1px solid #101010;
+}
+
+a, a:visited, a:hover, a:active
+{
+    color: #eaeaea;
+}
+
+#navbar img
+{
+    filter: contrast(0);
+}
+
+.navbar-btn
+{
+    stroke: #aaa;
+}
+
+#navbar span.info
+{
+    color: #aaa;
+}
+
+.mini-links a,
+.mini-links .bullet-separate
+{
+    color: #606060;
+}
+
+.sidebar
+{
+    background-color: #222;
+}
+
+.btn
+{ 
+    background: linear-gradient(#303030, #252525);
+    color: #bbb;
+    text-decoration: none;
+    padding: 6px 12px;
+}
+
+#main
+{
+    background-color: #202020;
+}
+
+.btn:hover,
+.btn:active,
+.btn-menu:hover,
+.sidebarbtn:hover
+{ 
+    background: linear-gradient(#424242, #363636);
+    color: #fff;
+    cursor: pointer;
+}
+
+.sidebarbtn, .sidebarbtn:visited
+{
+    color: #808080;
+}
+
+#leftbar, #rightbar
+{
+    border-color: #333;
+}
+
+.btn.active
+{
+    background: linear-gradient(#606060, #d3d3d3);
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+
+.btn-alt.active,
+.btn-alt:active
+{
+    background: linear-gradient(#ee0000, #aa0000);
+    border-color: #800000;
+}
+
+.btn-alt:hover
+{
+    background: linear-gradient(#aa0000, #ee0000);
+}
+
+.statusbox
+{
+    background-color: #303030;
+    border-color: #606060;
+}
+
+.menubar
+{
+    background: linear-gradient(#404040, #303030);
+    border-color: #505050;
+}
+
+.statusbox textarea,
+input[type=textbox]
+{
+    background-color: #444;
+    border-color: #666;
+    color: #fff;
+}
+
+input[type=submit]
+{
+    border-color: #666;
+}
+
+select
+{
+    background: linear-gradient(#555, #404040);
+    color: #ccc;
+    border-color: #666;
+}
+
+.account-sidebar
+{
+    background-color: #404040;
+}
+
+.header-btn
+{
+    background: unset;
+}
+
+.header-btn span,
+.header-btn .btn-header,
+.header-btn .btn-content,
+.username
+{
+    color: #dadada;
+}
+
+.status-interact svg
+{
+    stroke: #aaa;
+}
+
+.status .instance-info
+{
+    color: #aaa;
+}
+
+.poster-stats .alignend
+{
+    background-color: #202020;
+}
+
+.status-view
+{
+    background-color: #404040;
+    border: 1px solid #505050;
+}
+
+.menu
+{
+    background-color: #454545;
+    color: #ddd;
+    border-color: #585858;
+}
+
+.menu .btn-menu
+{
+    color: #ddd;
+}
+
+.menu .btn-menu:hover
+{
+    box-shadow: 0px 0px 0px 1px #505050;
+}
+
+.time
+{
+    color: #6a6a6a;
+}
+
+.status
+{
+    border-color: #454545;
+}
+
+.in-reply-to-id
+{
+    color: #6c6c6c;
+}
+
+.group-inputbox
+{
+    border-color: #707070;
+}
+
+

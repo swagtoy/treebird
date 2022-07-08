@@ -259,6 +259,7 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
 
 void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data)
 {
+    char* theme_str = NULL;
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     char* page, *notif_html = NULL;
@@ -308,10 +309,18 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
     }
 
+    // Set theme
+    if (!(ssn->config.theme && strcmp(ssn->config.theme, "treebird") == 0 &&
+          ssn->config.themeclr == 0))
+    {
+        easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",
+                  ssn->config.theme,
+                  ssn->config.themeclr ? "-dark" : "");
+    }
+    
     size_t len;
     struct notifications_embed_template tdata = {
-        .theme = ssn->config.theme,
-        .theme_var = ssn->config.themeclr ? "-dark" : NULL,
+        .theme_str = theme_str,
         .notifications = notif_html,
         .navigation_box = navigation_box
     };
@@ -321,9 +330,10 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
     send_result(NULL, NULL, page, len);
 
     mastodont_storage_cleanup(&storage);
-    if (notif_html) free(notif_html);
-    if (navigation_box) free(navigation_box);
-    if (page) free(page);
+    free(notif_html);
+    free(navigation_box);
+    free(page);
+    free(theme_str);
 }
 
 void api_notifications(struct session* ssn, mastodont_t* api, char** data)

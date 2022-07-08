@@ -42,6 +42,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     set_mstdnt_args(&m_args, ssn);
     char* cookie = getenv("HTTP_COOKIE");
     enum l10n_locale locale = l10n_normalize(ssn->config.lang);
+    char* theme_str = NULL;
     const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
     const char* sidebar_embed = "<iframe class=\"sidebar-frame\" loading=\"lazy\" src=\"/notifications_compact\"></iframe>";
     char* background_url_css = NULL;
@@ -123,10 +124,18 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                   (g_cache.panel_html.response ?
                    g_cache.panel_html.response : ""));
 
-    struct index_template index = {
+    if (!(ssn->config.theme && strcmp(ssn->config.theme, "treebird") == 0 &&
+          ssn->config.themeclr == 0))
+    {
+        easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",
+                  ssn->config.theme,
+                  ssn->config.themeclr ? "-dark" : "");
+    }
+        
+
+    struct index_template index_tmpl = {
         .title = L10N[locale][L10N_APP_NAME],
-        .theme = ssn->config.theme,
-        .theme_clr = ssn->config.themeclr ? "-dark" : "",
+        .theme_str = theme_str,
         .prefix = config_url_prefix,
         .background_url = background_url_css,
         .name = L10N[locale][L10N_APP_NAME],
@@ -163,7 +172,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     };
     
     size_t len;
-    char* data = tmpl_gen_index(&index, &len);
+    char* data = tmpl_gen_index(&index_tmpl, &len);
     
     if (!data)
     {
@@ -182,6 +191,7 @@ cleanup:
     free(account_sidebar_str);
     free(background_url_css);
     free(instance_str);
+    free(theme_str);
 }
 
 void send_result(char* status, char* content_type, char* data, size_t data_len)
