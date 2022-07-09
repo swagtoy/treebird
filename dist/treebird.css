@@ -1729,9 +1729,16 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 {
     display: inline-block;
     list-style-type: none;    
-    padding: 5px 7px;
+    padding: 3px 7px;
     margin: 1px 2px;
     vertical-align: middle;
+}
+
+.emoji-react-box .emoji
+{
+    position: relative;
+    top: 1px;
+    font-size: 20px;
 }
 
 .emoji-react-box.custom-emoji-container

@@ -25,6 +25,17 @@ function reply_get_mentions(reply, content)
     return res;
 }
 
+function form_enter_submit(e, that)
+{
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 13)
+        that.closest('form').submit();
+}
+
+// Submit form entry on enter when in textbox/textarea
+document.querySelectorAll("input[type=text], input[type=url], input[type=email], input[type=password], textarea").forEach((i) => {
+    i.addEventListener("keydown", e => form_enter_submit(e, i));
+});
+
 function construct_quick_reply_form(status)
 {
     let src = document.createElement("form");
@@ -87,6 +98,7 @@ function construct_quick_reply_form(status)
     statusfooter.appendChild(statusfooter_sides.left);
     statusfooter.appendChild(statusfooter_sides.right);
     statusbox.appendChild(textarea);
+    textarea.addEventListener("keydown", e => form_enter_submit(e, textarea));
     statusbox.appendChild(statusfooter);
     src.appendChild(hiddeninput);
     src.appendChild(statusbox);

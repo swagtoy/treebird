@@ -262,3 +262,19 @@ ul.large-list li .edit-list-btn
 {
     background-color: #371b1b;
 }
+
+.statusbox .post-group input[type=radio].hidden:checked + .visibility-icon svg
+{
+    stroke: #fff;
+}
+
+.statusbox .post-group .visibility-icon:hover
+{
+    background-color: #4f4f4f;
+}
+
+.emoji-react-box
+{
+    border: 1px solid #515151;
+    padding: 3px 7px;
+}
