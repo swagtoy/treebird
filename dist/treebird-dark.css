@@ -120,11 +120,19 @@ a, a:visited, a:hover, a:active
 }
 
 .statusbox textarea,
-input[type=textbox]
+input[type=text]
 {
     background-color: #444;
     border-color: #666;
     color: #fff;
+}
+
+.status.focused,
+.status:target
+{
+    padding-left: 7px;
+    background-color: #371b1b;
+    border-left: 3px solid #aa0000;
 }
 
 input[type=submit]
@@ -205,9 +213,14 @@ select
     border-color: #454545;
 }
 
-.in-reply-to-id
+.in-reply-to svg
 {
-    color: #6c6c6c;
+    stroke: #8c8c8c;
+}
+
+.in-reply-to, .in-reply-to a
+{
+    color: #8c8c8c;
 }
 
 .group-inputbox
@@ -215,4 +228,37 @@ select
     border-color: #707070;
 }
 
+#instance-panel
+{
+    background: repeating-linear-gradient(-45deg, transparent, transparent 10px, #303030 10px, #303030 20px);
+    border-top: 1px dashed #505050;
+    border-bottom: 1px dashed #505050;
+}
 
+ul.large-list
+{
+    border: 1px solid #404040;
+}
+
+.lists-view-container ul li:not(:last-child)
+{
+    border-bottom: 1px solid #505050;
+}
+
+ul.large-list li .edit-list-btn
+{
+    background: linear-gradient(#606060, #505050);
+    color: #fff;
+    border-left: 1px solid #404040;
+}
+
+.list-edit-content
+{
+    background-color: #404040;
+    border-top: #404040;
+}
+
+.static.focused .poster-stats .alignend, .status:target .poster-stats .alignend
+{
+    background-color: #371b1b;
+}

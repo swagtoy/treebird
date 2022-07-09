@@ -45,7 +45,7 @@ ul
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(200, 200, 200, 0.7);
+    border: 1px solid rgba(200, 200, 200, 0.5);
     border-radius: 5px;
     overflow: hidden;
 }
@@ -1391,6 +1391,48 @@ p}
     min-width: 25px !important;
 }
 
+.statusbox .post-group
+{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 1px;
+}
+
+.statusbox .post-group .visibility-icon
+{
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+.statusbox .post-group .visibility-icon:hover
+{
+    background-color: #d3d3d3;
+}
+
+.statusbox .post-group input[type=radio].hidden:checked + .visibility-icon svg
+{
+    stroke: #000;
+}
+
+.statusbox .post-group .visibility-icon svg
+{
+    position: relative;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    stroke: #7a7a7a;
+}
+
+.statusbox .post-group .visibility-icon.vis-direct svg
+{
+    top: 5px;
+}
+
 .notification-compact .status-interact .statbtn
 {
     min-width: 0px !important;
@@ -1714,7 +1756,7 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 ul.large-list
 {
     width: 500px;
-    border-radius: 15px;
+    border-radius: 5px;
     background-color: #f8f8f8;
     border: 1px solid #cacaca;
     padding: 0;
