@@ -4,25 +4,25 @@
     padding: 0;
 }
 
-html, body
+body
 {
-    margin: 5px;
-    padding: 0;
+    margin-bottom: 40px;
+    margin-top: 10px;
 }
 
 html
 {
-    height: 100%;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    background-color: unset !important;
     background-color: #eee;
 }
 
 body
 {
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: unset;
     font-family: sans-serif, Arial, Helvetica;
     color: #040404;
+    height: 100%;
 }
 
 /* Basic elements */
