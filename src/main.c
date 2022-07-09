@@ -151,7 +151,11 @@ int main(void)
         char* get_str = read_get_data(&(ssn.query));
 
         // Read config options
-        load_config(&ssn, &api);
+        enum config_page page = CONFIG_GENERAL;
+        char* path_info = getenv("PATH_INFO");
+        if (path_info && strcmp(path_info, "/config/appearance") == 0)
+            page = CONFIG_APPEARANCE;
+        load_config(&ssn, &api, page);
 
         // Load current account information
         get_account_info(&api, &ssn);

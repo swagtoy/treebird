@@ -24,18 +24,28 @@
 #include "attachments.h"
 #include "key.h"
 
+enum config_page
+{
+    CONFIG_GENERAL,
+    CONFIG_APPEARANCE,
+};
+
 int set_config_str(struct session* ssn,
                    char** v,
                    char* cookie_name,
                    struct key* post,
-                   struct key* cookie);
+                   struct key* cookie,
+                   enum config_page page,
+                   enum config_page curr_page);
 
 int set_config_int(struct session* ssn,
                    int* v,
                    char* cookie_name,
                    struct key* post,
-                   struct key* cookie);
+                   struct key* cookie,
+                   enum config_page page,
+                   enum config_page curr_page);
 
-void load_config(struct session* ssn, mastodont_t* api);
+void load_config(struct session* ssn, mastodont_t* api, enum config_page page);
 
 #endif // LOCAL_CONFIG_SET_H
