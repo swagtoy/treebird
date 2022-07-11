@@ -522,6 +522,17 @@ input[type=button], input[type=submit]
     padding: 3px 15px;
 }
 
+.btn-alt
+{
+    display: inline-block;
+    border: 1px solid #858ba6;
+    background-color: #a1a7c8;
+    text-align: middle;
+    vertical-align: middle;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
 .post-btn
 {
     background: linear-gradient(#aa0000, #900000);
@@ -1736,14 +1747,12 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
     list-style-type: none;    
     padding: 3px 7px;
     margin: 1px 2px;
-    vertical-align: middle;
+    vertical-align: center;
 }
 
 .emoji-react-box .emoji
 {
-    position: relative;
-    top: 1px;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .emoji-react-box.custom-emoji-container
@@ -2017,12 +2026,30 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     color: #ccc;
     font-size: 8px;
-    margin: unset;
+    margin: unset;e
 }
 
 #instance-panel + .mini-links
 {
     margin: 10px 8px;
+}
+
+/******************************
+ *      File uploads          *
+ ******************************/
+.file-upload-btn
+{
+    padding: 3px 2px 2px 4px;
+    width: 16px;
+    height: 16px;
+}
+
+.file-upload-btn svg
+{
+    stroke: #ffffff;
+    width: 14px;
+    height: 14px;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
 /******************************
