@@ -22,7 +22,7 @@
 #include <stddef.h>
 #include <mastodont.h>
 
-char* construct_post_box(char* reply_id,
+char* construct_post_box(struct mstdnt_status* reply_id,
                          char* default_content,
                          size_t* size);
 

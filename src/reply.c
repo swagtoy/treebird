@@ -31,21 +31,40 @@
 #define ID_REPLY_SIZE 256
 #define ID_RESPONSE "<input type=\"hidden\" name=\"replyid\" value=\"%s\">"
 
-char* construct_post_box(char* reply_id,
+char* construct_post_box(struct mstdnt_status* reply_status,
                          char* default_content,
                          size_t* size)
 {
+#define C_S "checked"
+#define D_S "disabled"
     char* reply_html;
     char id_reply[ID_REPLY_SIZE];
+    enum mstdnt_visibility_type vis = MSTDNT_VISIBILITY_PUBLIC;
     
-    // Put hidden post request
-    snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_id);
+    // Put hidden post request and check visibility
+    if (reply_status)
+    {
+        snprintf(id_reply, ID_REPLY_SIZE, ID_RESPONSE, reply_status->id);
+        vis = reply_status->visibility;
+    }
 
-    // Construct box
+    /* 
+     * Mastodont-c orders the visibility type from smallest (PUBLIC) to 
+     * largest (LOCAL), so we take advantage of the enum values
+     */
     struct post_template tdata = {
         .prefix = config_url_prefix,
-        .reply_input = reply_id ? id_reply : NULL,
-        .content = default_content
+        .reply_input = reply_status ? id_reply : NULL,
+        .content = default_content,
+        .public_checked = vis == MSTDNT_VISIBILITY_PUBLIC ? C_S : NULL,
+        // You can reply with public to unlisted posts
+        .public_disabled = vis > MSTDNT_VISIBILITY_UNLISTED ? D_S : NULL,
+        .unlisted_checked = vis == MSTDNT_VISIBILITY_UNLISTED ? C_S : NULL,
+        .unlisted_disabled = vis > MSTDNT_VISIBILITY_UNLISTED ? D_S : NULL,
+        .private_checked = vis == MSTDNT_VISIBILITY_PRIVATE ? C_S : NULL,
+        .private_disabled = vis > MSTDNT_VISIBILITY_PRIVATE ? D_S : NULL,
+        .direct_checked = vis == MSTDNT_VISIBILITY_DIRECT ? C_S : NULL,
+        .local_checked = vis == MSTDNT_VISIBILITY_LOCAL ? C_S : NULL,
     };
     return tmpl_gen_post(&tdata, size);
 }
@@ -54,9 +73,9 @@ char* construct_post_box(char* reply_id,
  *  - Misskey does not return <span>, but we still regex to make sure it's a highlight
  *  - The order of parameters in a tag can be changed (mastodon does this),
  *    so we just grep for regex href
- *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users
+ *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users and honk adds /u
  */
-#define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
+#define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/|u/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
 
 char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
 {
@@ -156,7 +175,7 @@ char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
 
     pcre2_match_data_free(re_data);
     
-    stat_reply = construct_post_box(id, replies, NULL);
+    stat_reply = construct_post_box(status, replies, NULL);
     pcre2_code_free(re);
     free(replies);
     free(instance_domain);

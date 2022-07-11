@@ -14,7 +14,6 @@ html
 {
     background-attachment: fixed !important;
     background-size: cover !important;
-    background-color: unset !important;
     background-color: #eee;
 }
 
@@ -936,6 +935,7 @@ svg.in-reply-to-icon
     font-weight: bold;
     text-overflow: ellipsis;
     white-space: nowrap;
+    vertical-align: middle;
     min-width: 0;
 }
 
@@ -1412,6 +1412,11 @@ p}
 .statusbox .post-group .visibility-icon:hover
 {
     background-color: #d3d3d3;
+}
+
+.statusbox .post-group input[type=radio].hidden:disabled + .visibility-icon
+{
+    display: none;
 }
 
 .statusbox .post-group input[type=radio].hidden:checked + .visibility-icon svg
