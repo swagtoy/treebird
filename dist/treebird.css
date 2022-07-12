@@ -456,6 +456,11 @@ select
     min-width: 100px;
 }
 
+select:hover
+{
+    background: linear-gradient(#f0f0f0, #d0d0d0);
+}
+
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
