@@ -522,7 +522,7 @@ input[type=button], input[type=submit]
     padding: 3px 15px;
 }
 
-.btn-alt
+.btn-icon
 {
     display: inline-block;
     border: 1px solid #858ba6;
@@ -531,6 +531,16 @@ input[type=button], input[type=submit]
     vertical-align: middle;
     border-radius: 3px;
     cursor: pointer;
+}
+
+.btn-icon:hover
+{
+    background-color: #9096b3;
+}
+
+.btn-icon:active
+{
+    background-color: #747890;
 }
 
 .post-btn
@@ -2039,8 +2049,9 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
  ******************************/
 .file-upload-btn
 {
-    padding: 3px 2px 2px 4px;
-    width: 16px;
+    margin-top: -1px;
+    padding: 4px 2px 4px 6px;
+    width: 18px;
     height: 16px;
 }
 
