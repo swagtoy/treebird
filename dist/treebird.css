@@ -2071,18 +2071,28 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 .file-uploads-container
 {
     margin-top: 8px;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .file-uploads-container .file-upload
 {
+    overflow: hidden;
     display: inline-block;
-    height: 130px;
-    margin-left: 4px;
-    width: 200px;
+    margin: 2px 4px;
     background: linear-gradient(#fff, #f7f7f7);
     border: 1px solid #cacaca;
     border-radius: 8px;
 }
+
+.file-upload .upload-content
+{
+    width: 200px;
+    height: 130px;
+    object-fit: cover;
+    opacity: 0.4;
+}
+
 
 /******************************
  *         Scrobbles          *

@@ -246,13 +246,14 @@
         rightbar_frame.height = rbar_frame_win.document.body.scrollHeight;
     }
 
-    function construct_file_upload(file)
+    function construct_file_upload(file, file_content)
     {
         let container = document.createElement("div");
         container.className = "file-upload";
-        let content = document.createElement("div");
+        let content = document.createElement("img");
         let info = document.createElement("span");
         info.className = "upload-info";
+        content.src = file_content;
         content.className = "upload-content";
         container.appendChild(content);
         container.appendChild(info);
@@ -261,22 +262,29 @@
 
     function evt_file_upload(e)
     {
+        let target = e.target;
+
+        // TODO do something with this
+        if (target.classList.contains("used"))
+            target.id = `id-${state.file.file_counter++}`;
+            
         let file_upload_dom = this.closest("form").querySelector(".file-uploads-container");
         file_upload_dom.className = "file-uploads-container";
         const files = [...this.files];
 
-        // let reader = new FileReader();
-
-        // reader.onload = (() => {
-        //     return (e) => {
-        //         // do shit
-        //     }
-        // })(files[0]);
+        let reader;
 
         // Create file upload
         for (let file of files)
         {
-            file_upload_dom.appendChild(construct_file_upload(files));
+            reader = new FileReader();
+            reader.onload = (() => {
+                return (e) => {
+                    file_upload_dom.appendChild(construct_file_upload(files, e.target.result));
+                }
+            })(file);
+            reader.readAsDataURL(file);
+
         }
     }
 
