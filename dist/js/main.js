@@ -1,4 +1,12 @@
 (function(){
+    // Global state variable
+    let state = {
+        file: {
+            files: [],
+            file_counter: 0,
+        }
+    };
+    
     Element.prototype.insertAfter = function(element) {
         element.parentNode.insertBefore(this, element.nextSibling);
     };
@@ -238,6 +246,40 @@
         rightbar_frame.height = rbar_frame_win.document.body.scrollHeight;
     }
 
+    function construct_file_upload(file)
+    {
+        let container = document.createElement("div");
+        container.className = "file-upload";
+        let content = document.createElement("div");
+        let info = document.createElement("span");
+        info.className = "upload-info";
+        content.className = "upload-content";
+        container.appendChild(content);
+        container.appendChild(info);
+        return container;
+    }
+
+    function evt_file_upload(e)
+    {
+        let file_upload_dom = this.closest("form").querySelector(".file-uploads-container");
+        file_upload_dom.className = "file-uploads-container";
+        const files = [...this.files];
+
+        // let reader = new FileReader();
+
+        // reader.onload = (() => {
+        //     return (e) => {
+        //         // do shit
+        //     }
+        // })(files[0]);
+
+        // Create file upload
+        for (let file of files)
+        {
+            file_upload_dom.appendChild(construct_file_upload(files));
+        }
+    }
+
     // Main (when loaded)
     document.addEventListener('DOMContentLoaded', () => {
         let reply_btn = document.getElementsByClassName("reply-btn");
@@ -262,5 +304,9 @@
 
         // File upload
         let file_input = document.querySelector("input[type=file]");
+        if (file_input)
+        {
+            file_input.addEventListener('change', evt_file_upload);
+        }
     });
 })();
