@@ -124,7 +124,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                   (g_cache.panel_html.response ?
                    g_cache.panel_html.response : ""));
 
-    if (!(ssn->config.theme && strcmp(ssn->config.theme, "treebird") == 0 &&
+    if (ssn->config.theme && !(strcmp(ssn->config.theme, "treebird") == 0 &&
           ssn->config.themeclr == 0))
     {
         easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",

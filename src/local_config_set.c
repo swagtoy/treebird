@@ -34,7 +34,7 @@ int set_config_str(struct session* ssn,
     {
         if (ssn->post.set.is_set && post->is_set && page == curr_page)
         {
-            printf("Set-Cookie: %s=%s; HttpOnly; Path=/; SameSite=Strict;\r\n",
+            printf("Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
                    cookie_name, keypstr(post));
         }
 

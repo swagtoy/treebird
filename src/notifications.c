@@ -310,7 +310,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
     }
 
     // Set theme
-    if (!(ssn->config.theme && strcmp(ssn->config.theme, "treebird") == 0 &&
+    if (ssn->config.theme && !(strcmp(ssn->config.theme, "treebird") == 0 &&
           ssn->config.themeclr == 0))
     {
         easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",

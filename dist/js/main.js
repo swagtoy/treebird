@@ -2,7 +2,7 @@
     // Global state variable
     let state = {
         file: {
-            files: [],
+            files: {},
             file_counter: 0,
         }
     };
@@ -246,10 +246,11 @@
         rightbar_frame.height = rbar_frame_win.document.body.scrollHeight;
     }
 
-    function construct_file_upload(file, file_content)
+    function construct_file_upload(id, file, file_content)
     {
         let container = document.createElement("div");
         container.className = "file-upload";
+        container.id = "file-id-" + id;
         let content = document.createElement("img");
         let info = document.createElement("span");
         info.className = "upload-info";
@@ -260,13 +261,43 @@
         return container;
     }
 
+    // Created if not exist
+    function filepicker_create(id)
+    {
+        if (!state.file[id])
+        {
+            state.file[id] = { files: [], count: 0 }
+            return true;
+        }
+        return false;
+    }
+
+    function filepicker_add(id, file)
+    {
+        filepicker_create(id);
+
+        state.file[id].files.push(file);
+        
+        return state.file[id].count++;
+    }
+
     function evt_file_upload(e)
     {
         let target = e.target;
+        // is New?
+        let id = state.file.file_counter;
 
         // TODO do something with this
-        if (target.classList.contains("used"))
-            target.id = `id-${state.file.file_counter++}`;
+        if (!target.classList.contains("used"))
+        {
+            target.id = `file-picker-id-${state.file.file_counter++}`;
+            target.classList.add("used");
+        }
+        else {
+            // "id-476" -> 476
+            id = Number(target.id.substr("file-picker-id-".length));
+        }
+
             
         let file_upload_dom = this.closest("form").querySelector(".file-uploads-container");
         file_upload_dom.className = "file-uploads-container";
@@ -280,7 +311,9 @@
             reader = new FileReader();
             reader.onload = (() => {
                 return (e) => {
-                    file_upload_dom.appendChild(construct_file_upload(files, e.target.result));
+                    let file_id = filepicker_add(id, file);
+                    
+                    file_upload_dom.appendChild(construct_file_upload(file_id, files, e.target.result));
                 }
             })(file);
             reader.readAsDataURL(file);
