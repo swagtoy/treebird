@@ -1694,18 +1694,17 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 }
 
 /* Attachments */
-/* .attachments img */
-/* { */
-/*     display: block; */
-/*     width: 487px; */
-/*     min-height: 700px; */
-/* } */
+.attachments img,
+.attachments video
+{
+    display: block;
+    width: 482px;
+    max-height: 700px;
+    object-fit: contain;
+}
 
 .attachments
 {
-    display: block;
-    width: 487px;
-    min-height: 700px;
     margin: 10px 0 3px 0;
 }
 
@@ -1730,7 +1729,9 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 .attachment-link
 {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 17px;
+    color: #303030;
+    padding-right: 12px;
 }
 
 .sensitive.attachment-link::after,
