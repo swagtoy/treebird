@@ -111,7 +111,8 @@ int main(void)
         { "/chats_embed/:", content_chat_embed },
         // API
         { "/treebird_api/v1/notifications", api_notifications },
-        { "/treebird_api/v1/interact", api_status_interact }
+        { "/treebird_api/v1/interact", api_status_interact },
+        { "/treebird_api/v1/attachment", api_attachment_create },
     };
 
     while (FCGI_Accept() >= 0)

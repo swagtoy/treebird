@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "base_page.h"
 #include "helpers.h"
 #include "easprintf.h"
 #include "attachments.h"
@@ -195,4 +196,36 @@ char* construct_attachments(struct session* ssn,
     // Cleanup
     free(elements);
     return att_view;
+}
+
+void api_attachment_create(struct session* ssn, mastodont_t* api, char** data)
+{
+    struct mstdnt_storage *att_storage = NULL;
+    struct mstdnt_attachment* attachments = NULL;
+    char* string;
+    char** media_ids = NULL;
+
+    cJSON* root = cJSON_CreateObject();
+
+    // TODO If multiple attachments are submitted, this uploads all of them.
+    //      I don't think we want that, but it's just a minor issue and won't happen on TreebirdFE.
+    try_upload_media(&att_storage, ssn, api, &attachments, &media_ids);
+
+    if (media_ids)
+        cJSON_AddStringToObject(root, "id", media_ids[0]);
+    
+    if (media_ids)
+    {
+        string = cJSON_Print(root);
+        send_result(NULL, "application/json", string, 0);
+        free(string);
+    }
+    else
+        send_result(NULL, "application/json", "{\"status\":\"Couldn't\"}", 0);
+
+    // Cleanup media stuff
+    cleanup_media_storages(ssn, att_storage);
+    cleanup_media_ids(ssn, media_ids);
+    free(attachments);
+    cJSON_Delete(root);
 }
