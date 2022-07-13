@@ -1694,13 +1694,18 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 }
 
 /* Attachments */
-.attachments img
-{
-    min-width: 100px;
-}
+/* .attachments img */
+/* { */
+/*     display: block; */
+/*     width: 487px; */
+/*     min-height: 700px; */
+/* } */
 
 .attachments
 {
+    display: block;
+    width: 487px;
+    min-height: 700px;
     margin: 10px 0 3px 0;
 }
 
@@ -2079,10 +2084,11 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     overflow: hidden;
     display: inline-block;
+    width: 200px;
     margin: 2px 4px;
     background: linear-gradient(#fff, #f7f7f7);
     border: 1px solid #cacaca;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 .file-upload .upload-content
@@ -2091,8 +2097,25 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     height: 130px;
     object-fit: cover;
     opacity: 0.4;
+    display: block;
 }
 
+.file-upload .upload-info
+{
+    background: linear-gradient(#fbfbfb, #f0f0f4);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 4px;
+    border-top: 1px solid #bfbfc4;
+    font-size: 0.9rem;
+    color: #505050;
+}
+
+.upload-info .filesize
+{
+    font-weight: bold;
+}
 
 /******************************
  *         Scrobbles          *

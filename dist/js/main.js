@@ -246,16 +246,33 @@
         rightbar_frame.height = rbar_frame_win.document.body.scrollHeight;
     }
 
+    function filesize_to_str(bs)
+    {
+        const val = bs === 0 ? 0 : Math.floor(Math.log(bs) / Math.log(1024));
+        return (bs / 1024**val).toFixed(1) * 1 + ['B', 'kB', 'MB', 'GB', 'TB'][val];
+    }
+
+    function html_encode(str)
+    {
+        let en = document.createElement("span");
+        en.textContent = str;
+        return en.innerHTML;
+    }
+
     function construct_file_upload(id, file, file_content)
     {
         let container = document.createElement("div");
-        container.className = "file-upload";
-        container.id = "file-id-" + id;
         let content = document.createElement("img");
         let info = document.createElement("span");
+        container.className = "file-upload";
+        container.id = "file-id-" + id;
+        
         info.className = "upload-info";
+        info.innerHTML = `<span class="filesize">${filesize_to_str(file.size)}</span> &bull; <span class="filename">${html_encode(file.name)}</span>`;
+        
         content.src = file_content;
         content.className = "upload-content";
+        
         container.appendChild(content);
         container.appendChild(info);
         return container;
@@ -313,7 +330,7 @@
                 return (e) => {
                     let file_id = filepicker_add(id, file);
                     
-                    file_upload_dom.appendChild(construct_file_upload(file_id, files, e.target.result));
+                    file_upload_dom.appendChild(construct_file_upload(file_id, file, e.target.result));
                 }
             })(file);
             reader.readAsDataURL(file);
