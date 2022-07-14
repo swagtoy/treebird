@@ -306,7 +306,8 @@
 
         for (let i of items)
         {
-            ids.push(i.dataset.id);
+            if (i.dataset.id)
+                ids.push(i.dataset.id);
         }
 
         // Goto statusbox

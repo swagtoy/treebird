@@ -121,7 +121,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         .in_reply_to_id = keystr(ssn->post.replyid),
         .language = NULL,
         .media_ids = media_ids,
-        .media_ids_len = (media_ids ? keyfile(ssn->post.files).array_size :
+        .media_ids_len = (!ssn->post.file_ids.is_set ? keyfile(ssn->post.files).array_size :
                           (json_ids ? json_ids_len : 0)),
         .poll = NULL,
         .preview = 0,
