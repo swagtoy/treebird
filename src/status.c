@@ -84,13 +84,34 @@ int try_post_status(struct session* ssn, mastodont_t* api)
 
     struct mstdnt_storage storage = { 0 }, *att_storage = NULL;
 
-    char** files;
-    size_t files_len;
+    char** files = NULL;
+    size_t files_len = 0;
     struct mstdnt_attachment* attachments = NULL;
     char** media_ids = NULL;
+    cJSON* json_ids = NULL;
+    size_t json_ids_len = 0;
 
     // Upload images
-    try_upload_media(&att_storage, ssn, api, &attachments, &media_ids);
+    if (!ssn->post.file_ids.is_set)
+        try_upload_media(&att_storage, ssn, api, &attachments, &media_ids);
+    else
+    {
+        // Parse json file ids
+        json_ids = cJSON_Parse(keystr(ssn->post.file_ids));
+        json_ids_len = cJSON_GetArraySize(json_ids);
+        if (json_ids_len)
+        {
+            media_ids = malloc(json_ids_len * sizeof(char*));
+            // TODO error
+            cJSON* id;
+            int i = 0;
+            cJSON_ArrayForEach(id, json_ids)
+            {
+                media_ids[i] = id->valuestring;
+                ++i;
+            }
+        }
+    }
 
     // Cookie copy and read
     struct mstdnt_status_args args = {
@@ -100,7 +121,8 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         .in_reply_to_id = keystr(ssn->post.replyid),
         .language = NULL,
         .media_ids = media_ids,
-        .media_ids_len = media_ids ? keyfile(ssn->post.files).array_size : 0,
+        .media_ids_len = (media_ids ? keyfile(ssn->post.files).array_size :
+                          (json_ids ? json_ids_len : 0)),
         .poll = NULL,
         .preview = 0,
         .scheduled_at = NULL,
@@ -110,15 +132,21 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         .visibility = keystr(ssn->post.visibility),
     };
 
-    
+    // Finally, create (no error checking)
     mastodont_create_status(api, &m_args, &args, &storage);
 
     mastodont_storage_cleanup(&storage);
+    
     if (att_storage)
         cleanup_media_storages(ssn, att_storage);
-    cleanup_media_ids(ssn, media_ids);
-    if (attachments) free(attachments);
     
+    if (json_ids)
+        free(media_ids);
+    else
+        cleanup_media_ids(ssn, media_ids);
+    
+    free(attachments);
+    if (json_ids) cJSON_Delete(json_ids);
     return 0;
 }
 

@@ -54,6 +54,7 @@ struct post_values
     struct key replies_only; // Int
     struct key replies_policy; // Int
     
+    struct key file_ids; // String
     struct key content; // String
     struct key itype; // String
     struct key id; // String

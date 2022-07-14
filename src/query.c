@@ -102,6 +102,7 @@ char* read_post_data(struct post_values* post)
         { "replyid", &(post->replyid), key_string },
         { "min_id", &(post->min_id), key_string },
         { "max_id", &(post->max_id), key_string },
+        { "fileids", &(post->file_ids), key_string },
         { "start_id", &(post->start_id), key_string },
         { "instance", &(post->instance), key_string },
         { "visibility", &(post->visibility), key_string },

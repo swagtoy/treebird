@@ -1,11 +1,11 @@
 (function(){
     // Global state variable
-    let state = {
-        file: {
-            files: {},
-            file_counter: 0,
-        }
-    };
+    // let state = {
+    //     file: {
+    //         files: {},
+    //         file_counter: 0,
+    //     }
+    // };
     
     Element.prototype.insertAfter = function(element) {
         element.parentNode.insertBefore(this, element.nextSibling);
@@ -277,13 +277,12 @@
         return en.innerHTML;
     }
 
-    function construct_file_upload(id, file, file_content)
+    function construct_file_upload(file, file_content)
     {
         let container = document.createElement("div");
         let content = document.createElement("img");
         let info = document.createElement("span");
         container.className = "file-upload";
-        container.id = "file-id-" + id;
         
         info.className = "upload-info";
         info.innerHTML = `<span class="filesize">${filesize_to_str(file.size)}</span> &bull; <span class="filename">${html_encode(file.name)}</span>`;
@@ -299,49 +298,44 @@
         return container;
     }
 
-    // Created if not exist
-    function filepicker_create(id)
+    function update_uploads_json(dom)
     {
-        if (!state.file[id])
+        let root = dom.parentNode;
+        let items = root.getElementsByClassName("file-upload");
+        let ids = [];
+
+        for (let i of items)
         {
-            state.file[id] = { files: [], count: 0 }
-            return true;
+            ids.push(i.dataset.id);
         }
-        return false;
-    }
 
-    function filepicker_add(id, file)
-    {
-        filepicker_create(id);
+        // Goto statusbox
+        root = root.parentNode;
+        let file_ids = root.querySelector(".file-ids-json");
+        if (!file_ids)
+        {
+            // Create if doesn't exist
+            file_ids = document.createElement("input");
+            file_ids.type = "hidden";
+            file_ids.className = "file-ids-json";
+            file_ids.name = "fileids";
+            root.appendChild(file_ids);
+        }
 
-        state.file[id].files.push(file);
-        
-        return state.file[id].count++;
+        file_ids.value = JSON.stringify(ids);
     }
 
     function evt_file_upload(e)
     {
         let target = e.target;
-        // is New?
-        let id = state.file.file_counter;
-
-        // TODO do something with this
-        if (!target.classList.contains("used"))
-        {
-            target.id = `file-picker-id-${state.file.file_counter++}`;
-            target.classList.add("used");
-        }
-        else {
-            // "id-476" -> 476
-            id = Number(target.id.substr("file-picker-id-".length));
-        }
-
-            
         let file_upload_dom = this.closest("form").querySelector(".file-uploads-container");
         file_upload_dom.className = "file-uploads-container";
         const files = [...this.files];
 
         let reader;
+
+        // Clear file input
+        this.value = '';
 
         // Create file upload
         for (let file of files)
@@ -349,30 +343,27 @@
             reader = new FileReader();
             reader.onload = (() => {
                 return (e) => {
-                    let file_id = filepicker_add(id, file);
+                    let file_dom = construct_file_upload(file, e.target.result);
                     
-                    file_upload_dom.appendChild(construct_file_upload(file_id, file, e.target.result));
+                    file_upload_dom.appendChild(file_dom);
 
                     let xhr = upload_file("/treebird_api/v1/attachment",
                                           "file",
                                           file,
                                           (xhr, args) => {
-                                              if (xhr.status !== 200)
-                                              {
-                                                  // Undo action if failure
-                                                  // interact_action(status, type);
-                                              }
+                                              // TODO errors
+                                              file_dom.dataset.id = JSON.parse(xhr.response).id;
+                                              update_uploads_json(file_dom);
                                           }, null,
                                           (e) => {
-                                              let upload_file_container = document.getElementById("file-id-"+file_id);
-                                              let upload_file_progress = upload_file_container.querySelector(".file-progress");
+                                              let upload_file_progress = file_dom
+                                                  .querySelector(".file-progress");
                                               // Add offset of 3
                                               upload_file_progress.style.width = 3+((e.loaded/e.total)*97);
                                           },
                                           (e) => {
-                                              let upload_file_container = document.getElementById("file-id-"+file_id);
-                                              upload_file_container.querySelector(".upload-content").style.opacity = "1.0";
-                                              upload_file_container.querySelector(".file-progress").remove();
+                                              file_dom.querySelector(".upload-content").style.opacity = "1.0";
+                                              file_dom.querySelector(".file-progress").remove();
                                           });
                 }
             })(file);
@@ -409,5 +400,8 @@
         {
             file_input.addEventListener('change', evt_file_upload);
         }
+
+        // let submit = document.querySelector("form");
+        // submit.onsubmit
     });
 })();
