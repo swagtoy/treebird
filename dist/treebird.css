@@ -2099,10 +2099,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     object-fit: cover;
     opacity: 0.4;
     display: block;
+    transition: .3s opacity;
 }
 
 .file-upload .upload-info
 {
+    position: relative;
     background: linear-gradient(#fbfbfb, #f0f0f4);
     display: block;
     white-space: nowrap;
@@ -2111,6 +2113,17 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     border-top: 1px solid #bfbfc4;
     font-size: 0.9rem;
     color: #505050;
+}
+
+.file-upload .upload-info .file-progress
+{
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    height: 3px;
+    width: 3%;
+    background-color: rgba(180, 0, 0, 0.7);
+    transition: .07s width;
 }
 
 .upload-info .filesize

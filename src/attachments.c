@@ -68,7 +68,7 @@ int try_upload_media(struct mstdnt_storage** storage,
                 .filetype = content->filetype,
             },
             .thumbnail = NULL,
-            .description = "Treebird image"
+            .description = NULL,
         };
         
         if (mastodont_upload_media(api,
@@ -77,7 +77,6 @@ int try_upload_media(struct mstdnt_storage** storage,
                                    *storage + i,
                                    *attachments + i))
         {
-            // EPICFAIL
             for (size_t j = 0; j < i; ++j)
             {
                 if (media_ids) free((*media_ids)[j]);

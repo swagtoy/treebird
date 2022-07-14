@@ -135,13 +135,31 @@
     {
         let query_str = construct_query(query);
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
+        xhr.open(type, url);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (this.readyState === XMLHttpRequest.DONE)
                 cb(this, cb_args);
         };
         xhr.send(query_str);
+        return xhr;
+    }
+
+    function upload_file(url, file_name, file, cb, cb_args, onprogress, onload)
+    {
+        let xhr = new XMLHttpRequest();
+        let form_data = new FormData();
+        xhr.open("post", url);
+        form_data.append(file_name, file);
+        // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE)
+                cb(this, cb_args);
+        };
+        xhr.upload.onprogress = onprogress;
+        xhr.upload.onload = onload;
+        xhr.send(form_data);
+        return xhr;
     }
 
     function change_count_text(val, sum)
@@ -206,7 +224,7 @@
                          id: status.id,
                          itype: type.value
                      },
-                     1,
+                     "POST",
                      (xhr, args) => {
                          if (xhr.status !== 200)
                          {
@@ -269,6 +287,9 @@
         
         info.className = "upload-info";
         info.innerHTML = `<span class="filesize">${filesize_to_str(file.size)}</span> &bull; <span class="filename">${html_encode(file.name)}</span>`;
+        let progress_div = document.createElement("div");
+        progress_div.className = "file-progress";
+        info.appendChild(progress_div);
         
         content.src = file_content;
         content.className = "upload-content";
@@ -331,6 +352,28 @@
                     let file_id = filepicker_add(id, file);
                     
                     file_upload_dom.appendChild(construct_file_upload(file_id, file, e.target.result));
+
+                    let xhr = upload_file("/treebird_api/v1/attachment",
+                                          "file",
+                                          file,
+                                          (xhr, args) => {
+                                              if (xhr.status !== 200)
+                                              {
+                                                  // Undo action if failure
+                                                  // interact_action(status, type);
+                                              }
+                                          }, null,
+                                          (e) => {
+                                              let upload_file_container = document.getElementById("file-id-"+file_id);
+                                              let upload_file_progress = upload_file_container.querySelector(".file-progress");
+                                              // Add offset of 3
+                                              upload_file_progress.style.width = 3+((e.loaded/e.total)*97);
+                                          },
+                                          (e) => {
+                                              let upload_file_container = document.getElementById("file-id-"+file_id);
+                                              upload_file_container.querySelector(".upload-content").style.opacity = "1.0";
+                                              upload_file_container.querySelector(".file-progress").remove();
+                                          });
                 }
             })(file);
             reader.readAsDataURL(file);
