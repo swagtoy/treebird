@@ -55,6 +55,8 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
+#define SIDEBAR_CSS_LEN 128
+    char sidebar_css[SIDEBAR_CSS_LEN];
 
     if (keyint(ssn->cookies.logged_in))
         login_string = "";
@@ -131,10 +133,17 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
                   ssn->config.theme,
                   ssn->config.themeclr ? "-dark" : "");
     }
-        
+
+    if (ssn->config.sidebar_opacity)
+    {
+        float sidebar_opacity = (float)ssn->config.sidebar_opacity / 255.0f;
+        snprintf(sidebar_css, SIDEBAR_CSS_LEN, ":root { --sidebar-opacity: %.2f; }",
+                 sidebar_opacity);
+    }
 
     struct index_template index_tmpl = {
         .title = L10N[locale][L10N_APP_NAME],
+        .sidebar_css = sidebar_css,
         .theme_str = theme_str,
         .prefix = config_url_prefix,
         .background_url = background_url_css,

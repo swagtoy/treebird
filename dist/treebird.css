@@ -1,3 +1,9 @@
+/* Variables */
+:root
+{
+    --sidebar-opacity: 1.0;
+}
+
 *
 {
     margin: 0;
@@ -91,16 +97,8 @@ table.ui-table td
     vertical-align: top;
 }
 
-#content
-{
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
 #navbar
 {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     border-top: 2px solid #fff;
     background: linear-gradient(#fbfbfb, #ececef);
     width: 1000px;
@@ -208,7 +206,7 @@ table.ui-table td
     min-height: 600px;
     max-width: 180px;
     min-width: 180px;
-    background-color: #eaecf0;
+    background-color: rgba(234, 236, 240, var(--sidebar-opacity));
 }
 
 .sidebar-frame
@@ -461,6 +459,29 @@ select:hover
     background: linear-gradient(#f0f0f0, #d0d0d0);
 }
 
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    background: linear-gradient(#f3f3f3, #d5d5d5);
+    border: 1px solid #cacaca;
+    border-radius: 4px;
+    outline: none;
+    vertical-align: middle;
+}
+
+input[type=range]::-webkit-slider-thumb,
+input[type=range]::-moz-range-thumb
+{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #303236;
+    background: linear-gradient(#75777c, #505256);
+    cursor: pointer;
+}
+
 /*************************************************
  *                  BUTTONS                      *
  *************************************************/
@@ -538,6 +559,11 @@ input[type=button], input[type=submit]
     cursor: pointer;
 }
 
+.btn-icon svg
+{
+    stroke: #ffffff;
+}
+
 .btn-icon:hover
 {
     background-color: #9096b3;
@@ -548,13 +574,13 @@ input[type=button], input[type=submit]
     background-color: #747890;
 }
 
-.post-btn
+input[type=submit].post-btn
 {
     background: linear-gradient(#aa0000, #900000);
     padding: 2px 25px 3px !important;
     font-size: 15px;
     border-radius: 4px;
-    border: none !important; 
+    border: none; 
     color: #fff;
 }
 
@@ -2069,7 +2095,6 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 
 .file-upload-btn svg
 {
-    stroke: #ffffff;
     width: 14px;
     height: 14px;
     text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
@@ -2496,7 +2521,7 @@ input[type=submit].chatbox-btn
 {
     transform: rotate(-33deg) skew(-30deg);
     border-radius: 75% 0 75% 75%;
-    margin-left: 31px;
+    margin-left: 28px;
 }
 
 .is-bun:before, .is-bun:after
@@ -2682,6 +2707,7 @@ input[type=submit].chatbox-btn
     {
         padding: 0;
         margin: 0;
+        border-radius: 0px;
     }
     
     #main-page, #navbar

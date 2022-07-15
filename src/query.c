@@ -118,6 +118,7 @@ char* read_post_data(struct post_values* post)
         { "statemojolikes", &(post->stat_emojo_likes), key_int },
         { "stathidemuted", &(post->stat_hide_muted), key_int },
         { "instanceshowshoutbox", &(post->instance_show_shoutbox), key_int },
+        { "sidebaropacity", &(post->sidebar_opacity), key_int },
         { "instancepanel", &(post->instance_panel), key_int },
         { "notifembed", &(post->notif_embed), key_int },
         { "file", &(post->files), key_files }

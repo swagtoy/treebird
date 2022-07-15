@@ -137,6 +137,7 @@ int main(void)
                 .instance_show_shoutbox = 1,
                 .instance_panel = 1,
                 .notif_embed = 1,
+                .sidebar_opacity = 255,
             },
             .cookies = {{}},
             .post = {{}},
@@ -156,7 +157,7 @@ int main(void)
         char* path_info = getenv("PATH_INFO");
         if (path_info && strcmp(path_info, "/config/appearance") == 0)
             page = CONFIG_APPEARANCE;
-        load_config(&ssn, &api, page);
+        struct mstdnt_storage* attachments = load_config(&ssn, &api, page);
 
         // Load current account information
         get_account_info(&api, &ssn);
@@ -170,6 +171,8 @@ int main(void)
         free_files(&(keyfile(ssn.post.files)));
         if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
         mastodont_storage_cleanup(&(ssn.acct_storage));
+        if (attachments)
+            cleanup_media_storages(&ssn, attachments);
 
         ++run_count;
     }

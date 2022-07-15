@@ -45,6 +45,7 @@ struct cookie_values
     struct key stat_hide_muted;
     struct key instance_show_shoutbox;
     struct key instance_panel;
+    struct key sidebar_opacity;
     struct key notif_embed;
 };
 

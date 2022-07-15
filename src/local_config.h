@@ -41,6 +41,7 @@ struct local_config
     int instance_show_shoutbox;
     int instance_panel;
     int notif_embed;
+    int sidebar_opacity;
 };
 
 #endif // LOCAL_CONFIG_H

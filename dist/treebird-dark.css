@@ -1,5 +1,4 @@
 /* Dark color overrides */
-
 html
 {
     background-color: #202020;
@@ -17,7 +16,7 @@ body
 
 #navbar
 {
-    border-top: 2px solid #5e5e5e;
+    border-top: 2px solid #4e4e4e;
     background: linear-gradient(#3e3e3e, #262626);
     border-bottom: 1px solid #101010;
 }
@@ -50,7 +49,7 @@ a, a:visited, a:hover, a:active
 
 .sidebar
 {
-    background-color: #222;
+    background-color: rgba(34, 34, 34, var(--sidebar-opacity));
 }
 
 .btn
@@ -74,6 +73,16 @@ a, a:visited, a:hover, a:active
     background: linear-gradient(#424242, #363636);
     color: #fff;
     cursor: pointer;
+}
+
+.sidebarbtn
+{
+    border: 1px solid transparent;
+}
+
+.sidebarbtn:hover
+{
+    border: 1px solid #505050;
 }
 
 .sidebarbtn, .sidebarbtn:visited
@@ -147,9 +156,15 @@ select
     border-color: #666;
 }
 
+select:hover
+{
+    background: linear-gradient(#666, #505050);
+}
+
 .account-sidebar
 {
     background-color: #404040;
+    border-bottom: 1px dashed #505050;
 }
 
 .header-btn
@@ -277,4 +292,192 @@ ul.large-list li .edit-list-btn
 {
     border: 1px solid #515151;
     padding: 3px 7px;
+}
+
+.sidebarbtn-sub
+{
+    color: unset;
+}
+
+
+#leftbar ul.sidebar-config
+{
+    background: linear-gradient(#303030, #202020);
+    color: #cacaca;
+    border-radius: 6px;
+    padding: 4px;
+    margin: 8px;
+    border: 1px solid #505050;
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebarbtn-sub:active, .sidebarbtn-sub:hover
+{
+    background-color: #505050;
+    box-shadow: 0px 1px 0px #606060;
+}
+
+input[type=submit].post-btn
+{
+    
+    background: linear-gradient(#404040, #303030);
+    border: 1px solid #505050;
+}
+
+input[type=submit].post-btn:hover
+{
+    
+    background: linear-gradient(#505050, #404040);
+    border: 1px solid #505050;
+}
+
+.notification-compact
+{
+    scrollbar-color: #404040 transparent;
+}
+
+.notification-compact .notification-content.is-mention
+{
+    color: #f3f3f3;
+}
+
+.notification
+{
+    border-bottom: 1px solid #505050;
+    width: 100%;
+}
+
+.sidebar-embed-container .navigation
+{
+    background-color: rgba(60, 62, 64, .5);
+}
+
+.navigation tr td:not(:last-child), .tabs tr td:not(:last-child)
+{
+    border-right: 1px solid #606060;
+}
+
+.navigation, .tabs
+{
+    box-shadow: 0px 1px 0px #606060;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    background: linear-gradient(#404040, #303030);
+    border: 1px solid #505050;
+    border-radius: 4px;
+    outline: none;
+    vertical-align: middle;
+}
+
+input[type=range]::-webkit-slider-thumb,
+input[type=range]::-moz-range-thumb
+{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #303236;
+    background: linear-gradient(#75777c, #505256);
+    cursor: pointer;
+}
+
+/* Accounts */
+.acct-header
+{
+    z-index: 1;
+    padding-left: 160px;
+    background: linear-gradient(#505053, #303033);
+    border-bottom: 1px solid #202020;
+    background-color: #e8e8e8;
+}
+
+.account-info
+{
+    background: linear-gradient(#28282b, #37373a);
+    border-bottom: 1px solid #202020;
+    color: #cacaca;
+}
+
+.tabs .tab-btn:hover, .tabs .tab-btn:active
+{
+    background: linear-gradient(#404040, #303032);
+}
+
+.tabs .tab-btn.active, .tabs .tab-btn:checked
+{
+    color: #eee;
+    background: linear-gradient(#505052, #404045);
+}
+
+.tabs .tab-btn
+{
+    color: #808080;
+    border-bottom: 2px solid #303030;
+}
+
+.btn-disabled, .btn-disabled:hover
+{
+    background: #252525;
+    color: #606060;
+}
+
+.header-btn:hover, .header-btn:active
+{
+    background: linear-gradient(#5c5c5c,#444);
+}
+
+html, body {
+    scrollbar-color: #303030 #101010;
+}
+
+.file-uploads-container .file-upload
+{
+    overflow: hidden;
+    display: inline-block;
+    width: 200px;
+    margin: 2px 4px;
+    background: linear-gradient(#, #f7f7f7);
+    border: 1px solid #606060;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.file-upload .upload-info {
+    background: linear-gradient(#202020, #101010);
+    border-top: 1px solid #505050;
+    color: #ccc;
+}
+
+.btn-icon
+{
+    border: 1px solid #5f6376;
+    background-color: #757991;
+    text-align: middle;
+    vertical-align: middle;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-icon svg
+{
+    stroke: #ddd;
+}
+
+.btn-icon:hover
+{
+    background-color: #696d82;
+}
+
+.btn-icon:active
+{
+    background-color: #4e5161;
+}
+
+.nav-symbol
+{
+    color: #aaa;
 }

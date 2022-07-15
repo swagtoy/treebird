@@ -22,13 +22,13 @@
 
 #define post_bool_intp(post) (post->is_set ? keypint(post) : 0)
 
-int set_config_str(struct session* ssn,
-                   char** v,
-                   char* cookie_name,
-                   struct key* post,
-                   struct key* cookie,
-                   enum config_page page,
-                   enum config_page curr_page)
+void set_config_str(struct session* ssn,
+                    char** v,
+                    char* cookie_name,
+                    struct key* post,
+                    struct key* cookie,
+                    enum config_page page,
+                    enum config_page curr_page)
 {
     if (page == curr_page)
     {
@@ -47,13 +47,13 @@ int set_config_str(struct session* ssn,
     return 0;
 }
 
-int set_config_int(struct session* ssn,
-                   int* v,
-                   char* cookie_name,
-                   struct key* post,
-                   struct key* cookie,
-                   enum config_page page,
-                   enum config_page curr_page)
+void set_config_int(struct session* ssn,
+                    int* v,
+                    char* cookie_name,
+                    struct key* post,
+                    struct key* cookie,
+                    enum config_page page,
+                    enum config_page curr_page)
 {
     if (page == curr_page)
     {
@@ -77,23 +77,18 @@ int set_config_int(struct session* ssn,
 // Shorthand for the arguments passed into functions below
 #define LOAD_CFG_SIM(strcookie, varname) ssn, &(ssn->config.varname), (strcookie), &(ssn->post.varname), &(ssn->cookies.varname), page
 
-void load_config(struct session* ssn, mastodont_t* api, enum config_page page)
+struct mstdnt_storage* load_config(struct session* ssn, mastodont_t* api, enum config_page page)
 {
+    struct mstdnt_attachment* attachments = NULL;
+    struct mstdnt_storage* storage = NULL;
+    size_t attachments_len = 0;
     if (ssn->post.set.is_set)
     {
-        struct mstdnt_attachment* attachments = NULL;
-        struct mstdnt_storage* storage = NULL;
-        if (try_upload_media(&storage, ssn, api, &attachments, NULL) == 0)
-        {
-            struct key atm = { .type.s = attachments[0].url, .is_set = 1 };
-            set_config_str(ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
-        }
-
-        if (storage)
-            cleanup_media_storages(ssn, storage);
+        try_upload_media(&storage, ssn, api, &attachments, NULL);
     }
-    if (!ssn->post.set.is_set)
-        ssn->config.background_url = keystr(ssn->cookies.background_url);
+    struct key atm = { .type.s = attachments ? attachments[0].url : NULL, .is_set = attachments ? 1 : 0 };
+    set_config_str(ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
+    set_config_int(LOAD_CFG_SIM("sidebaropacity",       sidebar_opacity), CONFIG_APPEARANCE);
     set_config_str(LOAD_CFG_SIM("theme",                theme), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("themeclr",             themeclr), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("jsactions",            jsactions), CONFIG_GENERAL);
@@ -111,4 +106,6 @@ void load_config(struct session* ssn, mastodont_t* api, enum config_page page)
     set_config_int(LOAD_CFG_SIM("notifembed",           notif_embed), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("interact_img",         interact_img), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("lang",                 lang), CONFIG_GENERAL);
+
+    return storage;
 }

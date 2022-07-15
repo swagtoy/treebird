@@ -64,6 +64,7 @@ struct post_values
     struct key visibility; // String
     struct key instance; // String
     struct key emojoindex; // Int
+    struct key sidebar_opacity; // Int
 
     // Navigation
     struct key min_id; // String
