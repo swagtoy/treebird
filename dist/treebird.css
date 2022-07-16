@@ -2,6 +2,8 @@
 :root
 {
     --sidebar-opacity: 1.0;
+    --account-overlay-gradient-top: rgba(255, 255, 255, 0.6);
+    --account-overlay-gradient-bottom: #dadada;
 }
 
 *
@@ -1303,6 +1305,11 @@ p}
     text-shadow: 0px 2px 6px #000;
 }
 
+.acct-info
+{
+    display: block;
+}
+
 .acct-banner
 {
     overflow: hidden;
@@ -1336,11 +1343,22 @@ p}
     vertical-align: top;
 }
 
-.account-sidebar .username
+.account-sidebar .acct-pfp
 {
-    position: relative;
-    top: 5px;
-    margin-left: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+.account-sidebar .acct-info .username,
+.account-sidebar .acct-info .acct
+{
+    display: block;
+    margin-top: 3px;
+    margin-left: 8px;
+}
+
+.account-sidebar .acct-info .acct
+{
+    color: #606060;
 }
 
 .account-sidebar .acct-stats
@@ -1353,14 +1371,23 @@ p}
 {
     padding: 7px 7px 3px;
     background-color: #e4e4ea;
-    border-bottom: 1px dashed #cacaca;
+    color: #000;
+    border-bottom: 1px solid #cacaca;
+    background-size: cover !important;
 }
 
-.account-sidebar .header-btn
+.account-sidebar .header-btn,
+.account-sidebar .header-btn:visited
 {
     padding: 4px;
     border-radius: 4px;
 }
+
+/* .account-sidebar .header-btn a, */
+/* .account-sidebar .header-btn span */
+/* { */
+/*     color: #fff; */
+/* } */
 
 .follow-btn
 {
@@ -2168,7 +2195,7 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     width: 100%;
 }
 
-.scrobblist-info .username
+.scrobblist-info .username.
 {
     font-weight: bold;
 }

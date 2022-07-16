@@ -1,3 +1,9 @@
+:root
+{
+    --account-overlay-gradient-top: rgba(50, 50, 50, 0.6);
+    --account-overlay-gradient-bottom: #303030;
+}
+
 /* Dark color overrides */
 html
 {
@@ -481,3 +487,15 @@ html, body {
 {
     color: #aaa;
 }
+
+.account-sidebar
+{
+    border-bottom: 1px solid #404040;
+}
+
+.account-sidebar .acct-info .acct
+{
+    color: #ababab;
+}
+
+

@@ -1,8 +1,15 @@
-<div class="account-sidebar">
-  <div class="acct-info">
-    <img src="{{%s:avatar}}" class="acct-pfp" loading="lazy">
-    <span class="username">{{%s:username}}</span>
-  </div>
+<div class="account-sidebar" {{ %s : header }}>
+  <table class="acct-info">
+    <tr>
+      <td>
+        <img src="{{%s:avatar}}" class="acct-pfp" loading="lazy">
+      </td>
+      <td class="acct-info-right">
+        <span class="username">{{%s:username}}</span>
+        <span class="acct">@<span class="acct-js-grep">{{%s:acct}}</span></span>
+      </td>
+    </tr>
+  </table>
   <table class="acct-stats">
     <tr>
       <td class="header-btn btn">

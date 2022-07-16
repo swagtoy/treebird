@@ -74,6 +74,7 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
     char* result = NULL;
     char* sanitized_display_name = NULL;
     char* display_name = NULL;
+    char* header_css = NULL;
     if (acct->display_name)
     {
         sanitized_display_name = sanitize_html(acct->display_name);
@@ -81,10 +82,12 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
                                acct->emojis,
                                acct->emojis_len);
     }
+    easprintf(&header_css, "style=\"background: linear-gradient(var(--account-overlay-gradient-top), var(--account-overlay-gradient-bottom)), url(%s);\"", acct->header);
     struct account_sidebar_template data = {
         .prefix = config_url_prefix,
         .avatar = acct->avatar,
         .username = display_name,
+        .header = acct->header ? header_css : "",
         .statuses_text = L10N[L10N_EN_US][L10N_TAB_STATUSES],
         .following_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWING],
         .followers_text = L10N[L10N_EN_US][L10N_TAB_FOLLOWERS],
@@ -98,6 +101,7 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
     if (display_name != sanitized_display_name &&
         display_name != acct->display_name)
         free(display_name);
+    free(header_css);
     return result;
 }
 
