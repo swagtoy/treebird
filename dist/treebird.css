@@ -715,6 +715,11 @@ svg.in-reply-to-icon
     line-height: 23px;
 }
 
+input[type=checkbox].hidden:not(:checked) + .reply-form
+{
+    display: none;
+}
+
 .notification-compact .notification-content
 {
     color: #808080;

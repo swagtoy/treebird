@@ -49,6 +49,8 @@
 #include "../static/likeboost.ctmpl"
 #include "../static/reactions_btn.ctmpl"
 #include "../static/interaction_buttons.ctmpl"
+#include "../static/reply_link.ctmpl"
+#include "../static/reply_checkbox.ctmpl"
 #include "../static/menu_item.ctmpl"
 #include "../static/like_btn.ctmpl"
 #include "../static/repeat_btn.ctmpl"
@@ -270,6 +272,7 @@ char* construct_interaction_buttons(struct session* ssn,
     char* likeboost_html = NULL;
     char* reply_count = NULL;
     char* repeat_count = NULL;
+    char* reply_btn;
     char* favourites_count = NULL;
     char* emoji_picker_html = NULL;
     char* reactions_btn_html = NULL;
@@ -323,17 +326,36 @@ char* construct_interaction_buttons(struct session* ssn,
         struct like_btn_template ldata = { .favourite_active = status->favourited ? "active" : "" };
         like_btn = tmpl_gen_like_btn(&ldata, NULL);
     }
+    
+    // Weather it should be a link or a <label> button
+    if ((flags & STATUS_NO_QUICKREPLY) != STATUS_NO_QUICKREPLY)
+    {
+        struct reply_checkbox_template tmpl = {
+            .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
+            .reply_count = reply_count,
+            .status_id = status->id,
+        };
+        reply_btn = tmpl_gen_reply_checkbox(&tmpl, NULL);
+    }
+    else {
+        struct reply_link_template tmpl = {
+            .prefix = config_url_prefix,
+            .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
+            .reply_count = reply_count,
+            .status_id = status->id,
+        };
+        reply_btn = tmpl_gen_reply_link(&tmpl, NULL);        
+    }
 
     struct interaction_buttons_template data = {
         // Icons
-        .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
+        .reply_btn = reply_btn,
         .expand_btn = use_img ? data_expand_btn_img : data_expand_btn,
         .repeat_btn = repeat_btn,
         .like_btn = like_btn,
         // Interactions data
         .prefix = config_url_prefix,
         .status_id = status->id,
-        .reply_count = reply_count,
         .unrepeat = status->reblogged ? "un" : "",
         .repeats_count = repeat_count,
         .repeat_text = "Repeat",
@@ -357,6 +379,7 @@ char* construct_interaction_buttons(struct session* ssn,
     free(reactions_btn_html);
     free(likeboost_html);
     free(time_str);
+    free(reply_btn);
     free(like_btn);
     free(repeat_btn);
     return interaction_html;
@@ -680,6 +703,7 @@ char* construct_status(struct session* ssn,
     char* serialized_display_name = NULL;
     char* interaction_btns = NULL;
     char* notif_info = NULL;
+    char* post_response = NULL;
     char* in_reply_to_str = NULL;
     char* delete_status = NULL;
     char* pin_status = NULL;
@@ -770,6 +794,9 @@ char* construct_status(struct session* ssn,
         free(repl_str);
     }
 
+    if (ssn->logged_in)
+        post_response = reply_status(ssn, status->in_reply_to_account_id , status);
+
     // Delete status menu item and pinned, logged in only
     if (ssn->logged_in && strcmp(status->account.acct, ssn->acct.acct) == 0)
     {
@@ -836,7 +863,8 @@ char* construct_status(struct session* ssn,
         .attachments = attachments,
         .interactions = interactions_html,
         .emoji_reactions = emoji_reactions,
-        .interaction_btns = interaction_btns
+        .interaction_btns = interaction_btns,
+        .reply = post_response,
     };
 
     stat_html = tmpl_gen_status(&tmpl, size);
@@ -850,6 +878,7 @@ char* construct_status(struct session* ssn,
     free(interaction_btns);
     free(in_reply_to_str);
     free(attachments);
+    free(post_response);
     free(emoji_reactions);
     if (notif) free(notif_info);
     free(delete_status);

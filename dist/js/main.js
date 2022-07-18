@@ -1,12 +1,4 @@
 (function(){
-    // Global state variable
-    // let state = {
-    //     file: {
-    //         files: {},
-    //         file_counter: 0,
-    //     }
-    // };
-    
     Element.prototype.insertAfter = function(element) {
         element.parentNode.insertBefore(this, element.nextSibling);
     };
@@ -44,77 +36,7 @@
     document.querySelectorAll("input[type=text], input[type=url], input[type=email], input[type=password], textarea").forEach((i) => {
         i.addEventListener("keydown", e => form_enter_submit(e, i));
     });
-
-
-    function construct_quick_reply_form(status)
-    {
-        let src = document.createElement("form");
-        src.action = "/status/create";
-        src.method = "post";
-        src.enctype = "multipart/form-data";
-        src.className = "statusbox-quickreply";
-        let hiddeninput = document.createElement("input");
-        hiddeninput.type = "hidden";
-        hiddeninput.name = "replyid"
-        hiddeninput.value = status.id;
-        let statusbox = document.createElement("div");
-        statusbox.className = "statusbox statusbox-ani";
-
-        let textarea = document.createElement("textarea");
-        textarea.placeholder = "Just landed in N.Y.";
-        textarea.rows = 5;
-        textarea.tabindex = 1;
-        textarea.name = "content";
-
-        // Load placeholder text
-        let instance_info = status.querySelector(".instance-info");
-        textarea.innerText = reply_get_mentions(
-            instance_info ? instance_info.innerText : null,
-            status.querySelector(".status-content").innerHTML
-        );
-
-        let statusfooter = document.createElement("div");
-        statusfooter.className = "statusfooter";
-        let statusfooter_sides = {
-            left: document.createElement("div"),
-            right: document.createElement("div"),
-        }
-        let select = document.createElement("select");
-        let files_input = document.createElement("input");
-        statusfooter_sides.left.className = "statusfooter-left";
-        select.innerHTML = `
-          <option value="public">Public</option>
-          <option value="unlisted">Unlisted</option>
-          <option value="private">Private</option>
-          <option value="direct">Direct</option>
-          <option value="local">Local</option>
-    `.trim();
-        files_input.type = "file";
-        files_input.name = "file";
-        files_input.tabindex = 4;
-        files_input.multiple = "";
-
-        statusfooter_sides.right.className = "statusfooter-right";
-        let submitbtn = document.createElement("input");
-        submitbtn.className = "btn post-btn";
-        submitbtn.type = "submit";
-        submitbtn.value = "Post";
-        submitbtn.tabindex = 2;
-
-        
-        statusfooter_sides.left.appendChild(select);
-        statusfooter_sides.left.appendChild(files_input);
-        statusfooter_sides.right.appendChild(submitbtn);
-        statusfooter.appendChild(statusfooter_sides.left);
-        statusfooter.appendChild(statusfooter_sides.right);
-        statusbox.appendChild(textarea);
-        textarea.addEventListener("keydown", e => form_enter_submit(e, textarea));
-        statusbox.appendChild(statusfooter);
-        src.appendChild(hiddeninput);
-        src.appendChild(statusbox);
-        return src;
-    }
-
+   
     function construct_query(query)
     {
         query_string = "";
@@ -236,24 +158,6 @@
         interact_action(status, type);
         
         e.preventDefault();
-        return false;
-    }
-
-    function create_reply_form(e)
-    {
-        e.preventDefault();
-        let status = e.target.closest(".status");
-
-        if (status.nextSibling.className === "statusbox-quickreply")
-        {
-            status.nextSibling.remove();
-        }
-        else {
-            let form = construct_quick_reply_form(status);
-            form.insertAfter(status);
-        }
-        
-        
         return false;
     }
 
@@ -379,10 +283,6 @@
         let interact_btn = document.getElementsByClassName("statbtn");
 
         // Add event listener to add specificied buttons
-        for (let i = 0; i < reply_btn.length; ++i)
-        {
-            reply_btn[i].addEventListener('click', create_reply_form);
-        }
         for (let i = 0; i < interact_btn.length; ++i)
         {
             interact_btn[i].addEventListener('click', status_interact_props);
@@ -401,8 +301,5 @@
         {
             file_input.addEventListener('change', evt_file_upload);
         }
-
-        // let submit = document.querySelector("form");
-        // submit.onsubmit
     });
 })();

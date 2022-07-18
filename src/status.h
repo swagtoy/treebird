@@ -30,6 +30,7 @@
 #define STATUS_EMOJI_PICKER (1<<2)
 #define STATUS_NO_LIKEBOOST (1<<3)
 #define STATUS_NO_DOPAMEME (1<<4)
+#define STATUS_NO_QUICKREPLY (1<<5)
 
 struct construct_statuses_args
 {
