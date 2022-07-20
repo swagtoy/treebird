@@ -156,7 +156,7 @@ char* construct_chats_view(char* lists_string, size_t* size)
     return tmpl_gen_chats_page(&data, size);
 }
 
-void content_chats(struct session* ssn, mastodont_t* api, char** data)
+void content_chats(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -193,7 +193,7 @@ void content_chats(struct session* ssn, mastodont_t* api, char** data)
     };
     
     // Outpuot
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
@@ -256,7 +256,7 @@ char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_
     return chats_page;
 }
 
-void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
+void content_chat_view(PATH_ARGS)
 {
     char* chat_view = construct_chat_view(ssn, api, data[0], NULL);
 
@@ -267,13 +267,13 @@ void content_chat_view(struct session* ssn, mastodont_t* api, char** data)
     };
     
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     
     free(chat_view);
 }
 
 
-void content_chat_embed(struct session* ssn, mastodont_t* api, char** data)
+void content_chat_embed(PATH_ARGS)
 {
     size_t result_len;
     char* result;
@@ -287,7 +287,7 @@ void content_chat_embed(struct session* ssn, mastodont_t* api, char** data)
     result = tmpl_gen_embed(&tmpl, &result_len);
     
     // Output
-    send_result(NULL, NULL, result, result_len);
+    send_result(req, NULL, NULL, result, result_len);
     
     free(chat_view);
     free(result);

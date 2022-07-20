@@ -33,7 +33,11 @@
 #include "../static/search.ctmpl"
 #include "../static/search_all.ctmpl"
 
-void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, char* content)
+void search_page(FCGX_Request* req,
+                 struct session* ssn,
+                 mastodont_t* api,
+                 enum search_tab tab,
+                 char* content)
 {
     char* out_data;
     struct search_template tdata = {
@@ -56,11 +60,11 @@ void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, cha
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     free(out_data);
 }
 
-void content_search_all(struct session* ssn, mastodont_t* api, char** data)
+void content_search_all(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -142,7 +146,8 @@ void content_search_all(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
+    
     free(out_data);    
     free(statuses_html);
     free(accounts_html);
@@ -153,7 +158,7 @@ void content_search_all(struct session* ssn, mastodont_t* api, char** data)
     mastodont_storage_cleanup(&storage);
 }
 
-void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
+void content_search_statuses(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -190,14 +195,14 @@ void content_search_statuses(struct session* ssn, mastodont_t* api, char** data)
     else
         statuses_html = construct_error("An error occured.", E_ERROR, 1, NULL);
     
-    search_page(ssn, api, SEARCH_STATUSES, STR_NULL_EMPTY(statuses_html));
+    search_page(req, ssn, api, SEARCH_STATUSES, STR_NULL_EMPTY(statuses_html));
     
     if (statuses_html) free(statuses_html);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
 }
 
-void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
+void content_search_accounts(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -231,14 +236,14 @@ void content_search_accounts(struct session* ssn, mastodont_t* api, char** data)
     else
         accounts_html = construct_error("An error occured.", E_ERROR, 1, NULL);
     
-    search_page(ssn, api, SEARCH_ACCOUNTS, STR_NULL_EMPTY(accounts_html));
+    search_page(req, ssn, api, SEARCH_ACCOUNTS, STR_NULL_EMPTY(accounts_html));
     
     if (accounts_html) free(accounts_html);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
 }
 
-void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
+void content_search_hashtags(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -286,7 +291,7 @@ void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data)
 
     easprintf(&tags_page, "%s%s", STR_NULL_EMPTY(tags_graph), tags_html);
     
-    search_page(ssn, api, SEARCH_HASHTAGS, tags_page);
+    search_page(req, ssn, api, SEARCH_HASHTAGS, tags_page);
     
     if (tags_html) free(tags_html);
     if (tags_graph) free(tags_graph);

@@ -58,7 +58,7 @@ struct http_cookie_info
 
 // Stupidly fast simple cookie parser
 char* parse_cookies(char* begin, struct http_cookie_info* info);
-char* read_cookies_env(struct cookie_values* cookies);
+char* read_cookies_env(FCGX_Request* req, struct cookie_values* cookies);
 int cookie_get_val(char* src, char* key, struct http_cookie_info* info);
 
 #endif // COOKIE_H

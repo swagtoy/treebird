@@ -21,7 +21,8 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 
-void content_test(struct session* ssn, mastodont_t* api, char** data);
+void content_test(PATH_ARGS);
 
 #endif /* TEST_H */

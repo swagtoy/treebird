@@ -23,7 +23,7 @@
 #include "../static/about.ctmpl"
 #include "../static/license.ctmpl"
 
-void content_about(struct session* ssn, mastodont_t* api, char** data)
+void content_about(PATH_ARGS)
 {
     struct base_page b = {
         .category = BASE_CAT_NONE,
@@ -32,14 +32,14 @@ void content_about(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 }
 
 
-void content_about_license(struct session* ssn, mastodont_t* api, char** data)
+void content_about_license(PATH_ARGS)
 {
     char* page;
-    char* referer = getenv("HTTP_REFERER");
+    char* referer = GET_ENV("HTTP_REFERER", req);
     struct license_template tdata = {
         .back_ref = referer,
         .license_str = "License"
@@ -53,7 +53,7 @@ void content_about_license(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     free(page);
 }
 

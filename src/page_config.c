@@ -59,7 +59,7 @@ static char* construct_config_sidebar(enum config_category cat, size_t* size)
     return tmpl_gen_config_sidebar(&tdata, size);
 }
 
-void content_config_general(struct session* ssn, mastodont_t* api, char** data)
+void content_config_general(PATH_ARGS)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_GENERAL, NULL);
 
@@ -87,14 +87,14 @@ void content_config_general(struct session* ssn, mastodont_t* api, char** data)
         .sidebar_left = sidebar_html
     };
 
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     // Cleanup
     free(sidebar_html);
     free(general_page);
 }
 
 
-void content_config_appearance(struct session* ssn, mastodont_t* api, char** data)
+void content_config_appearance(PATH_ARGS)
 {
     char* sidebar_html = construct_config_sidebar(CONFIG_CAT_APPEARANCE, NULL);
 
@@ -104,12 +104,12 @@ void content_config_appearance(struct session* ssn, mastodont_t* api, char** dat
         .sidebar_left = sidebar_html
     };
 
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     // Cleanup
     free(sidebar_html);
 }
 
-void content_config(struct session* ssn, mastodont_t* api, char** data)
+void content_config(PATH_ARGS)
 {
-    redirect(REDIRECT_303, "/config/general");
+    redirect(req, REDIRECT_303, "/config/general");
 }

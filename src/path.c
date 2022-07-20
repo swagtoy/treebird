@@ -23,14 +23,15 @@
 #include "account.h"
 #include "error.h"
 
-int parse_path(struct session* ssn,
+int parse_path(FCGX_Request* req,
+               struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info)
 {
     int res = 0;
     int fail = 0, fin = 0;
     char* p = path_info->path + 1;
-    char* p2 = getenv("PATH_INFO") + 1;
+    char* p2 = GET_ENV("PATH_INFO", req) + 1;
 
     // Stored into data
     char* tmp = NULL;
@@ -84,7 +85,7 @@ int parse_path(struct session* ssn,
 breakpt:
     if (!fail)
     {
-        path_info->callback(ssn, api, data);
+        path_info->callback(req, ssn, api, data);
     }
     else
     {
@@ -100,25 +101,26 @@ breakpt:
     return res;
 }
 
-void handle_paths(struct session* ssn,
+void handle_paths(FCGX_Request* req,
+                  struct session* ssn,
                   mastodont_t* api,
                   struct path_info* paths,
                   size_t paths_len)
 {
-    char* path = getenv("PATH_INFO");
+    char* path = GET_ENV("PATH_INFO", req);
     // "default" path
     if (path == NULL || (path && strcmp(path, "/") == 0))
     {
-        content_index(ssn, api);
+        content_index(req, ssn, api);
     }
     else {   // Generic path
         for (size_t i = 0; i < paths_len; ++i)
         {
-            if (parse_path(ssn, api, paths + i) == 0)
+            if (parse_path(req, ssn, api, paths + i) == 0)
                 return;
         }
 
         // Fell out, return 404
-        content_not_found(ssn, api, path);
+        content_not_found(req, ssn, api, path);
     }
 }

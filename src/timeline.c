@@ -19,6 +19,7 @@
 #include "timeline.h"
 #include <stdlib.h>
 #include "helpers.h"
+
 #include "base_page.h"
 #include "../config.h"
 #include "index.h"
@@ -33,7 +34,8 @@
 #include "../static/timeline_options.ctmpl"
 #include "../static/navigation.ctmpl"
 
-void content_timeline(struct session* ssn,
+void content_timeline(FCGX_Request* req,
+                      struct session* ssn,
                       mastodont_t* api,
                       struct mstdnt_storage* storage,
                       struct mstdnt_status* statuses,
@@ -105,7 +107,7 @@ void content_timeline(struct session* ssn,
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(storage);
@@ -118,7 +120,7 @@ void content_timeline(struct session* ssn,
     free(output);
 }
 
-void tl_home(struct session* ssn, mastodont_t* api, int local)
+void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -146,10 +148,10 @@ void tl_home(struct session* ssn, mastodont_t* api, int local)
     
     mastodont_timeline_home(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
 }
 
-void tl_direct(struct session* ssn, mastodont_t* api)
+void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -174,10 +176,10 @@ void tl_direct(struct session* ssn, mastodont_t* api)
     
     mastodont_timeline_direct(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
 }
 
-void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -204,10 +206,10 @@ void tl_public(struct session* ssn, mastodont_t* api, int local, enum base_categ
 
     mastodont_timeline_public(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
 }
 
-void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
+void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* list_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -231,11 +233,11 @@ void tl_list(struct session* ssn, mastodont_t* api, char* list_id)
     
     mastodont_timeline_list(api, &m_args, list_id, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0);
 }
 
 
-void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
+void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -260,42 +262,42 @@ void tl_tag(struct session* ssn, mastodont_t* api, char* tag_id)
 
     easprintf(&header, "Hashtag - #%s", tag_id);
 
-    content_timeline(ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0);
     free(header);
 }
 
-void content_tl_home(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_home(PATH_ARGS)
 {
     if (keystr(ssn->cookies.logged_in))
-        tl_home(ssn, api, 0);
+        tl_home(req, ssn, api, 0);
     else
-        content_tl_federated(ssn, api, data);
+        content_tl_federated(req, ssn, api, data);
 }
 
-void content_tl_direct(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_direct(PATH_ARGS)
 {
     (void)data;
-    tl_direct(ssn, api);
+    tl_direct(req, ssn, api);
 }
 
-void content_tl_federated(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_federated(PATH_ARGS)
 {
     (void)data;
-    tl_public(ssn, api, 0, BASE_CAT_FEDERATED);
+    tl_public(req, ssn, api, 0, BASE_CAT_FEDERATED);
 }
 
-void content_tl_local(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_local(PATH_ARGS)
 {
     (void)data;
-    tl_public(ssn, api, 1, BASE_CAT_LOCAL);
+    tl_public(req, ssn, api, 1, BASE_CAT_LOCAL);
 }
 
-void content_tl_list(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_list(PATH_ARGS)
 {
-    tl_list(ssn, api, data[0]);
+    tl_list(req, ssn, api, data[0]);
 }
 
-void content_tl_tag(struct session* ssn, mastodont_t* api, char** data)
+void content_tl_tag(PATH_ARGS)
 {
-    tl_tag(ssn, api, data[0]);
+    tl_tag(req, ssn, api, data[0]);
 }

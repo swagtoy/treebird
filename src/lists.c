@@ -68,7 +68,7 @@ char* construct_lists_view(char* lists_string, size_t* size)
     return tmpl_gen_lists(&data, size);
 }
 
-void content_lists(struct session* ssn, mastodont_t* api, char** data)
+void content_lists(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -107,7 +107,7 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
@@ -116,7 +116,7 @@ void content_lists(struct session* ssn, mastodont_t* api, char** data)
     mstdnt_cleanup_lists(lists);
 }
 
-void list_edit(struct session* ssn, mastodont_t* api, char** data)
+void list_edit(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -136,6 +136,6 @@ void list_edit(struct session* ssn, mastodont_t* api, char** data)
                           &storage,
                           NULL);
 
-    redirect(REDIRECT_303, referer);
+    redirect(req, REDIRECT_303, referer);
     mastodont_storage_cleanup(&storage);
 }

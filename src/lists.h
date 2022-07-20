@@ -25,7 +25,7 @@
 char* construct_list(struct mstdnt_list* list, size_t* size);
 char* construct_lists(struct mstdnt_list* lists, size_t size, size_t* ret_size);
 char* construct_lists_view(char* lists_string, size_t* size);
-void content_lists(struct session* ssn, mastodont_t* api, char** data);
-void list_edit(struct session* ssn, mastodont_t* api, char** data);
+void content_lists(PATH_ARGS);
+void list_edit(PATH_ARGS);
 
 #endif // LISTS_H

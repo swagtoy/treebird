@@ -299,7 +299,8 @@ void get_account_info(mastodont_t* api, struct session* ssn)
     }
 }
 
-static void fetch_account_page(struct session* ssn,
+static void fetch_account_page(FCGX_Request* req,
+                               struct session* ssn,
                                mastodont_t* api,
                                char* id,
                                void* args,
@@ -347,7 +348,7 @@ static void fetch_account_page(struct session* ssn,
         .sidebar_left = NULL
     };
 
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
         
     /* Output */
     mstdnt_cleanup_account(&acct);
@@ -566,7 +567,7 @@ char* load_account_page(struct session* ssn,
     return result;
 }
 
-void content_account_statuses(struct session* ssn, mastodont_t* api, char** data)
+void content_account_statuses(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 0,
@@ -582,25 +583,25 @@ void content_account_statuses(struct session* ssn, mastodont_t* api, char** data
         .limit = 20,
     };
     
-    fetch_account_page(ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
+    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
 }
 
-void content_account_followers(struct session* ssn, mastodont_t* api, char** data)
+void content_account_followers(PATH_ARGS)
 {
-    fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
+    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
 }
 
-void content_account_following(struct session* ssn, mastodont_t* api, char** data)
+void content_account_following(PATH_ARGS)
 {
-    fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
+    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
 }
 
-void content_account_scrobbles(struct session* ssn, mastodont_t* api, char** data)
+void content_account_scrobbles(PATH_ARGS)
 {
-    fetch_account_page(ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
+    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
 }
 
-void content_account_pinned(struct session* ssn, mastodont_t* api, char** data)
+void content_account_pinned(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 1,
@@ -616,10 +617,10 @@ void content_account_pinned(struct session* ssn, mastodont_t* api, char** data)
         .limit = 20,
     };
     
-    fetch_account_page(ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
+    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
 }
 
-void content_account_media(struct session* ssn, mastodont_t* api, char** data)
+void content_account_media(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 0,
@@ -635,12 +636,12 @@ void content_account_media(struct session* ssn, mastodont_t* api, char** data)
         .limit = 20,
     };
     
-    fetch_account_page(ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
+    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
-void content_account_action(struct session* ssn, mastodont_t* api, char** data)
+void content_account_action(PATH_ARGS)
 {
-    char* referer = getenv("HTTP_REFERER");
+    char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -665,10 +666,10 @@ void content_account_action(struct session* ssn, mastodont_t* api, char** data)
 
     mastodont_storage_cleanup(&storage);
 
-    redirect(REDIRECT_303, referer);
+    redirect(req, REDIRECT_303, referer);
 }
 
-void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** data)
+void content_account_bookmarks(PATH_ARGS)
 {
     size_t status_count = 0, statuses_html_count = 0;
     struct mstdnt_status* statuses = NULL;
@@ -722,7 +723,7 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
@@ -732,7 +733,8 @@ void content_account_bookmarks(struct session* ssn, mastodont_t* api, char** dat
     free(output);
 }
 
-static void accounts_page(mastodont_t* api,
+static void accounts_page(FCGX_Request* req,
+                          mastodont_t* api,
                           struct session* ssn,
                           struct mstdnt_storage* storage,
                           char* header,
@@ -758,7 +760,7 @@ static void accounts_page(mastodont_t* api,
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     mastodont_storage_cleanup(storage);
     free(output);
@@ -766,7 +768,7 @@ static void accounts_page(mastodont_t* api,
 }
                                     
 
-void content_account_blocked(struct session* ssn, mastodont_t* api, char** data)
+void content_account_blocked(PATH_ARGS)
 {
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -784,11 +786,11 @@ void content_account_blocked(struct session* ssn, mastodont_t* api, char** data)
     
     mastodont_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
 
-    accounts_page(api, ssn, &storage, "Blocked users", accts, accts_len);
+    accounts_page(req, api, ssn, &storage, "Blocked users", accts, accts_len);
     mstdnt_cleanup_accounts(accts, accts_len);
 }
 
-void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
+void content_account_muted(PATH_ARGS)
 {
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -806,11 +808,11 @@ void content_account_muted(struct session* ssn, mastodont_t* api, char** data)
     
     mastodont_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
 
-    accounts_page(api, ssn, &storage, "Muted users", accts, accts_len);
+    accounts_page(req, api, ssn, &storage, "Muted users", accts, accts_len);
     mstdnt_cleanup_accounts(accts, accts_len);
 }
 
-void content_account_favourites(struct session* ssn, mastodont_t* api, char** data)
+void content_account_favourites(PATH_ARGS)
 {
     size_t status_count = 0, statuses_html_count = 0;
     struct mstdnt_status* statuses = NULL;
@@ -864,7 +866,7 @@ void content_account_favourites(struct session* ssn, mastodont_t* api, char** da
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     mastodont_storage_cleanup(&storage);

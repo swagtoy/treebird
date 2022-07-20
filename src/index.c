@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include "timeline.h"
 
-void content_index(struct session* ssn, mastodont_t* api)
+void content_index(FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
     // Check logins
-    content_tl_home(ssn, api, NULL);
+    content_tl_home(req, ssn, api, NULL);
 }

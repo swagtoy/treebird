@@ -27,10 +27,10 @@
 char* get_mime_boundary(char* content_type_str, char** bound)
 {
     // If neither values are set, get out
-    if (!(getenv("CONTENT_TYPE") || content_type_str))
+    if (!content_type_str)
         return NULL;
     
-    char* content = content_type_str ? content_type_str : getenv("CONTENT_TYPE");
+    char* content = content_type_str;
 
     // Data gets changed in place
     char* content_type = malloc(strlen(content)+1);

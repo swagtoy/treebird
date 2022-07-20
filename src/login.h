@@ -21,8 +21,9 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 
-void content_login_oauth(struct session* ssn, mastodont_t* api, char** data);
-void content_login(struct session* ssn, mastodont_t* api, char** data);
+void content_login_oauth(PATH_ARGS);
+void content_login(PATH_ARGS);
 
 #endif // LOGIN_H

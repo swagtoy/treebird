@@ -17,9 +17,11 @@
  */
 
 #include <fcgi_stdio.h>
+#include <fcgiapp.h>
 #include <string.h>
 #include <stdlib.h>
 #include "cookie.h"
+#include "env.h"
 
 enum cookie_state
 {
@@ -29,12 +31,10 @@ enum cookie_state
     STATE_V_START,
 };
 
-char* read_cookies_env(struct cookie_values* cookies)
+char* read_cookies_env(FCGX_Request* req, struct cookie_values* cookies)
 {
     struct http_cookie_info info;
-    char* cookies_env = getenv("HTTP_COOKIE");
-
-    // Is it even work bothering with?
+    char* cookies_env = GET_ENV("HTTP_COOKIE", req);
     if (!cookies_env)
         return NULL;
     

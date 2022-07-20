@@ -18,24 +18,29 @@
 
 #ifndef PATH_H
 #define PATH_H
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 #include <mastodont.h>
 #include <stddef.h>
+#include "env.h"
 #include "session.h"
+
+#define PATH_ARGS FCGX_Request* req, struct session* ssn, mastodont_t* api, char** data
 
 struct path_info
 {
     char* path;
-    void (*callback)(struct session* ssn,
-                     mastodont_t*,
-                     char**);
+    void (*callback)(PATH_ARGS);
 };
 
-void handle_paths(struct session* ssn,
+void handle_paths(FCGX_Request* req,
+                  struct session* ssn,
                   mastodont_t* api,
                   struct path_info* paths,
                   size_t paths_len);
 
-int parse_path(struct session* ssn,
+int parse_path(FCGX_Request* req,
+               struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info);
 

@@ -190,7 +190,7 @@ char* construct_notifications_compact(struct session* ssn,
                                   ret_size);
 }
 
-void content_notifications(struct session* ssn, mastodont_t* api, char** data)
+void content_notifications(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -250,14 +250,14 @@ void content_notifications(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     mastodont_storage_cleanup(&storage);
     if (notif_html) free(notif_html);
     if (navigation_box) free(navigation_box);
     if (page) free(page);
 }
 
-void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data)
+void content_notifications_compact(PATH_ARGS)
 {
     char* theme_str = NULL;
     struct mstdnt_args m_args;
@@ -327,7 +327,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
 
     page = tmpl_gen_notifications_embed(&tdata, &len);
 
-    send_result(NULL, NULL, page, len);
+    send_result(req, NULL, NULL, page, len);
 
     mastodont_storage_cleanup(&storage);
     free(notif_html);
@@ -336,7 +336,7 @@ void content_notifications_compact(struct session* ssn, mastodont_t* api, char**
     free(theme_str);
 }
 
-void api_notifications(struct session* ssn, mastodont_t* api, char** data)
+void api_notifications(PATH_ARGS)
 {
-    send_result(NULL, "application/json", "{\"status\":0}", 0);
+    send_result(req, NULL, "application/json", "{\"status\":0}", 0);
 }

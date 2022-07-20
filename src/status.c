@@ -166,22 +166,22 @@ int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoj
     return 0;
 }
 
-void content_status_create(struct session* ssn, mastodont_t* api, char** data)
+void content_status_create(PATH_ARGS)
 {
     char* referer = getenv("HTTP_REFERER");
 
     try_post_status(ssn, api);
 
-    redirect(REDIRECT_303, referer);
+    redirect(req, REDIRECT_303, referer);
 }
 
-void content_status_react(struct session* ssn, mastodont_t* api, char** data)
+void content_status_react(PATH_ARGS)
 {
     char* referer = getenv("HTTP_REFERER");
 
     try_react_status(ssn, api, data[0], data[1]);
 
-    redirect(REDIRECT_303, referer);
+    redirect(req, REDIRECT_303, referer);
 }
 
 const char* status_visibility_str(enum l10n_locale loc,
@@ -912,46 +912,47 @@ char* construct_statuses(struct session* ssn,
     return construct_func_strings(construct_status_voidwrap, &stat_args, size, ret_size);
 }
 
-void status_interact(struct session* ssn, mastodont_t* api, char** data)
+void status_interact(PATH_ARGS)
 {
-    char* referer = getenv("HTTP_REFERER");
+    char* referer = GET_ENV("HTTP_REFERER", req);
     
     try_interact_status(ssn, api, data[0]);
     
-    printf("Status: 303 See Other\r\n"
-           "Location: %s#id-%s\r\n"
-           "Content-Length: 14\r\n\r\n"
-           "Redirecting...",
-           referer ? referer : "/",
-           data[0]);
+    FCGX_FPrintF(req->out,
+                 "Status: 303 See Other\r\n"
+                 "Location: %s#id-%s\r\n"
+                 "Content-Length: 14\r\n\r\n"
+                 "Redirecting...",
+                 referer ? referer : "/",
+                 data[0]);
 }
 
-void api_status_interact(struct session* ssn, mastodont_t* api, char** data)
+void api_status_interact(PATH_ARGS)
 {
     if (try_interact_status(ssn, api, keystr(ssn->post.id)) == 0)
     {
-        send_result(NULL, "application/json", "{\"status\":\"Success\"}", 0);
+        send_result(req, NULL, "application/json", "{\"status\":\"Success\"}", 0);
     }
     else
-        send_result(NULL, "application/json", "{\"status\":\"Couldn't load status\"}", 0);
+        send_result(req, NULL, "application/json", "{\"status\":\"Couldn't load status\"}", 0);
 }
 
-void status_view(struct session* ssn, mastodont_t* api, char** data)
+void status_view(PATH_ARGS)
 {
-    content_status(ssn, api, data, STATUS_FOCUSED);
+    content_status(req, ssn, api, data, STATUS_FOCUSED);
 }
 
-void status_emoji(struct session* ssn, mastodont_t* api, char** data)
+void status_emoji(PATH_ARGS)
 {
-    content_status(ssn, api, data, STATUS_FOCUSED | STATUS_EMOJI_PICKER);
+    content_status(req, ssn, api, data, STATUS_FOCUSED | STATUS_EMOJI_PICKER);
 }
 
-void status_reply(struct session* ssn, mastodont_t* api, char** data)
+void status_reply(PATH_ARGS)
 {
-    content_status(ssn, api, data, STATUS_FOCUSED | STATUS_REPLY);
+    content_status(req, ssn, api, data, STATUS_FOCUSED | STATUS_REPLY);
 }
 
-void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data)
+void status_view_reblogs(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -968,6 +969,7 @@ void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data)
                                   &reblogs_len);
     
     content_status_interactions(
+        req,
         ssn,
         api,
         "Reblogs",
@@ -978,7 +980,7 @@ void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data)
     mstdnt_cleanup_accounts(reblogs, reblogs_len);
 }
 
-void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
+void status_view_favourites(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -995,6 +997,7 @@ void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
                                    &favourites_len);
     
     content_status_interactions(
+        req,
         ssn,
         api,
         "Favorites",
@@ -1005,7 +1008,8 @@ void status_view_favourites(struct session* ssn, mastodont_t* api, char** data)
     mstdnt_cleanup_accounts(favourites, favourites_len);
 }
 
-void content_status_interactions(struct session* ssn,
+void content_status_interactions(FCGX_Request* req,
+                                 struct session* ssn,
                                  mastodont_t* api,
                                  char* label,
                                  struct mstdnt_account* accts,
@@ -1016,7 +1020,7 @@ void content_status_interactions(struct session* ssn,
         accounts_html = construct_error("No accounts", E_NOTICE, 1, NULL);
 
     struct interactions_page_template tmpl = {
-        .back_ref = getenv("HTTP_REFERER"),
+        .back_ref = GET_ENV("HTTP_REFERER", req),
         .interaction_str = label,
         .accts = accounts_html
     };
@@ -1028,14 +1032,14 @@ void content_status_interactions(struct session* ssn,
         .content = output,
         .sidebar_left = NULL
     };
-    render_base_page(&page, ssn, api);
+    render_base_page(&page, req, ssn, api);
 
     // Cleanup
     free(accounts_html);
     free(output);
 }
 
-void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t flags)
+void content_status(PATH_ARGS, uint8_t flags)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -1121,7 +1125,7 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
 
     // Cleanup
     free(before_html);
@@ -1138,10 +1142,10 @@ void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t 
     mastodont_storage_cleanup(&status_storage);
 }
 
-void notice_redirect(struct session* ssn, mastodont_t* api, char** data)
+void notice_redirect(PATH_ARGS)
 {
     char* url;
     easprintf(&url, "%s/status/%s", config_url_prefix, data[0]);
-    redirect(REDIRECT_303, url);
+    redirect(req, REDIRECT_303, url);
     free(url);
 }

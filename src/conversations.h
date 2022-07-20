@@ -18,6 +18,7 @@
 
 #ifndef CONVERSATIONS_H
 #define CONVERSATIONS_H
+#include "path.h"
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
@@ -43,9 +44,9 @@ char* construct_messages(struct mstdnt_message* message,
                          size_t size,
                          size_t* ret_size);
 
-void content_chats(struct session* ssn, mastodont_t* api, char** data);
+void content_chats(PATH_ARGS);
 char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len);
-void content_chat_embed(struct session* ssn, mastodont_t* api, char** data);
-void content_chat_view(struct session* ssn, mastodont_t* api, char** data);
+void content_chat_embed(PATH_ARGS);
+void content_chat_view(PATH_ARGS);
 
 #endif // LISTS_H

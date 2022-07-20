@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
 #include <stdlib.h>
 #include "local_config_set.h"
 
 #define post_bool_intp(post) (post->is_set ? keypint(post) : 0)
 
-void set_config_str(struct session* ssn,
+void set_config_str(FCGX_Request* req,
+                    struct session* ssn,
                     char** v,
                     char* cookie_name,
                     struct key* post,
@@ -34,8 +34,9 @@ void set_config_str(struct session* ssn,
     {
         if (ssn->post.set.is_set && post->is_set && page == curr_page)
         {
-            printf("Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                   cookie_name, keypstr(post));
+            FCGX_FPrintF(req->out,
+                         "Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                         cookie_name, keypstr(post));
         }
 
         if ((ssn->post.set.is_set && post->is_set) || cookie->is_set)
@@ -44,10 +45,10 @@ void set_config_str(struct session* ssn,
     else
         // Set it to the cookie
         *v = keypstr(cookie);
-    return 0;
 }
 
-void set_config_int(struct session* ssn,
+void set_config_int(FCGX_Request* req,
+                    struct session* ssn,
                     int* v,
                     char* cookie_name,
                     struct key* post,
@@ -59,8 +60,9 @@ void set_config_int(struct session* ssn,
     {
         if (ssn->post.set.is_set && page == curr_page)
         {
-            printf("Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                   cookie_name, post_bool_intp(post));
+            FCGX_FPrintF(req->out,
+                         "Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                         cookie_name, post_bool_intp(post));
         } 
 
         // Checks if boolean option
@@ -70,14 +72,15 @@ void set_config_int(struct session* ssn,
     }
     else
         *v = keypint(cookie);
-    
-    return 0;
 }
 
 // Shorthand for the arguments passed into functions below
-#define LOAD_CFG_SIM(strcookie, varname) ssn, &(ssn->config.varname), (strcookie), &(ssn->post.varname), &(ssn->cookies.varname), page
+#define LOAD_CFG_SIM(strcookie, varname) req, ssn, &(ssn->config.varname), (strcookie), &(ssn->post.varname), &(ssn->cookies.varname), page
 
-struct mstdnt_storage* load_config(struct session* ssn, mastodont_t* api, enum config_page page)
+struct mstdnt_storage* load_config(FCGX_Request* req,
+                                   struct session* ssn,
+                                   mastodont_t* api,
+                                   enum config_page page)
 {
     struct mstdnt_attachment* attachments = NULL;
     struct mstdnt_storage* storage = NULL;
@@ -87,7 +90,7 @@ struct mstdnt_storage* load_config(struct session* ssn, mastodont_t* api, enum c
         try_upload_media(&storage, ssn, api, &attachments, NULL);
     }
     struct key atm = { .type.s = attachments ? attachments[0].url : NULL, .is_set = attachments ? 1 : 0 };
-    set_config_str(ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
+    set_config_str(req, ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("sidebaropacity",       sidebar_opacity), CONFIG_APPEARANCE);
     set_config_str(LOAD_CFG_SIM("theme",                theme), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("themeclr",             themeclr), CONFIG_APPEARANCE);

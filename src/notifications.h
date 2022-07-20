@@ -19,7 +19,10 @@
 #ifndef NOTIFICATIONS_H
 #define NOTIFICATIONS_H
 #include <mastodont.h>
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 #include "session.h"
+#include "path.h"
 #include "type_string.h"
 
 char* construct_notification(struct session* ssn,
@@ -43,9 +46,9 @@ char* construct_notifications_compact(struct session* ssn,
                                       size_t* ret_size);
 
 // Page contents
-void content_notifications(struct session* ssn, mastodont_t* api, char** data);
-void content_notifications_compact(struct session* ssn, mastodont_t* api, char** data);
+void content_notifications(PATH_ARGS);
+void content_notifications_compact(PATH_ARGS);
 
-void api_notifications(struct session* ssn, mastodont_t* api, char** data);
+void api_notifications(PATH_ARGS);
 
 #endif // NOTIFICATION_H

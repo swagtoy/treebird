@@ -36,11 +36,11 @@
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
-void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* api)
+void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* cookie = getenv("HTTP_COOKIE");
+    char* cookie = GET_ENV("HTTP_COOKIE", req);
     enum l10n_locale locale = l10n_normalize(ssn->config.lang);
     char* theme_str = NULL;
     const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
@@ -189,7 +189,7 @@ void render_base_page(struct base_page* page, struct session* ssn, mastodont_t* 
         goto cleanup;
     }
     
-    send_result(NULL, "text/html", data, len);
+    send_result(req, NULL, "text/html", data, len);
 
     // Cleanup
 /* cleanup_all: */
@@ -203,14 +203,23 @@ cleanup:
     free(theme_str);
 }
 
-void send_result(char* status, char* content_type, char* data, size_t data_len)
+void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
 {
     if (data_len == 0) data_len = strlen(data);
-    printf("Status: %s\r\n"
-           "Content-type: %s\r\n"
-           "Content-Length: %d\r\n\r\n",
-           status ? status : "200 OK",
-           content_type ? content_type : "text/html",
-           data_len + 1);
-    puts(data);    
+#ifdef SINGLE_THREADED
+    printf(
+#else
+    FCGX_FPrintF(req->out,
+#endif
+                 "Status: %s\r\n"
+                 "Content-type: %s\r\n"
+                 "Content-Length: %d\r\n\r\n",
+                 status ? status : "200 OK",
+                 content_type ? content_type : "text/html",
+                 data_len + 1);
+#ifdef SINGLE_THREADED
+    puts(data);
+#else
+    FCGX_PutStr(data, data_len, req->out);
+#endif
 }

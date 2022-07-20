@@ -20,6 +20,7 @@
 #define SEARCH_H
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 
 enum search_tab
 {
@@ -28,10 +29,14 @@ enum search_tab
     SEARCH_HASHTAGS,
 };
 
-void search_page(struct session* ssn, mastodont_t* api, enum search_tab tab, char* content);
-void content_search_all(struct session* ssn, mastodont_t* api, char** data);
-void content_search_statuses(struct session* ssn, mastodont_t* api, char** data);
-void content_search_accounts(struct session* ssn, mastodont_t* api, char** data);
-void content_search_hashtags(struct session* ssn, mastodont_t* api, char** data);
+void search_page(FCGX_Request* req,
+                 struct session* ssn,
+                 mastodont_t* api,
+                 enum search_tab tab,
+                 char* content);
+void content_search_all(PATH_ARGS);
+void content_search_statuses(PATH_ARGS);
+void content_search_accounts(PATH_ARGS);
+void content_search_hashtags(PATH_ARGS);
 
 #endif /* SEARCH_H */

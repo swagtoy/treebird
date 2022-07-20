@@ -48,7 +48,7 @@ char* construct_error(const char* error, enum error_type type, unsigned pad, siz
     return tmpl_gen_error(&data, size);
 }
 
-void content_not_found(struct session* ssn, mastodont_t* api, char* path)
+void content_not_found(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* path)
 {
     char* page;
     struct error_404_template data = {
@@ -61,6 +61,6 @@ void content_not_found(struct session* ssn, mastodont_t* api, char* path)
         .sidebar_left = NULL
     };
 
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     free(page);
 }

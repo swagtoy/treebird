@@ -20,8 +20,9 @@
 #define ABOUT_H
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 
-void content_about_license(struct session* ssn, mastodont_t* api, char** data);
-void content_about(struct session* ssn, mastodont_t* api, char** data);
+void content_about_license(PATH_ARGS);
+void content_about(PATH_ARGS);
 
 #endif /* ABOUT_H */

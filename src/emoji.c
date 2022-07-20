@@ -110,11 +110,11 @@ static char* construct_emoji_voidwrap(void* passed, size_t index, size_t* res)
 
 #define EMOJI_PICKER_ARGS(this_index) { .status_id = status_id, .index = this_index }
 
-void content_emoji_picker(struct session* ssn, mastodont_t* api, char** data)
+void content_emoji_picker(PATH_ARGS)
 {
     char* picker = construct_emoji_picker(NULL, NULL);
 
-    send_result(NULL, NULL, picker, 0);
+    send_result(req, NULL, NULL, picker, 0);
 
     free(picker);
 }

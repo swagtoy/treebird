@@ -17,17 +17,19 @@
  */
 
 #include <fcgi_stdio.h>
+#include <fcgiapp.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "query.h"
+#include "env.h"
 #include "mime.h"
 
-char* read_get_data(struct get_values* query)
+char* read_get_data(FCGX_Request* req, struct get_values* query)
 {
     struct http_query_info info = { 0 };
-    char* query_string = getenv("QUERY_STRING");
+    char* query_string = GET_ENV("QUERY_STRING", req);
     char* get_query = NULL, *g_query_read;
 
     // BEGIN Query references
@@ -73,14 +75,14 @@ char* read_get_data(struct get_values* query)
 
 
 
-char* read_post_data(struct post_values* post)
+char* read_post_data(FCGX_Request* req, struct post_values* post)
 {
     ptrdiff_t begin_curr_size;
     struct http_query_info query_info;
     struct http_form_info form_info;
     struct file_content form_props;
-    char* request_method = getenv("REQUEST_METHOD");
-    char* content_length = getenv("CONTENT_LENGTH");
+    char* request_method = GET_ENV("REQUEST_METHOD", req);
+    char* content_length = GET_ENV("CONTENT_LENGTH", req);
     char* post_query = NULL, *p_query_read;
 
     // BEGIN Query references
@@ -130,8 +132,8 @@ char* read_post_data(struct post_values* post)
         content_length)
     {
         char* mime_boundary;
-        char* mime_mem = get_mime_boundary(NULL, &mime_boundary);
-        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        char* mime_mem = get_mime_boundary(GET_ENV("CONTENT_TYPE", req), &mime_boundary);
+        int content_length = atoi(GET_ENV("CONTENT_LENGTH", req));
         post_query = malloc(content_length + 1);
         if (!post_query)
         {
@@ -140,7 +142,7 @@ char* read_post_data(struct post_values* post)
         }
 
         // fread should be a macro to FCGI_fread, which is set by FCGI_Accept in previous definitions
-        size_t len = fread(post_query, 1, content_length, stdin);
+        size_t len = FCGX_GetStr(post_query, content_length, req->in);
         post_query[content_length] = '\0';
 
         // For shifting through
@@ -209,23 +211,27 @@ char* parse_query(char* begin, struct http_query_info* info)
     return end ? NULL : begin+1;
 }
 
-char* try_handle_post(void (*call)(struct http_query_info*, void*), void* arg)
+char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg)
 {
-    char* request_method = getenv("REQUEST_METHOD");
+    char* request_method = GET_ENV("REQUEST_METHOD", req);
     char* post_query = NULL, * p_query_read;
     struct http_query_info info;
     
     // Handle POST
     if (request_method && (strcmp("POST", request_method) == 0))
     {
-        int content_length = atoi(getenv("CONTENT_LENGTH"));
+        int content_length = atoi(GET_ENV("CONTENT_LENGTH", req));
         post_query = malloc(content_length + 1);
         if (!post_query)
         {
             puts("Malloc error!");
             return NULL;
         }
+#ifdef SINGLE_THREADED
         read(STDIN_FILENO, post_query, content_length);
+#else
+        FCGX_GetStr(post_query, content_length, req->in);
+#endif
         post_query[content_length] = '\0';
         
 

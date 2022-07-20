@@ -20,11 +20,14 @@
 #define PAGE_CONFIG_H
 #include <stddef.h>
 #include <mastodont.h>
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
+#include "path.h"
 #include "session.h"
 
-void content_config_appearance(struct session* ssn, mastodont_t* api, char** data);
-void content_config_general(struct session* ssn, mastodont_t* api, char** data);
-void content_config_account(struct session* ssn, mastodont_t* api, char** data);
-void content_config(struct session* ssn, mastodont_t* api, char** data);
+void content_config_appearance(PATH_ARGS);
+void content_config_general(PATH_ARGS);
+void content_config_account(PATH_ARGS);
+void content_config(PATH_ARGS);
 
 #endif // PAGE_CONFIG_H

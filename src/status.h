@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <mastodont.h>
 #include "l10n.h"
+#include "path.h"
 #include "session.h"
 
 // Flags
@@ -47,8 +48,8 @@ struct interact_profile_args
 
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
-void content_status_create(struct session* ssn, mastodont_t* api, char** data);
-void content_status_react(struct session* ssn, mastodont_t* api, char** data);
+void content_status_create(PATH_ARGS);
+void content_status_react(PATH_ARGS);
 
 // HTML Builders
 char* construct_status(struct session* ssn,
@@ -59,7 +60,7 @@ char* construct_status(struct session* ssn,
                        struct construct_statuses_args* args,
                        uint8_t flags);
 char* construct_statuses(struct session* ssn,
-                       mastodont_t* api,
+                         mastodont_t* api,
                          struct mstdnt_status* statuses,
                          size_t size,
                          struct construct_statuses_args* args,
@@ -104,32 +105,33 @@ char* reformat_status(struct session* ssn,
 char* greentextify(char* content);
 char* make_mentions_local(char* content);
 
-void status_view_reblogs(struct session* ssn, mastodont_t* api, char** data);
-void status_view_favourites(struct session* ssn, mastodont_t* api, char** data);
+void status_view_reblogs(PATH_ARGS);
+void status_view_favourites(PATH_ARGS);
 
 const char* status_visibility_str(enum l10n_locale locale, enum mstdnt_visibility_type visibility);
 
-void content_status_interactions(struct session* ssn,
+void content_status_interactions(FCGX_Request* req,
+                                 struct session* ssn,
                                  mastodont_t* api,
                                  char* label,
                                  struct mstdnt_account* accts,
                                  size_t accts_len);
 
 // Status frontends
-void status_view(struct session* ssn, mastodont_t* api, char** data);
-void status_reply(struct session* ssn, mastodont_t* api, char** data);
-void status_interact(struct session* ssn, mastodont_t* api, char** data);
-void status_emoji(struct session* ssn, mastodont_t* api, char** data);
+void status_view(PATH_ARGS);
+void status_reply(PATH_ARGS);
+void status_interact(PATH_ARGS);
+void status_emoji(PATH_ARGS);
 // Above wraps to the below function
-void content_status(struct session* ssn, mastodont_t* api, char** data, uint8_t flags);
+void content_status(PATH_ARGS, uint8_t flags);
 
 // Cleanup
 void cleanup_media_ids(struct session* ssn, char** media_ids);
 
 // Redirects
-void notice_redirect(struct session* ssn, mastodont_t* api, char** data);
+void notice_redirect(PATH_ARGS);
 
 // API
-void api_status_interact(struct session* ssn, mastodont_t* api, char** data);
+void api_status_interact(PATH_ARGS);
 
 #endif // STATUS_H

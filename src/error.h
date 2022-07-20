@@ -21,6 +21,7 @@
 #include <mastodont.h>
 #include <stddef.h>
 #include "session.h"
+#include "path.h"
 
 enum error_type
 {
@@ -30,6 +31,6 @@ enum error_type
 };
 
 char* construct_error(const char* error, enum error_type type, unsigned pad, size_t* size);
-void content_not_found(struct session* ssn, mastodont_t* api, char* path);
+void content_not_found(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* path);
 
 #endif // ERROR_H

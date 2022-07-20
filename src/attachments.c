@@ -197,7 +197,7 @@ char* construct_attachments(struct session* ssn,
     return att_view;
 }
 
-void api_attachment_create(struct session* ssn, mastodont_t* api, char** data)
+void api_attachment_create(PATH_ARGS)
 {
     struct mstdnt_storage *att_storage = NULL;
     struct mstdnt_attachment* attachments = NULL;
@@ -216,11 +216,11 @@ void api_attachment_create(struct session* ssn, mastodont_t* api, char** data)
     if (media_ids)
     {
         string = cJSON_Print(root);
-        send_result(NULL, "application/json", string, 0);
+        send_result(req, NULL, "application/json", string, 0);
         free(string);
     }
     else
-        send_result(NULL, "application/json", "{\"status\":\"Couldn't\"}", 0);
+        send_result(req, NULL, "application/json", "{\"status\":\"Couldn't\"}", 0);
 
     // Cleanup media stuff
     cleanup_media_storages(ssn, att_storage);

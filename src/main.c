@@ -18,6 +18,7 @@
 
 #include <pthread.h>
 #include <fcgi_stdio.h>
+#include <fcgiapp.h>
 #include <string.h>
 #include <mastodont.h>
 #include <stdlib.h>
@@ -138,21 +139,21 @@ static void application(mastodont_t* api, FCGX_Request* req)
     };
         
     // Load cookies
-    char* cookies_str = read_cookies_env(&(ssn.cookies));
-    char* post_str = read_post_data(&(ssn.post));
-    char* get_str = read_get_data(&(ssn.query));
+    char* cookies_str = read_cookies_env(req, &(ssn.cookies));
+    char* post_str = read_post_data(req, &(ssn.post));
+    char* get_str = read_get_data(req, &(ssn.query));
 
     // Read config options
     enum config_page page = CONFIG_GENERAL;
     char* path_info = GET_ENV("PATH_INFO", req);
     if (path_info && strcmp(path_info, "/config/appearance") == 0)
         page = CONFIG_APPEARANCE;
-    struct mstdnt_storage* attachments = load_config(&ssn, api, page);
+    struct mstdnt_storage* attachments = load_config(req, &ssn, api, page);
 
     // Load current account information
     get_account_info(api, &ssn);
 
-    handle_paths(&ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
+    handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
 
     // Cleanup
     if (cookies_str) free(cookies_str);
@@ -208,7 +209,7 @@ int main(void)
         pthread_create(&id[i], NULL, cgi_start, &api);
 
     // Hell, let's not sit around here either
-    application(&api, NULL);
+    cgi_start(&api);
 
    
     free_instance_info_cache();

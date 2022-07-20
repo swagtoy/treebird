@@ -27,14 +27,15 @@
 #define REDIR_HTML_END "</body>" \
     "</html>"
 
-void redirect(char* status, char* location)
+void redirect(FCGX_Request* req, char* status, char* location)
 {
     char* loc_str = location ? location : "/";
     
-    printf("Status: %s\r\n"
-           "Location: %s\r\n\r\n"
-           REDIR_HTML_BEGIN "Redirecting to <a href=\"\">%s</a>..." REDIR_HTML_END,
-           status,
-           loc_str,
-           loc_str);
+    FCGX_FPrintF(req->out,
+                 "Status: %s\r\n"
+                 "Location: %s\r\n\r\n"
+                 REDIR_HTML_BEGIN "Redirecting to <a href=\"\">%s</a>..." REDIR_HTML_END,
+                 status,
+                 loc_str,
+                 loc_str);
 }

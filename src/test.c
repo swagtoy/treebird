@@ -42,17 +42,17 @@ enum env_tbl_index
 
 #define ENV_TBL_GET(index) (env_tbl[(index)] ? env_tbl[(index)] : ENV_NOT_FOUND)
 
-void content_test(struct session* ssn, mastodont_t* api, char** data)
+void content_test(PATH_ARGS)
 {
     char* env_tbl[] = {
-        getenv("HTTP_COOKIE"),
-        getenv("PATH_INFO"),
-        getenv("QUERY_STRING"),
-        getenv("REQUEST_METHOD"),
-        getenv("SCRIPT_NAME"),
-        getenv("HTTP_REFERER"),
-        getenv("HTTP_USER_AGENT"),
-        getenv("CONTENT_LENGTH")
+        GET_ENV("HTTP_COOKIE", req),
+        GET_ENV("PATH_INFO", req),
+        GET_ENV("QUERY_STRING", req),
+        GET_ENV("REQUEST_METHOD", req),
+        GET_ENV("SCRIPT_NAME", req),
+        GET_ENV("HTTP_REFERER", req),
+        GET_ENV("HTTP_USER_AGENT", req),
+        GET_ENV("CONTENT_LENGTH", req)
     };
     
     char* page;
@@ -75,6 +75,6 @@ void content_test(struct session* ssn, mastodont_t* api, char** data)
     };
 
     // Output
-    render_base_page(&b, ssn, api);
+    render_base_page(&b, req, ssn, api);
     if (page) free(page);
 }
