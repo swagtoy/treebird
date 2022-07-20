@@ -296,8 +296,8 @@
         }
 
         // File upload
-        let file_input = document.querySelector("input[type=file]");
-        if (file_input)
+        let file_inputs = document.querySelectorAll(".statusbox input[type=file]");
+        for (let file_input of file_inputs)
         {
             file_input.addEventListener('change', evt_file_upload);
         }
