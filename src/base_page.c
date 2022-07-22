@@ -33,14 +33,23 @@
 // Files
 #include "../static/index.ctmpl"
 #include "../static/quick_login.ctmpl"
+#include "../templates/main.ctt"
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
 void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
+    XPUSHs(sv_2mortal(newSVpv(data_main_tt, 0)));
+    
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* cookie = GET_ENV("HTTP_COOKIE", req);
     enum l10n_locale locale = l10n_normalize(ssn->config.lang);
     char* theme_str = NULL;
     const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
@@ -58,62 +67,62 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 #define SIDEBAR_CSS_LEN 128
     char sidebar_css[SIDEBAR_CSS_LEN];
 
-    if (keyint(ssn->cookies.logged_in))
-        login_string = "";
+    /* if (keyint(ssn->cookies.logged_in)) */
+    /*     login_string = ""; */
 
-    if (ssn->config.background_url)
-    {
-        easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url);
-    }
+    /* if (ssn->config.background_url) */
+    /* { */
+    /*     easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url); */
+    /* } */
 
-    // If user is logged in
-    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
-    {
-        account_sidebar_str = construct_account_sidebar(&(ssn->acct), NULL);
+    /* // If user is logged in */
+    /* if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token)) */
+    /* { */
+    /*     account_sidebar_str = construct_account_sidebar(&(ssn->acct), NULL); */
 
-        // Get / Show notifications on sidebar
-        if (ssn->config.notif_embed)
-        {
-            main_sidebar_str = (char*)sidebar_embed;
-        }
-        else {
-            struct mstdnt_get_notifications_args args = {
-                .exclude_types = 0,
-                .account_id = NULL,
-                .exclude_visibilities = 0,
-                .include_types = 0,
-                .with_muted = 1,
-                .max_id = NULL,
-                .min_id = NULL,
-                .since_id = NULL,
-                .offset = 0,
-                .limit = 8,
-            };
+    /*     // Get / Show notifications on sidebar */
+    /*     if (ssn->config.notif_embed) */
+    /*     { */
+    /*         main_sidebar_str = (char*)sidebar_embed; */
+    /*     } */
+    /*     else { */
+    /*         struct mstdnt_get_notifications_args args = { */
+    /*             .exclude_types = 0, */
+    /*             .account_id = NULL, */
+    /*             .exclude_visibilities = 0, */
+    /*             .include_types = 0, */
+    /*             .with_muted = 1, */
+    /*             .max_id = NULL, */
+    /*             .min_id = NULL, */
+    /*             .since_id = NULL, */
+    /*             .offset = 0, */
+    /*             .limit = 8, */
+    /*         }; */
         
-            if (mastodont_get_notifications(api,
-                                            &m_args,
-                                            &args,
-                                            &storage,
-                                            &notifs,
-                                            &notifs_len) == 0)
-            {
-                main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
-            }
+    /*         if (mastodont_get_notifications(api, */
+    /*                                         &m_args, */
+    /*                                         &args, */
+    /*                                         &storage, */
+    /*                                         &notifs, */
+    /*                                         &notifs_len) == 0) */
+    /*         { */
+    /*             main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL); */
+    /*         } */
 
-            mstdnt_cleanup_notifications(notifs, notifs_len);
-            mastodont_storage_cleanup(&storage);
-        }
-    }
-    else {
-        // Construct small login page
-        struct quick_login_template tdata = {
-            .prefix = config_url_prefix,
-            .username = L10N[locale][L10N_USERNAME],
-            .password = L10N[locale][L10N_PASSWORD],
-            .login = L10N[locale][L10N_LOGIN_BTN],
-        };
-        main_sidebar_str = tmpl_gen_quick_login(&tdata, NULL);
-    }
+    /*         mstdnt_cleanup_notifications(notifs, notifs_len); */
+    /*         mastodont_storage_cleanup(&storage); */
+    /*     } */
+    /* } */
+    /* else { */
+    /*     // Construct small login page */
+    /*     struct quick_login_template tdata = { */
+    /*         .prefix = config_url_prefix, */
+    /*         .username = L10N[locale][L10N_USERNAME], */
+    /*         .password = L10N[locale][L10N_PASSWORD], */
+    /*         .login = L10N[locale][L10N_LOGIN_BTN], */
+    /*     }; */
+    /*     main_sidebar_str = tmpl_gen_quick_login(&tdata, NULL); */
+    /* } */
 
     // Combine into sidebar
     easprintf(&sidebar_str, "%s%s",
@@ -180,27 +189,37 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
         .source_link_str = "Source code",
     };
     
-    size_t len;
-    char* data = tmpl_gen_index(&index_tmpl, &len);
+//    char* data = tmpl_gen_index(&index_tmpl, &len);
     
-    if (!data)
-    {
-        perror("malloc");
-        goto cleanup;
-    }
+    /* if (!data) */
+    /* { */
+    /*     perror("malloc"); */
+    /*     goto cleanup; */
+    /* } */
+
+    // Run function
+    PUTBACK;
+    call_pv("base_page", G_SCALAR);
+    SPAGAIN;
+
+    char* data = POPp;
     
-    send_result(req, NULL, "text/html", data, len);
+    send_result(req, NULL, "text/html", data, 0);
 
     // Cleanup
 /* cleanup_all: */
-    free(data);
+//    free(data);
 cleanup:
-    free(sidebar_str);
-    if (main_sidebar_str != sidebar_embed) free(main_sidebar_str);
-    free(account_sidebar_str);
-    free(background_url_css);
-    free(instance_str);
-    free(theme_str);
+    /* free(sidebar_str); */
+    /* if (main_sidebar_str != sidebar_embed) free(main_sidebar_str); */
+    /* free(account_sidebar_str); */
+    /* free(background_url_css); */
+    /* free(instance_str); */
+    /* free(theme_str); */
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
@@ -216,7 +235,7 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
                  "Content-Length: %d\r\n\r\n",
                  status ? status : "200 OK",
                  content_type ? content_type : "text/html",
-                 data_len + 1);
+                 data_len);
 #ifdef SINGLE_THREADED
     puts(data);
 #else

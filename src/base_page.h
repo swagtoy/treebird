@@ -18,13 +18,13 @@
 
 #ifndef BASE_PAGE_H
 #define BASE_PAGE_H
+#include "session.h"
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
 #include <mastodont.h>
 #include "l10n.h"
 #include "local_config.h"
 #include "path.h"
-#include "session.h"
 
 enum base_category
 {

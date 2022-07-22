@@ -47,9 +47,13 @@
 #include "local_config_set.h"
 #include "global_cache.h"
 #include "conversations.h"
-#include "../perl/main.cpl"
 
 #define THREAD_COUNT 20
+
+// Allow dynamic loading for Perl
+static void xs_init (pTHX);
+
+EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 
 /*******************
  *  Path handling  *
@@ -194,6 +198,12 @@ static void* cgi_start(void* arg)
     return NULL;
 }
 
+EXTERN_C void xs_init(pTHX)
+{
+       char *file = __FILE__;
+       newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+}
+
 int main(int argc, char **argv, char **env)
 {
     // Global init
@@ -205,9 +215,9 @@ int main(int argc, char **argv, char **env)
     perl = perl_alloc();
     perl_construct(perl);
     //char* perl_argv[] = { "", "-e", data_main_pl, NULL };
-    char* perl_argv[] = { "", "perl/main.pl", NULL };
+    char* perl_argv[] = { "", "-I", "perl/", "perl/main.pl", NULL };
 
-    perl_parse(perl, NULL, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
+    perl_parse(perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
     PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
     perl_run(perl);
 
