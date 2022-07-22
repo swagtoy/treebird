@@ -9,8 +9,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #include <mastodont.h>
+#if !(defined(FALSE) && defined(TRUE))
 #define FALSE 0
 #define TRUE 1
+#endif
 #define UNSET NULL
 
 /*

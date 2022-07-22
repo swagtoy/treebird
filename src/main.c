@@ -16,8 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <EXTERN.h>
+#include <perl.h>
 #include <pthread.h>
 #include <fcgi_stdio.h>
+#include "global_perl.h"
 #include <fcgiapp.h>
 #include <string.h>
 #include <mastodont.h>
@@ -44,6 +47,7 @@
 #include "local_config_set.h"
 #include "global_cache.h"
 #include "conversations.h"
+#include "../perl/main.cpl"
 
 #define THREAD_COUNT 20
 
@@ -190,11 +194,22 @@ static void* cgi_start(void* arg)
     return NULL;
 }
 
-int main(void)
+int main(int argc, char **argv, char **env)
 {
     // Global init
     mastodont_global_curl_init();
     FCGX_Init();
+
+    // Initialize Perl
+    PERL_SYS_INIT3(&argc, &argv, &env);
+    perl = perl_alloc();
+    perl_construct(perl);
+    //char* perl_argv[] = { "", "-e", data_main_pl, NULL };
+    char* perl_argv[] = { "", "perl/main.pl", NULL };
+
+    perl_parse(perl, NULL, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
+    PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+    perl_run(perl);
 
     // Initiate mastodont library
     mastodont_t api;
@@ -215,4 +230,9 @@ int main(void)
     free_instance_info_cache();
     mastodont_cleanup(&api);
     mastodont_global_curl_cleanup();
+
+    perl_destruct(perl);
+    perl_free(perl);
+    PERL_SYS_TERM();
+    return EXIT_SUCCESS;
 }
