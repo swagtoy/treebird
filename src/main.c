@@ -225,7 +225,6 @@ int main(int argc, char **argv, char **env)
 
     // Hell, let's not sit around here either
     cgi_start(&api);
-
    
     free_instance_info_cache();
     mastodont_cleanup(&api);

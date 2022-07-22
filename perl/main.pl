@@ -1,9 +1,10 @@
 use strict;
 use warnings;
 
-sub square
+sub base_page
 {
+    
     2 * 2;
 }
 
-print "Hello treebird" . square;
+print "Hello from Perl\n";
