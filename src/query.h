@@ -18,6 +18,7 @@
 
 #ifndef QUERY_H
 #define QUERY_H
+#include "global_perl.h"
 #include <fcgi_stdio.h>
 #include <stddef.h>
 #include "key.h"
@@ -88,5 +89,9 @@ char* parse_query(char* begin, struct http_query_info* info);
 char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg);
 
 void free_files(struct file_array* files);
+
+// Perl stuff
+HV* perlify_post_values(struct post_values* post);
+HV* perlify_get_values(struct get_values* get);
 
 #endif // QUERY_H

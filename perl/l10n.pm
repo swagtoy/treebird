@@ -1,5 +1,7 @@
 package l10n;
 
+use Exporter 'import';
+
 our @EXPORT = qw( %L10N );
 
 our %L10N = (

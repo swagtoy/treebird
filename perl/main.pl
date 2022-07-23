@@ -2,7 +2,7 @@ use strict;
 use warnings;
 # Modules
 use Template;
-use l10n;
+use l10n qw( %L10N );
 
 my $template = Template->new(
     {
@@ -17,13 +17,12 @@ sub base_page
     my ($ssn, $data) = @_;
     my $result;
 
-    my $vars = {
-        #        L10N => L10N,
+    my %vars = (
         prefix => '',
-        lang => sub { $l10n::L10N{'EN_US'}{shift(@_)} },
-    };
+        lang => sub { $L10N{'EN_US'}->{shift(@_)} },
+    );
 
-    $template->process(\$data, $vars, \$result) ||
+    $template->process(\$data, \%vars, \$result) ||
         return $template->error();
     
     $result;

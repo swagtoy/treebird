@@ -18,6 +18,7 @@
 
 #ifndef LOCAL_CONFIG_H
 #define LOCAL_CONFIG_H
+#include "global_perl.h"
 #include "query.h"
 
 struct local_config
@@ -43,5 +44,7 @@ struct local_config
     int notif_embed;
     int sidebar_opacity;
 };
+
+HV* perlify_config(struct local_config* config);
 
 #endif // LOCAL_CONFIG_H
