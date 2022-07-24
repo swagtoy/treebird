@@ -21,10 +21,25 @@ TARGET = treebird
 
 MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 
-all: $(MASTODONT_DIR) dep_build $(TARGET)
-apache: all apache_start
+# Not parallel friendly
+#all: $(MASTODONT_DIR) dep_build $(TARGET)
 
-$(TARGET): filec ctemplate $(TMPLS_C) $(TMPLS) $(PAGES_CMP) $(PAGES_C) $(PAGES_C_OBJ) $(OBJ) $(HEADERS) 
+all:
+	$(MAKE) dep_build
+	$(MAKE) filec
+	$(MAKE) ctemplate
+	$(MAKE) make_ctmpls
+	$(MAKE) make_pages
+	$(MAKE) make_pagesc
+	$(MAKE) make_pagescobj
+	$(MAKE) $(TARGET)
+
+make_ctmpls: $(TMPLS_C)
+make_pages: $(PAGES_CMP)
+make_pagesc: $(PAGES_C)
+make_pagescobj: $(PAGES_C_OBJ)
+
+$(TARGET): $(HEADERS) $(OBJ)
 	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
 
 filec: src/file-to-c/main.o
@@ -57,9 +72,6 @@ install: $(TARGET)
 test:
 	make -C test
 
-apache_start:
-	./scripts/fcgistarter.sh
-
 dep_build:
 	make -C $(MASTODONT_DIR)
 
@@ -70,7 +82,8 @@ clean:
 	rm -f $(OBJ) src/file-to-c/main.o
 	rm -f $(PAGES_CMP)
 	rm -f $(TMPLS_C)
-	rm -f filec
+	rm -f filec ctemplate
+	rm $(TARGET)
 	make -C $(MASTODONT_DIR) clean
 
 clean_deps:
