@@ -45,9 +45,11 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     PUSHMARK(SP);
 
     HV* session_hv = perlify_session(ssn);
+    HV* acct_hv = perlify_account(&(ssn->acct));
     XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
     XPUSHs(sv_2mortal(newSVpv(data_main_tt, 0)));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
+    XPUSHs(sv_2mortal(newRV_inc((SV*)acct_hv)));
     
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -99,8 +101,6 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     
     send_result(req, NULL, "text/html", data, 0);
 cleanup:
-
-
     PUTBACK;
     FREETMPS;
     LEAVE;

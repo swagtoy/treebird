@@ -33,7 +33,7 @@ const char* const get_token(struct session* ssn)
 HV* perlify_session(struct session* ssn)
 {
     HV* ssn_hv = newHV();
-    hv_stores(ssn_hv, "logged_in", newSVuv(ssn->logged_in));
+    hvstores_int(ssn_hv, "logged_in", ssn->logged_in);
     HV* ssn_post_values = perlify_post_values(&(ssn->post));
     HV* ssn_get_values = perlify_get_values(&(ssn->query));
     HV* ssn_cookie_values = perlify_cookies(&(ssn->cookies));

@@ -11,4 +11,4 @@ config.h
 treebird
 test/tests
 scripts/*.o
-perl/*.cpl
+perl/*.ctt

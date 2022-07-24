@@ -875,3 +875,32 @@ void content_account_favourites(PATH_ARGS)
     if (navigation_box) free(navigation_box);
     if (output) free(output);
 }
+
+HV* perlify_account(const struct mstdnt_account* acct)
+{
+    HV* acct_hv = newHV();
+
+    if (!acct) return NULL;
+
+    hvstores_str(acct_hv, "id", acct->id);
+    hvstores_str(acct_hv, "username", acct->username);
+    hvstores_str(acct_hv, "acct", acct->acct);
+    hvstores_str(acct_hv, "display_name", acct->display_name);
+    hvstores_str(acct_hv, "note", acct->note);
+    hvstores_str(acct_hv, "avatar", acct->avatar);
+    hvstores_str(acct_hv, "avatar_static", acct->avatar_static);
+    hvstores_str(acct_hv, "header", acct->header);
+    hvstores_str(acct_hv, "header_static", acct->header_static);
+    hvstores_str(acct_hv, "created_at", acct->created_at);
+    hvstores_str(acct_hv, "last_status_at", acct->last_status_at);
+    hvstores_str(acct_hv, "mute_expires_at", acct->mute_expires_at);
+    hvstores_int(acct_hv, "statuses_count", acct->statuses_count);
+    hvstores_int(acct_hv, "followers_count", acct->followers_count);
+    hvstores_int(acct_hv, "following_count", acct->following_count);
+    hvstores_int(acct_hv, "bot", acct->bot);
+    hvstores_int(acct_hv, "suspended", acct->suspended);
+    hvstores_int(acct_hv, "locked", acct->locked);
+    hvstores_int(acct_hv, "discoverable", acct->discoverable);
+    
+    return acct_hv;
+}

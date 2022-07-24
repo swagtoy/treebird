@@ -18,6 +18,7 @@
 
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
+#include "global_perl.h"
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
@@ -94,5 +95,7 @@ void content_account_media(PATH_ARGS);
 void content_account_action(PATH_ARGS);
 void content_account_favourites(PATH_ARGS);
 void content_account_bookmarks(PATH_ARGS);
+
+HV* perlify_account(const struct mstdnt_account* acct);
 
 #endif // ACCOUNT_H

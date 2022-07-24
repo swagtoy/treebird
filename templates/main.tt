@@ -83,14 +83,69 @@
 
           <!-- Notifications and such -->
           <td id="rightbar" class="sidebar">
-            {{ %s : sidebar_rightbar }}
+            [% IF ssn.cookies.logged_in %]
+            <div class="account-sidebar"
+                 [%- IF acct.header -%]
+                 style="background: linear-gradient(var(--account-overlay-gradient-top), var(--account-overlay-gradient-bottom)), url([% acct.header %]);"
+                 [%- END %]>
+              <table class="acct-info">
+                <tr>
+                  <td>
+                    <img src="[% acct.avatar %]" class="acct-pfp" loading="lazy">
+                  </td>
+                  <td class="acct-info-right">
+                    <span class="username">[% acct.username %]</span>
+                    <span class="acct">@<span class="acct-js-grep">[% acct.acct %]</span></span>
+                  </td>
+                </tr>
+              </table>
+              <table class="acct-stats">
+                <tr>
+                  <td class="header-btn btn">
+                    <a href="$prefix/@[% acct.acct %]">
+                      <span class="btn-header">[% lang('TAB_STATUSES') %]</span>
+                      <span class="btn-content">[% acct.statuses_count %]</span>
+                    </a>
+                  </td>
+                  <td class="header-btn btn">
+                    <a href="$prefix/@[% acct.acct %]/following">
+                      <span class="btn-header">[% lang('TAB_FOLLOWING') %]</span>
+                      <span class="btn-content">[% acct.following_count %]</span>
+                    </a>
+                  </td>
+                  <td class="header-btn btn">
+                    <a href="$prefix/@[% acct.acct %]/followers">
+                      <span class="btn-header">[% lang('TAB_FOLLOWERS') %]</span>
+                      <span class="btn-content">[% acct.followers_count %]</span>
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            [% ELSE %]
+            <div class="sidebar-login">
+              <form action="$prefix/login" method="post">
+                <div class="form-group">
+                  <label for="login-username">[% lang('USERNAME') %]: </label>
+                  <input type="text" id="login-username" name="username">
+                </div>
+                <div class="form-group">
+                  <label for="login-password">[% lang('PASSWORD') %]: </label>
+                  <input type="password" id="login-password" name="password"><br>
+                </div>
+                <div class="form-group">
+                  <input class="btn" type="submit" value="[% lang('LOGIN_BTN') %]">
+                </div>
+              </form>
+            </div>
+            [% END %]
           </td>
         </tr>
       </table>
     </div>
     
     <!-- Source -->
-    <script src="/js/main.js"></script>
-    <script src="/js/emoji.js"></script>
+    <script src="$prefix/js/main.js"></script>
+    <script src="$prefix/js/emoji.js"></script>
   </body>
 </html>

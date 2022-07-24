@@ -21,6 +21,10 @@
 #include <EXTERN.h>
 #include <perl.h>
 
+//    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
+#define hvstores_str(hv, key, val) hv_stores((hv), key, newSVpv((val), 0))
+#define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
+
 static PerlInterpreter* perl;
 
 #endif /* GLOBAL_PERL_H */
