@@ -14,12 +14,16 @@ my $template = Template->new(
 
 sub base_page
 {
-    my ($ssn, $data) = @_;
+    my ($ssn, $data, $main) = @_;
     my $result;
 
     my %vars = (
         prefix => '',
+        ssn => $ssn,
+        title => $L10N{'EN_US'}->{'APP_NAME'},
         lang => sub { $L10N{'EN_US'}->{shift(@_)} },
+        main => $main,
+        sidebar_opacity => $ssn->{config}->{sidebar_opacity} / 255,
     );
 
     $template->process(\$data, \%vars, \$result) ||

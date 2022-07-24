@@ -24,11 +24,8 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 all: $(MASTODONT_DIR) dep_build $(TARGET)
 apache: all apache_start
 
-$(TARGET): filec template $(TMPLS_C) $(TMPLS) $(PAGES_CMP) $(PAGES_C) $(PAGES_C_OBJ) $(OBJ) $(HEADERS) 
+$(TARGET): filec ctemplate $(TMPLS_C) $(TMPLS) $(PAGES_CMP) $(PAGES_C) $(PAGES_C_OBJ) $(OBJ) $(HEADERS) 
 	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
-
-template: src/template/main.o
-	$(CC) $(LDFLAGS) -o template $<
 
 filec: src/file-to-c/main.o
 	$(CC) -o filec $<
@@ -40,10 +37,13 @@ emojitoc: scripts/emoji-to.o
 # Redirect stdout and stderr into separate contents as a hack
 # Let bash do the work :)
 $(PAGES_DIR)/%.ctmpl: $(PAGES_DIR)/%.tmpl $(TMPLS)
-	./template $< $(notdir $*) 2> $(PAGES_DIR)/$(notdir $*).c 1> $@
+	./ctemplate $< $(notdir $*) 2> $(PAGES_DIR)/$(notdir $*).c 1> $@
 
 $(TMPL_DIR)/%.ctt: $(TMPL_DIR)/%.tt
 	./filec $< data_$(notdir $*)_tt > $@
+
+ctemplate: src/template/main.o
+	$(CC) $(LDFLAGS) -o ctemplate $<
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true

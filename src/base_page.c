@@ -47,34 +47,10 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     HV* session_hv = perlify_session(ssn);
     XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
     XPUSHs(sv_2mortal(newSVpv(data_main_tt, 0)));
+    XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
     
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    enum l10n_locale locale = l10n_normalize(ssn->config.lang);
-    char* theme_str = NULL;
-    const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
-    const char* sidebar_embed = "<iframe class=\"sidebar-frame\" loading=\"lazy\" src=\"/notifications_compact\"></iframe>";
-    char* background_url_css = NULL;
-    // Sidebar
-    char* sidebar_str,
-        * main_sidebar_str = NULL,
-        * account_sidebar_str = NULL,
-        * instance_str = NULL;
-    // Mastodont, used for notifications sidebar
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_notification* notifs = NULL;
-    size_t notifs_len = 0;
-#define SIDEBAR_CSS_LEN 128
-    char sidebar_css[SIDEBAR_CSS_LEN];
-
-    /* if (keyint(ssn->cookies.logged_in)) */
-    /*     login_string = ""; */
-
-    /* if (ssn->config.background_url) */
-    /* { */
-    /*     easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url); */
-    /* } */
-
     /* // If user is logged in */
     /* if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token)) */
     /* { */
@@ -113,89 +89,6 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     /*         mastodont_storage_cleanup(&storage); */
     /*     } */
     /* } */
-    /* else { */
-    /*     // Construct small login page */
-    /*     struct quick_login_template tdata = { */
-    /*         .prefix = config_url_prefix, */
-    /*         .username = L10N[locale][L10N_USERNAME], */
-    /*         .password = L10N[locale][L10N_PASSWORD], */
-    /*         .login = L10N[locale][L10N_LOGIN_BTN], */
-    /*     }; */
-    /*     main_sidebar_str = tmpl_gen_quick_login(&tdata, NULL); */
-    /* } */
-
-    // Combine into sidebar
-    easprintf(&sidebar_str, "%s%s",
-              account_sidebar_str ? account_sidebar_str : "",
-              main_sidebar_str ? main_sidebar_str : "");
-
-    // Create instance panel
-    if (g_cache.panel_html.response)
-        easprintf(&instance_str, "<div class=\"static-html\" id=\"instance-panel\">%s</div>",
-                  (g_cache.panel_html.response ?
-                   g_cache.panel_html.response : ""));
-
-    if (ssn->config.theme && !(strcmp(ssn->config.theme, "treebird") == 0 &&
-          ssn->config.themeclr == 0))
-    {
-        easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",
-                  ssn->config.theme,
-                  ssn->config.themeclr ? "-dark" : "");
-    }
-
-    if (ssn->config.sidebar_opacity)
-    {
-        float sidebar_opacity = (float)ssn->config.sidebar_opacity / 255.0f;
-        snprintf(sidebar_css, SIDEBAR_CSS_LEN, ":root { --sidebar-opacity: %.2f; }",
-                 sidebar_opacity);
-    }
-
-    struct index_template index_tmpl = {
-        .title = L10N[locale][L10N_APP_NAME],
-        .sidebar_css = sidebar_css,
-        .theme_str = theme_str,
-        .prefix = config_url_prefix,
-        .background_url = background_url_css,
-        .name = L10N[locale][L10N_APP_NAME],
-        .sidebar_cnt = login_string,
-        .placeholder = L10N[locale][L10N_SEARCH_PLACEHOLDER],
-        .search_btn = L10N[locale][L10N_SEARCH_BUTTON],
-        .active_home = CAT_TEXT(page->category, BASE_CAT_HOME),
-        .home = L10N[locale][L10N_HOME],
-        .active_local = CAT_TEXT(page->category, BASE_CAT_LOCAL),
-        .local = L10N[locale][L10N_LOCAL],
-        .active_federated = CAT_TEXT(page->category, BASE_CAT_FEDERATED),
-        .federated = L10N[locale][L10N_FEDERATED],
-        .active_notifications = CAT_TEXT(page->category, BASE_CAT_NOTIFICATIONS),
-        .notifications = L10N[locale][L10N_NOTIFICATIONS],
-        .active_lists = CAT_TEXT(page->category, BASE_CAT_LISTS),
-        .lists = L10N[locale][L10N_LISTS],
-        .active_favourites = CAT_TEXT(page->category, BASE_CAT_FAVOURITES),
-        .favourites = L10N[locale][L10N_FAVOURITES],
-        .active_bookmarks = CAT_TEXT(page->category, BASE_CAT_BOOKMARKS),
-        .bookmarks = L10N[locale][L10N_BOOKMARKS],
-        .active_direct = CAT_TEXT(page->category, BASE_CAT_DIRECT),
-        .direct = L10N[locale][L10N_DIRECT],
-        .active_chats = CAT_TEXT(page->category, BASE_CAT_CHATS),
-        .chats = "Chats",
-        .active_config = CAT_TEXT(page->category, BASE_CAT_CONFIG),
-        .config = L10N[locale][L10N_CONFIG],
-        .sidebar_leftbar = page->sidebar_left,
-        .instance_panel = ssn->config.instance_panel ? instance_str : "",
-        .main = page->content,
-        .sidebar_rightbar = sidebar_str,
-        .about_link_str = "About",
-        .license_link_str = "License",
-        .source_link_str = "Source code",
-    };
-    
-//    char* data = tmpl_gen_index(&index_tmpl, &len);
-    
-    /* if (!data) */
-    /* { */
-    /*     perror("malloc"); */
-    /*     goto cleanup; */
-    /* } */
 
     // Run function
     PUTBACK;
@@ -205,17 +98,8 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     char* data = POPp;
     
     send_result(req, NULL, "text/html", data, 0);
-
-    // Cleanup
-/* cleanup_all: */
-//    free(data);
 cleanup:
-    /* free(sidebar_str); */
-    /* if (main_sidebar_str != sidebar_embed) free(main_sidebar_str); */
-    /* free(account_sidebar_str); */
-    /* free(background_url_css); */
-    /* free(instance_str); */
-    /* free(theme_str); */
+
 
     PUTBACK;
     FREETMPS;
