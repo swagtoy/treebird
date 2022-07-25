@@ -14,7 +14,7 @@ my $template = Template->new(
 
 sub base_page
 {
-    my ($ssn, $data, $main, $acct) = @_;
+    my ($ssn, $data, $main) = @_;
     my $result;
 
     my %vars = (
@@ -24,7 +24,7 @@ sub base_page
         lang => sub { $L10N{'EN_US'}->{shift(@_)} },
         main => $main,
         sidebar_opacity => $ssn->{config}->{sidebar_opacity} / 255,
-        acct => $acct
+        acct => $ssn->{account}
         );
     
 

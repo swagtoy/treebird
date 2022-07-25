@@ -22,6 +22,7 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 #include "l10n.h"
 
 #define ACCOUNT_NOP 0

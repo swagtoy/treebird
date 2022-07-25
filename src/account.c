@@ -878,9 +878,8 @@ void content_account_favourites(PATH_ARGS)
 
 HV* perlify_account(const struct mstdnt_account* acct)
 {
-    HV* acct_hv = newHV();
-
     if (!acct) return NULL;
+    HV* acct_hv = newHV();
 
     hvstores_str(acct_hv, "id", acct->id);
     hvstores_str(acct_hv, "username", acct->username);

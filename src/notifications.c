@@ -29,6 +29,7 @@
 #include "status.h"
 #include "error.h"
 #include "emoji.h"
+#include "account.h"
 #include "../config.h"
 
 // Pages
@@ -334,6 +335,35 @@ void content_notifications_compact(PATH_ARGS)
     free(navigation_box);
     free(page);
     free(theme_str);
+}
+
+// Converts it into a perl struct
+HV* perlify_notification(struct mstdnt_notification* notif)
+{
+    if (!notif) return NULL;
+    HV* notif_hv = newHV();
+
+    hvstores_str(notif_hv, "id", notif->id);
+    hvstores_str(notif_hv, "created_at", notif->created_at);
+    hvstores_ref(notif_hv, "account", perlify_account(notif->account));
+    hvstores_ref(notif_hv, "status", perlify_status(notif->status));
+    
+    return notif_hv;
+}
+
+// The same as above, but for multiple
+AV* perlify_notifications(struct mstdnt_notification* notifs, size_t len)
+{
+    if (!(notifs && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_notification(notifs + i)));
+    }
+
+    return av;
 }
 
 void api_notifications(PATH_ARGS)

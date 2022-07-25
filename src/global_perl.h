@@ -22,8 +22,10 @@
 #include <perl.h>
 
 //    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
-#define hvstores_str(hv, key, val) hv_stores((hv), key, newSVpv((val), 0))
+#define hvstores_str(hv, key, val) hv_stores((hv), key, ((val) ? newSVpv((val), 0) : &PL_sv_undef))
 #define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
+#define hvstores_ref(hv, key, val) hv_stores((hv), key,                 \
+                                             ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
 
 static PerlInterpreter* perl;
 

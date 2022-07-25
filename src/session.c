@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "account.h"
 #include "session.h"
 #include "../config.h"
 
@@ -37,12 +38,14 @@ HV* perlify_session(struct session* ssn)
     HV* ssn_post_values = perlify_post_values(&(ssn->post));
     HV* ssn_get_values = perlify_get_values(&(ssn->query));
     HV* ssn_cookie_values = perlify_cookies(&(ssn->cookies));
+    HV* acct_hv = perlify_account(&(ssn->acct));
     // Config
     HV* ssn_config = perlify_config(&(ssn->config));
-    hv_stores(ssn_hv, "config", newRV_inc((SV*)ssn_config));
-    hv_stores(ssn_hv, "cookies", newRV_inc((SV*)ssn_cookie_values));
-    hv_stores(ssn_hv, "query", newRV_inc((SV*)ssn_get_values));
-    hv_stores(ssn_hv, "post", newRV_inc((SV*)ssn_post_values));
+    hvstores_ref(ssn_hv, "config", ssn_config);
+    hvstores_ref(ssn_hv, "cookies", ssn_cookie_values);
+    hvstores_ref(ssn_hv, "query", ssn_get_values);
+    hvstores_ref(ssn_hv, "post", ssn_post_values);
+    hvstores_ref(ssn_hv, "account", acct_hv);
 
     return ssn_hv;
 }

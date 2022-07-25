@@ -44,53 +44,51 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     SAVETMPS;
     PUSHMARK(SP);
 
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+
     HV* session_hv = perlify_session(ssn);
-    HV* acct_hv = perlify_account(&(ssn->acct));
     XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
     XPUSHs(sv_2mortal(newSVpv(data_main_tt, 0)));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
-    XPUSHs(sv_2mortal(newRV_inc((SV*)acct_hv)));
     
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    /* // If user is logged in */
-    /* if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token)) */
-    /* { */
-    /*     account_sidebar_str = construct_account_sidebar(&(ssn->acct), NULL); */
-
-    /*     // Get / Show notifications on sidebar */
-    /*     if (ssn->config.notif_embed) */
-    /*     { */
-    /*         main_sidebar_str = (char*)sidebar_embed; */
-    /*     } */
-    /*     else { */
-    /*         struct mstdnt_get_notifications_args args = { */
-    /*             .exclude_types = 0, */
-    /*             .account_id = NULL, */
-    /*             .exclude_visibilities = 0, */
-    /*             .include_types = 0, */
-    /*             .with_muted = 1, */
-    /*             .max_id = NULL, */
-    /*             .min_id = NULL, */
-    /*             .since_id = NULL, */
-    /*             .offset = 0, */
-    /*             .limit = 8, */
-    /*         }; */
+    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
+    {
+        // Get / Show notifications on sidebar
+        if (!ssn->config.notif_embed)
+        {
+            struct mstdnt_storage storage = { 0 };
+            struct mstdnt_notification* notifs = NULL;
+            size_t notifs_len = 0;
+            struct mstdnt_get_notifications_args args = {
+                .exclude_types = 0,
+                .account_id = NULL,
+                .exclude_visibilities = 0,
+                .include_types = 0,
+                .with_muted = 1,
+                .max_id = NULL,
+                .min_id = NULL,
+                .since_id = NULL,
+                .offset = 0,
+                .limit = 8,
+            };
         
-    /*         if (mastodont_get_notifications(api, */
-    /*                                         &m_args, */
-    /*                                         &args, */
-    /*                                         &storage, */
-    /*                                         &notifs, */
-    /*                                         &notifs_len) == 0) */
-    /*         { */
-    /*             main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL); */
-    /*         } */
+            if (mastodont_get_notifications(api,
+                                            &m_args,
+                                            &args,
+                                            &storage,
+                                            &notifs,
+                                            &notifs_len) == 0)
+            {
+                AV* notifs_av = perlify_notifications(notifs, notifs_len);
+                XPUSHs(sv_2mortal(newRV_inc((SV*)notifs_av)));
+            }
 
-    /*         mstdnt_cleanup_notifications(notifs, notifs_len); */
-    /*         mastodont_storage_cleanup(&storage); */
-    /*     } */
-    /* } */
+
+            mstdnt_cleanup_notifications(notifs, notifs_len);
+            mastodont_storage_cleanup(&storage);
+        }
+    }
 
     // Run function
     PUTBACK;

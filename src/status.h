@@ -23,6 +23,7 @@
 #include "l10n.h"
 #include "path.h"
 #include "session.h"
+#include "global_perl.h"
 
 // Flags
 #define STATUS_NOOP 0
@@ -133,5 +134,8 @@ void notice_redirect(PATH_ARGS);
 
 // API
 void api_status_interact(PATH_ARGS);
+
+// Perl
+HV* perlify_status(const struct mstdnt_status* status); 
 
 #endif // STATUS_H

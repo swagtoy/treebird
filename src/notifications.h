@@ -24,6 +24,7 @@
 #include "session.h"
 #include "path.h"
 #include "type_string.h"
+#include "global_perl.h"
 
 char* construct_notification(struct session* ssn,
                              mastodont_t* api,
@@ -50,5 +51,8 @@ void content_notifications(PATH_ARGS);
 void content_notifications_compact(PATH_ARGS);
 
 void api_notifications(PATH_ARGS);
+
+HV* perlify_notification(struct mstdnt_notification* notif);
+AV* perlify_notifications(struct mstdnt_notification* notif, size_t len);
 
 #endif // NOTIFICATION_H

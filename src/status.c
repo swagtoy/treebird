@@ -1149,3 +1149,33 @@ void notice_redirect(PATH_ARGS)
     redirect(req, REDIRECT_303, url);
     free(url);
 }
+
+HV* perlify_status(const struct mstdnt_status* status)
+{
+    if (!status) return NULL;
+    
+    HV* status_hv = newHV();
+    hvstores_str(status_hv, "id", status->id);
+    hvstores_str(status_hv, "uri", status->uri);
+    hvstores_str(status_hv, "created_at", status->id);
+    hvstores_ref(status_hv, "account", perlify_account(&(status->account)));
+    hvstores_str(status_hv, "content", status->content);
+    hvstores_str(status_hv, "spoiler_text", status->spoiler_text);
+    hvstores_str(status_hv, "url", status->url);
+    hvstores_str(status_hv, "in_reply_to_id", status->in_reply_to_id);
+    hvstores_str(status_hv, "in_reply_to_account_id", status->in_reply_to_account_id);
+    hvstores_str(status_hv, "language", status->language);
+    hvstores_str(status_hv, "text", status->text);
+
+    hvstores_int(status_hv, "favourited", status->favourited);
+    hvstores_int(status_hv, "reblogged", status->reblogged);
+    hvstores_int(status_hv, "muted", status->muted);
+    hvstores_int(status_hv, "bookmarked", status->bookmarked);
+    hvstores_int(status_hv, "pinned", status->pinned);
+    hvstores_int(status_hv, "reblogs_count", status->reblogs_count);
+    hvstores_int(status_hv, "favourites_count", status->favourites_count);
+    hvstores_int(status_hv, "replies_count", status->replies_count);
+    hvstores_ref(status_hv, "status", perlify_status(status->reblog));
+
+    return status_hv;
+}
