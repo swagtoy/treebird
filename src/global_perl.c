@@ -16,21 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GLOBAL_PERL_H
-#define GLOBAL_PERL_H
-#include <EXTERN.h>
-#include <perl.h>
+#include "global_perl.h"
+#include "../templates/main.ctt"
 
-//    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
-#define hvstores_str(hv, key, val) hv_stores((hv), key, ((val) ? newSVpv((val), 0) : &PL_sv_undef))
-#define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
-#define hvstores_ref(hv, key, val) hv_stores((hv), key,                 \
-                                             ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
+const HV* template_files;
 
-static PerlInterpreter* perl;
-extern const HV* template_files;
+void init_template_files()
+{
+    template_files = newHV();
 
-void init_template_files();
-void cleanup_template_files();
+    hv_stores(template_files, "main.tt", newSVpv(data_main_tt, data_main_tt_size));
+}
 
-#endif /* GLOBAL_PERL_H */
+void cleanup_template_files()
+{
+    hv_undef(template_files);
+}

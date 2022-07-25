@@ -221,6 +221,8 @@ int main(int argc, char **argv, char **env)
     PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
     perl_run(perl);
 
+    init_template_files();
+
     // Initiate mastodont library
     mastodont_t api;
     mastodont_init(&api);
@@ -239,6 +241,8 @@ int main(int argc, char **argv, char **env)
     free_instance_info_cache();
     mastodont_cleanup(&api);
     mastodont_global_curl_cleanup();
+
+    cleanup_template_files();
 
     perl_destruct(perl);
     perl_free(perl);

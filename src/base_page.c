@@ -49,7 +49,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 
     HV* session_hv = perlify_session(ssn);
     XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
-    XPUSHs(sv_2mortal(newSVpv(data_main_tt, 0)));
+    XPUSHs(sv_2mortal(newRV_inc((SV*)template_files)));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
     
     if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
