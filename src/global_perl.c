@@ -17,7 +17,10 @@
  */
 
 #include "global_perl.h"
+
 #include "../templates/main.ctt"
+#include "../templates/notif_compact.ctt"
+#include "../templates/status.ctt"
 
 const HV* template_files;
 
@@ -26,6 +29,8 @@ void init_template_files()
     template_files = newHV();
 
     hv_stores(template_files, "main.tt", newSVpv(data_main_tt, data_main_tt_size));
+    hv_stores(template_files, "notif_compact.tt", newSVpv(data_notif_compact_tt, data_notif_compact_tt_size));
+    hv_stores(template_files, "status.tt", newSVpv(data_status_tt, data_status_tt_size));
 }
 
 void cleanup_template_files()

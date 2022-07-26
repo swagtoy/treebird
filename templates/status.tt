@@ -1,0 +1,68 @@
+<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]" {{ %s:thread_hidden }}>
+<div class="status" id="[% status.id %]">
+    [% notif_info %]
+    <table class="status-table ui-table">
+        <tr>
+            <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
+                <img src="{{%s:avatar}}" loading="lazy">
+            </td>
+            <td class="status-info">
+                <div class="poster-stats">
+                    <span class="username">[% status.account.display_name %]</span>
+                    <a class="instance-info" href="$prefix/@{{%s:acct}}">[% status.account.acct %]</a>
+                    <span class="alignend">
+                        <div class="menu-container status-visibility">
+                            {{%s:visibility}}
+                            <div class="menu">
+                                <ul>
+                                    <li>
+                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                            <input type="hidden" name="itype" value="mute">
+                                            <input type="submit" class="btn-menu" value="{{%s:unmute_btn}}">
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                            <input type="hidden" name="itype" value="bookmark">
+                                            <input type="submit" class="btn-menu" value="{{%s:unbookmark_btn}}">
+                                        </form>
+                                    </li>
+                                    [%# pin %]
+                                    <li>
+                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                            <input type="hidden" name="itype" value="pin">
+                                            <input type="submit" class="btn-menu" value="{{%s:text}}">
+                                        </form>
+                                    </li>
+                                    [%# Delete %]
+                                    <li>
+                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                            <input type="hidden" name="itype" value="delete">
+                                            <input type="submit" class="btn-menu" value="{{%s:text}}">
+                                        </form>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <label for="status-toggle-[% status.id %]" class="status-view"></label>
+                    </span>
+                </div>
+                <div class="status-data">
+                    [%# Note: The id may actually (99.5% of the time) be the acct %]
+                    [% status.in_reply_to_id %]
+                    <span class="status-content">
+                        [% status.content %]
+                    </span>
+                    {{%s:attachments}}
+                    {{%s:interactions}}
+                    {{%s:emoji_reactions}}
+                    {{%s:interaction_btns}}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-[% status.id %]">
+{{ %s : reply }}
+

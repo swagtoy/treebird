@@ -3,7 +3,7 @@ use warnings;
 # Modules
 use Template;
 use l10n qw( %L10N );
-use notifications qw( &notifs_compact );
+use notifications qw( notification_compact );
 use template_helpers qw( &to_template );
 
 # my $template = Template->new(
@@ -28,7 +28,8 @@ sub base_page
         sidebar_opacity => $ssn->{config}->{sidebar_opacity} / 255,
         acct => $ssn->{account},
         data => $data,
-        notifs => $notifs
+        notifs => $notifs,
+        notification_compact => \&notification_compact,
         );
 
     to_template(\%vars, \$data->{'main.tt'});

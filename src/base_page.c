@@ -39,57 +39,56 @@
 
 void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_notification* notifs = NULL;
+    size_t notifs_len = 0;
+
+    // Fetch notification (if not iFrame)
+    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token) &&
+        !ssn->config.notif_embed)
+    {
+        struct mstdnt_get_notifications_args args = {
+            .exclude_types = 0,
+            .account_id = NULL,
+            .exclude_visibilities = 0,
+            .include_types = 0,
+            .with_muted = 1,
+            .max_id = NULL,
+            .min_id = NULL,
+            .since_id = NULL,
+            .offset = 0,
+            .limit = 8,
+        };
+        
+        mastodont_get_notifications(
+            api,
+            &m_args,
+            &args,
+            &storage,
+            &notifs,
+            &notifs_len
+            );
+    }
+
+    // Init perl stack
     dSP;
     ENTER;
     SAVETMPS;
     PUSHMARK(SP);
 
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-
     HV* session_hv = perlify_session(ssn);
     XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
     XPUSHs(sv_2mortal(newRV_inc((SV*)template_files)));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
-    
-    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
+    if (notifs && notifs_len)
     {
-        // Get / Show notifications on sidebar
-        if (!ssn->config.notif_embed)
-        {
-            struct mstdnt_storage storage = { 0 };
-            struct mstdnt_notification* notifs = NULL;
-            size_t notifs_len = 0;
-            struct mstdnt_get_notifications_args args = {
-                .exclude_types = 0,
-                .account_id = NULL,
-                .exclude_visibilities = 0,
-                .include_types = 0,
-                .with_muted = 1,
-                .max_id = NULL,
-                .min_id = NULL,
-                .since_id = NULL,
-                .offset = 0,
-                .limit = 8,
-            };
-        
-            if (mastodont_get_notifications(api,
-                                            &m_args,
-                                            &args,
-                                            &storage,
-                                            &notifs,
-                                            &notifs_len) == 0)
-            {
-                AV* notifs_av = perlify_notifications(notifs, notifs_len);
-                XPUSHs(sv_2mortal(newRV_inc((SV*)notifs_av)));
-            }
-
-
-            mstdnt_cleanup_notifications(notifs, notifs_len);
-            mastodont_storage_cleanup(&storage);
-        }
+        AV* notifs_av = perlify_notifications(notifs, notifs_len);
+        XPUSHs(sv_2mortal(newRV_inc((SV*)notifs_av)));
     }
-
+    else XPUSHs(&PL_sv_undef);
+    
     // Run function
     PUTBACK;
     call_pv("base_page", G_SCALAR);
@@ -102,6 +101,9 @@ cleanup:
     PUTBACK;
     FREETMPS;
     LEAVE;
+    
+    mstdnt_cleanup_notifications(notifs, notifs_len);
+    mastodont_storage_cleanup(&storage);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

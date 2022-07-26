@@ -122,6 +122,12 @@
                 </tr>
               </table>
             </div>
+
+            <!-- Notifications -->
+            [% FOREACH notif IN notifs %]
+              [% notification_compact(ssn, data, notif) %]
+            [% END %]
+            
             [% ELSE %]
             <div class="sidebar-login">
               <form action="$prefix/login" method="post">

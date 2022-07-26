@@ -1,11 +1,19 @@
-package Notifications;
+package notifications;
 
 use Exporter 'import';
 
-our @EXPORT = qw( &notifs_compact );
+our @EXPORT = qw( notification_compact );
 
-sub notifs_compact
+use template_helpers 'to_template';
+
+sub notification_compact
 {
-    #    my ($template, ) = @_;
-    1;
+    my ($ssn, $data, $notif) = @_;
+
+    my %vars = (
+        prefix => $ssn,
+        notif => $notif
+        );
+
+    to_template(\%vars, \$data->{'notif_compact.tt'});
 }

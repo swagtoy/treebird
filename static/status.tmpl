@@ -1,53 +1,53 @@
 <input type="checkbox" class="status-hide" id="status-toggle-{{%s:status_id}}" {{ %s:thread_hidden }}>
 <div class="status" id="{{%s:status_id}}">
-  {{ %s : notif_info }}
-  <table class="status-table ui-table">
-    <tr>
-      <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
-        <img src="{{%s:avatar}}" loading="lazy">
-      </td>
-      <td class="status-info">
-        <div class="poster-stats">
-          <span class="username">{{%s:username}}</span>
-          <a class="instance-info" href="{{%s:prefix}}/@{{%s:acct}}">{{%s:acct}}</a>
-          <span class="alignend">
-            <div class="menu-container status-visibility">
-              {{%s:visibility}}
-              <div class="menu">
-                <ul>
-                  <li>
-                    <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
-                      <input type="hidden" name="itype" value="{{%s:unmute}}mute">
-                      <input type="submit" class="btn-menu" value="{{%s:unmute_btn}}">
-                    </form>
-                  </li>
-                  <li>
-                    <form action="{{%s:prefix}}/status/{{%s:status_id}/interact" method="post">
-                      <input type="hidden" name="itype" value="{{%s:unbookmark}}bookmark">
-                      <input type="submit" class="btn-menu" value="{{%s:unbookmark_btn}}">
-                    </form>
-                  </li>
-                  {{%s:pin_status}}
-                  {{%s:delete_status}}
-                </ul>
-              </div>
-            </div>
-            <label for="status-toggle-{{%s:status_id}}" class="status-view"></label>
-          </span>
-        </div>
-        <div class="status-data">
-          {{%s:in_reply_to_str}}
-          <span class="status-content">
-            {{%s:status_content}}
-          </span>
-          {{%s:attachments}}
-          {{%s:interactions}}
-          {{%s:emoji_reactions}}
-          {{%s:interaction_btns}}
-        </div>
-      </td>
-    </tr>
-  </table>
+    {{ %s : notif_info }}
+    <table class="status-table ui-table">
+        <tr>
+            <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
+                <img src="{{%s:avatar}}" loading="lazy">
+            </td>
+            <td class="status-info">
+                <div class="poster-stats">
+                    <span class="username">{{%s:username}}</span>
+                    <a class="instance-info" href="{{%s:prefix}}/@{{%s:acct}}">{{%s:acct}}</a>
+                    <span class="alignend">
+                        <div class="menu-container status-visibility">
+                            {{%s:visibility}}
+                            <div class="menu">
+                                <ul>
+                                    <li>
+                                        <form action="{{%s:prefix}}/status/{{%s:status_id}}/interact" method="post">
+                                            <input type="hidden" name="itype" value="{{%s:unmute}}mute">
+                                            <input type="submit" class="btn-menu" value="{{%s:unmute_btn}}">
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{%s:prefix}}/status/{{%s:status_id}/interact" method="post">
+                                            <input type="hidden" name="itype" value="{{%s:unbookmark}}bookmark">
+                                            <input type="submit" class="btn-menu" value="{{%s:unbookmark_btn}}">
+                                        </form>
+                                    </li>
+                                    {{%s:pin_status}}
+                                    {{%s:delete_status}}
+                                </ul>
+                            </div>
+                        </div>
+                        <label for="status-toggle-{{%s:status_id}}" class="status-view"></label>
+                    </span>
+                </div>
+                <div class="status-data">
+                    {{%s:in_reply_to_str}}
+                    <span class="status-content">
+                        {{%s:status_content}}
+                    </span>
+                    {{%s:attachments}}
+                    {{%s:interactions}}
+                    {{%s:emoji_reactions}}
+                    {{%s:interaction_btns}}
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 <input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-{{%s:status_id}}">
 {{ %s : reply }}
