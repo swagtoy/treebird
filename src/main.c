@@ -55,8 +55,6 @@ static void xs_init (pTHX);
 
 EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 
-static int terminate = 0;
-
 /*******************
  *  Path handling  *
  ******************/
@@ -183,7 +181,7 @@ static void* cgi_start(void* arg)
     FCGX_Request req;
     FCGX_InitRequest(&req, 0, 0);
 
-    while (!terminate)
+    while (1)
     {
         static pthread_mutex_t accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -207,20 +205,8 @@ EXTERN_C void xs_init(pTHX)
        newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
 }
 
-void term(int signum)
-{
-    FCGX_ShutdownPending();
-    terminate = 1;
-}
-
 int main(int argc, char **argv, char **env)
 {
-    struct sigaction action = {
-        .sa_handler = term
-    };
-    sigaction(SIGTERM, &action, NULL);
-    sigaction(SIGINT, &action, NULL);
-    
     // Global init
     mastodont_global_curl_init();
     FCGX_Init();
@@ -252,20 +238,21 @@ int main(int argc, char **argv, char **env)
 
     // Hell, let's not sit around here either
     cgi_start(&api);
+    
+    FCGX_ShutdownPending();
+    
+    for (unsigned i = 0; i < THREAD_COUNT; ++i)
+        pthread_join(id[i], NULL);
    
     free_instance_info_cache();
-    mastodont_cleanup(&api);
     mastodont_global_curl_cleanup();
+    mastodont_cleanup(&api);
 
     cleanup_template_files();
     
-    FCGX_ShutdownPending();
-
-    for (unsigned i = 0; i < THREAD_COUNT; ++i)
-        pthread_join(id[i], NULL);
 
     perl_destruct(perl);
     perl_free(perl);
     PERL_SYS_TERM();
-    return 4;
+    return 0;
 }

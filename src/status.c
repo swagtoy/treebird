@@ -1071,8 +1071,6 @@ void content_status(PATH_ARGS, uint8_t flags)
     call_pv("status::content_status", G_SCALAR);
     SPAGAIN;
 
-    malloc(1024);
-
     // Duplicate so we can free the TMPs
     char* dup = savesharedsvpv(POPs);
 
