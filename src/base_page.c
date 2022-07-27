@@ -73,15 +73,19 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     }
 
     // Init perl stack
+    perl_lock();
     dSP;
     ENTER;
     SAVETMPS;
     PUSHMARK(SP);
 
-    HV* session_hv = perlify_session(ssn);
-    XPUSHs(sv_2mortal(newRV_inc((SV*)session_hv)));
-    XPUSHs(sv_2mortal(newRV_inc((SV*)template_files)));
+    if (page->session)
+        mXPUSHs(newRV_inc(page->session));
+    else
+        mXPUSHs(newRV_inc((SV*)perlify_session(ssn)));
+    XPUSHs(newRV_inc((SV*)template_files));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
+
     if (notifs && notifs_len)
     {
         AV* notifs_av = perlify_notifications(notifs, notifs_len);
@@ -94,13 +98,12 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     call_pv("base_page", G_SCALAR);
     SPAGAIN;
 
-    char* data = POPp;
-    
-    send_result(req, NULL, "text/html", data, 0);
+    send_result(req, NULL, "text/html", POPp, 0);
 cleanup:
     PUTBACK;
     FREETMPS;
     LEAVE;
+    perl_unlock();
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);

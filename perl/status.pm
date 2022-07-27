@@ -17,3 +17,10 @@ sub status
 
     to_template(\%vars, \$data->{'status.tt'});
 }
+
+sub content_status
+{
+    my ($ssn, $data, $statuses) = @_;
+
+    to_template(\%name, \$data->{'content_status.tt'});
+}

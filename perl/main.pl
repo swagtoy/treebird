@@ -5,6 +5,7 @@ use Template;
 use l10n qw( %L10N );
 use notifications qw( notification_compact );
 use template_helpers qw( &to_template );
+use status ();
 
 # my $template = Template->new(
 #     {
@@ -16,7 +17,10 @@ use template_helpers qw( &to_template );
 
 sub base_page
 {
-    my ($ssn, $data, $main, $notifs) = @_;
+    my ($ssn,
+        $data,
+        $main,
+        $notifs) = @_;
     my $result;
 
     my %vars = (

@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fcgi_stdio.h>
 #include <EXTERN.h>
 #include <perl.h>
 #include <pthread.h>
-#include <fcgi_stdio.h>
 #include "global_perl.h"
 #include <fcgiapp.h>
 #include <string.h>
@@ -54,6 +54,8 @@
 static void xs_init (pTHX);
 
 EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
+
+static int terminate = 0;
 
 /*******************
  *  Path handling  *
@@ -181,7 +183,7 @@ static void* cgi_start(void* arg)
     FCGX_Request req;
     FCGX_InitRequest(&req, 0, 0);
 
-    while (1)
+    while (!terminate)
     {
         static pthread_mutex_t accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -195,6 +197,7 @@ static void* cgi_start(void* arg)
         FCGX_Finish_r(&req);
     }
 
+
     return NULL;
 }
 
@@ -204,8 +207,20 @@ EXTERN_C void xs_init(pTHX)
        newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
 }
 
+void term(int signum)
+{
+    FCGX_ShutdownPending();
+    terminate = 1;
+}
+
 int main(int argc, char **argv, char **env)
 {
+    struct sigaction action = {
+        .sa_handler = term
+    };
+    sigaction(SIGTERM, &action, NULL);
+    sigaction(SIGINT, &action, NULL);
+    
     // Global init
     mastodont_global_curl_init();
     FCGX_Init();
@@ -243,9 +258,14 @@ int main(int argc, char **argv, char **env)
     mastodont_global_curl_cleanup();
 
     cleanup_template_files();
+    
+    FCGX_ShutdownPending();
+
+    for (unsigned i = 0; i < THREAD_COUNT; ++i)
+        pthread_join(id[i], NULL);
 
     perl_destruct(perl);
     perl_free(perl);
     PERL_SYS_TERM();
-    return EXIT_SUCCESS;
+    return 4;
 }

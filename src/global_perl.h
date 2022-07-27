@@ -20,6 +20,7 @@
 #define GLOBAL_PERL_H
 #include <EXTERN.h>
 #include <perl.h>
+#include <pthread.h>
 
 //    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
 #define hvstores_str(hv, key, val) hv_stores((hv), key, ((val) ? newSVpv((val), 0) : &PL_sv_undef))
@@ -28,7 +29,11 @@
                                              ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
 
 static PerlInterpreter* perl;
-extern const HV* template_files;
+extern HV* template_files;
+extern pthread_mutex_t perl_mutex;
+
+#define perl_lock() if(1) { pthread_mutex_lock(&perl_mutex); }
+#define perl_unlock() if(1) { pthread_mutex_unlock(&perl_mutex); }
 
 void init_template_files();
 void cleanup_template_files();
