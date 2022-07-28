@@ -4,7 +4,7 @@
     <table class="status-table ui-table">
         <tr>
             <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
-                <img src="{{%s:avatar}}" loading="lazy">
+                <img src="[% status.account.avatar %]" loading="lazy">
             </td>
             <td class="status-info">
                 <div class="poster-stats">
@@ -50,7 +50,11 @@
                 </div>
                 <div class="status-data">
                     [%# Note: The id may actually (99.5% of the time) be the acct %]
-                    [% status.in_reply_to_id %]
+                    [% IF status.in_reply_to_id %]
+                        <span class="in-reply-to">
+                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> <span class="in-reply-to-text">In reply to</span> <span class="acct">[% status.in_reply_to_id %]</span></a>
+                        </span>
+                    [% END %]
                     <span class="status-content">
                         [% status.content %]
                     </span>
