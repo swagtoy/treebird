@@ -15,9 +15,14 @@ PAGES_CMP = $(patsubst %.tmpl,%.ctmpl,$(PAGES))
 PAGES_C = $(patsubst %.tmpl, %.c,$(PAGES))
 PAGES_C_OBJ = $(patsubst %.c,%.o,$(PAGES_C))
 TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))
+TEST_DIR = test/unit
+TESTS = $(wildcard $(TEST_DIR)/t*.c)
+UNIT_TESTS = $(patsubst %.c,%.bin,$(TESTS))
 DIST = dist/
 PREFIX ?= /usr/local
 TARGET = treebird
+# For tests
+OBJ_NO_MAIN = $(filter-out src/main.o,$(OBJ))
 
 MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 
@@ -69,8 +74,9 @@ install: $(TARGET)
 	install -d $(PREFIX)/share/treebird/
 	cp -r dist/ $(PREFIX)/share/treebird/
 
-test:
-	make -C test
+test: all $(UNIT_TESTS)
+	@echo " ... Tests ready"
+	@./test/test.pl
 
 dep_build:
 	make -C $(MASTODONT_DIR)
@@ -78,12 +84,18 @@ dep_build:
 %.o: %.c %.h $(PAGES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# For tests
+%.bin: %.c
+	@$(CC) $(CFLAGS) $< -o $@ $(OBJ_NO_MAIN) $(PAGES_C_OBJ) $(LDFLAGS)
+	@echo -n " $@"
+
 clean:
 	rm -f $(OBJ) src/file-to-c/main.o
 	rm -f $(PAGES_CMP)
 	rm -f $(TMPLS_C)
+	rm -f test/unit/*.bin
 	rm -f filec ctemplate
-	rm $(TARGET)
+	rm $(TARGET) || true
 	make -C $(MASTODONT_DIR) clean
 
 clean_deps:

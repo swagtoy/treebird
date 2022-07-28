@@ -12,3 +12,4 @@ treebird
 test/tests
 scripts/*.o
 templates/*.ctt
+test/unit/*.bin

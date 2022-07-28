@@ -1,7 +1,12 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "../../src/string.h"
 
-int string_replace_test(void)
+/* INFO name='Dummy test' valgrind=0 */
+
+int main(void)
 {
     char* res1 = strrepl("hello world", "wo", "swi", STRREPL_ALL);
     assert(strcmp(res1, "hello swirld") == 0);

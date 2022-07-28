@@ -18,6 +18,9 @@
 
 #include <string.h>
 #include <assert.h>
+#include <stdlib.h>
+
+/* INFO name='Mime checking' valgrind=0 */
 
 void mime_boundary_check(void)
 {
@@ -62,7 +65,7 @@ void form_check(void)
     free(multipart);
 }
 
-int mime_multipart_test(void)
+int main(void)
 {
     mime_boundary_check();
     form_check();
