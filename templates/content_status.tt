@@ -1,1 +1,7 @@
-asdasd
+[% FOREACH i IN statuses_before %]
+    [% create_status(ssn, data, i) %]
+[% END %]
+[% create_status(ssn, data, status) %]
+[% FOREACH i IN statuses_after %]
+    [% create_status(ssn, data, i) %]
+[% END %]

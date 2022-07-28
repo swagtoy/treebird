@@ -1066,6 +1066,16 @@ void content_status(PATH_ARGS, uint8_t flags)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_inc((SV*)session_hv));
     XPUSHs(newRV_inc((SV*)template_files));
+    XPUSHs(newRV_inc((SV*)perlify_status(&status)));
+    if (statuses_before)
+        XPUSHs(newRV_inc((AV*)perlify_statuses(statuses_before, stat_before_len)));
+    else
+        XPUSHs(&PL_sv_undef);
+    
+    if (statuses_after)
+        XPUSHs(newRV_inc((AV*)perlify_statuses(statuses_after, stat_after_len)));
+    else
+        XPUSHs(&PL_sv_undef);
     // ARGS
     PUTBACK;
     call_pv("status::content_status", G_SCALAR);
@@ -1133,4 +1143,19 @@ HV* perlify_status(const struct mstdnt_status* status)
     hvstores_ref(status_hv, "status", perlify_status(status->reblog));
 
     return status_hv;
+}
+
+
+AV* perlify_statuses(const struct mstdnt_status* statuses, size_t len)
+{
+    if (!(statuses && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_status(statuses + i)));
+    }
+
+    return av;
 }

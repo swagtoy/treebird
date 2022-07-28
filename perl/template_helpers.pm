@@ -1,5 +1,6 @@
 package template_helpers;
-
+use strict;
+use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw( &to_template );

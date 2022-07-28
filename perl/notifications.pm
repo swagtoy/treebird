@@ -1,5 +1,6 @@
 package notifications;
-
+use strict;
+use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw( notification_compact );

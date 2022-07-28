@@ -2,7 +2,7 @@ package l10n;
 
 use Exporter 'import';
 
-our @EXPORT = qw( %L10N );
+our @EXPORT = qw( &lang %L10N );
 
 our %L10N = (
     EN_US => {
@@ -86,6 +86,11 @@ our %L10N = (
         NOTIF_COMPACT_POLL => 'poll',
     },
     # TODO bring over Spanish and Chinese
-);
+    );
+
+sub lang
+{
+    $L10N{'EN_US'}->{shift(@_)}
+}
 
 return 1;

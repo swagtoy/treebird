@@ -2,7 +2,7 @@ use strict;
 use warnings;
 # Modules
 use Template;
-use l10n qw( %L10N );
+use l10n qw( &lang %L10N );
 use notifications qw( notification_compact );
 use template_helpers qw( &to_template );
 use status ();
@@ -27,7 +27,7 @@ sub base_page
         prefix => '',
         ssn => $ssn,
         title => $L10N{'EN_US'}->{'APP_NAME'},
-        lang => sub { $L10N{'EN_US'}->{shift(@_)} },
+        lang => \&lang,
         main => $main,
         sidebar_opacity => $ssn->{config}->{sidebar_opacity} / 255,
         acct => $ssn->{account},
