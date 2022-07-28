@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Data::Dumper;
 
 my $FAIL = "\033[91m";
 my $OK = "\033[96m";
