@@ -265,124 +265,7 @@ char* construct_interaction_buttons(struct session* ssn,
                                     size_t* size,
                                     uint8_t flags)
 {
-    int use_img = ssn->config.interact_img;
-    char* interaction_html;
-    char* repeat_btn;
-    char* like_btn;
-    char* likeboost_html = NULL;
-    char* reply_count = NULL;
-    char* repeat_count = NULL;
-    char* reply_btn;
-    char* favourites_count = NULL;
-    char* emoji_picker_html = NULL;
-    char* reactions_btn_html = NULL;
-    char* time_str;
-    int show_nums = (flags & STATUS_NO_DOPAMEME) != STATUS_NO_DOPAMEME &&
-        ssn->config.stat_dope;
-    size_t s;
-
-    // Emojo picker
-    if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
-    {
-        emoji_picker_html = construct_emoji_picker(status->id, NULL);
-    }
-
-    struct reactions_btn_template tdata = {
-        .prefix = config_url_prefix,
-        .status_id = status->id,
-        .emoji_picker = emoji_picker_html
-    };
-    reactions_btn_html = tmpl_gen_reactions_btn(&tdata, NULL);
-
-    if (show_nums)
-    {
-        if (status->replies_count)
-            easprintf(&reply_count, NUM_STR, status->replies_count);
-        if (status->reblogs_count)
-            easprintf(&repeat_count, NUM_STR, status->reblogs_count);
-        if (status->favourites_count)
-            easprintf(&favourites_count, NUM_STR, status->favourites_count);
-    }
-
-    struct likeboost_template lbdata = {
-        .prefix = config_url_prefix,
-        .status_id = status->id,
-    };
-    likeboost_html = tmpl_gen_likeboost(&lbdata, NULL);
-    
-    time_str = reltime_to_str(status->created_at);
-
-    // TODO cleanup?
-    if (use_img)
-    {
-        struct repeat_btn_img_template rpbdata = { .prefix = config_url_prefix, .repeat_active = status->reblogged ? "active" : "" };
-        repeat_btn = tmpl_gen_repeat_btn_img(&rpbdata, NULL);
-        struct like_btn_img_template ldata = { .prefix = config_url_prefix, .favourite_active = status->favourited ? "active" : "" };
-        like_btn = tmpl_gen_like_btn_img(&ldata, NULL);
-    }
-    else {
-        struct repeat_btn_template rpbdata = { .repeat_active = status->reblogged ? "active" : "" };
-        repeat_btn = tmpl_gen_repeat_btn(&rpbdata, NULL);
-        struct like_btn_template ldata = { .favourite_active = status->favourited ? "active" : "" };
-        like_btn = tmpl_gen_like_btn(&ldata, NULL);
-    }
-    
-    // Weather it should be a link or a <label> button
-    if ((flags & STATUS_NO_QUICKREPLY) != STATUS_NO_QUICKREPLY)
-    {
-        struct reply_checkbox_template tmpl = {
-            .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
-            .reply_count = reply_count,
-            .status_id = status->id,
-        };
-        reply_btn = tmpl_gen_reply_checkbox(&tmpl, NULL);
-    }
-    else {
-        struct reply_link_template tmpl = {
-            .prefix = config_url_prefix,
-            .reply_btn = use_img ? data_reply_btn_img : data_reply_btn,
-            .reply_count = reply_count,
-            .status_id = status->id,
-        };
-        reply_btn = tmpl_gen_reply_link(&tmpl, NULL);        
-    }
-
-    struct interaction_buttons_template data = {
-        // Icons
-        .reply_btn = reply_btn,
-        .expand_btn = use_img ? data_expand_btn_img : data_expand_btn,
-        .repeat_btn = repeat_btn,
-        .like_btn = like_btn,
-        // Interactions data
-        .prefix = config_url_prefix,
-        .status_id = status->id,
-        .unrepeat = status->reblogged ? "un" : "",
-        .repeats_count = repeat_count,
-        .repeat_text = "Repeat",
-        .unfavourite = status->favourited ? "un" : "",
-        .favourites_count = favourites_count,
-        .favourites_text = "Favorite",
-        .likeboost_btn = (likeboost_html &&
-                          ssn->config.stat_oneclicksoftware &&
-                          (flags & STATUS_NO_LIKEBOOST) != STATUS_NO_LIKEBOOST ? likeboost_html : ""),
-        .reactions_btn = reactions_btn_html,
-        .rel_time = time_str
-    };
-
-    interaction_html = tmpl_gen_interaction_buttons(&data, size);
-    
-    // Cleanup
-    free(emoji_picker_html);
-    free(reply_count);
-    free(repeat_count);
-    free(favourites_count);
-    free(reactions_btn_html);
-    free(likeboost_html);
-    free(time_str);
-    free(reply_btn);
-    free(like_btn);
-    free(repeat_btn);
-    return interaction_html;
+    return "";
 }
 
 char* construct_status_interactions(char* status_id,
@@ -875,7 +758,6 @@ char* construct_status(struct session* ssn,
         free(formatted_display_name);
     if (serialized_display_name != status->account.display_name)
         free(serialized_display_name);
-    free(interaction_btns);
     free(in_reply_to_str);
     free(attachments);
     free(post_response);
@@ -1137,6 +1019,7 @@ HV* perlify_status(const struct mstdnt_status* status)
     hvstores_int(status_hv, "muted", status->muted);
     hvstores_int(status_hv, "bookmarked", status->bookmarked);
     hvstores_int(status_hv, "pinned", status->pinned);
+    hvstores_int(status_hv, "visibility", ((int)(status->visibility)));
     hvstores_int(status_hv, "reblogs_count", status->reblogs_count);
     hvstores_int(status_hv, "favourites_count", status->favourites_count);
     hvstores_int(status_hv, "replies_count", status->replies_count);

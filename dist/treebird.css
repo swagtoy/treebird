@@ -815,9 +815,9 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 .status.focused,
 .status:target
 {
-    background-color: #ffdddd;
-    border-left: 3px solid #aa0000;
-    padding-left: 7px;
+    background: #ffdddd;
+    border-left: 2px solid #aa0000;
+    padding-left: 8px;
 }
 
 .notification-info + .status,
@@ -1034,8 +1034,15 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     cursor: pointer;
     color: #808080;
     display: inline;
-    font-size: 12px;
     margin-right: 5px;
+}
+
+.status-visibility .visibility
+{
+    stroke: #808080;
+    vertical-align: middle;
+    width: 17px;
+    height: 17px;
 }
 
 .status-interact
@@ -1461,7 +1468,7 @@ p}
 .status-interact .statbtn
 {
     display: block;
-    padding: 3px 2px 5px;
+    padding: 3px 0px 5px;
     min-width: 42px;
 }
 
@@ -1469,6 +1476,8 @@ p}
 {
     width: 18px;
     height: 18px;
+    stroke: #666;
+    vertical-align: middle;
 }
 
 .view-btn
@@ -1583,6 +1592,7 @@ p}
     padding-top: 3px;
     font-size: 12px;
     padding-bottom: 3px;
+    padding-right: 7px;
     vertical-align: middle;
 }
 
@@ -1633,12 +1643,6 @@ p}
 {
     border-radius: 4px;
     border: 1px solid #cacaca;
-}
-
-.emoji-btn
-{
-    position: relative;
-    top: 2px;
 }
 
 /* Emojo picker */

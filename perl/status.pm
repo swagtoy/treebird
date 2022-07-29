@@ -1,7 +1,7 @@
 package status;
 use strict;
 use warnings;
-use icons 'get_icon';
+use icons qw( get_icon visibility_to_icon );
 use Exporter 'import';
 
 our @EXPORT = qw( status );
@@ -17,6 +17,7 @@ sub status
         ssn => $ssn,
         status => $status,
         icon => \&get_icon,
+        vis_to_icon => \&visibility_to_icon,
         );
 
     to_template(\%vars, \$data->{'status.tt'});

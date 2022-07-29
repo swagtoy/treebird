@@ -12,7 +12,7 @@
                     <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
                     <span class="alignend">
                         <div class="menu-container status-visibility">
-                            {{%s:visibility}}
+                            [% vis_to_icon(status.visibility) %]
                             <div class="menu">
                                 <ul>
                                     <li>
@@ -67,7 +67,9 @@
                                 <td>
                                     <label for="status-quickreply-{{%s:status_id}}" class="pointer statbtn reply-btn">
                                         [% icon('reply') %]
-                                        <span class="count">[% status.replies_count %]</span>
+                                        [% IF status.replies_count %]
+                                            <span class="count">[% status.replies_count %]</span>
+                                        [% END %]
                                     </label>
 
 
@@ -77,7 +79,9 @@
                                         <input class="itype" type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
                                         <label class="repeat-btn pointer statbtn">
                                             [% icon('repeat') %]
-                                            <span class="count">[% status.reblogs_count %]</span>
+                                            [% IF status.reblogs_count %]
+                                                <span class="count">[% status.reblogs_count %]</span>
+                                            [% END %]
                                             <input class="hidden" type="submit" value="Repeat">
                                         </label>
                                     </form>
@@ -87,7 +91,9 @@
                                         <input class="itype" type="hidden" name="itype" value="{{%s:unfavourite}}like">
                                         <label class="pointer statbtn like-btn">
                                             [% icon('like') %]
-                                            <span class="count">[% status.favourites_count %]</span>
+                                            [% IF status.favourites_count %]
+                                                <span class="count">[% status.favourites_count %]</span>
+                                            [% END %]
                                             <input class="hidden" type="submit" value="Like">
                                         </label>
                                     </form>
