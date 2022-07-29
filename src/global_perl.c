@@ -22,6 +22,7 @@
 #include "../templates/notif_compact.ctt"
 #include "../templates/status.ctt"
 #include "../templates/content_status.ctt"
+#include "../templates/emoji_picker.ctt"
 
 HV* template_files;
 pthread_mutex_t perl_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -34,6 +35,7 @@ void init_template_files()
     hv_stores(template_files, "notif_compact.tt", newSVpv(data_notif_compact_tt, data_notif_compact_tt_size));
     hv_stores(template_files, "status.tt", newSVpv(data_status_tt, data_status_tt_size));
     hv_stores(template_files, "content_status.tt", newSVpv(data_content_status_tt, data_content_status_tt_size));
+    hv_stores(template_files, "emoji_picker.tt", newSVpv(data_emoji_picker_tt, data_emoji_picker_tt_size));
 }
 
 void cleanup_template_files()

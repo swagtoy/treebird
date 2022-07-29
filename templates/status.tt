@@ -9,7 +9,7 @@
             <td class="status-info">
                 <div class="poster-stats">
                     <span class="username">[% status.account.display_name %]</span>
-                    <a class="instance-info" href="$prefix/@{{%s:acct}}">[% status.account.acct %]</a>
+                    <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
                     <span class="alignend">
                         <div class="menu-container status-visibility">
                             {{%s:visibility}}
@@ -61,7 +61,68 @@
                     {{%s:attachments}}
                     {{%s:interactions}}
                     {{%s:emoji_reactions}}
-                    {{%s:interaction_btns}}
+                    <div class="status-interact">
+                        <table class="ui-table">
+                            <tr>
+                                <td>
+                                    <label for="status-quickreply-{{%s:status_id}}" class="pointer statbtn reply-btn">
+                                        [% icon('reply') %]
+                                        <span class="count">[% status.replies_count %]</span>
+                                    </label>
+
+
+                                </td>
+                                <td>
+                                    <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                        <input class="itype" type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
+                                        <label class="repeat-btn pointer statbtn">
+                                            [% icon('repeat') %]
+                                            <span class="count">[% status.reblogs_count %]</span>
+                                            <input class="hidden" type="submit" value="Repeat">
+                                        </label>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                        <input class="itype" type="hidden" name="itype" value="{{%s:unfavourite}}like">
+                                        <label class="pointer statbtn like-btn">
+                                            [% icon('like') %]
+                                            <span class="count">[% status.favourites_count %]</span>
+                                            <input class="hidden" type="submit" value="Like">
+                                        </label>
+                                    </form>
+                                </td>
+                                [% IF ssn.config.stat_oneclicksoftware %]
+                                    <td>
+                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                            <input class="itype" type="hidden" name="itype" value="likeboost">
+                                            <label class="pointer statbtn likeboost-btn">
+                                                [% icon('likeboost') %]
+                                                
+                                                <input class="hidden" type="submit" value="L+R">
+                                            </label>
+                                        </form>
+                                    </td>
+                                [% END %]
+                                <td>
+                                    <a target="_parent" href="$prefix/status/[% status.id %]/react#[% status.id %]" class="pointer statbtn react-btn">
+                                        [% icon('emoji') %]
+                                    </a>
+                                    [% IF emoji_picker -%]
+                                        [% emoji_picker %]
+                                    [%- END %]
+                                </td>
+                                <td>
+                                    <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
+                                        [% icon('expand') %]
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#[% status.id %]" class="time">[% status.created_at %]</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </td>
         </tr>

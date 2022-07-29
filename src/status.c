@@ -1122,7 +1122,7 @@ HV* perlify_status(const struct mstdnt_status* status)
     HV* status_hv = newHV();
     hvstores_str(status_hv, "id", status->id);
     hvstores_str(status_hv, "uri", status->uri);
-    hvstores_str(status_hv, "created_at", status->id);
+    hvstores_int(status_hv, "created_at", status->created_at);
     hvstores_ref(status_hv, "account", perlify_account(&(status->account)));
     hvstores_str(status_hv, "content", status->content);
     hvstores_str(status_hv, "spoiler_text", status->spoiler_text);

@@ -1,6 +1,7 @@
 package status;
 use strict;
 use warnings;
+use icons 'get_icon';
 use Exporter 'import';
 
 our @EXPORT = qw( status );
@@ -12,8 +13,10 @@ sub status
     my ($ssn, $data, $status) = @_;
 
     my %vars = (
-        prefix => $ssn,
-        status => $status
+        prefix => '',
+        ssn => $ssn,
+        status => $status,
+        icon => \&get_icon,
         );
 
     to_template(\%vars, \$data->{'status.tt'});
@@ -24,6 +27,7 @@ sub content_status
     my ($ssn, $data, $status, $statuses_before, $statuses_after) = @_;
 
     my %vars = (
+        prefix => '',
         ssn => $ssn,
         data => $data,
         create_status => \&status,
