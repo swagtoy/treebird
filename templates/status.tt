@@ -74,72 +74,64 @@
                         </div>
                     [% END %]
                     <div class="status-interact">
-                        <table class="ui-table">
-                            <tr>
-                                <td>
-                                    <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
-                                        [% icon('reply') %]
-                                        [% IF status.replies_count %]
-                                            <span class="count">[% status.replies_count %]</span>
-                                        [% END %]
-                                    </label>
-                                </td>
-                                <td>
-                                    <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                        <input class="itype" type="hidden" name="itype" value="{{%s:unrepeat}}repeat">
-                                        <label class="repeat-btn pointer statbtn">
-                                            [% icon('repeat') %]
-                                            [% IF status.reblogs_count %]
-                                                <span class="count">[% status.reblogs_count %]</span>
-                                            [% END %]
-                                            <input class="hidden" type="submit" value="Repeat">
-                                        </label>
-                                    </form>
-                                </td>
-                                <td>
-                                    <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                        <input class="itype" type="hidden" name="itype" value="{{%s:unfavourite}}like">
-                                        <label class="pointer statbtn like-btn">
-                                            [% icon('like') %]
-                                            [% IF status.favourites_count %]
-                                                <span class="count">[% status.favourites_count %]</span>
-                                            [% END %]
-                                            <input class="hidden" type="submit" value="Like">
-                                        </label>
-                                    </form>
-                                </td>
-                                [% IF ssn.config.stat_oneclicksoftware %]
-                                    <td>
-                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                            <input class="itype" type="hidden" name="itype" value="likeboost">
-                                            <label class="pointer statbtn likeboost-btn">
-                                                [% icon('likeboost') %]
-                                                
-                                                <input class="hidden" type="submit" value="L+R">
-                                            </label>
-                                        </form>
-                                    </td>
+                        <div class="status-buttons">
+                            <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
+                                [% icon('reply') %]
+                                [% IF status.replies_count %]
+                                    <span class="count">[% status.replies_count %]</span>
                                 [% END %]
-                                <td>
-                                    <a target="_parent" href="$prefix/status/[% status.id %]/react#[% status.id %]" class="pointer statbtn react-btn">
-                                        [% icon('emoji') %]
-                                    </a>
-                                    [% IF emoji_picker -%]
-                                        [% emoji_picker %]
-                                    [%- END %]
-                                </td>
-                                <td>
-                                    <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
-                                        [% icon('expand') %]
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="#[% status.id %]" class="time">
-                                        [%- rel_to_str(status.created_at) -%]
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
+                            </label>
+                            <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                <input class="itype" type="hidden" name="itype" value="[% IF status.favourited %]un[% END %]like">
+                                <label class="pointer statbtn like-btn[% IF status.favourited %] interacted[% END %]">
+                                    [% icon('like') %]
+                                    [% IF status.favourites_count %]
+                                        <span class="count">[% status.favourites_count %]</span>
+                                    [% END %]
+                                    <input class="hidden" type="submit" value="Like">
+                                </label>
+                            </form>
+                            <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                <input class="itype" type="hidden" name="itype" value="[% IF status.reblogged %]un[% END %]repeat">
+                                <label class="repeat-btn pointer statbtn[% IF status.reblogged %] interacted[% END %]">
+                                    [% icon('repeat') %]
+                                    [% IF status.reblogs_count %]
+                                        <span class="count">[% status.reblogs_count %]</span>
+                                    [% END %]
+                                    <input class="hidden" type="submit" value="Repeat">
+                                </label>
+                            </form>
+                            [% IF ssn.config.stat_oneclicksoftware %]
+                                <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                    <input class="itype" type="hidden" name="itype" value="likeboost">
+                                    <label class="pointer statbtn likeboost-btn">
+                                        [% icon('likeboost') %]
+                                        
+                                        <input class="hidden" type="submit" value="L+R">
+                                    </label>
+                                </form>
+                            [% END %]
+                            <a target="_parent" class="statbtn statbtn-last" href="$prefix/status/[% status.id %]/react#[% status.id %]" class="pointer statbtn react-btn">
+                                [% icon('emoji') %]
+                            </a>
+                            [% IF emoji_picker -%]
+                                [% emoji_picker %]
+                            [%- END %]
+                        </div>
+                        [%# Put these at the end, incase someone wants to move status icons to the beginning (this makes it easier %]
+                        <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
+                            [% icon('expand') %]
+                        </a> 
+                        <span class="status-meta">
+                            <a href="#[% status.id %]" title="[% time_to_str(status.created_at) %]" class="time">[%- rel_to_str(status.created_at) -%]</a>
+                            [% IF status.application && status.application.name %]
+                                [% IF status.application.url %]
+                                    <a class="application-name" href="[% status.application.url %]">[% status.application.name %]</a>
+                                [% ELSE %]
+                                    <span class="application-name">[% status.application.name %]</span>
+                                [% END %]
+                            [% END %]
+                        </span>
                     </div>
                 </div>
             </td>
@@ -147,5 +139,5 @@
     </table>
 </div>
 <input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-[% status.id %]">
-{{ %s : reply }}
+<!-- {{ %s : reply }} -->
 

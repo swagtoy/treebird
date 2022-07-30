@@ -23,6 +23,7 @@
 #include "helpers.h"
 #include "http.h"
 #include "base_page.h"
+#include "applications.h"
 #include "status.h"
 #include "easprintf.h"
 #include "query.h"
@@ -1044,6 +1045,7 @@ HV* perlify_status(const struct mstdnt_status* status)
     hvstores_int(status_hv, "favourites_count", status->favourites_count);
     hvstores_int(status_hv, "replies_count", status->replies_count);
     hvstores_ref(status_hv, "status", perlify_status(status->reblog));
+    hvstores_ref(status_hv, "application", perlify_application(status->application));
     hvstores_ref(status_hv, "media_attachments",
                  perlify_attachments(status->media_attachments, status->media_attachments_len));
     hvstores_ref(status_hv, "emojis", perlify_emojis(status->emojis, status->emojis_len));

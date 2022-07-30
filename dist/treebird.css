@@ -526,6 +526,7 @@ input[type=range]::-moz-range-thumb
 .btn-alt:hover
 {
     background: linear-gradient(#aa0000, #ee0000);
+    border-color: #800000;
 }
 
 .btn-disabled
@@ -795,7 +796,8 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
  **************************/
 .status
 {
-    padding: 11px 0px 0px 11px;
+    padding: 11px;
+    padding-bottom: 6px;
     border-bottom: 1px dashed #cacaca;
 }
 
@@ -817,7 +819,7 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 {
     background: #ffdddd;
     border-left: 2px solid #aa0000;
-    padding-left: 8px;
+    padding-left: 9px;
 }
 
 .notification-info + .status,
@@ -910,7 +912,6 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     font-size: 10px;
 }
 
-.status .time:before,
 .notification-compact .time:before
 {
     content: "•";
@@ -918,13 +919,42 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     font-size: 10px;
 }
 
+.status .time
+{
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.status .status-meta
+{
+    vertical-align: middle;
+}
+
+.status .application-name
+{
+    display: inline-block;
+    margin-left: 4px;
+    max-width: 140px;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 13px;
+    text-overflow: ellipsis;
+}
+
+.status .application-name:before
+{
+    content: "•";
+    padding-right: 10px;
+    font-size: 12px;
+}
+
 .status .time,
+.status .status-meta,
 .notification-compact .time
 {
     color: #606060;
-    vertical-align: middle;
     font-size: 14px;
-    padding-left: 5px;
     text-decoration: none;
 }
 
@@ -1448,6 +1478,11 @@ p}
     padding: 5px;
 }
 
+.status-buttons
+{
+    float: right;
+}
+
 .statusbox .statusfooter
 {
     display: block;
@@ -1465,11 +1500,26 @@ p}
     float: right;
 }
 
+.status-interact .statbtn-form
+{
+    display: inline-block;
+}
+
 .status-interact .statbtn
 {
-    display: block;
-    padding: 3px 0px 5px;
-    min-width: 42px;
+    display: inline-block;
+    padding: 3px 0px 3px;
+    min-width: 35px;
+}
+
+.status-interact .statbtn-last
+{
+    min-width: 26px;
+}
+
+.status-interact .statbtn.view-btn
+{
+    min-width: 19px;
 }
 
 .status-interact .statbtn svg
@@ -1480,9 +1530,19 @@ p}
     vertical-align: middle;
 }
 
-.view-btn
+.status-interact svg.expand
 {
-    min-width: 25px !important;
+    width: 13px;
+    height: 13px;
+}
+
+.status-interact .count
+{
+    padding-top: 3px;
+    font-size: 12px;
+    padding-bottom: 3px;
+    padding-right: 7px;
+    vertical-align: middle;
 }
 
 .statusbox .post-group
@@ -1553,12 +1613,12 @@ p}
     100% { transform: rotateZ(360deg); }
 }
 
-.status-interact svg.repeat.active
+.status-interact .statbtn.interacted svg.repeat
 {
     stroke: #08d345;
 }
 
-.status-interact svg.like.active
+.status-interact .statbtn.interacted svg.like
 {
     fill: #fcd202;
     stroke: #fcd202;
@@ -1574,7 +1634,7 @@ p}
 
 .status-interact svg.like:hover,
 .status-interact svg.like:active,
-.statis-interact svg.like:focus
+.status-interact svg.like:focus
 {
     stroke: #fcd202;
     pointer: select;
@@ -1582,18 +1642,9 @@ p}
 
 .status-interact svg.repeat:hover,
 .status-interact svg.repeat:active,
-.statis-interact svg.repeat:focus
+.status-interact svg.repeat:focus
 {
     stroke: #08d345;
-}
-
-.status-interact .count
-{
-    padding-top: 3px;
-    font-size: 12px;
-    padding-bottom: 3px;
-    padding-right: 7px;
-    vertical-align: middle;
 }
 
 /* Emoji */
