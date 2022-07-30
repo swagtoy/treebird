@@ -1,6 +1,7 @@
 package status;
 use strict;
 use warnings;
+use string_helpers qw( reltime_to_str );
 use icons qw( get_icon visibility_to_icon );
 use Exporter 'import';
 
@@ -17,6 +18,7 @@ sub status
         ssn => $ssn,
         status => $status,
         icon => \&get_icon,
+        rel_to_str => \&reltime_to_str,
         vis_to_icon => \&visibility_to_icon,
         );
 

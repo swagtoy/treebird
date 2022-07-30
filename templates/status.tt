@@ -71,8 +71,6 @@
                                             <span class="count">[% status.replies_count %]</span>
                                         [% END %]
                                     </label>
-
-
                                 </td>
                                 <td>
                                     <form action="$prefix/status/[% status.id %]/interact" method="post">
@@ -124,7 +122,9 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="#[% status.id %]" class="time">[% status.created_at %]</a>
+                                    <a href="#[% status.id %]" class="time">
+                                        [%- rel_to_str(status.created_at) -%]
+                                    </a>
                                 </td>
                             </tr>
                         </table>

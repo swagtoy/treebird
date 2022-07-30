@@ -21,6 +21,7 @@
 #include <mastodont.h>
 #include "path.h"
 #include "session.h"
+#include "global_perl.h"
 
 #define FILES_READY(ssn) (ssn->post.files.type.f.array_size &&          \
                           ssn->post.files.type.f.content &&             \
@@ -36,5 +37,9 @@ void cleanup_media_ids(struct session* ssn, char** media_ids);
 char* construct_attachment(struct session* ssn, mstdnt_bool sensitive, struct mstdnt_attachment* att, size_t* str_size);
 char* construct_attachments(struct session* ssn, mstdnt_bool sensitive, struct mstdnt_attachment* atts, size_t atts_len, size_t* str_size);
 void api_attachment_create(PATH_ARGS);
+
+// Perl
+HV* perlify_attachment(struct mstdnt_attachment* const attachment);
+AV* perlify_attachments(struct mstdnt_attachment* const attachments, size_t len);
 
 #endif // ATTACHMENTS_H

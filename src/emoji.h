@@ -21,6 +21,7 @@
 #include <stddef.h>
 #include <mastodont.h>
 #include "emoji_codes.h"
+#include "global_perl.h"
 
 #define EMOJI_FACTOR_NUM 32
 
@@ -35,5 +36,9 @@ char* emojify(char* content, struct mstdnt_emoji* emos, size_t emos_len);
 char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size);
 void content_emoji_picker(PATH_ARGS);
 char* construct_emoji_picker(char* status_id, size_t* size);
+
+// Perl
+HV* perlify_emoji(struct mstdnt_emoji* const emoji);
+AV* perlify_emojis(struct mstdnt_emoji* const emos, size_t len);
 
 #endif // EMOJI_H

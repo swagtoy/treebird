@@ -197,6 +197,35 @@ char* construct_attachments(struct session* ssn,
     return att_view;
 }
 
+HV* perlify_attachment(struct mstdnt_attachment* const attachment)
+{
+    if (!attachments) return NULL;
+    HV* attach_hv = newHV();
+    hvstores_str(attach_hv, "id", attachment->id);
+    hvstores_int(attach_hv, "type", attachment->type)
+    hvstores_str(attach_hv, "url", attachment->url);
+    hvstores_str(attach_hv, "preview_url", attachment->preview_url);
+    hvstores_str(attach_hv, "remote_url", attachment->remote_url);
+    hvstores_str(attach_hv, "hash", attachment->hash);
+    hvstores_str(attach_hv, "description", attachment->description);
+    hvstores_str(attach_hv, "blurhash", attachment->blurhash);
+    return attach_hv;
+}
+
+AV* perlify_attachments(struct mstdnt_attachment* const attachments, size_t len)
+{
+    if (!(attachments && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_attachment(attachments + i)));
+    }
+
+    return av;
+}
+
 void api_attachment_create(PATH_ARGS)
 {
     struct mstdnt_storage *att_storage = NULL;

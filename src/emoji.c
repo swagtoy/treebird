@@ -163,3 +163,31 @@ char* construct_emoji_picker(char* status_id, size_t* size)
         free(emojis[i]);
     return emoji_picker_html;
 }
+
+HV* perlify_emoji(struct mstdnt_emoji* const emoji);
+{
+    if (!emoji) return NULL;
+    HV* emoji_hv = newHV();
+    hvstores_str(emoji_hv, "shortcode", attachment->id);
+    hvstores_str(emoji_hv, "url", attachment->url);
+    hvstores_str(emoji_hv, "static_url", attachment->preview_url);
+    hvstores_str(emoji_hv, "visible_in_picker", attachment->visible_in_picker);
+    hvstores_str(emoji_hv, "hash", attachment->hash);
+    hvstores_str(emoji_hv, "description", attachment->description);
+    hvstores_str(emoji_hv, "blurhash", attachment->blurhash);
+    return emoji_hv;
+}
+
+AV* perlify_emojis(struct mstdnt_emoji* const emos, size_t len)
+{
+    if (!(emos && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_emoji(emos + i)));
+    }
+
+    return av;
+}
