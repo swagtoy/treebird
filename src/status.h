@@ -136,6 +136,7 @@ void notice_redirect(PATH_ARGS);
 void api_status_interact(PATH_ARGS);
 
 // Perl
+HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma);
 HV* perlify_status(const struct mstdnt_status* status);
 AV* perlify_statuses(const struct mstdnt_status* statuses, size_t len); 
 

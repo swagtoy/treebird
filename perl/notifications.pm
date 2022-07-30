@@ -3,16 +3,17 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw( notification_compact );
+our @EXPORT = qw( generate_notification_compact );
 
 use template_helpers 'to_template';
 
-sub notification_compact
+sub generate_notification_compact
 {
     my ($ssn, $data, $notif) = @_;
 
     my %vars = (
-        prefix => $ssn,
+        prefix => '',
+        ssn => $ssn,
         notif => $notif
         );
 

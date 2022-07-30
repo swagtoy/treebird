@@ -52,20 +52,32 @@
                     [%# Note: The id may actually (99.5% of the time) be the acct %]
                     [% IF status.in_reply_to_id %]
                         <span class="in-reply-to">
-                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> <span class="in-reply-to-text">In reply to</span> <span class="acct">[% status.in_reply_to_id %]</span></a>
+                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> <span class="in-reply-to-text">In reply to</span> <span class="acct">[% status.pleroma.in_reply_to_account_acct || status.in_reply_to_account_id %]</span></a>
                         </span>
                     [% END %]
                     <span class="status-content">
                         [% status.content %]
                     </span>
-                    {{%s:attachments}}
-                    {{%s:interactions}}
-                    {{%s:emoji_reactions}}
+                    [% IF status.media_attachments %]
+                        <div class="attachments">
+                            [% FOR att IN status.media_attachments %]
+                                [% make_att(ssn, data, att, status.sensitive) %]
+                            [% END %]
+                        </div>
+                    [% END %]
+                    [%# TODO {{%s:interactions}} %]
+                    [% IF status.pleroma.emoji_reactions %]
+                        <div class="emoji-reactions">
+                        [% FOR emo IN status.pleroma.emoji_reactions %]
+                            [% make_emoji(ssn, data, status.id, emo) %]
+                        [% END %]
+                        </div>
+                    [% END %]
                     <div class="status-interact">
                         <table class="ui-table">
                             <tr>
                                 <td>
-                                    <label for="status-quickreply-{{%s:status_id}}" class="pointer statbtn reply-btn">
+                                    <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
                                         [% icon('reply') %]
                                         [% IF status.replies_count %]
                                             <span class="count">[% status.replies_count %]</span>

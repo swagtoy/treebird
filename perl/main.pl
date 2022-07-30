@@ -3,9 +3,9 @@ use warnings;
 # Modules
 use Template;
 use l10n qw( &lang %L10N );
-use notifications qw( notification_compact );
+use notifications qw( generate_notification_compact );
 use template_helpers qw( &to_template );
-use status ();
+use status;
 
 # my $template = Template->new(
 #     {
@@ -33,7 +33,7 @@ sub base_page
         acct => $ssn->{account},
         data => $data,
         notifs => $notifs,
-        notification_compact => \&notification_compact,
+        notification_compact => \&generate_notification_compact,
         );
 
     to_template(\%vars, \$data->{'main.tt'});

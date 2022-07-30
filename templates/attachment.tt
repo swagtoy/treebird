@@ -1,0 +1,30 @@
+<div class="attachment-container 
+    [%- IF attachment.type == 1 -%]        [%# Image attachment %]
+            attachment-img">
+        <img width="256" src="[% attachment.url %]" loading="lazy">
+    [%- ELSIF attachment.type == 2 -%]        [%# Gifv attachment (mastodon) %]
+        attachment-gifv">
+        <video width="256" autoplay muted loop>
+            <source src="[% attachment.url %]">
+            [ GIFV ]
+        </video>
+    [%- ELSIF attachment.type == 3 -%]        [%# video attachment %]
+        attachment-video">
+        <video width="256" controls preload="metadata">
+            <source src="[% attachment.url %]">
+            [ VIDEO ]
+        </video>
+    [%- ELSIF attachment.type == 4 -%]        [%# Audio attachment %]
+        attachment-audio">
+        <audio width="256" controls preload="metadata">
+            <source src="[% attachment.url %]">
+        </audio>
+    [%- ELSE -%]        [%# Unknown attachment - Link %]
+        attachment-link [% IF sensitive %]sensitive[% END %]">
+        <a href="[% attachment.url %]">Attachment</a>
+    [%- END -%]
+
+    [% IF sensitive && attachment.type != 0 %]       [%# Link %]
+        <div class="sensitive-contain sensitive"></div>
+    [% END %]
+</div>

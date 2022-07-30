@@ -3,13 +3,15 @@ use strict;
 use warnings;
 use string_helpers qw( reltime_to_str );
 use icons qw( get_icon visibility_to_icon );
+use attachments 'generate_attachment';
+use emojis 'generate_emoji';
 use Exporter 'import';
 
-our @EXPORT = qw( status );
+our @EXPORT = qw( content_status generate_status );
 
 use template_helpers 'to_template';
 
-sub status
+sub generate_status
 {
     my ($ssn, $data, $status) = @_;
 
@@ -33,10 +35,13 @@ sub content_status
         prefix => '',
         ssn => $ssn,
         data => $data,
-        create_status => \&status,
         status => $status,
         statuses_before => $statuses_before,
         statuses_after => $statuses_after,
+        # Functions
+        create_status => \&generate_status,
+        make_att => \&generate_attachment,
+        make_emoji => \&generate_emoji,
         );
 
 

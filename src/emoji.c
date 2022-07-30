@@ -164,17 +164,15 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     return emoji_picker_html;
 }
 
-HV* perlify_emoji(struct mstdnt_emoji* const emoji);
+HV* perlify_emoji(struct mstdnt_emoji* const emoji)
 {
     if (!emoji) return NULL;
     HV* emoji_hv = newHV();
-    hvstores_str(emoji_hv, "shortcode", attachment->id);
-    hvstores_str(emoji_hv, "url", attachment->url);
-    hvstores_str(emoji_hv, "static_url", attachment->preview_url);
-    hvstores_str(emoji_hv, "visible_in_picker", attachment->visible_in_picker);
-    hvstores_str(emoji_hv, "hash", attachment->hash);
-    hvstores_str(emoji_hv, "description", attachment->description);
-    hvstores_str(emoji_hv, "blurhash", attachment->blurhash);
+    hvstores_str(emoji_hv, "shortcode", emoji->shortcode);
+    hvstores_str(emoji_hv, "url", emoji->url);
+    hvstores_str(emoji_hv, "static_url", emoji->static_url);
+    hvstores_str(emoji_hv, "visible_in_picker", emoji->visible_in_picker);
+    hvstores_str(emoji_hv, "category", emoji->category);
     return emoji_hv;
 }
 

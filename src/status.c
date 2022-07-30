@@ -997,6 +997,24 @@ void notice_redirect(PATH_ARGS)
     free(url);
 }
 
+HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma)
+{
+    if (!pleroma) return NULL;
+    
+    HV* pleroma_hv = newHV();
+    hvstores_int(pleroma_hv, "conversation_id", pleroma->conversation_id);
+    hvstores_int(pleroma_hv, "direct_conversation_id", pleroma->direct_conversation_id);
+    hvstores_int(pleroma_hv, "thread_muted", pleroma->thread_muted);
+    hvstores_int(pleroma_hv, "local", pleroma->local);
+    hvstores_int(pleroma_hv, "parent_visible", pleroma->parent_visible);
+    hvstores_ref(pleroma_hv, "emoji_reactions",
+                 perlify_emoji_reactions(pleroma->emoji_reactions, pleroma->emoji_reactions_len));
+    hvstores_str(pleroma_hv, "expires_at", pleroma->expires_at);
+    hvstores_str(pleroma_hv, "in_reply_to_account_acct", pleroma->in_reply_to_account_acct);
+
+    return pleroma_hv;
+}
+
 HV* perlify_status(const struct mstdnt_status* status)
 {
     if (!status) return NULL;
@@ -1019,11 +1037,17 @@ HV* perlify_status(const struct mstdnt_status* status)
     hvstores_int(status_hv, "muted", status->muted);
     hvstores_int(status_hv, "bookmarked", status->bookmarked);
     hvstores_int(status_hv, "pinned", status->pinned);
+
+    hvstores_int(status_hv, "sensitive", status->sensitive);
     hvstores_int(status_hv, "visibility", ((int)(status->visibility)));
     hvstores_int(status_hv, "reblogs_count", status->reblogs_count);
     hvstores_int(status_hv, "favourites_count", status->favourites_count);
     hvstores_int(status_hv, "replies_count", status->replies_count);
     hvstores_ref(status_hv, "status", perlify_status(status->reblog));
+    hvstores_ref(status_hv, "media_attachments",
+                 perlify_attachments(status->media_attachments, status->media_attachments_len));
+    hvstores_ref(status_hv, "emojis", perlify_emojis(status->emojis, status->emojis_len));
+    hvstores_ref(status_hv, "pleroma", perlify_status_pleroma(&(status->pleroma)));
 
     return status_hv;
 }

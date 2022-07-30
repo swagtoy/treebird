@@ -199,10 +199,10 @@ char* construct_attachments(struct session* ssn,
 
 HV* perlify_attachment(struct mstdnt_attachment* const attachment)
 {
-    if (!attachments) return NULL;
+    if (!attachment) return NULL;
     HV* attach_hv = newHV();
     hvstores_str(attach_hv, "id", attachment->id);
-    hvstores_int(attach_hv, "type", attachment->type)
+    hvstores_int(attach_hv, "type", attachment->type);
     hvstores_str(attach_hv, "url", attachment->url);
     hvstores_str(attach_hv, "preview_url", attachment->preview_url);
     hvstores_str(attach_hv, "remote_url", attachment->remote_url);

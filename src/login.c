@@ -84,7 +84,7 @@ void content_login_oauth(PATH_ARGS)
         m_args.url = decode_url;
         
         struct mstdnt_application_args args_app = {
-            .client_name = "Treebird",
+            .client_name = "DESU",
             .redirect_uris = urlify_redirect_url,
             .scopes = "read+write+follow+push",
             .website = keystr(ssn->post.instance)
