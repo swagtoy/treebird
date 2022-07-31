@@ -85,10 +85,9 @@ a, a:visited, a:hover, a:active
     border-radius: 3px;
 }
 
-.greentext
-{
-    color: #00aa00;
-}
+.greentext { color: #00aa00; }
+.bluetext { color: #0060aa; }
+.yellowtext { color: #cccc00; }
 
 /* Cleans up most of the tables */
 table.ui-table td
@@ -1038,6 +1037,15 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: block;
 }
 
+.status-content .title
+{
+    display: block;
+    padding: 2px 2px 7px;
+    margin-bottom: 7px;
+    font-style: italic;
+    border-bottom: 1px solid #cacaca;
+}
+
 .status .status-content p,
 .status .status-content a
 {
@@ -1509,12 +1517,7 @@ p}
 {
     display: inline-block;
     padding: 3px 0px 3px;
-    min-width: 35px;
-}
-
-.status-interact .statbtn-last
-{
-    min-width: 26px;
+    min-width: 25px;
 }
 
 .status-interact .statbtn.view-btn

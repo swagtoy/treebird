@@ -8,7 +8,7 @@
             </td>
             <td class="status-info">
                 <div class="poster-stats">
-                    <span class="username">[% status.account.display_name %]</span>
+                    <span class="username">[% format_username(status.account.display_name) %]</span>
                     <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
                     <span class="alignend">
                         <div class="menu-container status-visibility">
@@ -56,7 +56,10 @@
                         </span>
                     [% END %]
                     <span class="status-content">
-                        [% status.content %]
+                        [% IF status.spoiler_text %]
+                            <span class="title">[% emojify(escape(status.spoiler_text), status.emojis) %]</span>
+                        [% END %]
+                        [% greentextify(emojify(status.content, status.emojis)) %]
                     </span>
                     [% IF status.media_attachments %]
                         <div class="attachments">

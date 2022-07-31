@@ -24,6 +24,20 @@ Run `make`. This will also clone mastodont-c, and compile both it and Treebird.
 
 If you `fossil update` any changes, `make update` should be run after updating
 
+## Perl dependencies
+
+Treebird renders most of the content that you see in Perl using the Template Toolkit.
+
+You can install it by running `make install_deps`
+
+If that doesn't work, you can open a CPAN shell
+
+```
+perl -MCPAN -e shell
+install Template::Toolkit
+install HTML::Escape
+```
+
 ## Installation
 
 Run `# make install`

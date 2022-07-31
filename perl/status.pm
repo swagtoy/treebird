@@ -1,7 +1,8 @@
 package status;
 use strict;
 use warnings;
-use string_helpers qw( reltime_to_str );
+use HTML::Escape 'escape_html';
+use string_helpers qw( reltime_to_str greentextify emojify format_username );
 use icons qw( get_icon visibility_to_icon );
 use attachments 'generate_attachment';
 use emojis 'generate_emoji';
@@ -19,9 +20,16 @@ sub generate_status
         prefix => '',
         ssn => $ssn,
         status => $status,
+        # Functions
         icon => \&get_icon,
         rel_to_str => \&reltime_to_str,
         vis_to_icon => \&visibility_to_icon,
+        make_att => \&generate_attachment,
+        make_emoji => \&generate_emoji,
+        greentextify => \&greentextify,
+        emojify => \&emojify,
+        escape => \&escape_html,
+        format_username => \&format_username,
         );
 
     to_template(\%vars, \$data->{'status.tt'});
@@ -40,8 +48,6 @@ sub content_status
         statuses_after => $statuses_after,
         # Functions
         create_status => \&generate_status,
-        make_att => \&generate_attachment,
-        make_emoji => \&generate_emoji,
         );
 
 

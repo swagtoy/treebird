@@ -39,6 +39,10 @@ all:
 	$(MAKE) make_pagescobj
 	$(MAKE) $(TARGET)
 
+install_deps:
+	cpan HTML::Escape
+	cpan Template::Toolkit
+
 make_ctmpls: $(TMPLS_C)
 make_pages: $(PAGES_CMP)
 make_pagesc: $(PAGES_C)
@@ -103,4 +107,4 @@ clean_deps:
 
 clean_all: clean clean_deps
 
-.PHONY: all filec clean update clean clean_deps clean_all test
+.PHONY: all filec clean update clean clean_deps clean_all test install_deps

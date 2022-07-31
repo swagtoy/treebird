@@ -1,10 +1,10 @@
 package string_helpers;
 use strict;
 use warnings;
-
+use HTML::Escape 'escape_html';
 use Exporter 'import';
 
-our @EXPORT = qw( &reltime_to_str );
+our @EXPORT = qw( reltime_to_str greentextify emojify format_username );
 
 sub reltime_to_str
 {
@@ -17,3 +17,31 @@ sub reltime_to_str
     return int($since / (60 * 60 * 24 * 31)) . 'mon' if $since < 60 * 60 * 24 * 365;
     return int($since / (60 * 60 * 24 * 365)) . 'yr';
 }
+
+sub greentextify
+{
+    my $text = shift;
+    $text =~ s/((?:^|<br\/?>| )&gt;.*?)(?:<br\/?>|$)/<span class="greentext">$1<\/span><br>/gs;
+    $text =~ s/((?:^|<br\/?>| )&lt;.*?)(?:<br\/?>|$)/<span class="bluetext">$1<\/span><br>/gs;
+    $text =~ s/((?:^|<br\/?>| )\^.*?)(?:<br\/?>|$)/<span class="yellowtext">$1<\/span><br>/gs;
+    $text;
+}
+
+sub emojify
+{
+    my ($text, $emojis) = @_;
+    foreach my $emoji (@{$emojis})
+    {
+        my $emo = $emoji->{shortcode};
+        my $url = $emoji->{url};
+        $text =~ s/:$emo:/<img class="emoji" src="$url" loading="lazy">/gsi;
+    }
+    $text;
+}
+
+sub format_username
+{
+    my $username = shift;
+    emojify escape_html($username);
+}
+
