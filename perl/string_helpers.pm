@@ -30,11 +30,14 @@ sub greentextify
 sub emojify
 {
     my ($text, $emojis) = @_;
-    foreach my $emoji (@{$emojis})
+    if ($emojis)
     {
-        my $emo = $emoji->{shortcode};
-        my $url = $emoji->{url};
-        $text =~ s/:$emo:/<img class="emoji" src="$url" loading="lazy">/gsi;
+        foreach my $emoji (@{$emojis})
+        {
+            my $emo = $emoji->{shortcode};
+            my $url = $emoji->{url};
+            $text =~ s/:$emo:/<img class="emoji" src="$url" loading="lazy">/gsi;
+        }
     }
     $text;
 }

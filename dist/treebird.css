@@ -821,6 +821,11 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     padding-left: 9px;
 }
 
+.status:not(:target) .status-meta .application-name
+{
+    display: none;
+}
+
 .notification-info + .status,
 .notification-info-format + .status
 {
