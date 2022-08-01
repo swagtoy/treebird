@@ -142,4 +142,6 @@
     </table>
 </div>
 <input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-[% status.id %]">
-[% make_postbox(ssn, data, status) %]
+[% IF ssn.logged_in %]
+    [% make_postbox(ssn, data, status) %]
+[% END %]
