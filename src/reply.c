@@ -75,7 +75,7 @@ char* construct_post_box(struct mstdnt_status* reply_status,
  *    so we just grep for regex href
  *  - Misskey/Mastodon adds an @ symbol in the href param, while pleroma adds /users and honk adds /u
  */
-#define REGEX_REPLY "<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users/|u/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\\/span>)?"
+#define REGEX_REPLY ""
 
 char* reply_status(struct session* ssn, char* id, struct mstdnt_status* status)
 {

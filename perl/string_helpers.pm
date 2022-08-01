@@ -50,7 +50,16 @@ sub format_username
 
 sub get_mentions_from_content
 {
-    my $status = shift;
+    my ($ssn, $status) = @_;
+    my $result = '';
+    my $acct;
     # todo
-    "";
+    while ($status->{'content'} =~
+           /<a .*?href=\"https?:\/\/(.*?)\/(?:@|users\/|u\/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\/span>)?/gs)
+    {
+        $acct = $2 . '@' . $1;
+        $result .= '@' . $acct . ' ' if $ssn->{account}->{acct} eq $acct;
+    }
+    ($status->{account}->{acct} eq $ssn->{account}->{acct})
+        ? $result : '@' . $status->{account}->{acct} . ' ' . $result;
 }

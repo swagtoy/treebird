@@ -3,11 +3,7 @@
         <input type="hidden" name="replyid" value="[% status.in_reply_to_id %]">
     [% END %]
     <div class="statusbox">
-        <textarea name="content" placeholder="Just landed in N.Y." rows="5">
-            [%- IF status -%]
-                [%- mentionify(status) -%] 
-            [%- END -%]
-        </textarea>
+        <textarea name="content" placeholder="Just landed in N.Y." rows="5">[% IF status %][% mentionify(ssn, status) %][% END %]</textarea>
         <div class="statusfooter">
             <div class="statusfooter-left">
                 <label>
