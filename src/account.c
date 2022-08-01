@@ -900,6 +900,7 @@ HV* perlify_account(const struct mstdnt_account* acct)
     hvstores_int(acct_hv, "suspended", acct->suspended);
     hvstores_int(acct_hv, "locked", acct->locked);
     hvstores_int(acct_hv, "discoverable", acct->discoverable);
+    hvstores_ref(acct_hv, "emojis", perlify_emojis(acct->emojis, acct->emojis_len));
     
     return acct_hv;
 }

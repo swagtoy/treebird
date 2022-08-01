@@ -5,6 +5,7 @@ use HTML::Escape 'escape_html';
 use string_helpers qw( reltime_to_str greentextify emojify format_username );
 use icons qw( get_icon visibility_to_icon );
 use attachments 'generate_attachment';
+use postbox 'generate_postbox';
 use emojis 'generate_emoji';
 use Exporter 'import';
 
@@ -20,6 +21,7 @@ sub generate_status
         prefix => '',
         ssn => $ssn,
         status => $status,
+        data => $data,
         # Functions
         icon => \&get_icon,
         rel_to_str => \&reltime_to_str,
@@ -30,6 +32,7 @@ sub generate_status
         emojify => \&emojify,
         escape => \&escape_html,
         format_username => \&format_username,
+        make_postbox => \&generate_postbox,
         );
 
     to_template(\%vars, \$data->{'status.tt'});

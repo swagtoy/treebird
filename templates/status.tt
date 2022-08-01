@@ -8,7 +8,7 @@
             </td>
             <td class="status-info">
                 <div class="poster-stats">
-                    <span class="username">[% format_username(status.account.display_name) %]</span>
+                    <span class="username">[% format_username(status.account) %]</span>
                     <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
                     <span class="alignend">
                         <div class="menu-container status-visibility">
@@ -142,5 +142,4 @@
     </table>
 </div>
 <input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-[% status.id %]">
-<!-- {{ %s : reply }} -->
-
+[% make_postbox(ssn, data, status) %]

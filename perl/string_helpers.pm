@@ -4,7 +4,7 @@ use warnings;
 use HTML::Escape 'escape_html';
 use Exporter 'import';
 
-our @EXPORT = qw( reltime_to_str greentextify emojify format_username );
+our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content );
 
 sub reltime_to_str
 {
@@ -44,7 +44,13 @@ sub emojify
 
 sub format_username
 {
-    my $username = shift;
-    emojify escape_html($username);
+    my $account = shift;
+    emojify(escape_html($account->{display_name}), $account->{emojis});
 }
 
+sub get_mentions_from_content
+{
+    my $status = shift;
+    # todo
+    "";
+}

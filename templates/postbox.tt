@@ -1,0 +1,78 @@
+<form class="reply-form" action="$prefix/status/create" method="post" enctype="multipart/form-data">
+    [% IF status %]
+        <input type="hidden" name="replyid" value="[% status.in_reply_to_id %]">
+    [% END %]
+    <div class="statusbox">
+        <textarea name="content" placeholder="Just landed in N.Y." rows="5">
+            [%- IF status -%]
+                [%- mentionify(status) -%] 
+            [%- END -%]
+        </textarea>
+        <div class="statusfooter">
+            <div class="statusfooter-left">
+                <label>
+                    <input type="file" name="file" class="hidden" multiple>
+                    <div class="file-upload-btn btn-icon">
+                        [% icon('fileclip') %]
+                    </div>
+                </label>
+                <select name="contenttype" class="content-type">
+                    <option value="plaintext">Plain Text</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="html">HTML</option>
+                    <option value="bbcode">BBCode</option>
+                </select>
+                <div class="post-group">
+                    <!-- Local -->
+                    <label>
+                        <input type="radio" name="visibility" value="local" class="hidden"
+                               [%- IF status.visibility == 6 %] checked[% END %]>
+                        <div class="visibility-icon vis-local">
+                            [% icon('local') %]
+                        </div>
+                    </label>
+                    <!-- Direct -->
+                    <label>
+                        <input type="radio" name="visibility" value="direct" class="hidden"
+                               [%- IF status.visibility == 5 %] checked[% END %]>
+                        <div class="visibility-icon vis-direct">
+                            [% icon('direct') %]
+                        </div>
+                    </label>
+                    <!-- Private -->
+                    <label>
+                        <input type="radio" name="visibility" value="private" class="hidden"
+                               [%- IF status.visibility == 3 %] checked[% END %]
+                               [%- IF status.visibility > 3 %] disabled[% END %]>
+                        <div class="visibility-icon vis-private">
+                            [% icon('private') %]
+                        </div>
+                    </label>
+                    <!-- Unlisted -->
+                    <label>
+                        <input type="radio" name="visibility" value="unlisted" class="hidden"
+                               [%- IF status.visibility == 2 %] checked[% END %]
+                               [%- IF status.visibility > 2 %] disabled[% END %]>
+                        <div class="visibility-icon vis-unlisted">
+                            [% icon('unlisted') %]
+                        </div>
+                    </label>
+                    <!-- Public -->
+                    <label>
+                        <input type="radio" name="visibility" value="public" class="hidden"
+                               [%- IF status.visibility == 1 %] checked[% END %]
+                               [%- IF status.visibility > 2 %] disabled[% END %]>
+                        <div class="visibility-icon vis-public">
+                            [% icon('public') %]
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="statusfooter-right">
+                <input type="submit" value="Post" class="btn post-btn">
+            </div>
+        </div>
+        <div class="file-uploads-container hidden"></div>
+    </div>
+</form>
+
