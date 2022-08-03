@@ -59,7 +59,7 @@
                         [% IF status.spoiler_text %]
                             <span class="title">[% emojify(escape(status.spoiler_text), status.emojis) %]</span>
                         [% END %]
-                        [% greentextify(emojify(status.content, status.emojis)) %]
+                        [% greentextify(emojify(fix_mentions(status.content), status.emojis)) %]
                     </span>
                     [% IF status.media_attachments %]
                         <div class="attachments">

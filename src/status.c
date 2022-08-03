@@ -434,7 +434,7 @@ char* reformat_status(struct session* ssn,
     return res;
 }
 
-#define REGEX_MENTION "(?=<a .*?mention.*?)<a .*?href=\"https?:\\/\\/(.*?)\\/(?:@|users\\/)?(.*?)?\".*?>"
+#define REGEX_MENTION "(?=<a .*?mention.*?)<a .*?href=\"https?:\\/\\/(?<url>.*?)\\/(?:@|users\\/)?(?<>.*?)?\".*?>"
 
 char* make_mentions_local(char* content)
 {

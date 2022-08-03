@@ -4,7 +4,9 @@ use warnings;
 use HTML::Escape 'escape_html';
 use Exporter 'import';
 
-our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content );
+our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions );
+
+my $re_mentions = '(?=<a .*?mention.*?)<a .*?href="https?:\/\/(.*?)\/(?:@|users\/|\/u)?(.*?)?".*?>';
 
 sub reltime_to_str
 {
@@ -21,9 +23,9 @@ sub reltime_to_str
 sub greentextify
 {
     my $text = shift;
-    $text =~ s/((?:^|<br\/?>| )&gt;.*?)(?:<br\/?>|$)/<span class="greentext">$1<\/span><br>/gs;
-    $text =~ s/((?:^|<br\/?>| )&lt;.*?)(?:<br\/?>|$)/<span class="bluetext">$1<\/span><br>/gs;
-    $text =~ s/((?:^|<br\/?>| )\^.*?)(?:<br\/?>|$)/<span class="yellowtext">$1<\/span><br>/gs;
+    $text =~ s/(&gt;.*?)(?=<|$)/<span class="greentext">$1<\/span>/gs;
+    $text =~ s/(&lt;.*?)(?=<|$)/<span class="bluetext">$1<\/span>/gs;
+    $text =~ s/(?:^|>| )(\^.*?)(?=<|$)/<span class="yellowtext">$1<\/span>/gs;
     $text;
 }
 
@@ -48,17 +50,27 @@ sub format_username
     emojify(escape_html($account->{display_name}), $account->{emojis});
 }
 
+sub localize_mentions
+{
+    my $text = shift;
+    # idk how to work around this 
+    my $at = '@';
+                            
+    $text =~ s/$re_mentions/<a target="_parent" class="mention" href="$at$2$at$1">/gs;
+    $text;
+}
+
 sub get_mentions_from_content
 {
     my ($ssn, $status) = @_;
     my $result = '';
     my $acct;
-    # todo
     while ($status->{'content'} =~
            /<a .*?href=\"https?:\/\/(.*?)\/(?:@|users\/|u\/)?(.*?)?\".*?>@(?:<span>)?.*?(?:<\/span>)?/gs)
     {
         $acct = $2 . '@' . $1;
-        $result .= '@' . $acct . ' ' if $ssn->{account}->{acct} eq $acct;
+        # TODO this does not account for the domain (alt interference)
+        $result .= '@' . $acct unless $ssn->{account}->{acct} eq $2;
     }
     ($status->{account}->{acct} eq $ssn->{account}->{acct})
         ? $result : '@' . $status->{account}->{acct} . ' ' . $result;
