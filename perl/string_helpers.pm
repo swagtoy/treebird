@@ -56,7 +56,7 @@ sub localize_mentions
     # idk how to work around this 
     my $at = '@';
                             
-    $text =~ s/$re_mentions/<a target="_parent" class="mention" href="$at$2$at$1">/gs;
+    $text =~ s/$re_mentions/<a target="_parent" class="mention" href="\/$at$2$at$1">/gs;
     $text;
 }
 
