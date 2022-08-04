@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "global_perl.h"
 #include "helpers.h"
 #include "base_page.h"
 #include "error.h"

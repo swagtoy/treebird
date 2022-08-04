@@ -18,6 +18,7 @@
 
 #include "global_perl.h"
 
+/* TODO let's generate this file dynamically with a Perl script? */
 #include "../templates/main.ctt"
 #include "../templates/notif_compact.ctt"
 #include "../templates/status.ctt"
@@ -27,6 +28,9 @@
 #include "../templates/emoji.ctt"
 #include "../templates/postbox.ctt"
 #include "../templates/timeline.ctt"
+#include "../templates/account.ctt"
+#include "../templates/account_statuses.ctt"
+#include "../templates/account_scrobbles.ctt"
 
 HV* template_files;
 pthread_mutex_t perl_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -44,6 +48,9 @@ void init_template_files()
     hv_stores(template_files, "emoji.tt", newSVpv(data_emoji_tt, data_emoji_tt_size));
     hv_stores(template_files, "postbox.tt", newSVpv(data_postbox_tt, data_postbox_tt_size));
     hv_stores(template_files, "timeline.tt", newSVpv(data_timeline_tt, data_timeline_tt_size));
+    hv_stores(template_files, "account.tt", newSVpv(data_account_tt, data_account_tt_size));
+    hv_stores(template_files, "account_statuses.tt", newSVpv(data_account_statuses_tt, data_account_statuses_tt_size));
+    hv_stores(template_files, "account_scrobbles.tt", newSVpv(data_account_scrobbles_tt, data_account_scrobbles_tt_size));
 }
 
 void cleanup_template_files()
