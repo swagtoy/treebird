@@ -17,8 +17,8 @@ sub content_timeline
         ssn => $ssn,
         statuses => $statuses,
         title => $title,
-        post_box => $show_post_box,
+        show_post_box => $show_post_box,
         );
 
-    to_template(\&vars, \&data->{'attachment.tt'});
+    to_template(\&vars, \&data->{'timeline.tt'});
 }

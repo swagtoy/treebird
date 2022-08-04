@@ -947,7 +947,7 @@ void content_status(PATH_ARGS, uint8_t flags)
     SAVETMPS;
     PUSHMARK(SP);
     HV* session_hv = perlify_session(ssn);
-    XPUSHs(newRV_inc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_status(&status)));
     if (statuses_before)
