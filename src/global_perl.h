@@ -32,10 +32,10 @@ static PerlInterpreter* perl;
 extern HV* template_files;
 extern pthread_mutex_t perl_mutex;
 
-#define perl_lock() do { pthread_mutex_lock(&perl_mutex); } while (1)
-#define perl_unlock() do { pthread_mutex_unlock(&perl_mutex); } while (1)
+#define perl_lock() do { pthread_mutex_lock(&perl_mutex); } while (0)
+#define perl_unlock() do { pthread_mutex_unlock(&perl_mutex); } while (0)
 
-#define ARG_UNDEFINED() do { XPUSHs(&PL_sv_undef); } while (1)
+#define ARG_UNDEFINED() do { XPUSHs(&PL_sv_undef); } while (0)
 
 void init_template_files();
 void cleanup_template_files();

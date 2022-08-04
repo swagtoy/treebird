@@ -5,6 +5,7 @@ use Template;
 use l10n qw( &lang %L10N );
 use notifications qw( generate_notification_compact );
 use template_helpers qw( &to_template );
+use timeline;
 use status;
 
 # my $template = Template->new(

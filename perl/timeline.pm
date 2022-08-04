@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw( generate_attachment );
+our @EXPORT = qw( content_timeline );
 
 use template_helpers 'to_template';
 use icons 'get_icon';
@@ -17,6 +17,7 @@ sub content_timeline
     my %vars = (
         prefix => '',
         ssn => $ssn,
+        data => $data,
         statuses => $statuses,
         title => $title,
         show_post_box => $show_post_box,
