@@ -308,8 +308,6 @@ static void fetch_account_page(FCGX_Request* req,
                                enum account_tab tab,
                                char* (*callback)(struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, void* args))
 {
-    char* account_page;
-    char* data;
     struct mstdnt_storage storage = { 0 },
         relations_storage = { 0 };
     struct mstdnt_account acct = { 0 };
@@ -320,32 +318,16 @@ static void fetch_account_page(FCGX_Request* req,
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
-    if (mastodont_get_account(api, &m_args, lookup_type, id, &acct, &storage))
-    {
-        account_page = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Relationships may fail
-        mastodont_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+    mastodont_get_account(api, &m_args, lookup_type, id, &acct, &storage);
+    // Relationships may fail
+    mastodont_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
         
-        data = callback(ssn, api, 
-                        &acct, args);
-        account_page = load_account_page(ssn,
-                                         api,
-                                         &acct,
-                                         relationships,
-                                         tab,
-                                         data,
-                                         NULL);
-        if (!account_page)
-            account_page = construct_error("Couldn't load page", E_ERROR, 1, NULL);
-        
-        free(data);
-    }
+    data = callback(ssn, api, &acct, args);
 
     struct base_page b = {   
         .category = BASE_CAT_NONE,
         .content = account_page,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
@@ -825,7 +807,7 @@ void content_account_favourites(PATH_ARGS)
     char* start_id;
 
     struct mstdnt_favourites_args args = {
-        .max_id = keystr(ssn->post.max_id),
+
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
