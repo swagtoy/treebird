@@ -1,3 +1,7 @@
+[% IF show_post_box %]
+    [% postbox(ssn, data, undef) %]
+[% END %]
+
 <div class="menubar">
   <form action="." method="post">
     Only media:
@@ -12,3 +16,9 @@
     <input type="submit" value="Filter">
   </form>
 </div>
+
+[% FOREACH i IN statuses %]
+    [% create_status(ssn, data, i) %]
+[% END %]
+
+[%# TODO navigation %]

@@ -7,6 +7,8 @@ our @EXPORT = qw( generate_attachment );
 
 use template_helpers 'to_template';
 use icons 'get_icon';
+use postbox 'generate_postbox';
+use status 'generate_status';
 
 sub content_timeline
 {
@@ -18,6 +20,8 @@ sub content_timeline
         statuses => $statuses,
         title => $title,
         show_post_box => $show_post_box,
+        postbox => \&postbox,
+        create_status => \&generate_status,
         );
 
     to_template(\&vars, \&data->{'timeline.tt'});

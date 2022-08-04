@@ -43,7 +43,7 @@ void init_template_files()
     hv_stores(template_files, "attachment.tt", newSVpv(data_attachment_tt, data_attachment_tt_size));
     hv_stores(template_files, "emoji.tt", newSVpv(data_emoji_tt, data_emoji_tt_size));
     hv_stores(template_files, "postbox.tt", newSVpv(data_postbox_tt, data_postbox_tt_size));
-    hv_stores(template_files, "timeline.tt", newSVpv(data_timeline_tt, data_timeline_tt_size);)
+    hv_stores(template_files, "timeline.tt", newSVpv(data_timeline_tt, data_timeline_tt_size));
 }
 
 void cleanup_template_files()

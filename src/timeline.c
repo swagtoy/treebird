@@ -30,7 +30,7 @@
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
-#include "perl_global.h"
+#include "global_perl.h"
 
 #include "../static/timeline_options.ctmpl"
 #include "../static/navigation.ctmpl"
@@ -51,21 +51,21 @@ void content_timeline(FCGX_Request* req,
     SAVETMPS;
     PUSHMARK(SP);
     HV* session_hv = perlify_session(ssn);
-    XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_inc((SV*)session_hv));
+    XPUSHs(newRV_inc((SV*)template_files));
     
     if (statuses)
-        XPUSHs(newRV_noinc((AV*)perlify_statuses(statuses, statuses_len)));
-    else ARG_UNDEFINED();
+        XPUSHs(newRV_inc((SV*)perlify_statuses(statuses, statuses_len)));
+    else { ARG_UNDEFINED(); }
 
-    if (title)
+    if (header_text)
         XPUSHs(newSVpv(header_text, 0));
-    else ARG_UNDEFINED();
+    else { ARG_UNDEFINED(); }
 
     XPUSHi(show_post_box);
 
     PUTBACK;
-    call_pv("status::content_timeline", G_SCALAR);
+    call_pv("timeline::content_timeline", G_SCALAR);
     SPAGAIN;
 
     // Duplicate to free temps
@@ -78,7 +78,7 @@ void content_timeline(FCGX_Request* req,
     
     struct base_page b = {
         .category = cat,
-        .content = output,
+        .content = dup,
         .session = session_hv,
         .sidebar_left = NULL
     };
