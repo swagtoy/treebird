@@ -22,7 +22,7 @@
                     <!-- Local -->
                     <label>
                         <input type="radio" name="visibility" value="local" class="hidden"
-                               [%- IF status.visibility == 6 %] checked[% END %]>
+                               [%- IF status && status.visibility == 6 %] checked[% END %]>
                         <div class="visibility-icon vis-local">
                             [% icon('local') %]
                         </div>
@@ -30,7 +30,7 @@
                     <!-- Direct -->
                     <label>
                         <input type="radio" name="visibility" value="direct" class="hidden"
-                               [%- IF status.visibility == 5 %] checked[% END %]>
+                               [%- IF status && status.visibility == 5 %] checked[% END %]>
                         <div class="visibility-icon vis-direct">
                             [% icon('direct') %]
                         </div>
@@ -38,8 +38,8 @@
                     <!-- Private -->
                     <label>
                         <input type="radio" name="visibility" value="private" class="hidden"
-                               [%- IF status.visibility == 3 %] checked[% END %]
-                               [%- IF status.visibility > 3 %] disabled[% END %]>
+                               [%- IF status && status.visibility == 3 %] checked[% END %]
+                               [%- IF status && status.visibility > 3 %] disabled[% END %]>
                         <div class="visibility-icon vis-private">
                             [% icon('private') %]
                         </div>
@@ -47,8 +47,8 @@
                     <!-- Unlisted -->
                     <label>
                         <input type="radio" name="visibility" value="unlisted" class="hidden"
-                               [%- IF status.visibility == 2 %] checked[% END %]
-                               [%- IF status.visibility > 2 %] disabled[% END %]>
+                               [%- IF status && status.visibility == 2 %] checked[% END %]
+                               [%- IF status && status.visibility > 2 %] disabled[% END %]>
                         <div class="visibility-icon vis-unlisted">
                             [% icon('unlisted') %]
                         </div>
@@ -56,8 +56,8 @@
                     <!-- Public -->
                     <label>
                         <input type="radio" name="visibility" value="public" class="hidden"
-                               [%- IF status.visibility == 1 %] checked[% END %]
-                               [%- IF status.visibility > 2 %] disabled[% END %]>
+                               [%- IF status && status.visibility == 1 %] checked[% END %]
+                               [%- IF status && status.visibility > 2 %] disabled[% END %]>
                         <div class="visibility-icon vis-public">
                             [% icon('public') %]
                         </div>

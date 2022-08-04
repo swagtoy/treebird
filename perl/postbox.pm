@@ -7,6 +7,8 @@ use Exporter 'import';
 
 our @EXPORT = qw( generate_postbox );
 
+use icons 'get_icon';
+
 sub generate_postbox
 {
     my ($ssn, $data, $status) = @_;
@@ -16,6 +18,7 @@ sub generate_postbox
         ssn => $ssn,
         data => $data,
         status => $status,
+        icon => \&get_icon,
         mentionify => \&get_mentions_from_content,
         );
 

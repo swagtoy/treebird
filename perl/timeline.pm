@@ -21,9 +21,9 @@ sub content_timeline
         statuses => $statuses,
         title => $title,
         show_post_box => $show_post_box,
-        postbox => \&postbox,
+        postbox => \&generate_postbox,
         create_status => \&generate_status,
         );
 
-    to_template(\&vars, \&data->{'timeline.tt'});
+    to_template(\%vars, \$data->{'timeline.tt'});
 }
