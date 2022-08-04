@@ -26,19 +26,58 @@
 #include "session.h"
 #include "base_page.h"
 
-// Federated and local are here
+/** Wrapper for content_tl_federated */
 void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local);
+
+/** Wrapper for content_tl_direct */
 void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api);
+
+/** Wrapper for content_tl_federated */
 void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local, enum base_category cat);
+
+/** Wrapper for content_tl_list */
 void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* list_id);
+
+/** Wrapper for content_tl_tag */
 void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag);
 
+/* ------------------------------------------------ */
+
+/** Federated timeline */
 void content_tl_federated(PATH_ARGS);
+
+/** Home timeline. Shows federated timeline if not logged in */
 void content_tl_home(PATH_ARGS);
+
+/** Direct message timeline */
 void content_tl_direct(PATH_ARGS);
+
+/** Local/instance timeline */
 void content_tl_local(PATH_ARGS);
+
+/** List timeline */
 void content_tl_list(PATH_ARGS);
+
+/** Hashtag timeline */
 void content_tl_tag(PATH_ARGS);
+
+/**
+ * Used to create generic timeline content. This timeline includes other features
+ * such as viewing only media, hiding muted, etc. as options on the top of the
+ * timeline, so this should only be used for API's which are considered "timelines"
+ * to Pleroma/Mastodon.
+ *
+ * @param req This request
+ * @param ssn This session
+ * @param api The api
+ * @param storage The storage for statuses, will be cleaned up in this function, do NOT
+ *                cleanup yourself.
+ * @param statuses The statuses, will be cleaned up in this function, do NOT cleanup yourself.
+ * @param statuses_len Length of `statuses`
+ * @param cat The category to "highlight" on the sidebar
+ * @param header A header that is displayed above the timeline.
+ * @param show_post_box If the post box should be shown or not.
+ */
 void content_timeline(FCGX_Request* req,
                       struct session* ssn,
                       mastodont_t* api,

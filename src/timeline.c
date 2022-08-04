@@ -30,6 +30,7 @@
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
+#include "perl_global.h"
 
 #include "../static/timeline_options.ctmpl"
 #include "../static/navigation.ctmpl"
@@ -44,65 +45,41 @@ void content_timeline(FCGX_Request* req,
                       char* header_text,
                       int show_post_box)
 {
-    size_t statuses_html_count = 0;
-    char* status_format = NULL,
-        * header = NULL,
-        * post_box = NULL,
-        * navigation_box = NULL,
-        * timeline_options,
-        * output = NULL,
-        * start_id;
-
-    if (storage->error)
-        status_format = construct_error(storage->error, E_ERROR, 1, NULL);
-    else
-    {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, statuses_len, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("No statuses", E_NOTICE, 1, NULL);
-    }
-
-    // Create post box
-    if (show_post_box)
-        post_box = construct_post_box(NULL, "", NULL);
-
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[statuses_len-1].id,
-                                                  NULL);
-    }
-
-    // Create timeline options/menubar
-    struct timeline_options_template todata = {
-        .only_media = "Only media?",
-        .replies = "Replies?",
-        .only_media_active = keyint(ssn->post.only_media) ? "checked" : NULL,
-    };
-
-    timeline_options = tmpl_gen_timeline_options(&todata, NULL);
-
-    // Display a header bar, usually customized for specific pages
-    if (header_text)
-    {
-        easprintf(&header, "<div class=\"simple-page simple-page-header\"><h1>%s</h1></div>",
-                  header_text);
-    }
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
     
-    easprintf(&output, "%s%s%s%s%s",
-              STR_NULL_EMPTY(header),
-              STR_NULL_EMPTY(post_box),
-              STR_NULL_EMPTY(timeline_options),
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
+    if (statuses)
+        XPUSHs(newRV_noinc((AV*)perlify_statuses(statuses, statuses_len)));
+    else ARG_UNDEFINED();
 
+    if (title)
+        XPUSHs(newSVpv(header_text, 0));
+    else ARG_UNDEFINED();
+
+    XPUSHi(show_post_box);
+
+    PUTBACK;
+    call_pv("status::content_timeline", G_SCALAR);
+    SPAGAIN;
+
+    // Duplicate to free temps
+    char* dup = savesharedsvpv(POPs);
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
+    
     struct base_page b = {
         .category = cat,
         .content = output,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
@@ -112,12 +89,7 @@ void content_timeline(FCGX_Request* req,
     // Cleanup
     mastodont_storage_cleanup(storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
-    free(status_format);
-    free(post_box);
-    free(header);
-    free(timeline_options);
-    free(navigation_box);
-    free(output);
+    Safefree(dup);
 }
 
 void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local)
