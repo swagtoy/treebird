@@ -7,6 +7,7 @@ use notifications qw( generate_notification_compact );
 use template_helpers qw( &to_template );
 use timeline;
 use status;
+use account;
 
 # my $template = Template->new(
 #     {

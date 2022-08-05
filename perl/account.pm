@@ -4,16 +4,16 @@ use warnings;
 
 use Exporter 'import';
 
-our @EXPORT = qw( generate_attachment );
+our @EXPORT = qw( account content_statuses );
 
 use template_helpers 'to_template';
 
-sub account
+sub generate_account
 {
     my ($ssn, $data, $acct, $content) = @_;
 
     my %vars = (
-        prefix = '',
+        prefix => '',
         ssn => $ssn,
         content => $content,
         );
@@ -21,7 +21,7 @@ sub account
     to_template(\%vars, \$data->{'account.tt'});
 }
 
-sub content_account_statuses
+sub content_statuses
 {
     my ($ssn, $data, $acct, $statuses) = @_;
 
@@ -31,5 +31,5 @@ sub content_account_statuses
         acct => $acct,
         );
 
-    account($ssn, $data, $acct, to_template(\%vars, \$data->{'account_statuses.tt'}));
+    generate_account($ssn, $data, $acct, to_template(\%vars, \$data->{'account_statuses.tt'}));
 }
