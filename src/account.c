@@ -242,6 +242,10 @@ static char* account_statuses_cb(HV* session_hv,
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    if (rel)
+        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    else ARG_UNDEFINED();
+    
     if (statuses)
         XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
     else ARG_UNDEFINED();
@@ -913,4 +917,25 @@ HV* perlify_account(const struct mstdnt_account* acct)
     hvstores_ref(acct_hv, "emojis", perlify_emojis(acct->emojis, acct->emojis_len));
     
     return acct_hv;
+}
+
+HV* perlify_relationship(const struct mstdnt_relationship* rel)
+{
+    if (!rel) return NULL;
+    HV* rel_hv = newHV();
+
+    hvstores_str(rel_hv, "id", rel->id);
+    hvstores_int(rel_hv, "following", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_FOLLOWING));
+    hvstores_int(rel_hv, "requested", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_REQUESTED));
+    hvstores_int(rel_hv, "endoresed", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_ENDORSED));
+    hvstores_int(rel_hv, "followed_by", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_FOLLOWED_BY));
+    hvstores_int(rel_hv, "muting", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_MUTING));
+    hvstores_int(rel_hv, "muting_notifs", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_MUTING_NOTIFS));
+    hvstores_int(rel_hv, "showing_reblogs", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_SHOWING_REBLOGS));
+    hvstores_int(rel_hv, "notifying", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_NOTIFYING));
+    hvstores_int(rel_hv, "blocking", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_BLOCKING));
+    hvstores_int(rel_hv, "domain_blocking", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_DOMAIN_BLOCKING));
+    hvstores_str(rel_hv, "blocked_by", rel->id);
+
+    return rel_hv;
 }

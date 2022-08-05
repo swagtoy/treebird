@@ -16,6 +16,7 @@ sub generate_account
         prefix => '',
         ssn => $ssn,
         content => $content,
+        acct => $acct,
         );
 
     to_template(\%vars, \$data->{'account.tt'});
@@ -23,7 +24,7 @@ sub generate_account
 
 sub content_statuses
 {
-    my ($ssn, $data, $acct, $statuses) = @_;
+    my ($ssn, $data, $acct, $relationships, $statuses) = @_;
 
     my %vars = (
         prefix => '',
@@ -31,5 +32,5 @@ sub content_statuses
         acct => $acct,
         );
 
-    generate_account($ssn, $data, $acct, to_template(\%vars, \$data->{'account_statuses.tt'}));
+    generate_account($ssn, $data, $acct, $relationships, to_template(\%vars, \$data->{'account_statuses.tt'}));
 }

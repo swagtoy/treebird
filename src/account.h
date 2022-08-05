@@ -98,5 +98,6 @@ void content_account_favourites(PATH_ARGS);
 void content_account_bookmarks(PATH_ARGS);
 
 HV* perlify_account(const struct mstdnt_account* acct);
+HV* perlify_relationship(const struct mstdnt_relationship* rel);
 
 #endif // ACCOUNT_H
