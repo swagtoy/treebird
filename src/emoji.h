@@ -20,8 +20,9 @@
 #define EMOJI_H
 #include <stddef.h>
 #include <mastodont.h>
-#include "emoji_codes.h"
 #include "global_perl.h"
+#include "emoji_codes.h"
+#include "path.h"
 
 #define EMOJI_FACTOR_NUM 32
 

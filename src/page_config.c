@@ -16,19 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
+#include "page_config.h"
 #include <stdlib.h>
 #include <string.h>
 #include "http.h"
 #include "base_page.h"
 #include "../config.h"
 #include "easprintf.h"
-#include "page_config.h"
 #include "query.h"
 #include "cookie.h"
 #include "local_config_set.h"
 #include "string_helpers.h"
 #include "l10n.h"
+#include <fcgi_stdio.h>
 
 // Pages
 #include "../static/config_general.ctmpl"

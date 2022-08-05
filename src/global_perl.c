@@ -32,6 +32,7 @@
 #include "../templates/account_statuses.ctt"
 #include "../templates/account_scrobbles.ctt"
 #include "../templates/content_notifs.ctt"
+#include "../templates/content_lists.ctt"
 
 HV* template_files;
 pthread_mutex_t perl_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -53,6 +54,7 @@ void init_template_files()
     hv_stores(template_files, "account_statuses.tt", newSVpv(data_account_statuses_tt, data_account_statuses_tt_size));
     hv_stores(template_files, "account_scrobbles.tt", newSVpv(data_account_scrobbles_tt, data_account_scrobbles_tt_size));
     hv_stores(template_files, "content_notifs.tt", newSVpv(data_content_notifs_tt, data_content_notifs_tt_size));
+    hv_stores(template_files, "content_lists.tt", newSVpv(data_content_lists_tt, data_content_lists_tt_size));
 }
 
 void cleanup_template_files()

@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "emoji.h"
 #include <stdlib.h>
 #include <string.h>
 #include "base_page.h"
 #include "string.h"
-#include "emoji.h"
 #include "easprintf.h"
 #include "string_helpers.h"
 
@@ -171,7 +171,7 @@ HV* perlify_emoji(struct mstdnt_emoji* const emoji)
     hvstores_str(emoji_hv, "shortcode", emoji->shortcode);
     hvstores_str(emoji_hv, "url", emoji->url);
     hvstores_str(emoji_hv, "static_url", emoji->static_url);
-    hvstores_str(emoji_hv, "visible_in_picker", emoji->visible_in_picker);
+    hvstores_int(emoji_hv, "visible_in_picker", emoji->visible_in_picker);
     hvstores_str(emoji_hv, "category", emoji->category);
     return emoji_hv;
 }

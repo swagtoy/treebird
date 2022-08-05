@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "helpers.h"
@@ -28,6 +27,7 @@
 #include "../config.h"
 #include "local_config_set.h"
 #include "account.h"
+#include <fcgi_stdio.h>
 #include "global_cache.h"
 
 // Files
@@ -80,7 +80,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     PUSHMARK(SP);
 
     if (page->session)
-        mXPUSHs(newRV_inc(page->session));
+        mXPUSHs(newRV_inc((SV*)page->session));
     else
         mXPUSHs(newRV_inc((SV*)perlify_session(ssn)));
     XPUSHs(newRV_inc((SV*)template_files));
@@ -99,7 +99,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     SPAGAIN;
 
     send_result(req, NULL, "text/html", POPp, 0);
-cleanup:
+    
     PUTBACK;
     FREETMPS;
     LEAVE;

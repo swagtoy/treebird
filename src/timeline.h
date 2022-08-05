@@ -18,13 +18,13 @@
 
 #ifndef TIMELINE_H
 #define TIMELINE_H
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include <stddef.h>
 #include <mastodont.h>
 #include "path.h"
 #include "session.h"
 #include "base_page.h"
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 
 /** Wrapper for content_tl_federated */
 void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local);

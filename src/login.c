@@ -16,18 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <curl/curl.h>
-#include <fcgi_stdio.h>
+#include "login.h"
 #include <string.h>
 #include <stdlib.h>
 #include "helpers.h"
 #include "query.h"
 #include "base_page.h"
-#include "login.h"
 #include "error.h"
 #include "easprintf.h"
 #include "../config.h"
 #include "http.h"
+#include <curl/curl.h>
+#include <fcgi_stdio.h>
 
 // Files
 #include "../static/login.ctmpl"

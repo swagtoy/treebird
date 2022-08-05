@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "cookie.h"
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
 #include <string.h>
 #include <stdlib.h>
-#include "cookie.h"
 #include "env.h"
 
 enum cookie_state

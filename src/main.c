@@ -16,12 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
 #include <EXTERN.h>
 #include <perl.h>
-#include <pthread.h>
 #include "global_perl.h"
-#include <fcgiapp.h>
+#include <pthread.h>
 #include <string.h>
 #include <mastodont.h>
 #include <stdlib.h>
@@ -47,6 +45,8 @@
 #include "local_config_set.h"
 #include "global_cache.h"
 #include "conversations.h"
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 
 #define THREAD_COUNT 20
 

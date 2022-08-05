@@ -18,6 +18,7 @@
 
 #ifndef BASE_PAGE_H
 #define BASE_PAGE_H
+#include "global_perl.h"
 #include "session.h"
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>

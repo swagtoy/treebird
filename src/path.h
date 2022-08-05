@@ -18,12 +18,12 @@
 
 #ifndef PATH_H
 #define PATH_H
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "session.h"
 #include <mastodont.h>
 #include <stddef.h>
 #include "env.h"
-#include "session.h"
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 
 #define PATH_ARGS FCGX_Request* req, struct session* ssn, mastodont_t* api, char** data
 

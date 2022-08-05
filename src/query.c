@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "query.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "query.h"
 #include "env.h"
 #include "mime.h"
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 
 char* read_get_data(FCGX_Request* req, struct get_values* query)
 {

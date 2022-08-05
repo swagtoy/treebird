@@ -27,7 +27,7 @@ sub content_notifications
     my %vars = (
         prefix => '',
         ssn=> $ssn,
-        notif => $notif
+        notifs => $notifs
         );
     
     to_template(\%vars, \$data->{'content_notifs.tt'});

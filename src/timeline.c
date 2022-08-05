@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "global_perl.h"
 #include "timeline.h"
 #include <stdlib.h>
 #include "helpers.h"
@@ -30,7 +31,6 @@
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
-#include "global_perl.h"
 
 #include "../static/timeline_options.ctmpl"
 #include "../static/navigation.ctmpl"

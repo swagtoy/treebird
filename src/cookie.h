@@ -21,6 +21,8 @@
 #include <stddef.h>
 #include "global_perl.h"
 #include "key.h"
+#include <fcgi_stdio.h>
+#include <fcgiapp.h>
 
 struct cookie_values
 {
