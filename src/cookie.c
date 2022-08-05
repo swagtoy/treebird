@@ -17,8 +17,6 @@
  */
 
 #include "cookie.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include <string.h>
 #include <stdlib.h>
 #include "env.h"
