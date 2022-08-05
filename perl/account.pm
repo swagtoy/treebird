@@ -10,11 +10,12 @@ use template_helpers 'to_template';
 
 sub generate_account
 {
-    my ($ssn, $data, $acct, $content) = @_;
+    my ($ssn, $data, $acct, $relationship, $content) = @_;
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
+        relationship => $relationship,
         content => $content,
         acct => $acct,
         );
@@ -24,7 +25,7 @@ sub generate_account
 
 sub content_statuses
 {
-    my ($ssn, $data, $acct, $relationships, $statuses) = @_;
+    my ($ssn, $data, $acct, $relationship, $statuses) = @_;
 
     my %vars = (
         prefix => '',
@@ -32,5 +33,5 @@ sub content_statuses
         acct => $acct,
         );
 
-    generate_account($ssn, $data, $acct, $relationships, to_template(\%vars, \$data->{'account_statuses.tt'}));
+    generate_account($ssn, $data, $acct, $relationship, to_template(\%vars, \$data->{'account_statuses.tt'}));
 }
