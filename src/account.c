@@ -107,9 +107,11 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
 }
 
 // TODO put account stuff into one function to cleanup a bit
-static char* account_followers_cb(struct session* ssn,
+static char* account_followers_cb(HV* hv_session,
+                                  struct session* ssn,
                                   mastodont_t* api,
                                   struct mstdnt_account* acct,
+                                  struct mstdnt_relationship* rel, 
                                   void* _args)
 {
     struct mstdnt_account_args args = {
@@ -159,9 +161,11 @@ static char* account_followers_cb(struct session* ssn,
     return output;
 }
 
-static char* account_following_cb(struct session* ssn,
+static char* account_following_cb(HV* hv_session,
+                                  struct session* ssn,
                                   mastodont_t* api,
                                   struct mstdnt_account* acct,
+                                  struct mstdnt_relationship* rel, 
                                   void* _args)
 {
     struct mstdnt_account_args args = {
@@ -211,54 +215,62 @@ static char* account_following_cb(struct session* ssn,
     return output;    
 }
 
-static char* account_statuses_cb(struct session* ssn,
+static char* account_statuses_cb(HV* session_hv,
+                                 struct session* ssn,
                                  mastodont_t* api,
                                  struct mstdnt_account* acct,
+                                 struct mstdnt_relationship* rel, 
                                  void* _args)
 
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_account_statuses_args* args = _args;
-    char* statuses_html = NULL, *navigation_box = NULL;
-    char* output;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_status* statuses = NULL;
     size_t statuses_len = 0;
-    char* start_id;
+    char* result;
     
-    if (mastodont_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len))
-    {
-        statuses_html = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        statuses_html = construct_statuses(ssn, api, statuses, statuses_len, NULL, NULL);
-        if (!statuses_html)
-            statuses_html = construct_error("No statuses", E_NOTICE, 1, NULL);
-    }
+    mastodont_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len);
 
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
     if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[statuses_len-1].id,
-                                                  NULL);
-    }
-    easprintf(&output, "%s%s",
-              STR_NULL_EMPTY(statuses_html),
-              STR_NULL_EMPTY(navigation_box));
+        XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
+    else ARG_UNDEFINED();
+
+    PUTBACK;
+    call_pv("account::content_statuses", G_SCALAR);
+    SPAGAIN;
+    
+    result = savesharedsvpv(POPs);
+    
+    // Clean up Perl
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
-    if (statuses_html) free(statuses_html);
-    if (navigation_box) free(navigation_box);
-    return output;
+    
+    return result;
 }
 
 
-static char* account_scrobbles_cb(struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, void* _args)
+static char* account_scrobbles_cb(HV* session_hv,
+                                  struct session* ssn,
+                                  mastodont_t* api,
+                                  struct mstdnt_account* acct,
+                                  struct mstdnt_relationship* rel, 
+                                  void* _args)
 {
     (void)_args;
     char* scrobbles_html = NULL;
@@ -300,13 +312,26 @@ void get_account_info(mastodont_t* api, struct session* ssn)
     }
 }
 
+/**
+ * Fetches the account information, and then calls a callback on the information received which
+ * passes the account information
+ *
+ * @param req The request context
+ * @param ssn The session, which will get transcribed into Perl
+ * @param api Initiated mstdnt API
+ * @param id User's ID to fetch
+ * @param args The arguments to pass into the callback
+ * @param tab Current tab to focus
+ * @param callback Calls back with a perlified session, session and api as you passed in, the account,
+ *                 the relationship, and additional arguments passed
+ */
 static void fetch_account_page(FCGX_Request* req,
                                struct session* ssn,
                                mastodont_t* api,
                                char* id,
                                void* args,
                                enum account_tab tab,
-                               char* (*callback)(struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, void* args))
+                               char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
 {
     struct mstdnt_storage storage = { 0 },
         relations_storage = { 0 };
@@ -321,12 +346,14 @@ static void fetch_account_page(FCGX_Request* req,
     mastodont_get_account(api, &m_args, lookup_type, id, &acct, &storage);
     // Relationships may fail
     mastodont_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
-        
-    data = callback(ssn, api, &acct, args);
 
-    struct base_page b = {   
+    HV* session_hv = perlify_session(ssn);
+    
+    char* data = callback(session_hv, ssn, api, &acct, relationships, args);
+
+    struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = account_page,
+        .content = data,
         .session = session_hv,
         .sidebar_left = NULL
     };
@@ -338,7 +365,7 @@ static void fetch_account_page(FCGX_Request* req,
     mstdnt_cleanup_relationships(relationships);
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&relations_storage);
-    free(account_page);
+    Safefree(data);
 }
 
 size_t construct_account_page(struct session* ssn,
