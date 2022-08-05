@@ -195,67 +195,61 @@ void content_notifications(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* page, *notif_html = NULL;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
-    char* start_id;
-    char* navigation_box = NULL;
-
-    if (keystr(ssn->cookies.logged_in))
-    {
-        struct mstdnt_get_notifications_args args = {
-            .exclude_types = 0,
-            .account_id = NULL,
-            .exclude_visibilities = 0,
-            .include_types = 0,
-            .with_muted = 1,
-            .max_id = keystr(ssn->post.max_id),
-            .min_id = keystr(ssn->post.min_id),
-            .since_id = NULL,
-            .offset = 0,
-            .limit = 20,
-        };
-
-        if (mastodont_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len) == 0)
-        {
-            if (notifs && notifs_len)
-            {
-                notif_html = construct_notifications(ssn, api, notifs, notifs_len, NULL);
-                start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
-                navigation_box = construct_navigation_box(start_id,
-                                                          notifs[0].id,
-                                                          notifs[notifs_len-1].id,
-                                                          NULL);
-                mstdnt_cleanup_notifications(notifs, notifs_len);
-            }
-            else
-                notif_html = construct_error("No notifications", E_NOTICE, 1, NULL);
-        }
-        else
-            notif_html = construct_error(storage.error, E_ERROR, 1, NULL);
-
-    }
-
-    struct notifications_page_template tdata = {
-        .notifications = notif_html,
-        .navigation = navigation_box
+    
+    struct mstdnt_get_notifications_args args = {
+        .exclude_types = 0,
+        .account_id = NULL,
+        .exclude_visibilities = 0,
+        .include_types = 0,
+        .with_muted = 1,
+        .max_id = keystr(ssn->post.max_id),
+        .min_id = keystr(ssn->post.min_id),
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 20,
     };
 
-    page = tmpl_gen_notifications_page(&tdata, NULL);
+    if (keystr(ssn->cookies.logged_in))
+        mastodont_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len);
+
+    // Call perl
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
+    
+    // ARGS
+    PUTBACK;
+    call_pv("notifications::content_notifications", G_SCALAR);
+    SPAGAIN;
+
+    // Duplicate so we can free the TMPs
+    char* dup = savesharedsvpv(POPs);
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
     
     struct base_page b = {
         .category = BASE_CAT_NOTIFICATIONS,
-        .content = page,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
     // Output
     render_base_page(&b, req, ssn, api);
     mastodont_storage_cleanup(&storage);
-    if (notif_html) free(notif_html);
-    if (navigation_box) free(navigation_box);
-    if (page) free(page);
+    Safefree(dup);
 }
 
 void content_notifications_compact(PATH_ARGS)
