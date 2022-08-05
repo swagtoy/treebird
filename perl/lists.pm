@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORTS = qw(  );
+our @EXPORTS = qw( content_lists );
 
 use template_helpers 'to_template';
 
