@@ -8,6 +8,7 @@ use template_helpers qw( &to_template );
 use timeline;
 use status;
 use account;
+use lists;
 
 # my $template = Template->new(
 #     {

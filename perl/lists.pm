@@ -11,5 +11,7 @@ sub content_lists
 {
     my ($ssn, $data, $lists) = @_;
 
-    to_template(\%vars, $data->{'content_lists.tt'});
+    my %vars = ();
+
+    to_template(\%vars, \$data->{'content_lists.tt'});
 }
