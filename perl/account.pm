@@ -7,6 +7,7 @@ use Exporter 'import';
 our @EXPORT = qw( account content_statuses );
 
 use template_helpers 'to_template';
+use l10n 'lang';
 
 sub generate_account
 {
@@ -15,6 +16,7 @@ sub generate_account
     my %vars = (
         prefix => '',
         ssn => $ssn,
+        lang => \&lang,
         relationship => $relationship,
         content => $content,
         acct => $acct,
