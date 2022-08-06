@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORTS = qw( content_search );
+our @EXPORTS = qw( content_search search_tags search_accounts search_statuses );
 
 use template_helpers 'to_template';
 
@@ -27,6 +27,33 @@ sub search_page
 
     to_template(\%vars, \$data->{'search.tt'});
 }
+
+sub search_tags
+{
+    my ($ssn, $data, $tags) = @_;
+
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        statuses => $statuses,
+        );
+
+    search_page($ssn, $data, SEARCH_CAT_STATUSES, to_template(\%vars, \$data->{'search_tags.tt'})); 
+}
+
+sub search_accounts
+{
+    my ($ssn, $data, $statuses) = @_;
+
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        statuses => $statuses,
+        );
+
+    search_page($ssn, $data, SEARCH_CAT_STATUSES, to_template(\%vars, \$data->{'search_accounts.tt'})); 
+}
+
 
 sub search_statuses
 {
