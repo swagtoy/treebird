@@ -8,6 +8,7 @@ our @EXPORT = qw( account content_statuses );
 
 use template_helpers 'to_template';
 use l10n 'lang';
+use status 'generate_status';
 
 sub generate_account
 {
@@ -33,6 +34,8 @@ sub content_statuses
         prefix => '',
         ssn => $ssn,
         acct => $acct,
+        statuses => $statuses,
+        create_status => sub { generate_status($ssn, $data, shift); },
         );
 
     generate_account($ssn, $data, $acct, $relationship, to_template(\%vars, \$data->{'account_statuses.tt'}));

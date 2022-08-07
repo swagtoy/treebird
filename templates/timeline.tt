@@ -18,7 +18,7 @@
 </div>
 
 [% FOREACH i IN statuses %]
-    [% create_status(ssn, data, i) %]
+    [% create_status(i) %]
 [% END %]
 
 [%# TODO navigation %]

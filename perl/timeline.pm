@@ -22,7 +22,7 @@ sub content_timeline
         title => $title,
         show_post_box => $show_post_box,
         postbox => \&generate_postbox,
-        create_status => \&generate_status,
+        create_status => sub { generate_status($ssn, $data, shift); },
         );
 
     to_template(\%vars, \$data->{'timeline.tt'});

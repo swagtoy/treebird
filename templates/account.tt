@@ -79,8 +79,6 @@
 </table>
 
 <div class="account-content">
-    [% FOREACH i IN statuses %]
-        [% create_status(ssn, data, i) %]
-    [% END %]
+    [% content %]
 </div>
 
