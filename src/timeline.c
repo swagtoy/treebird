@@ -45,6 +45,7 @@ void content_timeline(FCGX_Request* req,
                       char* header_text,
                       int show_post_box)
 {
+    perl_lock();
     dSP;
     ENTER;
     SAVETMPS;
@@ -73,6 +74,7 @@ void content_timeline(FCGX_Request* req,
     PUTBACK;
     FREETMPS;
     LEAVE;
+    perl_unlock();
     
     struct base_page b = {
         .category = cat,
