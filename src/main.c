@@ -213,16 +213,16 @@ int main(int argc, char **argv, char **env)
 
     // Initialize Perl
     PERL_SYS_INIT3(&argc, &argv, &env);
-    perl = perl_alloc();
-    perl_construct(perl);
+    my_perl = perl_alloc();
+    perl_construct(my_perl);
     //char* perl_argv[] = { "", "-e", data_main_pl, NULL };
     char* perl_argv[] = { "", "-I", "perl/", "perl/main.pl", NULL };
 
-    perl_parse(perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
+    perl_parse(my_perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
     PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
-    perl_run(perl);
+    perl_run(my_perl);
 
-    init_template_files();
+    init_template_files(aTHX);
 
     // Initiate mastodont library
     mastodont_t api;
@@ -249,10 +249,9 @@ int main(int argc, char **argv, char **env)
     mastodont_cleanup(&api);
 
     cleanup_template_files();
-    
 
-    perl_destruct(perl);
-    perl_free(perl);
+    perl_destruct(my_perl);
+    perl_free(my_perl);
     PERL_SYS_TERM();
     return 0;
 }

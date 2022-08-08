@@ -28,16 +28,16 @@
 #define hvstores_ref(hv, key, val) hv_stores((hv), key,                 \
                                              ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
 
-static PerlInterpreter* perl;
+extern PerlInterpreter* my_perl;
 extern HV* template_files;
-extern pthread_mutex_t perl_mutex;
+extern pthread_mutex_t perllock_mutex;
 
-#define perl_lock() do { pthread_mutex_lock(&perl_mutex); } while (0)
-#define perl_unlock() do { pthread_mutex_unlock(&perl_mutex); } while (0)
+#define perl_lock() do { pthread_mutex_lock(&perllock_mutex); } while (0)
+#define perl_unlock() do { pthread_mutex_unlock(&perllock_mutex); } while (0)
 
 #define ARG_UNDEFINED() do { XPUSHs(&PL_sv_undef); } while (0)
 
-void init_template_files();
+void init_template_files(pTHX);
 void cleanup_template_files();
 
 #endif /* GLOBAL_PERL_H */

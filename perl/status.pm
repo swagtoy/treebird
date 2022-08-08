@@ -1,7 +1,6 @@
 package status;
 use strict;
 use warnings;
-use HTML::Escape 'escape_html';
 use string_helpers qw( reltime_to_str greentextify emojify format_username localize_mentions );
 use icons qw( get_icon visibility_to_icon );
 use attachments 'generate_attachment';
@@ -30,7 +29,7 @@ sub generate_status
         make_emoji => \&generate_emoji,
         greentextify => \&greentextify,
         emojify => \&emojify,
-        escape => \&escape_html,
+        escape => undef,
         fix_mentions => \&localize_mentions,
         format_username => \&format_username,
         make_postbox => \&generate_postbox,

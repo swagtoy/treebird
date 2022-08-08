@@ -1,7 +1,6 @@
 package string_helpers;
 use strict;
 use warnings;
-use HTML::Escape 'escape_html';
 use Exporter 'import';
 
 our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions );
@@ -47,7 +46,9 @@ sub emojify
 sub format_username
 {
     my $account = shift;
-    emojify(escape_html($account->{display_name}), $account->{emojis});
+
+    #TODO   ESCAPE DISPLAY NAME
+    emojify($account->{display_name}, $account->{emojis});
 }
 
 sub localize_mentions

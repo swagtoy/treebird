@@ -34,10 +34,11 @@
 #include "../templates/content_notifs.ctt"
 #include "../templates/content_lists.ctt"
 
+PerlInterpreter* my_perl;
 HV* template_files;
-pthread_mutex_t perl_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t perllock_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void init_template_files()
+void init_template_files(pTHX)
 {
     template_files = newHV();
 
