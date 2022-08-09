@@ -40,7 +40,6 @@ all:
 	$(MAKE) $(TARGET)
 
 install_deps:
-	cpan HTML::Escape
 	cpan Template::Toolkit
 
 make_ctmpls: $(TMPLS_C)

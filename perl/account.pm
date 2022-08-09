@@ -9,6 +9,7 @@ our @EXPORT = qw( account content_statuses );
 use template_helpers 'to_template';
 use l10n 'lang';
 use status 'generate_status';
+use string_helpers qw( simple_escape emojify );
 
 sub generate_account
 {
@@ -21,6 +22,8 @@ sub generate_account
         relationship => $relationship,
         content => $content,
         acct => $acct,
+        escape => \&simple_escape,
+        emojify => \&emojify,
         );
 
     to_template(\%vars, \$data->{'account.tt'});

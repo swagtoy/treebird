@@ -16,7 +16,7 @@
             
         [% END %]
         <div class="acct-info-data">
-            <span class="acct-displayname">[% acct.display_name %]</span>
+            <span class="acct-displayname">[% emojify(escape(acct.display_name), acct.emojis) %]</span>
             <span class="acct-username">@[% acct.acct %]</span>
         </div>
 
@@ -57,7 +57,7 @@
 
 [% IF acct.note %]
     <div class="account-info">
-        <div class="account-note">[% acct.note %]</div>
+        <div class="account-note">[% emojify(acct.note, acct.emojis) %]</div>
     </div>
 [% END %]
 

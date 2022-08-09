@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions );
+our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions simple_escape );
 
 my $re_mentions = '(?=<a .*?mention.*?)<a .*?href="https?:\/\/(.*?)\/(?:@|users\/|\/u)?(.*?)?".*?>';
 
@@ -17,6 +17,16 @@ sub reltime_to_str
     return int($since / (60 * 60 * 24)) . 'd' if $since < 60 * 60 * 24 * 31;
     return int($since / (60 * 60 * 24 * 31)) . 'mon' if $since < 60 * 60 * 24 * 365;
     return int($since / (60 * 60 * 24 * 365)) . 'yr';
+}
+
+sub simple_escape
+{
+    my $text = shift;
+    $text =~ s/&/&amp;/gs;
+    $text =~ s/</&lt;/gs;
+    $text =~ s/>/&gt;/gs;
+    $text =~ s/"/&quot;/gs;
+    $text;
 }
 
 sub greentextify
@@ -48,7 +58,7 @@ sub format_username
     my $account = shift;
 
     #TODO   ESCAPE DISPLAY NAME
-    emojify($account->{display_name}, $account->{emojis});
+    emojify(simple_escape($account->{display_name}), $account->{emojis});
 }
 
 sub localize_mentions
