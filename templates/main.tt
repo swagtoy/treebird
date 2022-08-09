@@ -65,7 +65,13 @@
                             <li><a class="sidebarbtn {{ %s : active_chats }}" href="$prefix/chats">Chats</a></li>
                             <li><a class="sidebarbtn {{ %s : active_config }}" href="$prefix/config">[% lang('CONFIG') %]</a></li>
                         </ul>
-                        {{ %s : sidebar_leftbar }}
+                        
+                        <ul class="sidebar-config">
+                            <li><a class="sidebarbtn-sub" href="{{%s:prefix}}/config/general">[% lang('GENERAL') %]</a></li>
+                            <li><a class="sidebarbtn-sub" href="{{%s:prefix}}/config/appearance">[% lang('APPEARANCE') %]</a></li>
+                        </ul>
+
+                        
                         <!-- <div class="static-html" id="instance-panel"></div> -->
                         <div class="mini-links">
                             <a href="{{%s:prefix}}/about">About</a>

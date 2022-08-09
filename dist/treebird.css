@@ -279,7 +279,6 @@ table.ui-table td
 #leftbar ul.sidebar-config
 {
     background: linear-gradient(#eef1f9, #bbc3d0);
-    color: #fff;
     border-radius: 6px;
     padding: 4px;
     margin: 8px;
@@ -295,6 +294,7 @@ table.ui-table td
 .sidebarbtn-sub:active, .sidebarbtn-sub:hover
 {
     background-color: #bbc6d5;
+    text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
     border: 1px solid #a8accbcc;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -597,7 +597,7 @@ input[type=submit].post-btn
     display: block;
     margin: 7px 8px;
     border-radius: 4px;
-    padding: 6px 10px;
+    padding: 4px 10px;
     font-size: 14px;
     text-transform: uppercase;
     color: #505050;
