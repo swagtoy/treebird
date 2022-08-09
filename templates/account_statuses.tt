@@ -1,7 +1,6 @@
 [% IF statuses %]
     [% FOREACH i IN statuses %]
         [% create_status(i) %]
-        asd
     [% END %]
 [% ELSE %]
     <p>No statuses...</p>

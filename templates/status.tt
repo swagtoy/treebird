@@ -1,6 +1,17 @@
-<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]" {{ %s:thread_hidden }}>
+<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]"[% IF status.muted %] checked[% END %]>
 <div class="status" id="[% status.id %]">
-    [% notif_info %]
+    [% IF boost %]
+        <div class="notification-info">
+            <img src="[% boost.avatar %]" loading="lazy" class="avatar">
+            <div class="notification-user">
+                <span class="notification-text-group-with-icon">
+                    <span class="username">[% format_username(boost) %]</span>
+                    <span class="action">repeated</span>
+                </span>
+                [%# TODO the icon... %]
+            </div>
+        </div>
+    [% END %]
     <table class="status-table ui-table">
         <tr>
             <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">

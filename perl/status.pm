@@ -15,11 +15,21 @@ use template_helpers 'to_template';
 sub generate_status
 {
     my ($ssn, $data, $status) = @_;
+    my $boost_acct;
+
+    # Move status reference for boosts and keep account
+    # I hate this design but blame MastoAPI, not me.
+    if ($status->{reblog})
+    {
+        $boost_acct = $status->{account};
+        $status = $status->{reblog};
+    }
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
         status => $status,
+        boost => $boost_acct,
         data => $data,
         # Functions
         icon => \&get_icon,
