@@ -597,7 +597,7 @@ input[type=submit].post-btn
     display: block;
     margin: 7px 8px;
     border-radius: 4px;
-    padding: 4px 10px;
+    padding: 6px 10px;
     font-size: 14px;
     text-transform: uppercase;
     color: #505050;
@@ -2025,6 +2025,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     display: block;
     padding: 6px;
+}
+
+.navigation .nav-up
+{
+    width: 50px;
+    text-align: center;
 }
 
 .nav-symbol

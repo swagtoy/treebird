@@ -9,6 +9,7 @@ use template_helpers 'to_template';
 use icons 'get_icon';
 use postbox 'generate_postbox';
 use status 'generate_status';
+use navigation 'generate_navigation';
 
 sub content_timeline
 {
@@ -23,6 +24,7 @@ sub content_timeline
         show_post_box => $show_post_box,
         postbox => \&generate_postbox,
         create_status => sub { generate_status($ssn, $data, shift); },
+        nav => generate_navigation($ssn, $data, $statuses->[0]->{id}, $statuses->[-1]->{id}),
         );
 
     to_template(\%vars, \$data->{'timeline.tt'});

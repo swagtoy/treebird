@@ -1,0 +1,34 @@
+<table class="navigation ui-table">
+    <tr>
+        <td class="nav-up btn">
+            <form action="" method="post">
+                <label class="pointer">
+                    <span class="nav-btn">Up</span>
+                    <input type="submit" class="hidden">
+                </label>
+            </form>
+        </td>
+        <td class="nav-prev btn">
+            <form action="" method="post">
+                <label class="pointer">
+                    [% UNLESS prev_id == start_id %]
+                        <input type="hidden" name="start_id" value="[% start_id %]">
+                        <input type="hidden" name="min_id" value="[% prev_id %]">
+                        <input type="submit" class="hidden">
+                    [% END %]
+                    <span class="nav-btn[% IF prev_id == start_id %] btn-disabled[% END %]">Previous</span>
+                </label>
+            </form>
+        </td>
+        <td class="nav-next btn">
+            <form action="" method="post">
+                <label class="pointer">
+                    <input type="hidden" name="start_id" value="[% start_id %]">
+                    <input type="hidden" name="max_id" value="[% next_id %]">
+                    <span class="nav-btn">Next</span>
+                    <input type="submit" class="hidden">
+                </label>
+            </form>
+        </td>
+    </tr>
+</table>

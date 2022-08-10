@@ -10,6 +10,7 @@ use template_helpers 'to_template';
 use l10n 'lang';
 use status 'generate_status';
 use string_helpers qw( simple_escape emojify );
+use navigation 'generate_navigation';
 
 sub generate_account
 {
@@ -39,6 +40,7 @@ sub content_statuses
         acct => $acct,
         statuses => $statuses,
         create_status => sub { generate_status($ssn, $data, shift); },
+        nav => generate_navigation($ssn, $data, $statuses->[0]->{id}, $statuses->[-1]->{id}),
         );
 
     generate_account($ssn, $data, $acct, $relationship, to_template(\%vars, \$data->{'account_statuses.tt'}));

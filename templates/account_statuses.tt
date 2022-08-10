@@ -2,6 +2,7 @@
     [% FOREACH i IN statuses %]
         [% create_status(i) %]
     [% END %]
+    [% nav %]
 [% ELSE %]
     <p>No statuses...</p>
 [% END %]

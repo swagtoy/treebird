@@ -33,6 +33,7 @@
 #include "../templates/account_scrobbles.ctt"
 #include "../templates/content_notifs.ctt"
 #include "../templates/content_lists.ctt"
+#include "../templates/navigation.ctt"
 
 PerlInterpreter* my_perl;
 HV* template_files;
@@ -56,6 +57,7 @@ void init_template_files(pTHX)
     hv_stores(template_files, "account_scrobbles.tt", newSVpv(data_account_scrobbles_tt, data_account_scrobbles_tt_size));
     hv_stores(template_files, "content_notifs.tt", newSVpv(data_content_notifs_tt, data_content_notifs_tt_size));
     hv_stores(template_files, "content_lists.tt", newSVpv(data_content_lists_tt, data_content_lists_tt_size));
+    hv_stores(template_files, "navigation.tt", newSVpv(data_navigation_tt, data_navigation_tt_size));
 }
 
 void cleanup_template_files()
