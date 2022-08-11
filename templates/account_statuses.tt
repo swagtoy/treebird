@@ -2,7 +2,11 @@
     [% FOREACH i IN statuses %]
         [% create_status(i) %]
     [% END %]
-    [% nav %]
+    [% nav() %]
 [% ELSE %]
-    <p>No statuses...</p>
+    <div class="fancy-error">
+        <span class="fancy-error-kaomoji">[% random_error_kaomoji() %]</span>
+        <span class="fancy-error-text">No statuses.</span>
+        <span class="fancy-error-subtext">Either this user just lurks, or their posts have not yet federated. Usually the latter occurs on new instances.</span>
+    </div>
 [% END %]

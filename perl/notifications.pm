@@ -8,6 +8,7 @@ our @EXPORT = qw( generate_notification_compact content_notifications );
 use template_helpers 'to_template';
 use status 'generate_status';
 use string_helpers qw( random_error_kaomoji );
+use icons 'get_icon';
 
 sub generate_notification_compact
 {
@@ -31,6 +32,7 @@ sub content_notifications
         ssn => $ssn,
         notifs => $notifs,
         create_status => sub { generate_status($ssn, $data, shift, shift); },
+        icon => \&get_icon,
         random_error_kaomoji => \&random_error_kaomoji,
         );
     

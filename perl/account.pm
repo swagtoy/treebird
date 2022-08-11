@@ -1,6 +1,7 @@
 package account;
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Exporter 'import';
 
@@ -9,7 +10,7 @@ our @EXPORT = qw( account content_statuses );
 use template_helpers 'to_template';
 use l10n 'lang';
 use status 'generate_status';
-use string_helpers qw( simple_escape emojify );
+use string_helpers qw( simple_escape emojify random_error_kaomoji );
 use navigation 'generate_navigation';
 
 sub generate_account
@@ -40,7 +41,9 @@ sub content_statuses
         acct => $acct,
         statuses => $statuses,
         create_status => sub { generate_status($ssn, $data, shift); },
-        nav => generate_navigation($ssn, $data, $statuses->[0]->{id}, $statuses->[-1]->{id}),
+        # Make subroutine so Perl doesn't autovivify
+        nav => sub { generate_navigation($ssn, $data, $statuses->[0]->{id}, $statuses->[-1]->{id}) },
+        random_error_kaomoji => \&random_error_kaomoji,
         );
 
     generate_account($ssn, $data, $acct, $relationship, to_template(\%vars, \$data->{'account_statuses.tt'}));

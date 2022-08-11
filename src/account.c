@@ -246,7 +246,7 @@ static char* account_statuses_cb(HV* session_hv,
         XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
     
-    if (statuses)
+    if (statuses && statuses_len)
         XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
     else ARG_UNDEFINED();
 

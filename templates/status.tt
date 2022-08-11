@@ -22,8 +22,8 @@
                     </span>
                 </span>
                 [% IF notif && notif.type == 'favourite' %]
-                    [% icon('favourite') %]
-                [% ELSIF boost || (notif && notif.type == 'boost') %] [%# It's a repeat %]
+                    [% icon('like') %]
+                [% ELSIF boost || (notif && notif.type == 'reblog') %] [%# It's a repeat %]
                     [% icon('repeat') %]
                 [% END %]
             </div>

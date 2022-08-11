@@ -411,6 +411,14 @@ table.present th, table.present td
     color: #666;
 }
 
+.fancy-error-subtext
+{
+    display: block;
+    margin: 12px 24px 0 24px;
+    font-size: 1rem;
+    color: #222;
+}
+
 .fancy-error-kaomoji
 {
     display: block;
@@ -842,7 +850,8 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 /***************************
  *      Statuses           *
  **************************/
-.status
+.status,
+.notification-regular
 {
     padding: 11px;
     padding-bottom: 6px;
@@ -1021,6 +1030,12 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     padding: 0 0 0 10px;
 }
 
+.notification-regular .notification-content
+{
+    margin-top: 4px;
+    font-size: 14px;
+}
+
 .status .status-info > table.ui-table
 {
     width: 100%;
@@ -1082,11 +1097,11 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     min-width: 0;
 }
 
-.status .notification-text-group-with-icon .username
-{
-    /* UNDO */
-    vertical-align: unset;
-}
+/* .status .notification-text-group-with-icon .username */
+/* { */
+/*     /\* UNDO *\/ */
+/*     vertical-align: unset; */
+/* } */
 
 .status .status-content
 {
@@ -1517,6 +1532,11 @@ p}
     box-shadow: unset;
     color: #fff;
     background: linear-gradient(#aa0000, #600000);
+}
+
+.action
+{
+    vertical-align: middle;
 }
 
 /****************
@@ -2248,7 +2268,7 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     color: #ccc;
     font-size: 8px;
-    margin: unset;e
+    margin: unset;
 }
 
 #instance-panel + .mini-links

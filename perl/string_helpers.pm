@@ -56,6 +56,7 @@ sub emojify
 sub format_username
 {
     my $account = shift;
+    return unless $account;
 
     #TODO   ESCAPE DISPLAY NAME
     emojify(simple_escape($account->{display_name}), $account->{emojis});
