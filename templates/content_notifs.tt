@@ -1,6 +1,10 @@
 <h1 class="text-header">Notifications</h1>
 <div class="menubar">
-    <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+    [% IF notifs %]
+        <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+    [% ELSE %]
+        <span class="btn btn-single btn-small btn-disabled">Clear notifications</span>
+    [% END %]
 </div>
 [% IF notifs %]
     [% FOREACH notif IN notifs %]
