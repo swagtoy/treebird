@@ -1,14 +1,31 @@
 <input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]"[% IF status.muted %] checked[% END %]>
-<div class="status" id="[% status.id %]">
-    [% IF boost %]
+<div class="status
+            [%- IF notif %] status-notification[% END %]
+            [%# Blame CSS for this class %]
+            [%- IF boost || (notif && notif.account) %] notification-info-lookahead[% END -%]
+            " id="[% status.id %]">
+    [% IF boost || (notif && notif.account) %]
         <div class="notification-info">
-            <img src="[% boost.avatar %]" loading="lazy" class="avatar">
+            <img src="[% boost.avatar || notif.account.avatar %]" loading="lazy" class="avatar">
             <div class="notification-user">
                 <span class="notification-text-group-with-icon">
-                    <span class="username">[% format_username(boost) %]</span>
-                    <span class="action">repeated</span>
+                    <span class="username">[% format_username(boost || notif.account) %]</span>
+                    <span class="action">
+                        [% IF notif && notif.type == 'favourite' %]
+                            [% lang('NOTIF_LIKED') %]
+                        [% ELSIF boost || (notif && notif.type == 'reblog') %]
+                            [% lang('NOTIF_REPEATED') %]
+                        [% ELSIF boost || (notif && notif.type == 'emoji reaction') %]
+                            [%# Yes, it can be a custom emoji too %]
+                            [% lang('NOTIF_REACTED_WITH') %] [% notif.emoji %]
+                        [% END %]
+                    </span>
                 </span>
-                [% icon('repeat') %]
+                [% IF notif && notif.type == 'favourite' %]
+                    [% icon('favourite') %]
+                [% ELSIF boost || (notif && notif.type == 'boost') %] [%# It's a repeat %]
+                    [% icon('repeat') %]
+                [% END %]
             </div>
         </div>
     [% END %]
@@ -88,6 +105,7 @@
                         </div>
                     [% END %]
                     <div class="status-interact">
+                        [% UNLESS notif %]
                         <div class="status-buttons">
                             <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
                                 [% icon('reply') %]
@@ -132,13 +150,14 @@
                                 [% emoji_picker %]
                             [%- END %]
                         </div>
+                        [% END %]
                         [%# Put these at the end, incase someone wants to move status icons to the beginning (this makes it easier %]
                         <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
                             [% icon('expand') %]
                         </a> 
                         <span class="status-meta">
                             <a href="#[% status.id %]" title="[% time_to_str(status.created_at) %]" class="time">[%- rel_to_str(status.created_at) -%]</a>
-                            [% IF status.application && status.application.name %]
+                            [% IF status.application && status.application.name && !notif %]
                                 [% IF status.application.url %]
                                     <a class="application-name" href="[% status.application.url %]">[% status.application.name %]</a>
                                 [% ELSE %]

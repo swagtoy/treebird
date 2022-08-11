@@ -26,6 +26,7 @@
 #include "string_helpers.h"
 #include "easprintf.h"
 #include "navigation.h"
+#include "http.h"
 #include "status.h"
 #include "error.h"
 #include "emoji.h"
@@ -225,7 +226,8 @@ void content_notifications(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
+    if (notifs)
+        XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     
     // ARGS
     PUTBACK;
@@ -331,6 +333,19 @@ void content_notifications_compact(PATH_ARGS)
     free(theme_str);
 }
 
+void content_notifications_clear(PATH_ARGS)
+{
+    char* referer = GET_ENV("HTTP_REFERER", req);
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_storage storage = { 0 };
+
+    mastodont_notifications_clear(api, &m_args, &storage);
+
+    mastodont_storage_cleanup(&storage);
+    redirect(req, REDIRECT_303, referer);
+}
+
 // Converts it into a perl struct
 HV* perlify_notification(struct mstdnt_notification* notif)
 {
@@ -339,6 +354,8 @@ HV* perlify_notification(struct mstdnt_notification* notif)
 
     hvstores_str(notif_hv, "id", notif->id);
     hvstores_str(notif_hv, "created_at", notif->created_at);
+    hvstores_str(notif_hv, "emoji", notif->emoji);
+    hvstores_str(notif_hv, "type", mstdnt_notification_t_to_str(notif->type));
     hvstores_ref(notif_hv, "account", perlify_account(notif->account));
     hvstores_ref(notif_hv, "status", perlify_status(notif->status));
     
@@ -363,4 +380,5 @@ AV* perlify_notifications(struct mstdnt_notification* notifs, size_t len)
 void api_notifications(PATH_ARGS)
 {
     send_result(req, NULL, "application/json", "{\"status\":0}", 0);
+
 }

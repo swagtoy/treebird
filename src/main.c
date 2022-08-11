@@ -103,6 +103,7 @@ static struct path_info paths[] = {
     { "/blocked", content_account_blocked },
     { "/muted", content_account_muted },
     { "/notifications_compact", content_notifications_compact },
+    { "/notifications/clear", content_notifications_clear },
     { "/notifications", content_notifications },
     { "/tag/:", content_tl_tag },
     { "/chats/:", content_chat_view },

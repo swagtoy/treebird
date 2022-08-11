@@ -1,1 +1,29 @@
-<h1>Notifications</h1>
+<h1 class="text-header">Notifications</h1>
+<div class="menubar">
+    <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+</div>
+[% IF notifs %]
+    [% FOREACH notif IN notifs %]
+        [%# There are 3 types of "different" notifications to render
+           - Mention, statuses (just regular statuses)
+           - Favorites, moves, reblogs, polls (no interaction buttons)
+           - Follows, follow requests
+           %]
+        [% IF notif.type == 'mention' ||
+           notif.type == 'status' %]
+            [% create_status(notif.status) %]
+        [% ELSIF notif.type == 'favourite' ||
+           notif.type == 'reblog' ||
+           notif.type == 'emoji reaction' ||
+           notif.type == 'poll' %]
+            [% create_status(notif.status, notif) %]
+        [% ELSIF notif.type == 'follow' || notif.type == 'follow request' %]
+            Someone attempted to follow you
+        [% END %]
+    [% END %]
+[% ELSE %]
+    <div class="fancy-error">
+        <span class="fancy-error-kaomoji">[% random_error_kaomoji() %]</span>
+        <span class="fancy-error-text">No notifications.</span>
+    </div>
+[% END %]

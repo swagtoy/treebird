@@ -397,6 +397,28 @@ table.present th, table.present td
     font-weight: bold;
 }
 
+.fancy-error
+{
+    margin: 36px 0;
+    text-align: center;
+}
+
+.fancy-error-text
+{
+    display: block;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.fancy-error-kaomoji
+{
+    display: block;
+    font-size: 2.4rem;
+    color: #aaa;
+    user-select: none;
+}
+
 .search-highlight
 {
     background-color: yellow;
@@ -588,8 +610,19 @@ input[type=submit].post-btn
 
 .btn-single
 {
+    display: inline-block;
     border-radius: 4px;
     border: 1px solid #cacaca;
+}
+
+.btn-small
+{
+    font-size: 12px;
+}
+
+.btn-single.btn-small
+{
+    padding: 4px 8px;
 }
 
 .sidebarbtn, .sidebarbtn:visited
@@ -681,6 +714,12 @@ input[type=submit].post-btn
 .notification .notification-text-group-with-icon
 {
     vertical-align: middle;
+}
+
+/* CSS issue, hope for the proposed $ selected :^) */
+.status.notification-info-lookahead
+{
+    padding-top: 7px;
 }
 
 .notification-info svg.like,
@@ -784,10 +823,20 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: inline;
 }
 
-.notification-text-group-with-icon,
-.notification-text-group
+/* .notification-text-group-with-icon, */
+/* .notification-text-group */
+/* { */
+/*     vertical-align: middle; */
+/* } */
+
+.status.status-notification .status-content
 {
-    vertical-align: middle;
+    color: #808080;
+}
+
+.status.status-notification .status-interact
+{
+    float: right;
 }
 
 /***************************
@@ -1031,6 +1080,12 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     white-space: nowrap;
     vertical-align: middle;
     min-width: 0;
+}
+
+.status .notification-text-group-with-icon .username
+{
+    /* UNDO */
+    vertical-align: unset;
 }
 
 .status .status-content
@@ -1782,11 +1837,29 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
     padding: 0 12px;
 }
 
-.simple-page h1
+.simple-page h1,
+.text-header
 {
+    font-size: 1.5rem;
     padding-left: 12px;
     padding-bottom: 7px;
     border-bottom: 1px solid #cacaca;
+}
+
+.text-header
+{
+    padding-top: 10px;
+    margin: 0;
+    background-color: #f3f3f3;
+    background: repeating-linear-gradient(
+        -45deg,
+        #efefef,
+        #efefef 10px,
+        #f6f6f6 10px,
+        #f6f6f6 20px
+    );
+    box-shadow: inset 0px -2px 2px rgba(60, 60, 60, 0.2);
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .simple-page h3

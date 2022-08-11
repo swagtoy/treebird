@@ -7,6 +7,7 @@ use attachments 'generate_attachment';
 use postbox 'generate_postbox';
 use emojis 'generate_emoji';
 use Exporter 'import';
+use l10n 'lang';
 
 our @EXPORT = qw( content_status generate_status );
 
@@ -14,7 +15,7 @@ use template_helpers 'to_template';
 
 sub generate_status
 {
-    my ($ssn, $data, $status) = @_;
+    my ($ssn, $data, $status, $notif) = @_;
     my $boost_acct;
 
     # Move status reference for boosts and keep account
@@ -29,10 +30,12 @@ sub generate_status
         prefix => '',
         ssn => $ssn,
         status => $status,
-        boost => $boost_acct,
+        boost => $boost_acct, # May be undef
         data => $data,
+        notif => $notif, # May be undef
         # Functions
         icon => \&get_icon,
+        lang => \&lang,
         rel_to_str => \&reltime_to_str,
         vis_to_icon => \&visibility_to_icon,
         make_att => \&generate_attachment,

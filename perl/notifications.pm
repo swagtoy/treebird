@@ -6,6 +6,8 @@ use Exporter 'import';
 our @EXPORT = qw( generate_notification_compact content_notifications );
 
 use template_helpers 'to_template';
+use status 'generate_status';
+use string_helpers qw( random_error_kaomoji );
 
 sub generate_notification_compact
 {
@@ -26,8 +28,10 @@ sub content_notifications
 
     my %vars = (
         prefix => '',
-        ssn=> $ssn,
-        notifs => $notifs
+        ssn => $ssn,
+        notifs => $notifs,
+        create_status => sub { generate_status($ssn, $data, shift, shift); },
+        random_error_kaomoji => \&random_error_kaomoji,
         );
     
     to_template(\%vars, \$data->{'content_notifs.tt'});

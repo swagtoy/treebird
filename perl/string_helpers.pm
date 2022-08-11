@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions simple_escape );
+our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions simple_escape random_error_kaomoji );
 
 my $re_mentions = '(?=<a .*?mention.*?)<a .*?href="https?:\/\/(.*?)\/(?:@|users\/|\/u)?(.*?)?".*?>';
 
@@ -85,4 +85,16 @@ sub get_mentions_from_content
     }
     ($status->{account}->{acct} eq $ssn->{account}->{acct})
         ? $result : '@' . $status->{account}->{acct} . ' ' . $result;
+}
+
+sub random_error_kaomoji
+{
+    my @messages = (
+        "(；￣Д￣）",
+        "（｀Δ´）！",
+        "¯\\_(ツ)_/¯",
+        "(ﾉ´･ω･)ﾉ ﾐ ┸━┸",
+        "(╯°□°）╯︵ ┻━┻",
+        );
+    @messages[rand(scalar @messages)];
 }
