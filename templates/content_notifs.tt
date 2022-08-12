@@ -1,51 +1,52 @@
-<h1 class="text-header">Notifications</h1>
-<div class="menubar">
+<div class="notification-container">
+    <h1 class="text-header">Notifications</h1>
+    <div class="menubar">
+        [% IF notifs %]
+            <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+        [% ELSE %]
+            <span class="btn btn-single btn-small btn-disabled">Clear notifications</span>
+        [% END %]
+    </div>
     [% IF notifs %]
-        <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+        [% FOREACH notif IN notifs %]
+            [%# There are 3 types of "different" notifications to render
+               - Mention, statuses (just regular statuses)
+               - Favorites, moves, reblogs, polls (no interaction buttons)
+               - Follows, follow requests
+               %]
+            [% IF notif.type == 'mention' ||
+               notif.type == 'status' ||
+               notif.type == 'favourite' ||
+               notif.type == 'reblog' ||
+               notif.type == 'emoji reaction' ||
+               notif.type == 'poll' %]
+                [% create_status(notif.status, notif) %]
+            [% ELSIF notif.type == 'follow' || notif.type == 'follow request' %]
+                <table class="notification notification-regular ui-table">
+                    <tr>
+                        <td class="pfp-td">
+                            <img src="[% notif.account.avatar %]" loading="lazy">
+                        </td>
+                        <td class="notification-info">
+                            <div class="notification-info-format">
+                                <span class="notification-text-group-with-icon">
+                                    <span title="[% notif.account.acct %]" class="username">[% notif.account.display_name %]</span>
+                                    <span class="action">followed</span>
+                                </span>
+                                [% icon('follow') %]
+                            </div>
+                            <div class="notification-content">
+                                <a href="/@[% notif.account.acct %]">@[% notif.account.acct %]</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            [% END %]
+        [% END %]
     [% ELSE %]
-        <span class="btn btn-single btn-small btn-disabled">Clear notifications</span>
+        <div class="fancy-error">
+            <span class="fancy-error-kaomoji">[% random_error_kaomoji() %]</span>
+            <span class="fancy-error-text">No notifications.</span>
+        </div>
     [% END %]
 </div>
-[% IF notifs %]
-    [% FOREACH notif IN notifs %]
-        [%# There are 3 types of "different" notifications to render
-           - Mention, statuses (just regular statuses)
-           - Favorites, moves, reblogs, polls (no interaction buttons)
-           - Follows, follow requests
-           %]
-        [% IF notif.type == 'mention' ||
-           notif.type == 'status' %]
-            [% create_status(notif.status) %]
-        [% ELSIF notif.type == 'favourite' ||
-           notif.type == 'reblog' ||
-           notif.type == 'emoji reaction' ||
-           notif.type == 'poll' %]
-            [% create_status(notif.status, notif) %]
-        [% ELSIF notif.type == 'follow' || notif.type == 'follow request' %]
-            <table class="notification notification-regular ui-table">
-                <tr>
-                    <td class="pfp-td">
-                        <img src="[% notif.account.avatar %]" loading="lazy">
-                    </td>
-                    <td class="notification-info">
-                        <div class="notification-info-format">
-                            <span class="notification-text-group-with-icon">
-                                <span title="[% notif.account.acct %]" class="username">[% notif.account.display_name %]</span>
-                                <span class="action">followed</span>
-                            </span>
-                            [% icon('follow') %]
-                        </div>
-                        <div class="notification-content">
-                            <a href="/@[% notif.account.acct %]">@[% notif.account.acct %]</a>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        [% END %]
-    [% END %]
-[% ELSE %]
-    <div class="fancy-error">
-        <span class="fancy-error-kaomoji">[% random_error_kaomoji() %]</span>
-        <span class="fancy-error-text">No notifications.</span>
-    </div>
-[% END %]

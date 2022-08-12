@@ -2,9 +2,9 @@
 <div class="status
             [%- IF notif %] status-notification[% END %]
             [%# Blame CSS for this class %]
-            [%- IF boost || (notif && notif.account) %] notification-info-lookahead[% END -%]
+            [%- IF boost || (notif && notif.account && !is_statusey_notif) %] notification-info-lookahead[% END -%]
             " id="[% status.id %]">
-    [% IF boost || (notif && notif.account) %]
+    [% IF boost || (notif && notif.account && !is_statusey_notif) %]
         <div class="notification-info">
             <img src="[% boost.avatar || notif.account.avatar %]" loading="lazy" class="avatar">
             <div class="notification-user">
@@ -42,31 +42,41 @@
                         <div class="menu-container status-visibility">
                             [% vis_to_icon(status.visibility) %]
                             <div class="menu">
+                                [% IF notif %]
+                                    <ul>
+                                        <li>
+                                            <a href="$prefix/notification/[% notif.id %]/read" class="btn-menu">Mark as read</a>
+                                        </li>
+                                        <li>
+                                            <a href="$prefix/notification/[% notif.id %]/delete" class="btn-menu">Clear notification</a>
+                                        </li>
+                                    </ul>
+                                [% END %]
                                 <ul>
                                     <li>
                                         <form action="$prefix/status/[% status.id %]/interact" method="post">
                                             <input type="hidden" name="itype" value="mute">
-                                            <input type="submit" class="btn-menu" value="{{%s:unmute_btn}}">
+                                            <input type="submit" class="btn-menu" value="Mute">
                                         </form>
                                     </li>
                                     <li>
                                         <form action="$prefix/status/[% status.id %]/interact" method="post">
                                             <input type="hidden" name="itype" value="bookmark">
-                                            <input type="submit" class="btn-menu" value="{{%s:unbookmark_btn}}">
+                                            <input type="submit" class="btn-menu" value="Bookmark">
                                         </form>
                                     </li>
                                     [%# pin %]
                                     <li>
                                         <form action="$prefix/status/[% status.id %]/interact" method="post">
                                             <input type="hidden" name="itype" value="pin">
-                                            <input type="submit" class="btn-menu" value="{{%s:text}}">
+                                            <input type="submit" class="btn-menu" value="Pin">
                                         </form>
                                     </li>
                                     [%# Delete %]
                                     <li>
                                         <form action="$prefix/status/[% status.id %]/interact" method="post">
                                             <input type="hidden" name="itype" value="delete">
-                                            <input type="submit" class="btn-menu" value="{{%s:text}}">
+                                            <input type="submit" class="btn-menu" value="Delete status">
                                         </form>
                                     </li>
 
@@ -105,7 +115,7 @@
                         </div>
                     [% END %]
                     <div class="status-interact">
-                        [% UNLESS notif %]
+                        [% UNLESS notif || is_statusey_notif %]
                         <div class="status-buttons">
                             <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
                                 [% icon('reply') %]

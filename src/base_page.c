@@ -49,7 +49,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token) &&
         !ssn->config.notif_embed)
     {
-        struct mstdnt_get_notifications_args args = {
+        struct mstdnt_notifications_args args = {
             .exclude_types = 0,
             .account_id = NULL,
             .exclude_visibilities = 0,

@@ -200,7 +200,7 @@ void content_notifications(PATH_ARGS)
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
     
-    struct mstdnt_get_notifications_args args = {
+    struct mstdnt_notifications_args args = {
         .exclude_types = 0,
         .account_id = NULL,
         .exclude_visibilities = 0,
@@ -268,7 +268,7 @@ void content_notifications_compact(PATH_ARGS)
 
     if (keystr(ssn->cookies.logged_in))
     {
-        struct mstdnt_get_notifications_args args = {
+        struct mstdnt_notifications_args args = {
             .exclude_types = 0,
             .account_id = NULL,
             .exclude_visibilities = 0,

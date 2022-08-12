@@ -471,6 +471,7 @@ table.present th, table.present td
     padding: 3px 12px;
     width: 100%;
     border: 0;
+    font-size: 14px;
     cursor: pointer;
     text-align: left;
     box-sizing: border-box;
@@ -1025,8 +1026,7 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 .notification-content
 {
     position: relative;
-    min-width: 0;
-    width: auto;
+    width: 100%;
     padding: 0 0 0 10px;
 }
 
@@ -1061,15 +1061,12 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 
 .status .poster-stats
 {
-    position: relative;
     display: block;
-    max-width: 490px;
 }
 
-.status-hide:checked + .status .poster-stats
-{
-    max-width: 550px;
-}
+/* .status-hide:checked + .status .poster-stats */
+/* { */
+/* } */
 
 .poster-stats .alignend
 {
@@ -1107,7 +1104,6 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 {
     margin: 4px 0 0 0;
     overflow-wrap: anywhere;
-    width: 490px;
     line-height: 1.2;
     display: block;
 }
@@ -2210,6 +2206,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     margin: 0;
     padding: 4px 0 4px 0;
 }
+
+.menu ul + ul
+{
+    border-top: 2px solid #cacaca;
+}
+
 
 .menu ul li
 {

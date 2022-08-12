@@ -33,6 +33,7 @@ sub generate_status
         boost => $boost_acct, # May be undef
         data => $data,
         notif => $notif, # May be undef
+        is_statusey_notif => ($notif && ($notif->{type} eq 'mention' || $notif->{type} eq 'status')),
         # Functions
         icon => \&get_icon,
         lang => \&lang,
