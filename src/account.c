@@ -850,7 +850,7 @@ HV* perlify_scrobble(const struct mstdnt_scrobble* scrobble)
     if (!scrobble) return NULL;
     HV* scrobble_hv = newHV();
 
-    hvstores_str(scrobble_hv, "account", perlify_account(scrobble->account));
+    hvstores_ref(scrobble_hv, "account", perlify_account(&(scrobble->account)));
     hvstores_str(scrobble_hv, "album", scrobble->album);
     hvstores_str(scrobble_hv, "artist", scrobble->artist);
     hvstores_int(scrobble_hv, "created_at", scrobble->created_at);
@@ -889,7 +889,7 @@ HV* perlify_account(const struct mstdnt_account* acct)
     hvstores_str(acct_hv, "avatar_static", acct->avatar_static);
     hvstores_str(acct_hv, "header", acct->header);
     hvstores_str(acct_hv, "header_static", acct->header_static);
-    hvstores_str(acct_hv, "created_at", acct->created_at);
+    hvstores_int(acct_hv, "created_at", acct->created_at);
     hvstores_str(acct_hv, "last_status_at", acct->last_status_at);
     hvstores_str(acct_hv, "mute_expires_at", acct->mute_expires_at);
     hvstores_int(acct_hv, "statuses_count", acct->statuses_count);
@@ -920,7 +920,7 @@ HV* perlify_relationship(const struct mstdnt_relationship* rel)
     hvstores_int(rel_hv, "notifying", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_NOTIFYING));
     hvstores_int(rel_hv, "blocking", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_BLOCKING));
     hvstores_int(rel_hv, "domain_blocking", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_DOMAIN_BLOCKING));
-    hvstores_str(rel_hv, "blocked_by", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_BLOCKED_BY));
+    hvstores_int(rel_hv, "blocked_by", MSTDNT_T_FLAG_ISSET(rel, MSTDNT_RELATIONSHIP_BLOCKED_BY));
 
     return rel_hv;
 }

@@ -100,7 +100,7 @@ void content_account_bookmarks(PATH_ARGS);
 HV* perlify_account(const struct mstdnt_account* acct);
 AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len);
 HV* perlify_scrobble(const struct mstdnt_scrobble* scrobble);
-AV* perlify_scrobbles(const struct mstdnt_scrobble* scrobbles, size_t len)
+AV* perlify_scrobbles(const struct mstdnt_scrobble* scrobbles, size_t len);
 HV* perlify_relationship(const struct mstdnt_relationship* rel);
 
 #endif // ACCOUNT_H
