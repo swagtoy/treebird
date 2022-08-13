@@ -107,14 +107,20 @@ char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
     return result;
 }
 
-// TODO put account stuff into one function to cleanup a bit
-static char* account_followers_cb(HV* hv_session,
+static char* account_followers_cb(HV* session_hv,
                                   struct session* ssn,
                                   mastodont_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accounts = NULL;
+    size_t accts_len = 0;
+    char* result;
+    
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
@@ -123,52 +129,58 @@ static char* account_followers_cb(HV* hv_session,
         .limit = 20,
         .with_relationships = 0,
     };
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    char* accounts_html = NULL, *navigation_box = NULL;
-    char* output;
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_account* accounts = NULL;
-    size_t accts_len = 0;
-    char* start_id;
     
-    if (mastodont_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len))
-    {
-        accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        accounts_html = construct_accounts(api, accounts, accts_len, 0, NULL);
-        if (!accounts_html)
-            accounts_html = construct_error("No followers...", E_NOTICE, 1, NULL);
-    }
+    mastodont_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
-    if (accounts)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : accounts[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  accounts[0].id,
-                                                  accounts[accts_len-1].id,
-                                                  NULL);
-    }
-    easprintf(&output, "%s%s",
-              STR_NULL_EMPTY(accounts_html),
-              STR_NULL_EMPTY(navigation_box));
+    // TODO
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    if (rel)
+        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    else ARG_UNDEFINED();
+    
+    if (accounts && accts_len)
+        XPUSHs(newRV_noinc((SV*)perlify_accounts(accounts, accts_len)));
+    else ARG_UNDEFINED();
+
+    PUTBACK;
+    call_pv("account::content_accounts", G_SCALAR);
+    SPAGAIN;
+    
+    result = savesharedsvpv(POPs);
+    
+    // Clean up Perl
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_accounts(accounts, accts_len);
-    if (accounts_html) free(accounts_html);
-    if (navigation_box) free(navigation_box);
-    return output;
+    return result;
 }
 
-static char* account_following_cb(HV* hv_session,
+static char* account_following_cb(HV* session_hv,
                                   struct session* ssn,
                                   mastodont_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
 {
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_account* accounts = NULL;
+    size_t accts_len = 0;
+    char* result;
+    
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
@@ -177,43 +189,42 @@ static char* account_following_cb(HV* hv_session,
         .limit = 20,
         .with_relationships = 0,
     };
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    char* accounts_html = NULL, *navigation_box = NULL;
-    char* output;
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_account* accounts = NULL;
-    size_t accts_len = 0;
-    char* start_id;
     
-    if (mastodont_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len))
-    {
-        accounts_html = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        accounts_html = construct_accounts(api, accounts, accts_len, 0, NULL);
-        if (!accounts_html)
-            accounts_html = construct_error("Not following anyone", E_NOTICE, 1, NULL);
-    }
+    mastodont_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
-    if (accounts)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : accounts[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  accounts[0].id,
-                                                  accounts[accts_len-1].id,
-                                                  NULL);
-    }
-    easprintf(&output, "%s%s",
-              STR_NULL_EMPTY(accounts_html),
-              STR_NULL_EMPTY(navigation_box));
+    // TODO
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    if (rel)
+        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    else ARG_UNDEFINED();
+    
+    if (accounts && accts_len)
+        XPUSHs(newRV_noinc((SV*)perlify_accounts(accounts, accts_len)));
+    else ARG_UNDEFINED();
+
+    PUTBACK;
+    call_pv("account::content_accounts", G_SCALAR);
+    SPAGAIN;
+    
+    result = savesharedsvpv(POPs);
+    
+    // Clean up Perl
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_accounts(accounts, accts_len);
-    if (accounts_html) free(accounts_html);
-    if (navigation_box) free(navigation_box);
-    return output;    
+    return result;    
 }
 
 static char* account_statuses_cb(HV* session_hv,
@@ -277,11 +288,13 @@ static char* account_scrobbles_cb(HV* session_hv,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
 {
-    (void)_args;
-    char* scrobbles_html = NULL;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_scrobble* scrobbles = NULL;
     size_t scrobbles_len = 0;
+    char* result;
+
     struct mstdnt_get_scrobbles_args args = {
         .max_id = NULL,
         .min_id = NULL,
@@ -289,22 +302,40 @@ static char* account_scrobbles_cb(HV* session_hv,
         .offset = 0,
         .limit = 20
     };
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
+    mastodont_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
+
+    // TODO
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    if (rel)
+        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    else ARG_UNDEFINED();
     
-    if (mastodont_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len))
-    {
-        scrobbles_html = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        scrobbles_html = construct_scrobbles(scrobbles, scrobbles_len, NULL);
-        if (!scrobbles_html)
-            scrobbles_html = construct_error("No scrobbles", E_NOTICE, 1, NULL);
-    }
+    if (scrobbles && scrobbles_len)
+        XPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles, scrobbles_len)));
+    else ARG_UNDEFINED();
+
+    PUTBACK;
+    call_pv("account::content_scrobbles", G_SCALAR);
+    SPAGAIN;
+    
+    result = savesharedsvpv(POPs);
+    
+    // Clean up Perl
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     mastodont_storage_cleanup(&storage);
-    free(scrobbles);
-    return scrobbles_html;
+    return result;
 }
 
 void get_account_info(mastodont_t* api, struct session* ssn)
@@ -798,6 +829,20 @@ void content_account_favourites(PATH_ARGS)
     mastodont_get_favourites(api, &m_args, &args, &storage, &statuses, &statuses_len);
     
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
+}
+
+AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len)
+{
+    if (!(accounts && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_account(accounts + i)));
+    }
+
+    return av;
 }
 
 HV* perlify_account(const struct mstdnt_account* acct)
