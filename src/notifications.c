@@ -340,11 +340,50 @@ void content_notifications_clear(PATH_ARGS)
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
 
-    mastodont_notifications_clear(api, &m_args, &storage);
+    if (data)
+    {
+        mastodont_notification_dismiss(api, &m_args, &storage, data[0]);
+    }
+    else {
+        mastodont_notifications_clear(api, &m_args, &storage);
+    }
 
     mastodont_storage_cleanup(&storage);
     redirect(req, REDIRECT_303, referer);
 }
+
+void content_notifications_read(PATH_ARGS)
+{
+    char* referer = GET_ENV("HTTP_REFERER", req);
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    struct mstdnt_storage storage = { 0 };
+
+    if (data)
+    {
+        struct mstdnt_notifications_args args = { .id = data[0] };
+        mastodont_notifications_read(api, &m_args, &args, &storage, NULL);
+    }
+    else {
+        mastodont_notifications_read(api, &m_args, NULL, &storage, NULL);
+    }
+
+    mastodont_storage_cleanup(&storage);
+    redirect(req, REDIRECT_303, referer);
+}
+
+// Converts it into a perl struct
+static HV* perlify_notification_pleroma(struct mstdnt_notification_pleroma* notif)
+{
+    if (!notif) return NULL;
+    HV* notif_pl_hv = newHV();
+
+    hvstores_int(notif_pl_hv, "is_muted", notif->is_muted);
+    hvstores_int(notif_pl_hv, "is_seen", notif->is_seen);
+    
+    return notif_pl_hv;
+}
+
 
 // Converts it into a perl struct
 HV* perlify_notification(struct mstdnt_notification* notif)
@@ -357,6 +396,7 @@ HV* perlify_notification(struct mstdnt_notification* notif)
     hvstores_str(notif_hv, "emoji", notif->emoji);
     hvstores_str(notif_hv, "type", mstdnt_notification_t_to_str(notif->type));
     hvstores_ref(notif_hv, "account", perlify_account(notif->account));
+    hvstores_ref(notif_hv, "pleroma", perlify_notification_pleroma(notif->pleroma));
     hvstores_ref(notif_hv, "status", perlify_status(notif->status));
     
     return notif_hv;
@@ -380,5 +420,4 @@ AV* perlify_notifications(struct mstdnt_notification* notifs, size_t len)
 void api_notifications(PATH_ARGS)
 {
     send_result(req, NULL, "application/json", "{\"status\":0}", 0);
-
 }

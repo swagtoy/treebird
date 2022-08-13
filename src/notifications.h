@@ -50,6 +50,7 @@ char* construct_notifications_compact(struct session* ssn,
 void content_notifications(PATH_ARGS);
 void content_notifications_compact(PATH_ARGS);
 void content_notifications_clear(PATH_ARGS);
+void content_notifications_read(PATH_ARGS);
 
 void api_notifications(PATH_ARGS);
 

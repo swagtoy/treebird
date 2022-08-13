@@ -1,6 +1,7 @@
 <input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]"[% IF status.muted %] checked[% END %]>
 <div class="status
-            [%- IF notif %] status-notification[% END %]
+            [%- IF notif %] status-notification[% IF notif.pleroma && !notif.pleroma.is_seen %] notification-unread[% END %][% END %]
+            [%- IF is_statusey_notif -%] status-notification-mention[% END %]
             [%# Blame CSS for this class %]
             [%- IF boost || (notif && notif.account && !is_statusey_notif) %] notification-info-lookahead[% END -%]
             " id="[% status.id %]">
@@ -115,7 +116,7 @@
                         </div>
                     [% END %]
                     <div class="status-interact">
-                        [% UNLESS notif || is_statusey_notif %]
+                        [% IF !notif || is_statusey_notif %]
                         <div class="status-buttons">
                             <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
                                 [% icon('reply') %]

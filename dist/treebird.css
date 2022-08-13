@@ -838,14 +838,37 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 /*     vertical-align: middle; */
 /* } */
 
-.status.status-notification .status-content
+.status.status-notification:not(.status-notification-mention) .status-content
 {
     color: #808080;
 }
 
-.status.status-notification .status-interact
+.notification-unread
 {
-    float: right;
+    position: relative;
+}
+
+
+.notification-unread::before
+{
+    content:"";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(135deg, rgba(255,0,0,1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
+}
+
+.notification-unread::after
+{
+    content:"";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, rgba(255,0,0,.2) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
 }
 
 /***************************
