@@ -86,6 +86,7 @@ void content_timeline(FCGX_Request* req,
                       size_t statuses_len,
                       enum base_category cat,
                       char* header,
-                      int show_post_box);
+                      int show_post_box,
+                      int fake_timeline);
 
 #endif // TIMELINE_H

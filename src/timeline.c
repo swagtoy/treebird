@@ -43,7 +43,8 @@ void content_timeline(FCGX_Request* req,
                       size_t statuses_len,
                       enum base_category cat,
                       char* header_text,
-                      int show_post_box)
+                      int show_post_box,
+                      int fake_timeline)
 {
     perl_lock();
     dSP;
@@ -63,6 +64,7 @@ void content_timeline(FCGX_Request* req,
     else ARG_UNDEFINED();
 
     mXPUSHi(show_post_box);
+    mXPUSHi(fake_timeline);
 
     PUTBACK;
     call_pv("timeline::content_timeline", G_SCALAR);
@@ -120,7 +122,7 @@ void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local
     
     mastodont_timeline_home(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1, 0);
 }
 
 void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
@@ -148,7 +150,7 @@ void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
     
     mastodont_timeline_direct(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0, 0);
 }
 
 void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
@@ -178,7 +180,7 @@ void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int loc
 
     mastodont_timeline_public(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
 void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* list_id)
@@ -205,7 +207,7 @@ void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* lis
     
     mastodont_timeline_list(api, &m_args, list_id, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0, 0);
 }
 
 
@@ -234,7 +236,7 @@ void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag_
 
     easprintf(&header, "Hashtag - #%s", tag_id);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0, 0);
     free(header);
 }
 

@@ -33,6 +33,7 @@
 #include "string_helpers.h"
 #include "navigation.h"
 #include "emoji.h"
+#include "timeline.h"
 
 // Files
 #include "../static/account.ctmpl"
@@ -685,14 +686,9 @@ void content_account_action(PATH_ARGS)
 
 void content_account_bookmarks(PATH_ARGS)
 {
-    size_t status_count = 0, statuses_html_count = 0;
+    size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format = NULL,
-        *navigation_box = NULL,
-        *output = NULL;
-    char* start_id;
-
     struct mstdnt_bookmarks_args args = {
         .max_id = keystr(ssn->post.max_id),
         .since_id = NULL,
@@ -702,49 +698,9 @@ void content_account_bookmarks(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
 
-    if (mastodont_get_bookmarks(api, &m_args, &args, &storage, &statuses, &status_count))
-    {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
-    }
+    mastodont_get_bookmarks(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    // Create post box
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
-    }
-
-    struct bookmarks_page_template tdata = {
-        .statuses = status_format,
-        .navigation = navigation_box
-    };
-    output = tmpl_gen_bookmarks_page(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_BOOKMARKS,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, req, ssn, api);
-
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    free(status_format);
-    free(navigation_box);
-    free(output);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 }
 
 static void accounts_page(FCGX_Request* req,
@@ -828,66 +784,20 @@ void content_account_muted(PATH_ARGS)
 
 void content_account_favourites(PATH_ARGS)
 {
-    size_t status_count = 0, statuses_html_count = 0;
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
     struct mstdnt_storage storage = { 0 };
-    char* status_format = NULL,
-        *navigation_box = NULL,
-        *output = NULL,
-        *page = NULL;
-    char* start_id;
 
     struct mstdnt_favourites_args args = {
-
         .min_id = keystr(ssn->post.min_id),
         .limit = 20,
     };
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
 
-    if (mastodont_get_favourites(api, &m_args, &args, &storage, &statuses, &status_count))
-    {
-        status_format = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, status_count, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("Couldn't load posts", E_ERROR, 1, NULL);
-    }
-
-    // Create post box
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[status_count-1].id,
-                                                  NULL);
-    }
-
-    struct favourites_page_template tdata = {
-        .statuses = status_format,
-        .navigation = navigation_box
-    };
-    output = tmpl_gen_favourites_page(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_FAVOURITES,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, req, ssn, api);
-
-    // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_statuses(statuses, status_count);
-    if (status_format) free(status_format);
-    if (navigation_box) free(navigation_box);
-    if (output) free(output);
+    mastodont_get_favourites(api, &m_args, &args, &storage, &statuses, &statuses_len);
+    
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 }
 
 HV* perlify_account(const struct mstdnt_account* acct)
