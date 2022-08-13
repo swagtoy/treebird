@@ -5,6 +5,8 @@ use Exporter 'import';
 
 our @EXPORT = qw( &to_template );
 
+use string_helpers 'simple_escape';
+
 my $template = Template->new(
     {
         INTERPOLATE => 1,
@@ -13,17 +15,27 @@ my $template = Template->new(
         TRIM => 1
     });
 
+sub pretty_error($)
+{
+    my $error = simple_escape(shift);
+    << "END_ERROR";
+<span class="e-error error-pad">
+      $error
+</span>
+END_ERROR
+}
+
 sub to_template
 {
     my ($vars, $data) = @_;
     my $result;
 
-    0 unless ref $data;
-    0 unless ref $vars;
+    return 0 unless ref $data;
+    return 0 unless ref $vars;
 
     # TODO HTML error formatting
     $template->process($data, $vars, \$result) ||
-        return $template->error();
+        return pretty_error($template->error());
 
     $result;
 }

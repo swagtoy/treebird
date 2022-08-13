@@ -7,4 +7,6 @@
 [% END %]
 
 [%# TODO navigation %]
-[% nav() %]
+[% IF accounts %]
+    [% nav() %]
+[% END %]

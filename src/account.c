@@ -71,6 +71,57 @@ char* load_account_info(struct mstdnt_account* acct,
     return info_html;
 }
 
+static char* accounts_page(HV* session_hv,
+                           mastodont_t* api,
+                           struct mstdnt_account* acct,
+                           struct mstdnt_relationship* rel,
+                           char* header,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_account* accts,
+                           size_t accts_len)
+{
+    char* output;
+
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    if (acct)
+        XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    else ARG_UNDEFINED();
+    if (rel)
+        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    else ARG_UNDEFINED();
+    
+    if (accts && accts_len)
+        XPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
+    else ARG_UNDEFINED();
+
+    // perlapi doesn't specify if a string length of 0 calls strlen so calling just to be safe...
+    if (header)
+        mXPUSHp(header, strlen(header));
+
+    PUTBACK;
+    call_pv("account::content_accounts", G_SCALAR);
+    SPAGAIN;
+    
+    output = savesharedsvpv(POPs);
+    
+    // Clean up Perl
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
+
+    mastodont_storage_cleanup(storage);
+    mstdnt_cleanup_accounts(accts, accts_len);
+    return output;
+}
+
 char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size)
 {
     char* result = NULL;
@@ -132,39 +183,7 @@ static char* account_followers_cb(HV* session_hv,
     
     mastodont_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
-    // TODO
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-
-    XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
-    if (rel)
-        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
-    else ARG_UNDEFINED();
-    
-    if (accounts && accts_len)
-        XPUSHs(newRV_noinc((SV*)perlify_accounts(accounts, accts_len)));
-    else ARG_UNDEFINED();
-
-    PUTBACK;
-    call_pv("account::content_accounts", G_SCALAR);
-    SPAGAIN;
-    
-    result = savesharedsvpv(POPs);
-    
-    // Clean up Perl
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
-
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_accounts(accounts, accts_len);
-    return result;
+    return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
 
 static char* account_following_cb(HV* session_hv,
@@ -192,39 +211,7 @@ static char* account_following_cb(HV* session_hv,
     
     mastodont_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
-    // TODO
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-
-    XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
-    if (rel)
-        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
-    else ARG_UNDEFINED();
-    
-    if (accounts && accts_len)
-        XPUSHs(newRV_noinc((SV*)perlify_accounts(accounts, accts_len)));
-    else ARG_UNDEFINED();
-
-    PUTBACK;
-    call_pv("account::content_accounts", G_SCALAR);
-    SPAGAIN;
-    
-    result = savesharedsvpv(POPs);
-    
-    // Clean up Perl
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
-
-    mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_accounts(accounts, accts_len);
-    return result;    
+    return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
 
 static char* account_statuses_cb(HV* session_hv,
@@ -279,7 +266,6 @@ static char* account_statuses_cb(HV* session_hv,
     
     return result;
 }
-
 
 static char* account_scrobbles_cb(HV* session_hv,
                                   struct session* ssn,
@@ -734,41 +720,6 @@ void content_account_bookmarks(PATH_ARGS)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 }
 
-static void accounts_page(FCGX_Request* req,
-                          mastodont_t* api,
-                          struct session* ssn,
-                          struct mstdnt_storage* storage,
-                          char* header,
-                          struct mstdnt_account* accts,
-                          size_t accts_len)
-{
-    char* output;
-    char* content = construct_accounts(api, accts, accts_len, 0, NULL);
-    if (!content)
-        content = construct_error("No accounts here!", E_NOTICE, 1, NULL);
-    
-    struct basic_page_template tdata = {
-        .back_ref = getenv("HTTP_REFERER"),
-        .page_title = header,
-        .page_content = content,
-    };
-    output = tmpl_gen_basic_page(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = output,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, req, ssn, api);
-
-    mastodont_storage_cleanup(storage);
-    free(output);
-    free(content);
-}
-                                    
-
 void content_account_blocked(PATH_ARGS)
 {
     struct mstdnt_account_args args = {
@@ -787,8 +738,18 @@ void content_account_blocked(PATH_ARGS)
     
     mastodont_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
 
-    accounts_page(req, api, ssn, &storage, "Blocked users", accts, accts_len);
-    mstdnt_cleanup_accounts(accts, accts_len);
+    HV* session_hv = perlify_session(ssn);
+    char* result = accounts_page(session_hv, api, NULL, NULL, "Blocked users", &storage, accts, accts_len);
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = result,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    render_base_page(&b, req, ssn, api);
+    free(result);
 }
 
 void content_account_muted(PATH_ARGS)
@@ -809,8 +770,18 @@ void content_account_muted(PATH_ARGS)
     
     mastodont_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
 
-    accounts_page(req, api, ssn, &storage, "Muted users", accts, accts_len);
-    mstdnt_cleanup_accounts(accts, accts_len);
+    HV* session_hv = perlify_session(ssn);
+    char* result = accounts_page(session_hv, api, NULL, NULL, "Muted users", &storage, accts, accts_len);
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = result,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    render_base_page(&b, req, ssn, api);
+    free(result);
 }
 
 void content_account_favourites(PATH_ARGS)

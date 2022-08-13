@@ -7,7 +7,7 @@
       <div class="account-stub-info">
         <a href="/@[% account.acct %]">
           <div class="account-stub-top">
-            <span class="username">[% format_username(account.display_name) %]</span>
+            <span class="username">[% format_username(account) %]</span>
           </div>
           <div class="account-stub-bottom">
             <span class="instance-info">@[% account.acct %]</span>

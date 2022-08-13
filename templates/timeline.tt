@@ -28,4 +28,6 @@
 [% END %]
 
 [%# TODO navigation %]
-[% nav() %]
+[% IF statuses %]
+    [% nav() %]
+[% END %]

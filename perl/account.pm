@@ -10,7 +10,7 @@ our @EXPORT = qw( account content_statuses );
 use template_helpers 'to_template';
 use l10n 'lang';
 use status 'generate_status';
-use string_helpers qw( simple_escape emojify random_error_kaomoji );
+use string_helpers qw( simple_escape emojify random_error_kaomoji format_username );
 use navigation 'generate_navigation';
 
 sub generate_account
@@ -64,4 +64,36 @@ sub generate_account_item
         );
 
     to_template(\%vars, \$data->{'account_item.tt'});
+}
+
+sub generate_account_list
+{
+    my ($ssn, $data, $accounts, $title) = @_;
+
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        accounts => $accounts,
+        title => $title,
+        create_account => sub { generate_account_item($ssn, $data, shift); },
+        nav => sub { generate_navigation($ssn, $data, $accounts->[0]->{id}, $accounts->[-1]->{id}) },
+        );
+
+    to_template(\%vars, \$data->{'accounts.tt'});
+}
+
+sub content_accounts
+{
+    my ($ssn, $data, $acct, $relationship, $accounts, $title) = @_;
+    
+    my $acct_list_page = generate_account_list($ssn, $data, $accounts, $title);
+
+    # Should we create a full accounts view?
+    if ($acct)
+    {
+        generate_account($ssn, $data, $acct, $relationship, $acct_list_page);
+    }
+    else {
+        return $acct_list_page;
+    }
 }
