@@ -365,7 +365,8 @@ void content_notifications_read(PATH_ARGS)
         mastodont_notifications_read(api, &m_args, &args, &storage, NULL);
     }
     else {
-        mastodont_notifications_read(api, &m_args, NULL, &storage, NULL);
+        struct mstdnt_notifications_args args = { .max_id = keystr(ssn->post.max_id) };
+        mastodont_notifications_read(api, &m_args, &args, &storage, NULL);
     }
 
     mastodont_storage_cleanup(&storage);
