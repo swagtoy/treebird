@@ -48,3 +48,20 @@ sub content_statuses
 
     generate_account($ssn, $data, $acct, $relationship, to_template(\%vars, \$data->{'account_statuses.tt'}));
 }
+
+sub generate_account_item
+{
+    my ($ssn, $data, $account) = @_;
+
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        account => $account,
+        # Functions
+        icon => \&get_icon,
+        lang => \&lang,
+        format_username => \&format_username,
+        );
+
+    to_template(\%vars, \$data->{'account_item.tt'});
+}
