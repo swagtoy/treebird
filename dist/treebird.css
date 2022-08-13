@@ -203,10 +203,10 @@ table.ui-table td
 
 .sidebar
 {
-    width: 180px;
+    width: 181px;
     min-height: 600px;
-    max-width: 180px;
-    min-width: 180px;
+    max-width: 181px;
+    min-width: 181px;
     background-color: rgba(234, 236, 240, var(--sidebar-opacity));
 }
 
