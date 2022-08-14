@@ -25,7 +25,7 @@
                 <label for="leftbar-show">
                     <svg class="leftbar-btn navbar-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </label>
-                <a href="{{ %s : prefix }}/"><img src="/treebird_logo.png" height="42"></a>
+                <a href="$prefix/"><img src="/treebird_logo.png" height="42"></a>
                 <span class="info">$title</span>
                 <label for="rightbar-show">
                     <svg class="rightbar-btn navbar-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
@@ -40,9 +40,9 @@
                             <a href="login" id="login-header">Login / Register</a>
                         [%- END %]
                         <!-- Searchbox -->
-                        <form action="{{ %s : prefix }}/search" method="get">
-                            <input type="text" class="group group-left group-inputbox" placeholder="[% lang('SEARCH_PLACEHOLDER') %]" id="searchbox" name="q"><!-- i hate HTML
-                                                                                                                                                              --><input type="submit" class="btn group group-right" value="[% lang('SEARCH_BUTTON') %]">
+                        <form class="searchbox-container" action="$prefix/search" method="get">
+                            [% icon('search-menu') %]
+                            <input type="text" class="group group-left group-inputbox" placeholder="[% lang('SEARCH_PLACEHOLDER') %]" id="searchbox" name="q"><input type="submit" class="btn group group-right" value="[% lang('SEARCH_BUTTON') %]">
                         </form>
                     </div>
                 </div>

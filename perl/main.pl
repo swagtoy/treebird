@@ -6,9 +6,11 @@ use l10n qw( &lang %L10N );
 use notifications qw( generate_notification_compact content_notifications );
 use template_helpers qw( &to_template );
 use timeline;
+use icons 'get_icon';
 use status;
 use account;
 use lists;
+use search;
 
 # my $template = Template->new(
 #     {
@@ -32,6 +34,7 @@ sub base_page
         title => $L10N{'EN_US'}->{'APP_NAME'},
         lang => \&lang,
         main => $main,
+        icon => \&get_icon,
         sidebar_opacity => $ssn->{config}->{sidebar_opacity} / 255,
         acct => $ssn->{account},
         data => $data,

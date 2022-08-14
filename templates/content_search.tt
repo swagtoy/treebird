@@ -1,0 +1,38 @@
+<table class="tabs ui-table">
+    <tr>
+        <td>
+            <label for="statuses-results-hidden">
+                <span class="tab-btn btn">Statuses</span>
+            </label>
+        </td>
+        <td>
+            <label for="accounts-results-hidden">
+                <span class="tab-btn btn">Accounts</span>
+            </label>
+        </td>
+        <td>
+            <label for="hashtags-results-hidden">
+                <span class="tab-btn btn">Hashtags</span>
+            </label>
+        </td>
+    </tr>
+</table>
+
+<div class="search-results">
+    <input type="radio" class="search-page-hidden hidden" id="statuses-results-hidden" name="searchpage" checked>
+    <div class="statuses-results search-page">
+        [% FOREACH i IN search.statuses %]
+            [% create_status(i); %]
+        [% END %]
+    </div>
+    <input type="radio" class="search-page-hidden hidden" id="accounts-results-hidden" name="searchpage">
+    <div class="accounts-results search-page">
+        [% FOREACH i IN search.accounts %]
+            [% create_account(i); %]
+        [% END %]        
+    </div>
+    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage">
+    <div class="hashtags-results search-page">
+        TODO
+    </div>
+</div>

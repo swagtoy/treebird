@@ -68,13 +68,6 @@ void content_search_all(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* out_data = NULL;
-    char* statuses_html = NULL;
-    char* accounts_html = NULL;
-    char* tags_html = NULL,
-        * tags_graph = NULL,
-        * tags_bars = NULL,
-        * tags_page = NULL;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
         .account_id = NULL,
@@ -90,72 +83,43 @@ void content_search_all(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    if (mastodont_search(api,
-                         &m_args,
-                         keystr(ssn->query.query),
-                         &storage,
-                         &args,
-                         &results) == 0)
-    {
-        // Statuses, make sure to set the highlight word
-        struct construct_statuses_args statuses_args = {
-            .highlight_word = keystr(ssn->query.query),
-        };
-        
-        statuses_html = construct_statuses(ssn, api, results.statuses, results.statuses_len, &statuses_args, NULL);
-        if (!statuses_html)
-            statuses_html = construct_error("No statuses", E_ERROR, 1, NULL);
+    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
 
-        // Accounts
-        accounts_html = construct_accounts(api, results.accts, results.accts_len, 0, NULL);
-        if (!accounts_html)
-            accounts_html = construct_error("No accounts", E_ERROR, 1, NULL);
-
-        // Hashtags
-        tags_html = construct_hashtags(results.tags, results.tags_len, NULL);
-        if (!tags_html)
-            tags_html = construct_error("No hashtags", E_ERROR, 1, NULL);
-
-        tags_bars = construct_hashtags_graph(results.tags,
-                                             results.tags_len,
-                                             14,
-                                             NULL);
-        if (tags_bars)
-            tags_graph = construct_bar_graph_container(tags_bars, NULL);
-        
-        free(tags_bars);
-    }
-
-    easprintf(&tags_page, "%s%s", STR_NULL_EMPTY(tags_graph), tags_html);
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
     
-    // Construct search page
-    struct search_all_template tdata = {
-        .accounts = "Accounts",
-        .hashtags = "Hashtags",
-        .statuses = "Statuses",
-        .statuses_results = statuses_html,
-        .hashtags_results = tags_page,
-        .accounts_results = accounts_html
-    };
-    out_data = tmpl_gen_search_all(&tdata, NULL);
+    // ARGS
+    PUTBACK;
+    call_pv("search::content_search", G_SCALAR);
+    SPAGAIN;
+
+    // Duplicate so we can free the TMPs
+    char* dup = savesharedsvpv(POPs);
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = out_data,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
-    // Output
     render_base_page(&b, req, ssn, api);
     
-    free(out_data);    
-    free(statuses_html);
-    free(accounts_html);
-    free(tags_html);
-    free(tags_graph);
-    free(tags_page);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
+    Safefree(dup);
 }
 
 void content_search_statuses(PATH_ARGS)
@@ -298,4 +262,16 @@ void content_search_hashtags(PATH_ARGS)
     free(tags_page);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
+}
+
+HV* perlify_search_results(struct mstdnt_search_results* results)
+{
+    if (!results) return NULL;
+    
+    HV* search_hv = newHV();
+    hvstores_ref(search_hv, "accounts", perlify_accounts(results->accts, results->accts_len));
+    hvstores_ref(search_hv, "statuses", perlify_statuses(results->statuses, results->statuses_len));
+    // TODO tags
+
+    return search_hv;
 }

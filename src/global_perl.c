@@ -36,6 +36,10 @@
 #include "../templates/navigation.ctt"
 #include "../templates/accounts.ctt"
 #include "../templates/account_item.ctt"
+#include "../templates/content_search.ctt"
+#include "../templates/search_accounts.ctt"
+#include "../templates/search_statuses.ctt"
+#include "../templates/search_tags.ctt"
 
 PerlInterpreter* my_perl;
 HV* template_files;
@@ -62,6 +66,10 @@ void init_template_files(pTHX)
     hv_stores(template_files, "navigation.tt", newSVpv(data_navigation_tt, data_navigation_tt_size));
     hv_stores(template_files, "accounts.tt", newSVpv(data_accounts_tt, data_accounts_tt_size));
     hv_stores(template_files, "account_item.tt", newSVpv(data_account_item_tt, data_account_item_tt_size));
+    hv_stores(template_files, "content_search.tt", newSVpv(data_content_search_tt, data_content_search_tt_size));
+    hv_stores(template_files, "search_accounts.tt", newSVpv(data_search_accounts_tt, data_search_accounts_tt_size));
+    hv_stores(template_files, "search_statuses.tt", newSVpv(data_search_statuses_tt, data_search_statuses_tt_size));
+    hv_stores(template_files, "search_tags.tt", newSVpv(data_search_tags_tt, data_search_tags_tt_size));
 }
 
 void cleanup_template_files()

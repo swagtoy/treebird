@@ -258,6 +258,19 @@ table.ui-table td
     border-right: 1px solid #dadada;
 }
 
+#searchbox
+{
+    padding-left: 26px;
+}
+
+#navbar .searchbox-container .search-menu
+{
+    position: relative;
+    left: 30px;
+    top: 6px;
+    stroke: #606060;
+}
+
 #leftbar ul
 {
     margin: 0;

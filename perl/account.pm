@@ -5,7 +5,7 @@ use Data::Dumper;
 
 use Exporter 'import';
 
-our @EXPORT = qw( account content_statuses );
+our @EXPORT = qw( account content_statuses generate_account_list generate_account_item );
 
 use template_helpers 'to_template';
 use l10n 'lang';
