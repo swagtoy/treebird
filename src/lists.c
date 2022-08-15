@@ -119,7 +119,7 @@ void list_edit(PATH_ARGS)
     mastodont_storage_cleanup(&storage);
 }
 
-HV* perlify_list(struct mstdnt_list* list)
+HV* perlify_list(const struct mstdnt_list* list)
 {
     if (!list) return NULL;
 

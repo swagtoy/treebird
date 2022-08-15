@@ -828,12 +828,6 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: inline;
 }
 
-/* .notification-text-group-with-icon, */
-/* .notification-text-group */
-/* { */
-/*     vertical-align: middle; */
-/* } */
-
 .status.status-notification:not(.status-notification-mention) .status-content
 {
     color: #808080;

@@ -28,7 +28,7 @@ void content_lists(PATH_ARGS);
 void list_edit(PATH_ARGS);
 
 /** Converts list to perl hash */
-HV* perlify_list(struct mstdnt_list* list);
+HV* perlify_list(const struct mstdnt_list* list);
     
 /** Converts lists to perl array */
 AV* perlify_lists(const struct mstdnt_list* lists, size_t len);
