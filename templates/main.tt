@@ -41,7 +41,46 @@
                         [%- END %]
                         <!-- Searchbox -->
                         <form class="searchbox-container" action="$prefix/search" method="get">
-                            [% icon('search-menu') %]
+                            <span class="menu-container search-menu-dropdown">
+                                [% icon('search-menu') %]
+                                <div class="menu menu-options menu-compact">
+                                    <ul>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="searchtype" value="0" checked>
+                                                    <span>All</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="searchtype" value="0">
+                                                    <span>Statuses</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="searchtype" value="0">
+                                                    <span>Accounts</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="searchtype" value="0">
+                                                    <span>Hashtags</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </span>
+                                
                             <input type="text" class="group group-left group-inputbox" placeholder="[% lang('SEARCH_PLACEHOLDER') %]" id="searchbox" name="q"><input type="submit" class="btn group group-right" value="[% lang('SEARCH_BUTTON') %]">
                         </form>
                     </div>

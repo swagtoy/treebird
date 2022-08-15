@@ -260,15 +260,67 @@ table.ui-table td
 
 #searchbox
 {
-    padding-left: 26px;
+    padding-left: 27px;
 }
 
-#navbar .searchbox-container .search-menu
+#navbar .search-menu-dropdown
 {
+    display: inline;
     position: relative;
     left: 30px;
+    /* Fix weird offset */
+    margin-left: -30px;
     top: 6px;
+}
+
+.menu .btn-menu input[type=radio]
+{
+    display: none;
+}
+
+.menu .btn-menu input[type=radio] + span
+{
+    margin-left: 8px;
+    position: relative;
+}
+
+.menu .btn-menu input[type=radio]:checked + span:before
+{
+    position: absolute;
+    content: "";
+    left: -12px;
+    top: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #202020;
+    font-weight: bold;
+}
+
+.menu .btn-menu input[type=radio]:checked + span:before
+{
+    position: absolute;
+    content: "";
+    left: -12px;
+    top: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #202020;
+    font-weight: bold;
+}
+
+
+.menu.menu-compact .btn-menu
+{
+    font-size: 11px;
+}
+
+
+#navbar .search-menu-dropdown svg
+{
     stroke: #606060;
+    cursor: pointer;
 }
 
 #leftbar ul
