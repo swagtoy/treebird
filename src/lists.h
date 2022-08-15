@@ -27,4 +27,10 @@ void content_lists(PATH_ARGS);
 /** Creates a list and then redirects */
 void list_edit(PATH_ARGS);
 
+/** Converts list to perl hash */
+HV* perlify_list(struct mstdnt_list* list);
+    
+/** Converts lists to perl array */
+AV* perlify_lists(const struct mstdnt_list* lists, size_t len);
+
 #endif // LISTS_H

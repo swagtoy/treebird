@@ -39,7 +39,7 @@ void content_lists(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_list* lists = NULL;
-    size_t list_len = 0;
+    size_t lists_len = 0;
     struct mstdnt_storage storage = { 0 };
 
     if (ssn->post.title.is_set)
@@ -53,7 +53,7 @@ void content_lists(PATH_ARGS)
         mastodont_storage_cleanup(&create_storage);
     }
 
-    mastodont_get_lists(api, &m_args, &storage, &lists, &list_len);
+    mastodont_get_lists(api, &m_args, &storage, &lists, &lists_len);
 
     // Call perl
     perl_lock();
@@ -65,7 +65,7 @@ void content_lists(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    // TODO Perlify lists
+    XPUSHs(newRV_noinc((SV*)perlify_lists(lists, lists_len)));
     
     // ARGS
     PUTBACK;
@@ -117,4 +117,30 @@ void list_edit(PATH_ARGS)
 
     redirect(req, REDIRECT_303, referer);
     mastodont_storage_cleanup(&storage);
+}
+
+HV* perlify_list(struct mstdnt_list* list)
+{
+    if (!list) return NULL;
+
+    HV* list_hv = newHV();
+    hvstores_str(list_hv, "id", list->id);
+    hvstores_str(list_hv, "title", list->title);
+//    hvstores_int(list_hv, "replies_policy", list->replies_policy);
+
+    return list_hv;
+}
+
+AV* perlify_lists(const struct mstdnt_list* lists, size_t len)
+{
+    if (!(lists && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_list(lists + i)));
+    }
+
+    return av;
 }

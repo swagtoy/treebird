@@ -742,40 +742,6 @@ input[type=submit].post-btn
     object-fit: cover;
 }
 
-.notification-compact
-{
-    min-width: 100%;
-    padding: 3px;
-}
-
-.notification-compact p
-{
-    margin: 0;
-}
-
-.notification-compact .notification-content
-{
-    max-height: 100px;
-    overflow: auto;
-    margin-left: 2px;
-}
-
-.notification-compact .notification-info
-{
-    font-size: 12px;
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-top: 0;
-    vertical-align: middle;
-    font-weight: bold;
-}
-
-.notification-compact .username .emoji
-{
-    width: 16px;
-    height: 16px;
-}
-
 .notification-info svg,
 .notification-info-format svg
 {
@@ -838,51 +804,11 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: none;
 }
 
-.notification-compact .notification-content
-{
-    color: #808080;
-    font-size: 12px;
-    padding: 4px 0 2px 0;
-}
-
-.notification-compact .notification-content.is-mention
-{
-    color: #101010;
-}
-
-.notification-compact .notification-stats
-{
-    font-size: 10px;
-}
-
-.notification-compact .notification-stats .status-interact
-{
-    margin-top: 2px;
-}
-
-.notification-compact .notification-stats svg
-{
-    width: 15px;
-    height: 15px;
-}
-
-.notification-compact .notification-stats .statbtn
-{
-    padding: 2px 4px;
-}
-
 .notification-info
 {
     margin-left: 28px;
     margin-bottom: 7px;
 }
-
-.notification-compact .notification-info
-{
-    margin-left: unset;
-    margin-bottom: unset;
-}
-
 
 .notification-info img.avatar,
 .notification-info .pfp-compact-td img,
@@ -1073,13 +999,6 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     font-size: 10px;
 }
 
-.notification-compact .time:before
-{
-    content: "•";
-    padding-right: 10px;
-    font-size: 10px;
-}
-
 .status .time
 {
     margin-right: 4px;
@@ -1111,8 +1030,7 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 }
 
 .status .time,
-.status .status-meta,
-.notification-compact .time
+.status .status-meta
 {
     color: #606060;
     font-size: 14px;
@@ -1767,11 +1685,6 @@ p}
 .statusbox .post-group .visibility-icon.vis-direct svg
 {
     top: 5px;
-}
-
-.notification-compact .status-interact .statbtn
-{
-    min-width: 0px !important;
 }
 
 .status-interact svg
