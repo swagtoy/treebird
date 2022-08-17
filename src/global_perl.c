@@ -20,7 +20,7 @@
 
 /* TODO let's generate this file dynamically with a Perl script? */
 #include "../templates/main.ctt"
-#include "../templates/notif_compact.ctt"
+#include "../templates/notification.ctt"
 #include "../templates/status.ctt"
 #include "../templates/content_status.ctt"
 #include "../templates/emoji_picker.ctt"
@@ -50,7 +50,7 @@ void init_template_files(pTHX)
     template_files = newHV();
 
     hv_stores(template_files, "main.tt", newSVpv(data_main_tt, data_main_tt_size));
-    hv_stores(template_files, "notif_compact.tt", newSVpv(data_notif_compact_tt, data_notif_compact_tt_size));
+    hv_stores(template_files, "notification.tt", newSVpv(data_notification_tt, data_notification_tt_size));
     hv_stores(template_files, "status.tt", newSVpv(data_status_tt, data_status_tt_size));
     hv_stores(template_files, "content_status.tt", newSVpv(data_content_status_tt, data_content_status_tt_size));
     hv_stores(template_files, "emoji_picker.tt", newSVpv(data_emoji_picker_tt, data_emoji_picker_tt_size));

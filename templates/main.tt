@@ -106,16 +106,16 @@
                         </ul>
                         
                         <ul class="sidebar-config">
-                            <li><a class="sidebarbtn-sub" href="{{%s:prefix}}/config/general">[% lang('GENERAL') %]</a></li>
-                            <li><a class="sidebarbtn-sub" href="{{%s:prefix}}/config/appearance">[% lang('APPEARANCE') %]</a></li>
+                            <li><a class="sidebarbtn-sub" href="$prefix/config/general">[% lang('GENERAL') %]</a></li>
+                            <li><a class="sidebarbtn-sub" href="$prefix/config/appearance">[% lang('APPEARANCE') %]</a></li>
                         </ul>
 
                         
                         <!-- <div class="static-html" id="instance-panel"></div> -->
                         <div class="mini-links">
-                            <a href="{{%s:prefix}}/about">About</a>
+                            <a href="$prefix/about">About</a>
                             <span class="bullet-separate">&bull;</span>
-                            <a href="{{%s:prefix}}/about/license">License</a>
+                            <a href="$prefix/about/license">License</a>
                             <span class="bullet-separate">&bull;</span>
                             <a href="https://fossil.nekobit.net/treebird">Source code</a>
                         </div>
@@ -169,9 +169,11 @@
                             </div>
 
                             <!-- Notifications -->
-                            [% FOREACH notif IN notifs %]
-                                [% notification_compact(ssn, data, notif) %]
-                            [% END %]
+                            <div class="notifications-compact">
+                                [% FOREACH notif IN notifs %]
+                                    [% notification(ssn, data, notif) %]
+                                [% END %]
+                            </div>
                             
                         [% ELSE %]
                             <div class="sidebar-login">

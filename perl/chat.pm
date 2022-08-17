@@ -33,3 +33,4 @@ sub content_chats
     to_template(\%vars, \$data->{'content_chats.tt'});
 }
 
+1;

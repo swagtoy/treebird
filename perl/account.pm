@@ -97,3 +97,5 @@ sub content_accounts
         return $acct_list_page;
     }
 }
+
+1;

@@ -13,9 +13,12 @@ our @EXPORT = qw( content_status generate_status );
 
 use template_helpers 'to_template';
 
+# Useful variable to prevent collisions
+my $rel_context = 0;
+
 sub generate_status
 {
-    my ($ssn, $data, $status, $notif) = @_;
+    my ($ssn, $data, $status, $notif, $is_compact) = @_;
     my $boost_acct;
 
     # Move status reference for boosts and keep account
@@ -33,7 +36,9 @@ sub generate_status
         boost => $boost_acct, # May be undef
         data => $data,
         notif => $notif, # May be undef
+        compact => $is_compact, # May be undef
         is_statusey_notif => ($notif && ($notif->{type} eq 'mention' || $notif->{type} eq 'status')),
+        unique_toggle_id => $rel_context++,
         # Functions
         icon => \&get_icon,
         lang => \&lang,
@@ -56,6 +61,8 @@ sub content_status
 {
     my ($ssn, $data, $status, $statuses_before, $statuses_after) = @_;
 
+    $rel_context = 0;
+
     my %vars = (
         prefix => '',
         ssn => $ssn,
@@ -70,3 +77,5 @@ sub content_status
 
     to_template(\%vars, \$data->{'content_status.tt'});
 }
+
+1;

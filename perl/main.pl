@@ -3,7 +3,7 @@ use warnings;
 # Modules
 use Template;
 use l10n qw( &lang %L10N );
-use notifications qw( generate_notification_compact content_notifications );
+use notifications qw( generate_notification content_notifications );
 use template_helpers qw( &to_template );
 use timeline;
 use icons 'get_icon';
@@ -39,7 +39,7 @@ sub base_page
         acct => $ssn->{account},
         data => $data,
         notifs => $notifs,
-        notification_compact => \&generate_notification_compact,
+        notification => \&generate_notification,
         );
 
     to_template(\%vars, \$data->{'main.tt'});

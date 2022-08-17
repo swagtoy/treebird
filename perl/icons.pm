@@ -69,3 +69,5 @@ sub visibility_to_icon
     # Assume local for anything else, because well... I'm not sure
     get_icon('local');
 }
+
+1;

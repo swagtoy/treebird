@@ -1,4 +1,4 @@
-<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]"[% IF status.muted %] checked[% END %]>
+<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]-[% unique_toggle_id %]"[% IF status.muted %] checked[% END %]>
 <div class="status
             [%- IF notif %] status-notification[% IF notif.pleroma && !notif.pleroma.is_seen %] notification-unread[% END %][% END %]
             [%- IF is_statusey_notif -%] status-notification-mention[% END %]
@@ -84,7 +84,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <label for="status-toggle-[% status.id %]" class="status-view"></label>
+                        <label for="status-toggle-[% status.id %]-[% unique_toggle_id %]" class="status-view"></label>
                     </span>
                 </div>
                 <div class="status-data">

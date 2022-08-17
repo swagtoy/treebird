@@ -23,3 +23,4 @@ sub generate_attachment
     to_template(\%vars, \$data->{'attachment.tt'});
 }
 
+1;

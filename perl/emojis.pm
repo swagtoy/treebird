@@ -22,3 +22,4 @@ sub generate_emoji
     to_template(\%vars, \$data->{'emoji.tt'});
 }
 
+1;
