@@ -2304,6 +2304,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     display: block;
 }
 
+.menu.menu-search.menu-compact
+{
+    margin-left: -8px;
+    margin-top: -3px;
+}
+
 .user-options-btn
 {
     cursor: pointer;
