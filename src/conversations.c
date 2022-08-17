@@ -184,7 +184,7 @@ void content_chats(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_chats(&chats, chats_len)));
+    XPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
     // ARGS
     PUTBACK;
     call_pv("chat::content_chats", G_SCALAR);
@@ -200,7 +200,7 @@ void content_chats(PATH_ARGS)
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
-        .content = chats_page,
+        .content = dup,
         .session = session_hv,
         .sidebar_left = NULL
     };
@@ -210,9 +210,8 @@ void content_chats(PATH_ARGS)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    free(chats_page);
-    free(chats_html);
     // TOOD cleanup chats
+    Safefree(dup);
 }
 
 char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len)

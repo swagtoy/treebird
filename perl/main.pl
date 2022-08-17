@@ -11,6 +11,7 @@ use status;
 use account;
 use lists;
 use search;
+use chat;
 
 # my $template = Template->new(
 #     {

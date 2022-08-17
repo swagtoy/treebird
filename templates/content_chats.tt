@@ -1,5 +1,23 @@
 <h1 class="text-header">Chats</h1>
 
 [% FOREACH chat IN chats %]
-    [% make_chat(chat) %]
+    <a href="/chats/[% chat.id %]">
+        <table class="contact">
+            <tr>
+                <td class="pfp-td">
+                    <img src="[% chat.account.avatar %]">
+                </td>
+                <td class="contact-right-td">
+                    <div class="contact-right">
+                        <div class="contact-info">
+                            <span class="username" title="[% chat.account.acct %]">[% format_username(chat.account) %]</span>
+                        </div>
+                        <div class="last-message">
+                            <span class="chat-msg-preview">Chat message</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </a>
 [% END %]

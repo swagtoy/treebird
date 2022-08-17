@@ -40,6 +40,8 @@
 #include "../templates/search_accounts.ctt"
 #include "../templates/search_statuses.ctt"
 #include "../templates/search_tags.ctt"
+#include "../templates/content_chats.ctt"
+#include "../templates/chat.ctt"
 
 PerlInterpreter* my_perl;
 HV* template_files;
@@ -70,6 +72,8 @@ void init_template_files(pTHX)
     hv_stores(template_files, "search_accounts.tt", newSVpv(data_search_accounts_tt, data_search_accounts_tt_size));
     hv_stores(template_files, "search_statuses.tt", newSVpv(data_search_statuses_tt, data_search_statuses_tt_size));
     hv_stores(template_files, "search_tags.tt", newSVpv(data_search_tags_tt, data_search_tags_tt_size));
+    hv_stores(template_files, "content_chats.tt", newSVpv(data_content_chats_tt, data_content_chats_tt_size));
+    hv_stores(template_files, "chat.tt", newSVpv(data_chat_tt, data_chat_tt_size));
 }
 
 void cleanup_template_files()

@@ -6,6 +6,7 @@ use Exporter 'import';
 our @EXPORTS = qw( content_chats );
 
 use template_helpers 'to_template';
+use string_helpers 'format_username';
 
 sub construct_chat
 {
@@ -28,6 +29,7 @@ sub content_chats
         prefix => '',
         ssn => $ssn,
         chats => $chats,
+        format_username => \&format_username,
         );
 
     to_template(\%vars, \$data->{'content_chats.tt'});
