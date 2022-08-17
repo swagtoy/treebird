@@ -317,7 +317,6 @@ table.ui-table td
     font-size: 11px;
 }
 
-
 #navbar .search-menu-dropdown svg
 {
     stroke: #606060;
@@ -2266,6 +2265,10 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 }
 
 /* MENUS */
+
+/* Transition animations are possible with dropdown menus, e.g. fade, if you use 
+ * visibility: visible; instead of display:block; (and their counter values)
+ * but some things seemed buggy like the search dropdown, so try with care */
 .menu-container:hover .menu,
 .menu-container:hover + .menu
 {

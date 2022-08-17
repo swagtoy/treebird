@@ -46,50 +46,56 @@
                         <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
                     [% END %]
                     <span class="alignend">
-                        <div class="menu-container status-visibility">
-                            [% vis_to_icon(status.visibility) %]
-                            <div class="menu">
-                                [% IF notif %]
+                        [% UNLESS notif && compact && interacted_with %]
+                            
+                            <div class="menu-container status-visibility">
+                                [% vis_to_icon(status.visibility) %]
+                                <div class="menu">
+                                    [% IF notif %]
+                                        <ul>
+                                            <li>
+                                                <a href="$prefix/notification/[% notif.id %]/read" class="btn-menu">Mark as read</a>
+                                            </li>
+                                            <li>
+                                                <a href="$prefix/notification/[% notif.id %]/delete" class="btn-menu">Clear notification</a>
+                                            </li>
+                                        </ul>
+                                    [% END %]
                                     <ul>
                                         <li>
-                                            <a href="$prefix/notification/[% notif.id %]/read" class="btn-menu">Mark as read</a>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="mute">
+                                                <input type="submit" class="btn-menu" value="Mute">
+                                            </form>
                                         </li>
                                         <li>
-                                            <a href="$prefix/notification/[% notif.id %]/delete" class="btn-menu">Clear notification</a>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="bookmark">
+                                                <input type="submit" class="btn-menu" value="Bookmark">
+                                            </form>
                                         </li>
-                                    </ul>
-                                [% END %]
-                                <ul>
-                                    <li>
-                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                            <input type="hidden" name="itype" value="mute">
-                                            <input type="submit" class="btn-menu" value="Mute">
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                            <input type="hidden" name="itype" value="bookmark">
-                                            <input type="submit" class="btn-menu" value="Bookmark">
-                                        </form>
-                                    </li>
-                                    [%# pin %]
-                                    <li>
-                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                            <input type="hidden" name="itype" value="pin">
-                                            <input type="submit" class="btn-menu" value="Pin">
-                                        </form>
-                                    </li>
-                                    [%# Delete %]
-                                    <li>
-                                        <form action="$prefix/status/[% status.id %]/interact" method="post">
-                                            <input type="hidden" name="itype" value="delete">
-                                            <input type="submit" class="btn-menu" value="Delete status">
-                                        </form>
-                                    </li>
+                                        [%# pin %]
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="pin">
+                                                <input type="submit" class="btn-menu" value="Pin">
+                                            </form>
+                                        </li>
+                                        [%# Delete %]
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="delete">
+                                                <input type="submit" class="btn-menu" value="Delete status">
+                                            </form>
+                                        </li>
 
-                                </ul>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
+                        [% ELSE %]
+                            <span class="time">[% rel_to_str(notif.created_at) %]</span>
+                        [% END %]
+                           
                         [% UNLESS compact %]
                             <label for="status-toggle-[% status.id %]-[% unique_toggle_id %]" class="status-view"></label>
                         [% END %]
@@ -97,7 +103,7 @@
                 </div>
                 <div class="status-data">
                     [%# Note: The id may actually (99.5% of the time) be the acct %]
-                    [% IF status.in_reply_to_id %]
+                    [% IF status.in_reply_to_id && !(compact && interacted_with) %]
                         <span class="in-reply-to">
                             <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> [% UNLESS compact %]<span class="in-reply-to-text">In reply to</span>[% END %] <span class="acct">[% status.pleroma.in_reply_to_account_acct || status.in_reply_to_account_id %]</span></a>
                         </span>
