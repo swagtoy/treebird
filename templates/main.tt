@@ -171,7 +171,7 @@
                             <!-- Notifications -->
                             <div class="notifications-compact">
                                 [% FOREACH notif IN notifs %]
-                                    [% notification(ssn, data, notif) %]
+                                    [% notification(ssn, data, notif, 1) %]
                                 [% END %]
                             </div>
                             

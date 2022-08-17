@@ -1104,6 +1104,50 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     min-width: 0;
 }
 
+/* Compact notifications (statuses) */
+.notifications-compact,
+.status-compact
+{
+    position: relative;
+    font-size: 14px;
+}
+
+.status-compact .status.status-notification
+{
+    padding: 7px;
+}
+
+.status-compact .pfp-td img
+{
+    width: 28px;
+    height: 28px;
+}
+
+.status-compact .action-icon
+{
+    position: absolute;
+    background-color: #eaecf0;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border: 1px solid #cacaca;
+    padding: 3px;
+    top: 17px;
+    left: -17px;
+    z-index: 8;
+    font-size: 12px;
+}
+
+.status-compact .action-icon svg
+{
+    width: 14px;
+    height: 14px;
+    stroke: #40455a;
+    /* Little fix */
+    position: relative;
+    top: -1px;
+}
+
 /* .status .notification-text-group-with-icon .username */
 /* { */
 /*     /\* UNDO *\/ */

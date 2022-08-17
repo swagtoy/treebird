@@ -29,6 +29,8 @@ sub generate_status
         $status = $status->{reblog};
     }
 
+    my $is_statusey_notif = ($notif && ($notif->{type} eq 'mention' || $notif->{type} eq 'status'));
+
     my %vars = (
         prefix => '',
         ssn => $ssn,
@@ -37,9 +39,26 @@ sub generate_status
         data => $data,
         notif => $notif, # May be undef
         compact => $is_compact, # May be undef
-        is_statusey_notif => ($notif && ($notif->{type} eq 'mention' || $notif->{type} eq 'status')),
+        is_statusey_notif => $is_statusey_notif,
         unique_toggle_id => $rel_context++,
+        interacted_with => $boost_acct || ($notif && !$is_statusey_notif),
+
         # Functions
+        
+        action_to_string => sub {
+            return unless $notif;
+            return lang('NOTIF_LIKED') if $notif->{type} eq 'favourite';
+            return lang('NOTIF_REPEATED') if $boost_acct || $notif->{type} eq 'reblog';
+            return lang('NOTIF_REACTED_WITH') .' '. $notif->{emoji} if $boost_acct || $notif->{type} eq 'emoji reaction';
+        },
+        
+        action_to_icon => sub {
+            return unless $notif;
+            return get_icon('like') if $notif->{type} eq 'favourite';
+            return get_icon('repeat') if $boost_acct || $notif->{type} eq 'reblog';
+            return $notif->{emoji} if $notif->{type} eq 'emoji reaction';
+        },
+        
         icon => \&get_icon,
         lang => \&lang,
         rel_to_str => \&reltime_to_str,

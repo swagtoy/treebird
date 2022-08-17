@@ -2,31 +2,21 @@
 <div class="status
             [%- IF notif %] status-notification[% IF notif.pleroma && !notif.pleroma.is_seen %] notification-unread[% END %][% END %]
             [%- IF is_statusey_notif -%] status-notification-mention[% END %]
+            [%- IF compact -%] status-compact[% END %]
             [%# Blame CSS for this class %]
-            [%- IF boost || (notif && notif.account && !is_statusey_notif) %] notification-info-lookahead[% END -%]
+            [%- IF interacted_with && !compact %] notification-info-lookahead[% END -%]
             " id="[% status.id %]">
-    [% IF boost || (notif && notif.account && !is_statusey_notif) %]
+    [% IF interacted_with && !compact %]
         <div class="notification-info">
             <img src="[% boost.avatar || notif.account.avatar %]" loading="lazy" class="avatar">
             <div class="notification-user">
                 <span class="notification-text-group-with-icon">
                     <span class="username">[% format_username(boost || notif.account) %]</span>
                     <span class="action">
-                        [% IF notif && notif.type == 'favourite' %]
-                            [% lang('NOTIF_LIKED') %]
-                        [% ELSIF boost || (notif && notif.type == 'reblog') %]
-                            [% lang('NOTIF_REPEATED') %]
-                        [% ELSIF boost || (notif && notif.type == 'emoji reaction') %]
-                            [%# Yes, it can be a custom emoji too %]
-                            [% lang('NOTIF_REACTED_WITH') %] [% notif.emoji %]
-                        [% END %]
+                        [% action_to_string(); %]
                     </span>
                 </span>
-                [% IF notif && notif.type == 'favourite' %]
-                    [% icon('like') %]
-                [% ELSIF boost || (notif && notif.type == 'reblog') %] [%# It's a repeat %]
-                    [% icon('repeat') %]
-                [% END %]
+                [% action_to_icon(); %]
             </div>
         </div>
     [% END %]
@@ -37,8 +27,22 @@
             </td>
             <td class="status-info">
                 <div class="poster-stats">
-                    <span class="username">[% format_username(status.account) %]</span>
-                    <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
+                    <span class="username">
+                        [% format_username(status.account) %]
+                    </span>
+                    
+                    [% IF interacted_with && compact %]
+                        <span class="action">
+                            [% action_to_string(); %]
+                        </span>
+                        <span class="action-icon">
+                            [% action_to_icon(); %]
+                        </span>
+                    [% END %]
+                    
+                    [% UNLESS compact %]
+                        <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
+                    [% END %]
                     <span class="alignend">
                         <div class="menu-container status-visibility">
                             [% vis_to_icon(status.visibility) %]
