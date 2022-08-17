@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include "account.h"
 #include "../config.h"
 #include "conversations.h"
 #include "helpers.h"
@@ -163,8 +164,6 @@ void content_chats(PATH_ARGS)
     struct mstdnt_chat* chats = NULL;
     size_t chats_len = 0;
     struct mstdnt_storage storage = { 0 };
-    char* chats_page = NULL;
-    char* chats_html = NULL;
 
     struct mstdnt_chats_args args = {
         .with_muted = MSTDNT_TRUE,
@@ -175,20 +174,34 @@ void content_chats(PATH_ARGS)
         .limit = 20,
     };
 
-    if (mastodont_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len))
-    {
-        chats_page = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        chats_html = construct_chats(api, &m_args, chats, chats_len, NULL);
-        if (!chats_html)
-            chats_html = construct_error("No chats", E_NOTICE, 1, NULL);
-        chats_page = construct_chats_view(chats_html, NULL);
-    }
+    mastodont_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len);
+
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_chats(&chats, chats_len)));
+    // ARGS
+    PUTBACK;
+    call_pv("chat::content_chats", G_SCALAR);
+    SPAGAIN;
+
+    // Duplicate so we can free the TMPs
+    char* dup = savesharedsvpv(POPs);
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
         .content = chats_page,
+        .session = session_hv,
         .sidebar_left = NULL
     };
     
@@ -291,5 +304,31 @@ void content_chat_embed(PATH_ARGS)
     
     free(chat_view);
     free(result);
+}
+
+HV* perlify_chat(const struct mstdnt_chat* chat)
+{
+    if (!chat) return NULL;
+
+    HV* chat_hv = newHV();
+    hvstores_ref(chat_hv, "account", perlify_account(&(chat->account)));
+    hvstores_str(chat_hv, "id", chat->id);
+    hvstores_int(chat_hv, "unread", chat->unread);
+
+    return chat_hv;
+}
+
+AV* perlify_chats(const struct mstdnt_chat* chats, size_t len)
+{
+    if (!(chats && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_chat(chats + i)));
+    }
+
+    return av;
 }
 

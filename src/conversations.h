@@ -49,4 +49,7 @@ char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_
 void content_chat_embed(PATH_ARGS);
 void content_chat_view(PATH_ARGS);
 
+AV* perlify_chats(const struct mstdnt_chat* chats, size_t chats_len);
+HV* perlify_chat(const struct mstdnt_chat* chat);
+
 #endif // LISTS_H
