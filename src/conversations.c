@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include "account.h"
+#include "emoji.h"
 #include "../config.h"
 #include "conversations.h"
 #include "helpers.h"
@@ -326,6 +327,36 @@ AV* perlify_chats(const struct mstdnt_chat* chats, size_t len)
     for (int i = 0; i < len; ++i)
     {
         av_store(av, i, newRV_inc((SV*)perlify_chat(chats + i)));
+    }
+
+    return av;
+}
+
+HV* perlify_message(const struct mstdnt_message* message)
+{
+    if (!message) return NULL;
+
+    HV* message_hv = newHV();
+    hvstores_str(message_hv, "account_id", message->account_id);
+    hvstores_str(message_hv, "chat_id", message->chat_id);
+    hvstores_str(message_hv, "id", message->id);
+    hvstores_str(message_hv, "content", message->content);
+    hvstores_int(message_hv, "created_at", message->created_at);
+    hvstores_ref(message_hv, "emojis", perlify_emojis(message->emojis, message->emojis_len));
+    hvstores_int(message_hv, "unread", message->unread);
+
+    return message_hv;
+}
+
+AV* perlify_messages(const struct mstdnt_message* messages, size_t len)
+{
+    if (!(messages && len)) return NULL;
+    AV* av = newAV();
+    av_extend(av, len-1);
+
+    for (int i = 0; i < len; ++i)
+    {
+        av_store(av, i, newRV_inc((SV*)perlify_message(messages + i)));
     }
 
     return av;

@@ -52,4 +52,7 @@ void content_chat_view(PATH_ARGS);
 AV* perlify_chats(const struct mstdnt_chat* chats, size_t chats_len);
 HV* perlify_chat(const struct mstdnt_chat* chat);
 
+AV* perlify_messages(const struct mstdnt_message* messages, size_t messages_len);
+HV* perlify_message(const struct mstdnt_message* message);
+
 #endif // LISTS_H
