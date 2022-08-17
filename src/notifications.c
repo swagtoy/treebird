@@ -393,7 +393,7 @@ HV* perlify_notification(struct mstdnt_notification* notif)
     HV* notif_hv = newHV();
 
     hvstores_str(notif_hv, "id", notif->id);
-    hvstores_str(notif_hv, "created_at", notif->created_at);
+    hvstores_int(notif_hv, "created_at", notif->created_at);
     hvstores_str(notif_hv, "emoji", notif->emoji);
     hvstores_str(notif_hv, "type", mstdnt_notification_t_to_str(notif->type));
     hvstores_ref(notif_hv, "account", perlify_account(notif->account));
