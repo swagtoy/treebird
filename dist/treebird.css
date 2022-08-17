@@ -311,7 +311,8 @@ table.ui-table td
 }
 
 
-.menu.menu-compact .btn-menu
+.menu.menu-compact .btn-menu,
+.status-compact .menu-container .menu .btn-menu
 {
     font-size: 11px;
 }
@@ -1112,9 +1113,9 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     font-size: 14px;
 }
 
-.status-compact .status.status-notification
+.status-compact.status.status-notification
 {
-    padding: 7px;
+    padding: 5px;
 }
 
 .status-compact .pfp-td img
@@ -1128,31 +1129,66 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     position: absolute;
     background-color: #eaecf0;
     border-radius: 50%;
-    width: 14px;
-    height: 14px;
-    border: 1px solid #cacaca;
+    width: 16px;
+    height: 16px;
     padding: 3px;
-    top: 17px;
-    left: -17px;
+    top: 15px;
+    left: -15px;
     z-index: 8;
     font-size: 12px;
 }
 
 .status-compact .action-icon svg
 {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     stroke: #40455a;
     /* Little fix */
     position: relative;
     top: -1px;
 }
 
-/* .status .notification-text-group-with-icon .username */
-/* { */
-/*     /\* UNDO *\/ */
-/*     vertical-align: unset; */
-/* } */
+.status-compact .poster-stats .alignend
+{
+    background-color: rgb(234, 236, 240);
+    /* Hack - Fix the right padding regarding the icon being a little wider than it should */
+    padding: 1px 0px 1px 5px;
+}
+
+.status-compact .menu-container .menu
+{
+    margin-left: -80px;
+}
+
+.status-compact.notification-unread::before
+{
+    content:"";
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, rgba(255,0,0,1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
+}
+
+.status-compact .in-reply-to-id
+{
+    font-size: 13px;
+}
+
+.status-compact .in-reply-to-icon
+{
+    width: 14px;
+    height: 14px;
+    /* Pixel perfect... */
+    top: -2px;
+}
+
+.status-compact .status-buttons
+{
+    float: initial;
+}
 
 .status .status-content
 {

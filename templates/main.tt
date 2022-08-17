@@ -43,7 +43,7 @@
                         <form class="searchbox-container" action="$prefix/search" method="get">
                             <span class="menu-container search-menu-dropdown">
                                 [% icon('search-menu') %]
-                                <div class="menu menu-options menu-compact">
+                                <div class="menu menu-search menu-compact">
                                     <ul>
                                         <li>
                                             <label>

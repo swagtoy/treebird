@@ -23,12 +23,14 @@
     <table class="status-table ui-table">
         <tr>
             <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
-                <img src="[% status.account.avatar %]" loading="lazy">
+                <img src="[% compact && interacted_with ?
+                             boost.account.avatar || notif.account.avatar : status.account.avatar %]" loading="lazy">
             </td>
             <td class="status-info">
                 <div class="poster-stats">
                     <span class="username">
-                        [% format_username(status.account) %]
+                        [% format_username(compact && interacted_with ?
+                            boost || notif.account : status.account) %]
                     </span>
                     
                     [% IF interacted_with && compact %]
@@ -88,14 +90,16 @@
                                 </ul>
                             </div>
                         </div>
-                        <label for="status-toggle-[% status.id %]-[% unique_toggle_id %]" class="status-view"></label>
+                        [% UNLESS compact %]
+                            <label for="status-toggle-[% status.id %]-[% unique_toggle_id %]" class="status-view"></label>
+                        [% END %]
                     </span>
                 </div>
                 <div class="status-data">
                     [%# Note: The id may actually (99.5% of the time) be the acct %]
                     [% IF status.in_reply_to_id %]
                         <span class="in-reply-to">
-                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> <span class="in-reply-to-text">In reply to</span> <span class="acct">[% status.pleroma.in_reply_to_account_acct || status.in_reply_to_account_id %]</span></a>
+                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> [% UNLESS compact %]<span class="in-reply-to-text">In reply to</span>[% END %] <span class="acct">[% status.pleroma.in_reply_to_account_acct || status.in_reply_to_account_id %]</span></a>
                         </span>
                     [% END %]
                     <span class="status-content">
@@ -132,7 +136,7 @@
                                 <input class="itype" type="hidden" name="itype" value="[% IF status.favourited %]un[% END %]like">
                                 <label class="pointer statbtn like-btn[% IF status.favourited %] interacted[% END %]">
                                     [% icon('like') %]
-                                    [% IF status.favourites_count %]
+                                    [% IF status.favourites_count && !compact %]
                                         <span class="count">[% status.favourites_count %]</span>
                                     [% END %]
                                     <input class="hidden" type="submit" value="Like">
@@ -142,7 +146,7 @@
                                 <input class="itype" type="hidden" name="itype" value="[% IF status.reblogged %]un[% END %]repeat">
                                 <label class="repeat-btn pointer statbtn[% IF status.reblogged %] interacted[% END %]">
                                     [% icon('repeat') %]
-                                    [% IF status.reblogs_count %]
+                                    [% IF status.reblogs_count && !compact %]
                                         <span class="count">[% status.reblogs_count %]</span>
                                     [% END %]
                                     <input class="hidden" type="submit" value="Repeat">
@@ -167,19 +171,21 @@
                         </div>
                         [% END %]
                         [%# Put these at the end, incase someone wants to move status icons to the beginning (this makes it easier %]
-                        <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
-                            [% icon('expand') %]
-                        </a> 
-                        <span class="status-meta">
-                            <a href="#[% status.id %]" title="[% time_to_str(status.created_at) %]" class="time">[%- rel_to_str(status.created_at) -%]</a>
-                            [% IF status.application && status.application.name && !notif %]
-                                [% IF status.application.url %]
-                                    <a class="application-name" href="[% status.application.url %]">[% status.application.name %]</a>
-                                [% ELSE %]
-                                    <span class="application-name">[% status.application.name %]</span>
+                        [% UNLESS compact %]
+                            <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
+                                [% icon('expand') %]
+                            </a> 
+                            <span class="status-meta">
+                                <a href="#[% status.id %]" title="[% time_to_str(status.created_at) %]" class="time">[%- rel_to_str(status.created_at) -%]</a>
+                                [% IF status.application && status.application.name && !notif %]
+                                    [% IF status.application.url %]
+                                        <a class="application-name" href="[% status.application.url %]">[% status.application.name %]</a>
+                                    [% ELSE %]
+                                        <span class="application-name">[% status.application.name %]</span>
+                                    [% END %]
                                 [% END %]
-                            [% END %]
-                        </span>
+                            </span>
+                        [% END %]
                     </div>
                 </div>
             </td>
