@@ -13,10 +13,10 @@
                 <span class="notification-text-group-with-icon">
                     <span class="username">[% format_username(boost || notif.account) %]</span>
                     <span class="action">
-                        [% action_to_string(); %]
+                        [% action_to_string() %]
                     </span>
                 </span>
-                [% action_to_icon(); %]
+                [% action_to_icon() %]
             </div>
         </div>
     [% END %]
@@ -35,10 +35,10 @@
                     
                     [% IF interacted_with && compact %]
                         <span class="action">
-                            [% action_to_string(); %]
+                            [% action_to_string() %]
                         </span>
                         <span class="action-icon">
-                            [% action_to_icon(); %]
+                            [% action_to_icon() %]
                         </span>
                     [% END %]
                     

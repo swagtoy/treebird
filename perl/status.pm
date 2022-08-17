@@ -46,17 +46,15 @@ sub generate_status
         # Functions
         
         action_to_string => sub {
-            return unless $notif;
-            return lang('NOTIF_LIKED') if $notif->{type} eq 'favourite';
+            return lang('NOTIF_LIKED') if $notif && $notif->{type} eq 'favourite';
             return lang('NOTIF_REPEATED') if $boost_acct || $notif->{type} eq 'reblog';
-            return lang('NOTIF_REACTED_WITH') .' '. $notif->{emoji} if $boost_acct || $notif->{type} eq 'emoji reaction';
+            return lang('NOTIF_REACTED_WITH') .' '. $notif->{emoji} if $notif->{type} eq 'emoji reaction';
         },
         
         action_to_icon => sub {
-            return unless $notif;
-            return get_icon('like') if $notif->{type} eq 'favourite';
+            return get_icon('like') if $notif && $notif->{type} eq 'favourite';
             return get_icon('repeat') if $boost_acct || $notif->{type} eq 'reblog';
-            return $notif->{emoji} if $notif->{type} eq 'emoji reaction';
+            return $notif->{emoji} if $notif && $notif->{type} eq 'emoji reaction';
         },
         
         icon => \&get_icon,
