@@ -46,11 +46,7 @@ void content_timeline(FCGX_Request* req,
                       int show_post_box,
                       int fake_timeline)
 {
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
@@ -66,17 +62,10 @@ void content_timeline(FCGX_Request* req,
     mXPUSHi(show_post_box);
     mXPUSHi(fake_timeline);
 
-    PUTBACK;
-    call_pv("timeline::content_timeline", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("timeline::content_timeline");
 
     // Duplicate to free temps
-    char* dup = savesharedsvpv(POPs);
-
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
         .category = cat,

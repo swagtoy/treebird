@@ -82,12 +82,7 @@ static char* accounts_page(HV* session_hv,
 {
     char* output;
 
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-
+    PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (acct)
@@ -105,17 +100,9 @@ static char* accounts_page(HV* session_hv,
     if (header)
         mXPUSHp(header, strlen(header));
 
-    PUTBACK;
-    call_pv("account::content_accounts", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("account::content_accounts");
     
-    output = savesharedsvpv(POPs);
-    
-    // Clean up Perl
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    output = PERL_GET_STACK_EXIT;
 
     mastodont_storage_cleanup(storage);
     mstdnt_cleanup_accounts(accts, accts_len);
@@ -232,12 +219,7 @@ static char* account_statuses_cb(HV* session_hv,
     
     mastodont_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len);
 
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-
+    PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
@@ -249,18 +231,10 @@ static char* account_statuses_cb(HV* session_hv,
         XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
     else ARG_UNDEFINED();
 
-    PUTBACK;
-    call_pv("account::content_statuses", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("account::content_statuses");
     
-    result = savesharedsvpv(POPs);
+    result = PERL_GET_STACK_EXIT;
     
-    // Clean up Perl
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
-
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
     
@@ -290,13 +264,7 @@ static char* account_scrobbles_cb(HV* session_hv,
     };
     mastodont_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
 
-    // TODO
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-
+    PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
@@ -308,17 +276,9 @@ static char* account_scrobbles_cb(HV* session_hv,
         XPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles, scrobbles_len)));
     else ARG_UNDEFINED();
 
-    PUTBACK;
-    call_pv("account::content_scrobbles", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("account::content_scrobbles");
     
-    result = savesharedsvpv(POPs);
-    
-    // Clean up Perl
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    result = PERL_GET_STACK_EXIT;
 
     mastodont_storage_cleanup(&storage);
     return result;

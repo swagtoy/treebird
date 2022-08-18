@@ -72,12 +72,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
             );
     }
 
-    // Init perl stack
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
+    PERL_STACK_INIT;
 
     if (page->session)
         mXPUSHs(newRV_inc((SV*)page->session));
@@ -94,19 +89,15 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     else XPUSHs(&PL_sv_undef);
     
     // Run function
-    PUTBACK;
-    call_pv("base_page", G_SCALAR);
-    SPAGAIN;
-
-    send_result(req, NULL, "text/html", POPp, 0);
+    PERL_STACK_SCALAR_CALL("base_page");
+    char* dup = PERL_GET_STACK_EXIT;
     
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    send_result(req, NULL, "text/html", dup, 0);
+    
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);
+    Safefree(dup);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

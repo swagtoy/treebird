@@ -177,29 +177,18 @@ void content_chats(PATH_ARGS)
 
     mastodont_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len);
 
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (chats)
         XPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
     else ARG_UNDEFINED();
-    // ARGS
-    PUTBACK;
-    call_pv("chat::content_chats", G_SCALAR);
-    SPAGAIN;
+
+    PERL_STACK_SCALAR_CALL("chat::content_chats");
 
     // Duplicate so we can free the TMPs
-    char* dup = savesharedsvpv(POPs);
-
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
@@ -240,11 +229,7 @@ void content_chat_view(PATH_ARGS)
     int chat_code = mastodont_get_chat(api, &m_args, data[0],
                        &storage_chat, &chat);
 
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
@@ -254,18 +239,11 @@ void content_chat_view(PATH_ARGS)
     if (messages)
         XPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
     else ARG_UNDEFINED();
-    // ARGS
-    PUTBACK;
-    call_pv("chat::construct_chat", G_SCALAR);
-    SPAGAIN;
+    
+    PERL_STACK_SCALAR_CALL("chat::construct_chat");
 
     // Duplicate so we can free the TMPs
-    char* dup = savesharedsvpv(POPs);
-
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,

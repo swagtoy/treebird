@@ -55,29 +55,16 @@ void content_lists(PATH_ARGS)
 
     mastodont_get_lists(api, &m_args, &storage, &lists, &lists_len);
 
-    // Call perl
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-    
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_lists(lists, lists_len)));
     
-    // ARGS
-    PUTBACK;
-    call_pv("lists::content_lists", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("lists::content_lists");
 
     // Duplicate so we can free the TMPs
-    char* dup = savesharedsvpv(POPs);
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
 
     struct base_page b = {
         .category = BASE_CAT_LISTS,

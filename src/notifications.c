@@ -216,13 +216,7 @@ void content_notifications(PATH_ARGS)
     if (keystr(ssn->cookies.logged_in))
         mastodont_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len);
 
-    // Call perl
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
-    
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
@@ -230,16 +224,10 @@ void content_notifications(PATH_ARGS)
         XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     
     // ARGS
-    PUTBACK;
-    call_pv("notifications::content_notifications", G_SCALAR);
-    SPAGAIN;
+    PERL_STACK_SCALAR_CALL("notifications::content_notifications");
 
     // Duplicate so we can free the TMPs
-    char* dup = savesharedsvpv(POPs);
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
         .category = BASE_CAT_NOTIFICATIONS,
