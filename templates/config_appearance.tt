@@ -1,0 +1,42 @@
+<div class="simple-page">
+  <form action="appearance" method="post" enctype="multipart/form-data">
+    <!-- Lets server know we sent it -->
+    <input type="hidden" name="set" value="1">
+    <h1>Appearance</h1>
+    <input class="btn btn-single" type="submit" value="Save">
+    <h3>Theme variant</h3>
+    <ul>
+      <li>
+        <label for="cfgthemevar">Theme variant</label>
+        <select name="theme" id="cfgthemevar">
+          <option value="treebird" title="Created by nekobit (@neko@rdrama.cc) | Former dark variant created by Grumbulon (@grumbulon@freecumextremist.com)">Treebird - Default, simple theme</option>
+          <option value="solarized" title="Created by coyote (@coyote@pl.lain.sh)">Solarized - Solarized colors for pleasant viewing</option>
+        </select>
+      </li>
+    </ul>
+    <h3>Color Scheme</h3>
+    <ul>
+      <li>
+        <input type="radio" id="cfglight" name="themeclr" value="0" checked>
+        <label for="cfglight">Light</label>
+      </li>
+      <li>
+        <input type="radio" id="cfgdark" name="themeclr" value="1">
+        <label for="cfgdark">Dark</label>
+      </li>
+    </ul>
+    <h3>Background</h3>
+    <ul>
+      <li>
+        <input type="file" name="file">
+      </li>
+    </ul>
+    <ul>
+      <li>
+        Sidebar opacity: <input type="range" name="sidebaropacity" min="0" max="255" value="255">
+      </li>
+    </ul>
+    
+    <input class="btn btn-single" type="submit" value="Save">
+  </form>
+</div>

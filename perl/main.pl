@@ -12,6 +12,7 @@ use account;
 use lists;
 use search;
 use chat;
+use config;
 
 # my $template = Template->new(
 #     {

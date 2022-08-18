@@ -27,7 +27,7 @@
 
 void content_config_appearance(PATH_ARGS);
 void content_config_general(PATH_ARGS);
-void content_config_account(PATH_ARGS);
+//void content_config_account(PATH_ARGS);
 void content_config(PATH_ARGS);
 
 #endif // PAGE_CONFIG_H

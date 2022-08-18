@@ -106,7 +106,7 @@ table.ui-table td
 #navbar
 {
     border-top: 2px solid #fff;
-    background: linear-gradient(#fbfbfb 37%, #efefef 50%, #e4e4e9);
+    background: linear-gradient(#fbfbfb 40%, #efefef 50%, #e4e4e9);
     width: 1000px;
     border-bottom: 2px solid #bfbfc4;
     z-index: 999;
