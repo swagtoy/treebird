@@ -92,25 +92,32 @@
                 <!-- Navigation -->
                 <tr>
                     <td id="leftbar" class="sidebar">
-                        <ul>
-                            <li><a class="sidebarbtn {{ %s : active_home }}" href="$prefix/">[% lang('HOME') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_local }}" href="$prefix/local/">[% lang('LOCAL') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_federated }}" href="$prefix/federated/">[% lang('FEDERATED') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_notifications }}" href="$prefix/notifications">[% lang('NOTIFICATIONS') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_lists }}" href="$prefix/lists">[% lang('LISTS') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_favourites }}" href="$prefix/favourites">[% lang('FAVOURITES') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_bookmarks }}" href="$prefix/bookmarks">[% lang('BOOKMARKS') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_direct }}" href="$prefix/direct">[% lang('DIRECT') %]</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_chats }}" href="$prefix/chats">Chats</a></li>
-                            <li><a class="sidebarbtn {{ %s : active_config }}" href="$prefix/config">[% lang('CONFIG') %]</a></li>
+                        <ul class="sidebar-menu">
+                            <li><a class="sidebarbtn" href="$prefix/">[% lang('HOME') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/local/">[% lang('LOCAL') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/federated/">[% lang('FEDERATED') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/notifications">[% lang('NOTIFICATIONS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/lists">[% lang('LISTS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/favourites">[% lang('FAVOURITES') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/bookmarks">[% lang('BOOKMARKS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/direct">[% lang('DIRECT') %]</a></li>
+                            <li><a class="sidebarbtn sidebarbtn-dropdown" href="$prefix/chats">Chats</a></li>
+                            <li>
+                                <label for="config-dropdown-checkbox">
+                                    <span class="sidebarbtn">
+                                        [% lang('CONFIG') %]
+                                    </span>
+                                </label>
+                                <input type="checkbox" id="config-dropdown-checkbox" class="hidden">
+                                <ul class="sidebar-submenu">
+                                    <li><a class="sidebarbtn" href="/config/general">General</a></li>
+                                    <li><a class="sidebarbtn" href="/config/appearance">Appearance</a></li>
+                                </ul>
+                            </li>
                         </ul>
                         
-                        <ul class="sidebar-config">
-                            <li><a class="sidebarbtn-sub" href="$prefix/config/general">[% lang('GENERAL') %]</a></li>
-                            <li><a class="sidebarbtn-sub" href="$prefix/config/appearance">[% lang('APPEARANCE') %]</a></li>
-                        </ul>
 
-                        
+
                         <!-- <div class="static-html" id="instance-panel"></div> -->
                         <div class="mini-links">
                             <a href="$prefix/about">About</a>
