@@ -3,19 +3,20 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORTS = qw( content_chats );
+our @EXPORTS = qw( content_chats construct_chat );
 
 use template_helpers 'to_template';
 use string_helpers 'format_username';
 
 sub construct_chat
 {
-    my ($ssn, $data, $chat) = @_;
+    my ($ssn, $data, $chat, $messages) = @_;
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
         chat => $chat,
+        messages => $messages,
         );
 
     to_template(\%vars, \$data->{'chat.tt'});

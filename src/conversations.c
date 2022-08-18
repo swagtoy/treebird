@@ -215,7 +215,7 @@ void content_chats(PATH_ARGS)
     Safefree(dup);
 }
 
-char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len)
+void content_chat_view(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -224,9 +224,6 @@ char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_
     size_t messages_len = 0;
     struct mstdnt_storage storage = { 0 }, storage_chat = { 0 };
     struct mstdnt_chat chat;
-    struct mstdnt_storage acct_storage = { 0 };
-    char* chats_page = NULL;
-    char* messages_html = NULL;
 
     struct mstdnt_chats_args args = {
         .with_muted = MSTDNT_TRUE,
@@ -237,73 +234,46 @@ char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_
         .limit = 20,
     };
     
-    if (len) *len = 0;
+    mastodont_get_chat_messages(api, &m_args, data[0], &args, &storage, &messages, &messages_len);
+    mastodont_get_chat(api, &m_args, data[0],
+                       &storage_chat, &chat);
 
-    if (mastodont_get_chat_messages(api, &m_args, id,
-                                    &args, &storage, &messages, &messages_len) ||
-        mastodont_get_chat(api, &m_args, id,
-                           &storage_chat, &chat))
-    {
-        chats_page = construct_error(storage.error, E_ERROR, 1, NULL);
-    }
-    else {
-        messages_html = construct_messages(messages, &(ssn->acct), &(chat.account), messages_len, NULL);
-        if (!messages_html)
-            messages_html = construct_error("This is the start of something new...", E_NOTICE, 1, NULL);
+    perl_lock();
+    dSP;
+    ENTER;
+    SAVETMPS;
+    PUSHMARK(SP);
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
+    XPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
+    // ARGS
+    PUTBACK;
+    call_pv("chat::construct_chat", G_SCALAR);
+    SPAGAIN;
 
-        struct chat_view_template tmpl = {
-            .back_link = "/chats",
-            .prefix = config_url_prefix,
-            .avatar = chat.account.avatar,
-            .acct = chat.account.acct,
-            .messages = messages_html
-        };
+    // Duplicate so we can free the TMPs
+    char* dup = savesharedsvpv(POPs);
 
-        chats_page = tmpl_gen_chat_view(&tmpl, len);
-    }
-
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&acct_storage);
-    free(messages_html);
-    // TODO cleanup messages
-    return chats_page;
-}
-
-void content_chat_view(PATH_ARGS)
-{
-    char* chat_view = construct_chat_view(ssn, api, data[0], NULL);
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+    perl_unlock();
 
     struct base_page b = {
         .category = BASE_CAT_CHATS,
-        .content = chat_view,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
     
     // Output
     render_base_page(&b, req, ssn, api);
-    
-    free(chat_view);
-}
 
-
-void content_chat_embed(PATH_ARGS)
-{
-    size_t result_len;
-    char* result;
-    char* chat_view = construct_chat_view(ssn, api, data[0], NULL);
-
-    struct embed_template tmpl = {
-        .stylesheet = "treebird20",
-        .embed = chat_view,
-    };
-
-    result = tmpl_gen_embed(&tmpl, &result_len);
-    
-    // Output
-    send_result(req, NULL, NULL, result, result_len);
-    
-    free(chat_view);
-    free(result);
+    mastodont_storage_cleanup(&storage);
+    mastodont_storage_cleanup(&storage_chat);
+    Safefree(dup);
 }
 
 HV* perlify_chat(const struct mstdnt_chat* chat)

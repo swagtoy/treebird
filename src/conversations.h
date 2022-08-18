@@ -45,8 +45,6 @@ char* construct_messages(struct mstdnt_message* message,
                          size_t* ret_size);
 
 void content_chats(PATH_ARGS);
-char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len);
-void content_chat_embed(PATH_ARGS);
 void content_chat_view(PATH_ARGS);
 
 AV* perlify_chats(const struct mstdnt_chat* chats, size_t chats_len);
