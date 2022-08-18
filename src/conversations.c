@@ -185,7 +185,9 @@ void content_chats(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
+    if (chats)
+        XPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
+    else ARG_UNDEFINED();
     // ARGS
     PUTBACK;
     call_pv("chat::content_chats", G_SCALAR);
@@ -235,7 +237,7 @@ void content_chat_view(PATH_ARGS)
     };
     
     mastodont_get_chat_messages(api, &m_args, data[0], &args, &storage, &messages, &messages_len);
-    mastodont_get_chat(api, &m_args, data[0],
+    int chat_code = mastodont_get_chat(api, &m_args, data[0],
                        &storage_chat, &chat);
 
     perl_lock();
@@ -246,8 +248,12 @@ void content_chat_view(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
-    XPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
+    if (chat_code)
+        XPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
+    else ARG_UNDEFINED();
+    if (messages)
+        XPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
+    else ARG_UNDEFINED();
     // ARGS
     PUTBACK;
     call_pv("chat::construct_chat", G_SCALAR);

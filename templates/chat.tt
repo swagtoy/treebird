@@ -1,1 +1,38 @@
-chat
+<div class="page-header">
+    <a href="/chats" class="page-header-button">&larr;</a>
+    <img src="[% chat.account.avatar %]" class="page-header-image avatar">
+    <a href="/@[% chat.account.acct %]" class="page-header-title">[% format_username(chat.account) %]</a>
+</div>
+<div class="chat-view">
+    [% FOREACH msg IN messages %]
+        <div class="message-container[% IF msg.account_id == ssn.account.id %] message-you[% END %]">
+            <img src="
+                      [%- IF msg.account_id == ssn.account.id -%]
+                      [% ssn.account.avatar %]
+                      [%- ELSE -%]
+                      [% chat.account.avatar %]
+                      [%- END -%]
+                      " class="avatar">
+            <div class="message-wrapper">
+                <div class="message" id="[% msg.id %]">
+                    <span class="content">[% emojify(msg.content, msg.emojis) %]</span>
+                    <span class="time">[% reltime(msg.created_at) %]</span>
+                </div>
+            </div>
+        </div>
+    [% END %]
+    <div class="anchor"></div>
+</div>
+<form action="" method="post">
+    <table class="chatbox ui-table">
+        <tr>
+            <td>
+                <textarea></textarea>
+            </td>
+            <td>
+                <input type="submit" class="chatbox-btn btn" value="Send">
+            </td>
+        </tr>
+    </table>
+</form>
+

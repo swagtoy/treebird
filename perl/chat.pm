@@ -6,7 +6,7 @@ use Exporter 'import';
 our @EXPORTS = qw( content_chats construct_chat );
 
 use template_helpers 'to_template';
-use string_helpers 'format_username';
+use string_helpers qw( format_username emojify reltime_to_str );
 
 sub construct_chat
 {
@@ -17,6 +17,9 @@ sub construct_chat
         ssn => $ssn,
         chat => $chat,
         messages => $messages,
+        format_username => \&format_username,
+        emojify => \&emojify,
+        reltime => \&reltime_to_str,
         );
 
     to_template(\%vars, \$data->{'chat.tt'});
