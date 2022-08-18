@@ -941,11 +941,8 @@ void content_status(PATH_ARGS, uint8_t flags)
                                  &statuses_before, &statuses_after,
                                  &stat_before_len, &stat_after_len);
 
-    perl_lock();
-    dSP;
-    ENTER;
-    SAVETMPS;
-    PUSHMARK(SP);
+
+    PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
@@ -959,18 +956,10 @@ void content_status(PATH_ARGS, uint8_t flags)
         XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_after, stat_after_len)));
     else
         ARG_UNDEFINED();
-    // ARGS
-    PUTBACK;
-    call_pv("status::content_status", G_SCALAR);
-    SPAGAIN;
 
-    // Duplicate so we can free the TMPs
-    char* dup = savesharedsvpv(POPs);
+    PERL_STACK_SCALAR_CALL("status::content_status");
 
-    PUTBACK;
-    FREETMPS;
-    LEAVE;
-    perl_unlock();
+    char* dup = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
         .category = BASE_CAT_NONE,

@@ -28,6 +28,24 @@
 #define hvstores_ref(hv, key, val) hv_stores((hv), key,                 \
                                              ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
 
+/* Seeing all this shit littered in Treebird's code made me decide to write some macros */
+#define PERL_STACK_INIT perl_lock(); \
+    dSP;                             \
+    ENTER;                           \
+    SAVETMPS;                        \
+    PUSHMARK(SP)
+
+#define PERL_STACK_SCALAR_CALL(name) PUTBACK;   \
+    call_pv((name), G_SCALAR);                  \
+    SPAGAIN
+
+/* you MUST assign scalar from savesharedsvpv, then free when done */
+#define PERL_GET_STACK_EXIT savesharedsvpv(POPs);   \
+    PUTBACK;                                        \
+    FREETMPS;                                       \
+    LEAVE;                                          \
+    perl_unlock()
+
 extern PerlInterpreter* my_perl;
 extern HV* template_files;
 extern pthread_mutex_t perllock_mutex;
