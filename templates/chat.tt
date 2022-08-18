@@ -4,7 +4,10 @@
     <a href="/@[% chat.account.acct %]" class="page-header-title">[% format_username(chat.account) %]</a>
 </div>
 <div class="chat-view">
-    [% FOREACH msg IN messages %]
+    [%# I can't quite say the below is fastest or could be done inline (one eval?),
+       not the fastest but it just works %]
+    [% revmessages = messages.reverse %]
+    [% FOREACH msg IN revmessages %]
         <div class="message-container[% IF msg.account_id == ssn.account.id %] message-you[% END %]">
             <img src="
                       [%- IF msg.account_id == ssn.account.id -%]

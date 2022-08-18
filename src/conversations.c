@@ -248,7 +248,7 @@ void content_chat_view(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    if (chat_code)
+    if (chat_code == 0)
         XPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
     else ARG_UNDEFINED();
     if (messages)
