@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw( &to_template );
+our @EXPORT = qw( to_template simple_page );
 
 use string_helpers 'simple_escape';
 
@@ -38,4 +38,18 @@ sub to_template
         return pretty_error($template->error());
 
     $result;
+}
+
+# Generic simple page with only session data and pages.
+# Pretty commonly done, so useful function.
+sub simple_page
+{
+    my ($ssn, $data, $page) = @_;
+    
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        );
+
+    to_template(\%vars, \$data->{$page});
 }

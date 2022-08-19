@@ -10,9 +10,9 @@
             <li>
                 <label for="cfglang">Language:</label>
                 <select name="lang" id="cfglang">
-                    <option value="0">English</option>
-                    <option value="1">Spanish</option>
-                    <option value="2">Chinese (Traditional)</option>
+                    <option value="0"[% IF ssn.config.lang == 0 %] selected [% END %]>English</option>
+                    <option value="1"[% IF ssn.config.lang == 1 %] selected [% END %]>Spanish</option>
+                    <option value="2"[% IF ssn.config.lang == 2 %] selected [% END %]>Chinese (Traditional)</option>
                 </select>
             </li>
         </ul>

@@ -46,6 +46,8 @@
 #include "../templates/config_appearance.ctt"
 #include "../templates/embed.ctt"
 #include "../templates/notifs_embed.ctt"
+#include "../templates/about.ctt"
+#include "../templates/license.ctt"
 
 PerlInterpreter* my_perl;
 HV* template_files;
@@ -82,6 +84,8 @@ void init_template_files(pTHX)
     hv_stores(template_files, "config_appearance.tt", newSVpv(data_config_appearance_tt, data_config_appearance_tt_size));
     hv_stores(template_files, "embed.tt", newSVpv(data_embed_tt, data_embed_tt_size));
     hv_stores(template_files, "notifs_embed.tt", newSVpv(data_notifs_embed_tt, data_notifs_embed_tt_size));
+    hv_stores(template_files, "about.tt", newSVpv(data_about_tt, data_about_tt_size));
+    hv_stores(template_files, "license.tt", newSVpv(data_license_tt, data_license_tt_size));
 }
 
 void cleanup_template_files()

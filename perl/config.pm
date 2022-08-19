@@ -5,30 +5,16 @@ use warnings;
 our @EXPORT = qw( general appearance );
 use Exporter 'import';
 
-use template_helpers 'to_template';
+use template_helpers 'simple_page';
 
 sub general
 {
-    my ($ssn, $data) = @_;
-
-    my %vars = (
-        prefix => '',
-        ssn => $ssn,
-        );
-
-    to_template(\%vars, \$data->{'config_general.tt'});
+    simple_page @_, 'config_general.tt';
 }
 
 sub appearance
 {
-    my ($ssn, $data) = @_;
-
-    my %vars = (
-        prefix => '',
-        ssn => $ssn,
-        );
-
-    to_template(\%vars, \$data->{'config_appearance.tt'});    
+    simple_page @_, 'config_appearance.tt';
 }
 
 1;

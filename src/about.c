@@ -25,35 +25,46 @@
 
 void content_about(PATH_ARGS)
 {
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+
+    PERL_STACK_SCALAR_CALL("meta::about");
+
+    char* dup = PERL_GET_STACK_EXIT;
+    
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = (char*)data_about,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
-    // Output
     render_base_page(&b, req, ssn, api);
+    Safefree(dup);
 }
 
 
 void content_about_license(PATH_ARGS)
 {
-    char* page;
-    char* referer = GET_ENV("HTTP_REFERER", req);
-    struct license_template tdata = {
-        .back_ref = referer,
-        .license_str = "License"
-    };
-    page = tmpl_gen_license(&tdata, NULL);
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+
+    PERL_STACK_SCALAR_CALL("meta::license");
+
+    char* dup = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
-        .content = page,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
-    // Output
     render_base_page(&b, req, ssn, api);
-    free(page);
+    Safefree(dup);
 }
 

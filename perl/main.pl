@@ -14,6 +14,7 @@ use search;
 use chat;
 use config;
 use embed;
+use meta;
 
 # my $template = Template->new(
 #     {
