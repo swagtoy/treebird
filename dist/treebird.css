@@ -119,7 +119,6 @@ table.ui-table td
 
 #navbar
 {
-    border-top: 2px solid #fff;
     background: linear-gradient(#fbfbfb 40%, #efefef 50%, #e4e4e9);
     width: 1000px;
     border-bottom: 2px solid #bfbfc4;
@@ -157,7 +156,7 @@ table.ui-table td
 {
     vertical-align: middle;
     display: inline-block;
-    margin: 4px 0px 6px 18px;
+    margin: 6px 0px 6px 18px;
 }
 
 #navbar span.info
