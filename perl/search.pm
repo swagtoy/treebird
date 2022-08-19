@@ -39,6 +39,7 @@ sub search_accounts
         prefix => '',
         ssn => $ssn,
         search => $search,
+        create_account => sub { generate_account_item($ssn, $data, shift); },
         );
 
     to_template(\%vars, \$data->{'search_accounts.tt'})
@@ -52,6 +53,7 @@ sub search_statuses
         prefix => '',
         ssn => $ssn,
         search => $search,
+        create_status => sub { generate_status($ssn, $data, shift); },
         );
 
     to_template(\%vars, \$data->{'search_statuses.tt'})
@@ -72,37 +74,17 @@ sub search_tags
 
 sub content_search_accounts
 {
-    my ($ssn, $data, $search) = @_;
-
-    search_page($ssn, $data, SEARCH_CAT_ACCOUNTS, search_accounts(@_)); 
+    search_page($_[0], $_[1], SEARCH_CAT_ACCOUNTS, search_accounts(@_)); 
 }
 
 sub content_search_statuses
 {
-    my ($ssn, $data, $search) = @_;
-
-    my %vars = (
-        prefix => '',
-        ssn => $ssn,
-        search => $search,
-        
-        create_status => sub { generate_status($ssn, $data, shift); },
-        );
-
-    search_page($ssn, $data, SEARCH_CAT_STATUSES, search_statuses(@_)); 
+    search_page($_[0], $_[1], SEARCH_CAT_STATUSES, search_statuses(@_)); 
 }
 
 sub content_search_tags
 {
-    my ($ssn, $data, $tags) = @_;
-
-    my %vars = (
-        prefix => '',
-        ssn => $ssn,
-        tags => $tags,
-        );
-
-    search_page($ssn, $data, SEARCH_CAT_TAGS, search_tags(@_)); 
+    search_page($_[0], $_[1], SEARCH_CAT_TAGS, search_tags(@_)); 
 }
 
 sub content_search
