@@ -48,7 +48,8 @@
                                         <li>
                                             <label>
                                                 <div class="btn-menu">
-                                                    <input type="radio" name="searchtype" value="0" checked>
+                                                    <!-- NO-OP -->
+                                                    <input type="radio" name="type" value="0" checked>
                                                     <span>All</span>
                                                 </div>
                                             </label>
@@ -56,7 +57,7 @@
                                         <li>
                                             <label>
                                                 <div class="btn-menu">
-                                                    <input type="radio" name="searchtype" value="0">
+                                                    <input type="radio" name="type" value="1">
                                                     <span>Statuses</span>
                                                 </div>
                                             </label>
@@ -64,7 +65,7 @@
                                         <li>
                                             <label>
                                                 <div class="btn-menu">
-                                                    <input type="radio" name="searchtype" value="0">
+                                                    <input type="radio" name="type" value="2">
                                                     <span>Accounts</span>
                                                 </div>
                                             </label>
@@ -72,7 +73,7 @@
                                         <li>
                                             <label>
                                                 <div class="btn-menu">
-                                                    <input type="radio" name="searchtype" value="0">
+                                                    <input type="radio" name="type" value="3">
                                                     <span>Hashtags</span>
                                                 </div>
                                             </label>

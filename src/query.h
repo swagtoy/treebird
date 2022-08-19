@@ -80,6 +80,7 @@ struct get_values
     struct key offset; // String
     struct key query; // String
     struct key code; // String
+    struct key type; // Int
 };
 
 char* read_get_data(FCGX_Request* req, struct get_values* query);

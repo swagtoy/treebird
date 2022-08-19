@@ -37,6 +37,7 @@ char* read_get_data(FCGX_Request* req, struct get_values* query)
         { "offset", &(query->offset), key_string },
         { "q", &(query->query), key_string },
         { "code", &(query->code), key_string },
+        { "type", &(query->type), key_int },
     };
     // END Query references
     
@@ -263,6 +264,7 @@ void free_files(struct file_array* files)
     free(content);
 }
 
+// TODO use hvstores_XXX macros
 HV* perlify_post_values(struct post_values* post)
 {
     HV* ssn_post_hv = newHV();
@@ -315,6 +317,7 @@ HV* perlify_get_values(struct get_values* get)
     hv_stores(ssn_query_hv, "offset", newSVpv(keystr(get->offset), 0));
     hv_stores(ssn_query_hv, "query", newSVpv(keystr(get->query), 0));
     hv_stores(ssn_query_hv, "code", newSVpv(keystr(get->code), 0));
+    hvstores_int(ssn_query_hv, "type", keyint(get->type));
     
     return ssn_query_hv;
 }

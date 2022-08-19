@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include "http.h"
 #include "helpers.h"
 #include "search.h"
 #include "easprintf.h"
@@ -83,6 +84,24 @@ void content_search_all(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
+    // Perform redirect to correct direct page
+    if (ssn->query.type.is_set)
+    {
+        // Note: This can be zero, which is just "nothing"
+        switch (keyint(ssn->query.type))
+        {
+        case 1:
+            redirect(req, REDIRECT_303, "/search/statuses");
+            return;
+        case 2:
+            redirect(req, REDIRECT_303, "/search/accounts");
+            return;
+        case 3:
+            redirect(req, REDIRECT_303, "/search/hashtags");
+            return;
+        }
+    }
+
     mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
 
     PERL_STACK_INIT;
@@ -130,26 +149,10 @@ void content_search_statuses(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    if (mastodont_search(api,
-                         &m_args,
-                         keystr(ssn->query.query),
-                         &storage,
-                         &args,
-                         &results) == 0)
-    {
-        struct construct_statuses_args statuses_args = {
-            .highlight_word = keystr(ssn->query.query),
-        };
-        statuses_html = construct_statuses(ssn, api, results.statuses, results.statuses_len, &statuses_args, NULL);
-        if (!statuses_html)
-            statuses_html = construct_error("No statuses", E_ERROR, 1, NULL);
-    }
-    else
-        statuses_html = construct_error("An error occured.", E_ERROR, 1, NULL);
-    
-    search_page(req, ssn, api, SEARCH_STATUSES, STR_NULL_EMPTY(statuses_html));
-    
-    if (statuses_html) free(statuses_html);
+    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+
+    // TODO
+
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
 }
@@ -158,7 +161,6 @@ void content_search_accounts(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* accounts_html;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
         .account_id = NULL,
@@ -174,23 +176,10 @@ void content_search_accounts(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    if (mastodont_search(api,
-                         &m_args,
-                         keystr(ssn->query.query),
-                         &storage,
-                         &args,
-                         &results) == 0)
-    {
-        accounts_html = construct_accounts(api, results.accts, results.accts_len, 0, NULL);
-        if (!accounts_html)
-            accounts_html = construct_error("No accounts", E_ERROR, 1, NULL);
-    }
-    else
-        accounts_html = construct_error("An error occured.", E_ERROR, 1, NULL);
+    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
     
-    search_page(req, ssn, api, SEARCH_ACCOUNTS, STR_NULL_EMPTY(accounts_html));
+    // TODO
     
-    if (accounts_html) free(accounts_html);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
 }
@@ -199,10 +188,6 @@ void content_search_hashtags(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* tags_html;
-    char* tags_graph = NULL;
-    char* tags_bars = NULL;
-    char* tags_page;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_search_args args = {
         .account_id = NULL,
@@ -218,36 +203,10 @@ void content_search_hashtags(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    if (mastodont_search(api,
-                         &m_args,
-                         keystr(ssn->query.query),
-                         &storage,
-                         &args,
-                         &results) == 0)
-    {
-        tags_html = construct_hashtags(results.tags, results.tags_len, NULL);
-        if (!tags_html)
-            tags_html = construct_error("No hashtags", E_ERROR, 1, NULL);
-
-        tags_bars = construct_hashtags_graph(results.tags,
-                                             results.tags_len,
-                                             14,
-                                             NULL);
-        if (tags_bars)
-            tags_graph = construct_bar_graph_container(tags_bars, NULL);
-        
-        if (tags_bars) free(tags_bars);
-    }
-    else
-        tags_html = construct_error("An error occured.", E_ERROR, 1, NULL);
-
-    easprintf(&tags_page, "%s%s", STR_NULL_EMPTY(tags_graph), tags_html);
+    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
     
-    search_page(req, ssn, api, SEARCH_HASHTAGS, tags_page);
+    // TODO
     
-    if (tags_html) free(tags_html);
-    if (tags_graph) free(tags_graph);
-    free(tags_page);
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
 }
