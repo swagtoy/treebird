@@ -27,7 +27,6 @@ struct local_config
     char* theme;
     char* background_url;
     int lang;
-    int themeclr;
     int jsactions;
     int jsreply;
     int jslive;

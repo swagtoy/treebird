@@ -93,7 +93,6 @@ struct mstdnt_storage* load_config(FCGX_Request* req,
     set_config_str(req, ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("sidebaropacity",       sidebar_opacity), CONFIG_APPEARANCE);
     set_config_str(LOAD_CFG_SIM("theme",                theme), CONFIG_APPEARANCE);
-    set_config_int(LOAD_CFG_SIM("themeclr",             themeclr), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("jsactions",            jsactions), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("jsreply",              jsreply), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("jslive",               jslive), CONFIG_GENERAL);

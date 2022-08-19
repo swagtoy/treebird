@@ -27,7 +27,6 @@ HV* perlify_config(struct local_config* config)
     hv_stores(ssn_config_hv, "theme", newSVpv(config->theme, 0));
     hv_stores(ssn_config_hv, "background_url", newSVpv(config->background_url, 0));
     hv_stores(ssn_config_hv, "lang", newSViv(config->lang));
-    hv_stores(ssn_config_hv, "themeclr", newSViv(config->themeclr));
     hv_stores(ssn_config_hv, "jsactions", newSViv(config->jsactions));
     hv_stores(ssn_config_hv, "jslive", newSViv(config->jslive));
     hv_stores(ssn_config_hv, "js", newSViv(config->js));

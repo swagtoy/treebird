@@ -13,6 +13,7 @@ use lists;
 use search;
 use chat;
 use config;
+use embed;
 
 # my $template = Template->new(
 #     {

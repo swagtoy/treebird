@@ -244,15 +244,12 @@ void content_notifications(PATH_ARGS)
 
 void content_notifications_compact(PATH_ARGS)
 {
-    char* theme_str = NULL;
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* page, *notif_html = NULL;
+    char* page;
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
-    char* start_id = NULL;
-    char* navigation_box = NULL;
 
     if (keystr(ssn->cookies.logged_in))
     {
@@ -269,56 +266,24 @@ void content_notifications_compact(PATH_ARGS)
             .limit = 20,
         };
 
-        if (mastodont_get_notifications(api,
-                                        &m_args,
-                                        &args,
-                                        &storage,
-                                        &notifs,
-                                        &notifs_len) == 0)
-        {
-            if (notifs && notifs_len)
-            {
-                notif_html = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
-                start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : notifs[0].id;
-                navigation_box = construct_navigation_box(start_id,
-                                                          notifs[0].id,
-                                                          notifs[notifs_len-1].id,
-                                                          NULL);
-                mstdnt_cleanup_notifications(notifs, notifs_len);
-            }
-            else
-                notif_html = construct_error("No notifications", E_NOTICE, 1, NULL);
-        }   
-        else
-            notif_html = construct_error(storage.error, E_ERROR, 1, NULL);
-
+        mastodont_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len);
     }
 
-    // Set theme
-    if (ssn->config.theme && !(strcmp(ssn->config.theme, "treebird") == 0 &&
-          ssn->config.themeclr == 0))
-    {
-        easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",
-                  ssn->config.theme,
-                  ssn->config.themeclr ? "-dark" : "");
-    }
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    if (notifs)
+        XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     
-    size_t len;
-    struct notifications_embed_template tdata = {
-        .theme_str = theme_str,
-        .notifications = notif_html,
-        .navigation_box = navigation_box
-    };
+    PERL_STACK_SCALAR_CALL("notifications::embed_notifications");
 
-    page = tmpl_gen_notifications_embed(&tdata, &len);
+    page = PERL_GET_STACK_EXIT;
 
-    send_result(req, NULL, NULL, page, len);
+    send_result(req, NULL, NULL, page, 0);
 
     mastodont_storage_cleanup(&storage);
-    free(notif_html);
-    free(navigation_box);
-    free(page);
-    free(theme_str);
+    mstdnt_cleanup_notifications(notifs, notifs_len);
 }
 
 void content_notifications_clear(PATH_ARGS)

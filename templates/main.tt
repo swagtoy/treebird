@@ -5,11 +5,11 @@
         <title>$title</title>
         <link rel="icon" type="image/png" href="/favicon.png">
         <link rel="stylesheet" type="text/css" href="/treebird.css">
-        [% IF !(ssn.config.theme == "treebird" && ssn.config.themeclr == 0) %]
+        [% UNLESS ssn.config.theme == "treebird" %]
             <link
                 rel="stylesheet"
                 type="text/css"
-                href="/[% ssn.config.theme %][% IF ssn.config.themeclr %]-dark[% END %].css">
+                href="/[% ssn.config.theme %].css">
         [% END %]
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="{{ %s : title }} is a decentralized social media platform">
