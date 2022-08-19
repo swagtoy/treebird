@@ -85,21 +85,29 @@ void content_search_all(PATH_ARGS)
     struct mstdnt_search_results results = { 0 };
 
     // Perform redirect to correct direct page
-    if (ssn->query.type.is_set)
+    if (keyint(ssn->query.type))
     {
+        char* query = keystr(ssn->query.query);
+        query = curl_easy_escape(api->curl, query, 0);
+        char* url;
         // Note: This can be zero, which is just "nothing"
         switch (keyint(ssn->query.type))
         {
         case 1:
-            redirect(req, REDIRECT_303, "/search/statuses");
-            return;
+            easprintf(&url, "/search/statuses?q=%s", query);
+            redirect(req, REDIRECT_303, url);
+            break;
         case 2:
-            redirect(req, REDIRECT_303, "/search/accounts");
-            return;
+            easprintf(&url, "/search/accounts?q=%s", query);
+            redirect(req, REDIRECT_303, url);
+            break;
         case 3:
-            redirect(req, REDIRECT_303, "/search/hashtags");
-            return;
+            easprintf(&url, "/search/hashtags?q=%s", query);
+            redirect(req, REDIRECT_303, url);
+            break;
         }
+        curl_free(query);
+        return;
     }
 
     mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
