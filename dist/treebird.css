@@ -1,3 +1,10 @@
+/*
+ * Notes:
+ * - Good luck :^3
+ * - Look into position: sticky; to handle overflows? Not sure if this works but i saw it work i think
+ */
+
+
 /* Variables */
 :root
 {
@@ -35,6 +42,13 @@ body
 form
 {
     display: inline;
+}
+
+html.embed
+{
+    background-color: unset;
+    scrollbar-color: #808080 #eaecf0;
+    scrollbar-width: thin;
 }
 
 /* Basic elements */
@@ -224,7 +238,7 @@ table.ui-table td
 }
 
 
-.sidebar-embed-container .navigation
+.embed .navigation
 {
     position: sticky;
     top: 0px;
@@ -234,20 +248,20 @@ table.ui-table td
     padding: 0;
 }
 
-.sidebar-embed-container .btn,
-.sidebar-embed-container .nav-btn
+.embed .btn,
+.embed .nav-btn
 {
     background: unset;
     padding: 2px !important;
     font-size: 13px;
 }
 
-.sidebar-embed-container .btn-disabled
+.embed .btn-disabled
 {
     background: unset;
 }
 
-.sidebar-embed-container .btn:hover
+.embed .btn:hover
 {
     background: unset;
     background-color: rgba(0, 0, 0, 0.2);
@@ -333,17 +347,6 @@ table.ui-table td
 {
     list-style-type: none;
 }
-
-/* .sidebar-submenu .sidebarbtn */
-/* { */
-/*     display: block; */
-/*     color: #000; */
-/*     padding: 8px; */
-/*     border-radius: 4px; */
-/*     padding-left: 24px; */
-/*     text-decoration: none; */
-/*     border: 1px solid transparent; */
-/* } */
 
 .sidebar-submenu .sidebarbtn.active
 {
@@ -971,6 +974,14 @@ input[type=checkbox].hidden:not(:checked) + .sidebar-submenu
     display: none;
 }
 
+.status-hide:checked + .status.status-compact .action-icon
+{
+    position: initial;
+    float: left;
+    left: initial;
+    top: initial;
+}
+
 .pfp-td
 {
     position: relative;
@@ -1122,15 +1133,22 @@ input[type=checkbox].hidden:not(:checked) + .sidebar-submenu
     font-size: 14px;
 }
 
-.status-compact.status.status-notification
+.status-compact.status.status-notification,
+.notifications-compact .notification.notification-regular
 {
     padding: 5px;
 }
 
-.status-compact .pfp-td img
+.status-compact .pfp-td img,
+.notifications-compact .notification.notification-regular .pfp-td img
 {
     width: 28px;
     height: 28px;
+}
+
+.notifications-compact .notification.notification-regular .pfp-td
+{
+    width: 28px;
 }
 
 .status-compact .action-icon
@@ -1192,6 +1210,19 @@ input[type=checkbox].hidden:not(:checked) + .sidebar-submenu
     height: 14px;
     /* Pixel perfect... */
     top: -2px;
+}
+
+.status-compact .attachments img,
+.status-compact .attachments video
+{
+    display: inline;
+    margin-right: 6px;
+    width: 70px;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid #cacaca;
+    border-radius: 4px;
+    object-fit: cover;
 }
 
 .status-compact .status-buttons

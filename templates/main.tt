@@ -176,12 +176,15 @@
                             </div>
 
                             <!-- Notifications -->
-                            <div class="notifications-compact">
-                                [% FOREACH notif IN notifs %]
-                                    [% notification(ssn, data, notif, 1) %]
-                                [% END %]
-                            </div>
-                            
+                            [% IF ssn.config.notif_embed %]
+                                <iframe class="sidebar-frame" loading="lazy" src="/notifications_compact"></iframe>
+                            [% ELSE %]
+                                <div class="notifications-compact">
+                                    [% FOREACH notif IN notifs %]
+                                        [% notification(ssn, data, notif, 1) %]
+                                    [% END %]
+                                </div>
+                            [% END %]
                         [% ELSE %]
                             <div class="sidebar-login">
                                 <form action="$prefix/login" method="post">

@@ -10,6 +10,7 @@ use status 'generate_status';
 use string_helpers qw( random_error_kaomoji );
 use icons 'get_icon';
 use embed 'generate_embedded_page';
+use navigation 'generate_navigation';
 
 sub generate_notification
 {
@@ -53,7 +54,7 @@ sub embed_notifications
         ssn => $ssn,
         notifs => $notifs,
         notification => sub { generate_notification($ssn, $data, shift, 1); },
-        random_error_kaomoji => \&random_error_kaomoji,
+        nav => sub { generate_navigation($ssn, $data, $notifs->[0]->{id}, $notifs->[-1]->{id}) },
         );
     
     generate_embedded_page($ssn, $data, to_template(\%vars, \$data->{'notifs_embed.tt'}));

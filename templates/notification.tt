@@ -25,7 +25,7 @@
                     [% icon('follow') %]
                 </div>
                 <div class="notification-content">
-                    <a href="/@[% notif.account.acct %]">@[% notif.account.acct %]</a>
+                    <a href="/@[% notif.account.acct %]" target="_parent">@[% notif.account.acct %]</a>
                 </div>
             </td>
         </tr>

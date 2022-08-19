@@ -1,3 +1,4 @@
+[% nav() %]
 <div class="notifications-compact">
     [% IF notifs %]
         [% FOREACH notif IN notifs %]
