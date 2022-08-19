@@ -32,12 +32,12 @@ sub search_page
 
 sub search_accounts
 {
-    my ($ssn, $data, $accounts) = @_;
+    my ($ssn, $data, $search) = @_;
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
-        accounts => $accounts,
+        search => $search,
         );
 
     search_page($ssn, $data, SEARCH_CAT_ACCOUNTS, to_template(\%vars, \$data->{'search_accounts.tt'})); 
@@ -45,12 +45,14 @@ sub search_accounts
 
 sub search_statuses
 {
-    my ($ssn, $data, $statuses) = @_;
+    my ($ssn, $data, $search) = @_;
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
-        statuses => $statuses,
+        search => $search,
+        
+        create_status => sub { generate_status($ssn, $data, shift); },
         );
 
     search_page($ssn, $data, SEARCH_CAT_STATUSES, to_template(\%vars, \$data->{'search_statuses.tt'})); 

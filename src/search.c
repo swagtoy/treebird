@@ -159,10 +159,29 @@ void content_search_statuses(PATH_ARGS)
 
     mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
 
-    // TODO
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    
+    PERL_STACK_SCALAR_CALL("search::search_statuses");
+
+    // Duplicate so we can free the TMPs
+    char* dup = PERL_GET_STACK_EXIT;
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = dup,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    render_base_page(&b, req, ssn, api);
 
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
+    Safefree(dup);
 }
 
 void content_search_accounts(PATH_ARGS)
@@ -186,7 +205,25 @@ void content_search_accounts(PATH_ARGS)
 
     mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
     
-    // TODO
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    
+    PERL_STACK_SCALAR_CALL("search::search_accounts");
+
+    // Duplicate so we can free the TMPs
+    char* dup = PERL_GET_STACK_EXIT;
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = dup,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    render_base_page(&b, req, ssn, api);
     
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
