@@ -96,9 +96,9 @@ sub content_search
         ssn => $ssn,
         search => $search,
         
-        statuses => search_statuses,
-        accounts => search_accounts,
-        hashtags => search_tags,
+        statuses => search_statuses(@_),
+        accounts => search_accounts(@_),
+        hashtags => search_tags(@_),
         );
 
     to_template(\%vars, \$data->{'content_search.tt'});

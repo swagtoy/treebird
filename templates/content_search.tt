@@ -27,7 +27,7 @@
     <div class="accounts-results search-page">
         [% accounts %]
     </div>
-    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage"[% UNLESS search.tags %] disabled[% END %]>
+    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage"[% UNLESS search.hashtags %] disabled[% END %]>
     <div class="hashtags-results search-page">
         [% hashtags %]
     </div>
