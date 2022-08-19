@@ -164,8 +164,7 @@ void content_search_statuses(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
-    
-    PERL_STACK_SCALAR_CALL("search::search_statuses");
+    PERL_STACK_SCALAR_CALL("search::content_search_statuses");
 
     // Duplicate so we can free the TMPs
     char* dup = PERL_GET_STACK_EXIT;
@@ -211,7 +210,7 @@ void content_search_accounts(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
     
-    PERL_STACK_SCALAR_CALL("search::search_accounts");
+    PERL_STACK_SCALAR_CALL("search::content_search_accounts");
 
     // Duplicate so we can free the TMPs
     char* dup = PERL_GET_STACK_EXIT;

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORTS = qw( content_search search_tags search_accounts search_statuses );
+our @EXPORTS = qw( content_search content_search_tags content_search_accounts content_search_statuses search_tags search_accounts search_statuses );
 
 use template_helpers 'to_template';
 use status 'generate_status';
@@ -30,20 +30,54 @@ sub search_page
     to_template(\%vars, \$data->{'search.tt'});
 }
 
+# CONTENT
 sub search_accounts
 {
     my ($ssn, $data, $search) = @_;
-
+    
     my %vars = (
         prefix => '',
         ssn => $ssn,
         search => $search,
         );
 
-    search_page($ssn, $data, SEARCH_CAT_ACCOUNTS, to_template(\%vars, \$data->{'search_accounts.tt'})); 
+    to_template(\%vars, \$data->{'search_accounts.tt'})
 }
 
 sub search_statuses
+{
+    my ($ssn, $data, $search) = @_;
+    
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        search => $search,
+        );
+
+    to_template(\%vars, \$data->{'search_statuses.tt'})
+}
+
+sub search_tags
+{
+    my ($ssn, $data, $search) = @_;
+    
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        search => $search,
+        );
+
+    to_template(\%vars, \$data->{'search_tags.tt'})
+}
+
+sub content_search_accounts
+{
+    my ($ssn, $data, $search) = @_;
+
+    search_page($ssn, $data, SEARCH_CAT_ACCOUNTS, search_accounts(@_)); 
+}
+
+sub content_search_statuses
 {
     my ($ssn, $data, $search) = @_;
 
@@ -55,10 +89,10 @@ sub search_statuses
         create_status => sub { generate_status($ssn, $data, shift); },
         );
 
-    search_page($ssn, $data, SEARCH_CAT_STATUSES, to_template(\%vars, \$data->{'search_statuses.tt'})); 
+    search_page($ssn, $data, SEARCH_CAT_STATUSES, search_statuses(@_)); 
 }
 
-sub search_tags
+sub content_search_tags
 {
     my ($ssn, $data, $tags) = @_;
 
@@ -68,7 +102,7 @@ sub search_tags
         tags => $tags,
         );
 
-    search_page($ssn, $data, SEARCH_CAT_TAGS, to_template(\%vars, \$data->{'search_tags.tt'})); 
+    search_page($ssn, $data, SEARCH_CAT_TAGS, search_tags(@_)); 
 }
 
 sub content_search
@@ -80,8 +114,9 @@ sub content_search
         ssn => $ssn,
         search => $search,
         
-        create_status => sub { generate_status($ssn, $data, shift); },
-        create_account => sub { generate_account_item($ssn, $data, shift); },
+        statuses => search_statuses,
+        accounts => search_accounts,
+        hashtags => search_tags,
         );
 
     to_template(\%vars, \$data->{'content_search.tt'});

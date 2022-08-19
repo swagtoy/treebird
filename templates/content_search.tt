@@ -19,20 +19,16 @@
 </table>
 
 <div class="search-results">
-    <input type="radio" class="search-page-hidden hidden" id="statuses-results-hidden" name="searchpage" checked>
+    <input type="radio" class="search-page-hidden hidden" id="statuses-results-hidden" name="searchpage"[% UNLESS search.statuses %] disabled[% ELSE %] checked[% END %]>
     <div class="statuses-results search-page">
-        [% FOREACH i IN search.statuses %]
-            [% create_status(i); %]
-        [% END %]
+        [% statuses %]
     </div>
-    <input type="radio" class="search-page-hidden hidden" id="accounts-results-hidden" name="searchpage">
+    <input type="radio" class="search-page-hidden hidden" id="accounts-results-hidden" name="searchpage"[% UNLESS search.accounts %] disabled[% END %]>
     <div class="accounts-results search-page">
-        [% FOREACH i IN search.accounts %]
-            [% create_account(i); %]
-        [% END %]        
+        [% accounts %]
     </div>
-    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage">
+    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage"[% UNLESS search.tags %] disabled[% END %]>
     <div class="hashtags-results search-page">
-        TODO
+        [% hashtags %]
     </div>
 </div>

@@ -15,5 +15,5 @@
 </table>
 
 <div class="search-results">
-  [% results %]
+  [% content %]
 </div>
