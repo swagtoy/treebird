@@ -1,7 +1,6 @@
 package account;
 use strict;
 use warnings;
-use Data::Dumper;
 
 use Exporter 'import';
 

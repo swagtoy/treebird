@@ -15,6 +15,7 @@ use chat;
 use config;
 use embed;
 use meta;
+use login;
 
 # my $template = Template->new(
 #     {

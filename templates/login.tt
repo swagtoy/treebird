@@ -1,0 +1,29 @@
+<div class="simple-page">
+    <h1>{{%s:login_header}}</h1>
+    
+    {{%s:error}}
+
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label for="login-username">{{%s:username}}: </label>
+            <input type="text" id="login-username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="login-password">{{%s:password}}: </label>
+            <input type="password" id="login-password" name="password"><br>
+        </div>
+        <div class="form-group">
+            <input class="btn" type="submit" value="{{%s:login_submit}}">
+        </div>
+    </form>
+
+    <h6>{{%s:instance_text}}</h6>
+
+    <form action="/login/oauth" method="post">
+        <div class="form-group">
+            <label for="instance-url">{{%s:instance_url}}: </label>
+            <input type="url" id="instance-url" name="instance">
+            <input class="btn" type="submit" value="{{%s:instance_submit}}">
+        </div>
+    </form>
+</div>

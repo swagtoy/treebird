@@ -206,23 +206,21 @@ void content_login(PATH_ARGS)
         }
     }
 
-    // Concat
-    struct login_template tdata = {
-        .login_header = L10N[L10N_EN_US][L10N_LOGIN],
-        .error = error,
-        .prefix = config_url_prefix,
-        .username = L10N[L10N_EN_US][L10N_USERNAME],
-        .password = L10N[L10N_EN_US][L10N_PASSWORD],
-        .login_submit = L10N[L10N_EN_US][L10N_LOGIN_BTN],
-        .instance_text = "Or",
-        .instance_url = "Instance url",
-        .instance_submit = "Authorize"
-    };
-    page = tmpl_gen_login(&tdata, NULL);
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    if (storage.error || oauth_store.error)
+        XPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
+
+    PERL_STACK_SCALAR_CALL("login::content_login");
+
+    page = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
         .category = BASE_CAT_NONE,
         .content = page,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
@@ -232,6 +230,5 @@ void content_login(PATH_ARGS)
     // Cleanup
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&oauth_store);
-    if (error) free(error);
-    if (page) free(page);
+    Safefree(page);
 }
