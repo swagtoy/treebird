@@ -8,13 +8,6 @@ SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h) config.h
 PAGES_DIR = static
-TMPL_DIR = templates
-PAGES = $(wildcard $(PAGES_DIR)/*.tmpl)
-TMPLS = $(wildcard $(TMPL_DIR)/*.tt)
-PAGES_CMP = $(patsubst %.tmpl,%.ctmpl,$(PAGES))
-PAGES_C = $(patsubst %.tmpl, %.c,$(PAGES))
-PAGES_C_OBJ = $(patsubst %.c,%.o,$(PAGES_C))
-TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))
 TEST_DIR = test/unit
 TESTS = $(wildcard $(TEST_DIR)/t*.c)
 UNIT_TESTS = $(patsubst %.c,%.bin,$(TESTS))
@@ -32,20 +25,10 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 all:
 	$(MAKE) dep_build
 	$(MAKE) filec
-	$(MAKE) ctemplate
-	$(MAKE) make_ctmpls
-	$(MAKE) make_pages
-	$(MAKE) make_pagesc
-	$(MAKE) make_pagescobj
 	$(MAKE) $(TARGET)
 
 install_deps:
 	cpan Template::Toolkit
-
-make_ctmpls: $(TMPLS_C)
-make_pages: $(PAGES_CMP)
-make_pagesc: $(PAGES_C)
-make_pagescobj: $(PAGES_C_OBJ)
 
 $(TARGET): $(HEADERS) $(OBJ)
 	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
@@ -56,17 +39,6 @@ filec: src/file-to-c/main.o
 emojitoc: scripts/emoji-to.o
 	$(CC) -o emojitoc $< $(LDFLAGS)
 	./emojitoc meta/emoji.json > src/emoji_codes.h
-
-# Redirect stdout and stderr into separate contents as a hack
-# Let bash do the work :)
-$(PAGES_DIR)/%.ctmpl: $(PAGES_DIR)/%.tmpl $(TMPLS)
-	./ctemplate $< $(notdir $*) 2> $(PAGES_DIR)/$(notdir $*).c 1> $@
-
-$(TMPL_DIR)/%.ctt: $(TMPL_DIR)/%.tt
-	./filec $< data_$(notdir $*)_tt > $@
-
-ctemplate: src/template/main.o
-	$(CC) $(LDFLAGS) -o ctemplate $<
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true
@@ -95,7 +67,6 @@ dep_build:
 clean:
 	rm -f $(OBJ) src/file-to-c/main.o
 	rm -f $(PAGES_CMP)
-	rm -f $(TMPLS_C)
 	rm -f test/unit/*.bin
 	rm -f filec ctemplate
 	rm $(TARGET) || true
