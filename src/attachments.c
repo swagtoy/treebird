@@ -24,13 +24,6 @@
 #include "attachments.h"
 #include "string_helpers.h"
 
-// Pages
-#include "../static/attachments.ctmpl"
-#include "../static/attachment_image.ctmpl"
-#include "../static/attachment_gifv.ctmpl"
-#include "../static/attachment_video.ctmpl"
-#include "../static/attachment_link.ctmpl"
-#include "../static/attachment_audio.ctmpl"
 
 struct attachments_args
 {
@@ -121,80 +114,6 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
         free(media_ids[i]);
     free(media_ids);
-}
-
-char* construct_attachment(struct session* ssn,
-                           mstdnt_bool sensitive,
-                           struct mstdnt_attachment* att,
-                           size_t* str_size)
-{
-    // Due to how similar the attachment templates are, we're just going to use their data files
-    // and not generate any templates, saves some LOC!
-    char* att_html;
-    size_t s;
-    const char* attachment_str;
-    if (!att) return NULL;
-
-    if (ssn->config.stat_attachments)
-        switch (att->type)
-        {
-        case MSTDNT_ATTACHMENT_IMAGE:
-            attachment_str = data_attachment_image; break;
-        case MSTDNT_ATTACHMENT_GIFV:
-            attachment_str = data_attachment_gifv; break;
-        case MSTDNT_ATTACHMENT_VIDEO:
-            attachment_str = data_attachment_video; break;
-        case MSTDNT_ATTACHMENT_AUDIO:
-            attachment_str = data_attachment_audio; break;
-        case MSTDNT_ATTACHMENT_UNKNOWN: // Fall through
-        default:
-            attachment_str = data_attachment_link; break;
-        }
-    else
-        attachment_str = data_attachment_link;
-
-    // Images/visible content displays sensitive placeholder after
-    if ((att->type == MSTDNT_ATTACHMENT_IMAGE ||
-         att->type == MSTDNT_ATTACHMENT_GIFV ||
-         att->type == MSTDNT_ATTACHMENT_VIDEO) &&
-        ssn->config.stat_attachments)
-    {
-        s = easprintf(&att_html, attachment_str,
-                      att->url,
-                      sensitive ? "<div class=\"sensitive-contain sensitive\"></div>" : "");
-    }
-    else {
-        s = easprintf(&att_html, attachment_str,
-                      sensitive ? "sensitive" : "",
-                      att->url);
-    }
-    
-    if (str_size) *str_size = s;
-    return att_html;
-}
-
-static char* construct_attachments_voidwrap(void* passed, size_t index, size_t* res)
-{
-    struct attachments_args* args = passed;
-    return construct_attachment(args->ssn, args->sensitive, args->atts + index, res);
-}
-
-char* construct_attachments(struct session* ssn,
-                            mstdnt_bool sensitive,
-                            struct mstdnt_attachment* atts,
-                            size_t atts_len,
-                            size_t* str_size)
-{
-    size_t elements_size;
-    struct attachments_args args = { ssn, atts, sensitive };
-    char* elements = construct_func_strings(construct_attachments_voidwrap, &args, atts_len, &elements_size);
-    char* att_view;
-
-    size_t s = easprintf(&att_view, data_attachments, elements);
-    if (str_size) *str_size = s;
-    // Cleanup
-    free(elements);
-    return att_view;
 }
 
 HV* perlify_attachment(struct mstdnt_attachment* const attachment)

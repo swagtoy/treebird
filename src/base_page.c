@@ -30,11 +30,6 @@
 #include <fcgi_stdio.h>
 #include "global_cache.h"
 
-// Files
-#include "../static/index.ctmpl"
-#include "../static/quick_login.ctmpl"
-#include "../templates/main.ctt"
-
 #define BODY_STYLE "style=\"background:url('%s');\""
 
 void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)

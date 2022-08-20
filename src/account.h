@@ -57,33 +57,6 @@ struct account_page
 };
 
 void get_account_info(mastodont_t* api, struct session* ssn);
-char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size);
-
-char* construct_account(mastodont_t* api,
-                        struct mstdnt_account* account,
-                        uint8_t flags,
-                        size_t* size);
-char* construct_accounts(mastodont_t* api,
-                         struct mstdnt_account* accounts,
-                         size_t size,
-                         uint8_t flags,
-                         size_t* ret_size);
-
-size_t construct_account_page(struct session *ssn,
-                              char** result,
-                              struct account_page* page,
-                              char* content);
-
-char* load_account_page(struct session* ssn,
-                        mastodont_t* api,
-                        struct mstdnt_account* acct,
-                        struct mstdnt_relationship* relationship,
-                        enum account_tab tab,
-                        char* content,
-                        size_t* res_size);
-
-char* load_account_info(struct mstdnt_account* acct,
-                        size_t* size);
 
 void content_account_followers(PATH_ARGS);
 void content_account_following(PATH_ARGS);

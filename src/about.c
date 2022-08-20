@@ -20,9 +20,6 @@
 #include "base_page.h"
 #include "about.h"
 
-#include "../static/about.ctmpl"
-#include "../static/license.ctmpl"
-
 void content_about(PATH_ARGS)
 {
     PERL_STACK_INIT;
