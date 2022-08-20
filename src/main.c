@@ -38,7 +38,6 @@
 #include "timeline.h"
 #include "session.h"
 #include "notifications.h"
-#include "test.h"
 #include "env.h"
 #include "search.h"
 #include "about.h"
@@ -65,7 +64,6 @@ static struct path_info paths[] = {
     { "/config", content_config },
     { "/login/oauth", content_login_oauth },
     { "/login", content_login },
-    { "/test", content_test },
     { "/user/:/action/:", content_account_action },
     { "/user/:", content_account_statuses },
     { "/@:/scrobbles", content_account_scrobbles },
