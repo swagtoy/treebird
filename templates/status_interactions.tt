@@ -1,0 +1,5 @@
+<h1 class="text-header">$label</h1>
+
+[% FOREACH i IN accounts %]
+    [% create_account(i) %]
+[% END %]

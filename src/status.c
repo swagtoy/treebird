@@ -898,28 +898,29 @@ void content_status_interactions(FCGX_Request* req,
                                  struct mstdnt_account* accts,
                                  size_t accts_len)
 {
-    char* accounts_html = construct_accounts(api, accts, accts_len, 0, NULL);
-    if (!accounts_html)
-        accounts_html = construct_error("No accounts", E_NOTICE, 1, NULL);
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+    if (accts)
+        XPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
+    else ARG_UNDEFINED();
+    XPUSHs(newSVpv(label, 0));
 
-    struct interactions_page_template tmpl = {
-        .back_ref = GET_ENV("HTTP_REFERER", req),
-        .interaction_str = label,
-        .accts = accounts_html
-    };
+    PERL_STACK_SCALAR_CALL("account::status_interactions");
 
-    char* output = tmpl_gen_interactions_page(&tmpl, NULL);
+    char* dup = PERL_GET_STACK_EXIT;
 
     struct base_page page = {
         .category = BASE_CAT_NONE,
-        .content = output,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
     render_base_page(&page, req, ssn, api);
 
     // Cleanup
-    free(accounts_html);
-    free(output);
+    Safefree(dup);
 }
 
 void content_status(PATH_ARGS, uint8_t flags)

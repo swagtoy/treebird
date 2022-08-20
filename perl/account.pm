@@ -4,7 +4,7 @@ use warnings;
 
 use Exporter 'import';
 
-our @EXPORT = qw( account content_statuses generate_account_list generate_account_item );
+our @EXPORT = qw( account content_statuses generate_account_list generate_account_item status_interactions );
 
 use template_helpers 'to_template';
 use l10n 'lang';
@@ -79,6 +79,24 @@ sub generate_account_list
         );
 
     to_template(\%vars, \$data->{'accounts.tt'});
+}
+
+sub status_interactions
+{
+    my ($ssn, $data, $accounts, $label) = @_;
+
+    my %vars = (
+        prefix => '',
+        ssn => $ssn,
+        data => $data,
+        accounts => $accounts,
+        label => $label,
+        # Functions
+        create_account => sub { generate_account_item($ssn, $data, shift); },
+        );
+
+
+    to_template(\%vars, \$data->{'status_interactions.tt'});
 }
 
 sub content_accounts
