@@ -22,66 +22,6 @@
 #include <stdlib.h>
 #include "easprintf.h"
 
-
-struct construct_emoji_reactions_args
-{
-    struct mstdnt_emoji_reaction* emojis;
-    char* id;
-};
-
-char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, size_t* str_size)
-{
-    char* ret;
-    char* emoji = emo->name;
-    if (emo->url)
-    {
-        struct custom_emoji_reaction_template c_data = {
-            .url = emo->url,
-        };
-        emoji = tmpl_gen_custom_emoji_reaction(&c_data, NULL);
-    }
-    
-    struct emoji_reaction_template data = {
-        .prefix = config_url_prefix,
-        .status_id = id,
-        .custom_emoji = emo->url ? "custom-emoji-container" : NULL,
-        .emoji = emo->name,
-        .emoji_display = emoji,
-        .emoji_active = emo->me ? "active" : NULL,
-        .emoji_count = emo->count
-    };
-
-    ret = tmpl_gen_emoji_reaction(&data, str_size);
-    if (emoji != emo->name)
-        free(emoji);
-    return ret;
-}
-
-static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, size_t* res)
-{
-    struct construct_emoji_reactions_args* args = passed;
-    return construct_emoji_reaction(args->id, args->emojis + index, res);
-}
-
-char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_size)
-{
-    size_t elements_size;
-    struct construct_emoji_reactions_args args = {
-        .emojis = emos,
-        .id = id
-    };
-    char* elements = construct_func_strings(construct_emoji_reactions_voidwrap, &args, emos_len, &elements_size);
-    char* emos_view;
-
-    struct emoji_reactions_template data = {
-        .emojis = elements
-    };
-    emos_view = tmpl_gen_emoji_reactions(&data, str_size);
-    // Cleanup
-    free(elements);
-    return emos_view;
-}
-
 HV* perlify_emoji_reaction(struct mstdnt_emoji_reaction* const emoji)
 {
     if (!emoji) return NULL;

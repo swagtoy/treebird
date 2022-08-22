@@ -21,9 +21,6 @@
 #include <mastodont.h>
 #include "global_perl.h"
 
-char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, size_t* str_len);
-char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_len);
-
 // Perl
 HV* perlify_emoji_reaction(struct mstdnt_emoji_reaction* const emoji);
 AV* perlify_emoji_reactions(struct mstdnt_emoji_reaction* const emos, size_t len);

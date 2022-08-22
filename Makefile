@@ -7,7 +7,9 @@ LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpc
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h) config.h
-PAGES_DIR = static
+TMPL_DIR = templates
+TMPLS = $(wildcard $(TMPL_DIR)/*.tt)
+TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))
 TEST_DIR = test/unit
 TESTS = $(wildcard $(TEST_DIR)/t*.c)
 UNIT_TESTS = $(patsubst %.c,%.bin,$(TESTS))
@@ -25,6 +27,7 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 all:
 	$(MAKE) dep_build
 	$(MAKE) filec
+	$(MAKE) make_tmpls
 	$(MAKE) $(TARGET)
 
 install_deps:
@@ -39,6 +42,11 @@ filec: src/file-to-c/main.o
 emojitoc: scripts/emoji-to.o
 	$(CC) -o emojitoc $< $(LDFLAGS)
 	./emojitoc meta/emoji.json > src/emoji_codes.h
+
+$(TMPL_DIR)/%.ctt: $(TMPL_DIR)/%.tt
+	./filec $< data_$(notdir $*)_tt > $@
+
+make_tmpls: $(TMPLS_C)
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true
@@ -66,7 +74,7 @@ dep_build:
 
 clean:
 	rm -f $(OBJ) src/file-to-c/main.o
-	rm -f $(PAGES_CMP)
+	rm -f $(TMPLS_C)
 	rm -f test/unit/*.bin
 	rm -f filec ctemplate
 	rm $(TARGET) || true
