@@ -103,22 +103,23 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     emojis[EMO_CAT_OBJECTS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_OBJECTS, EMOJO_CAT_SYMBOLS - EMOJO_CAT_OBJECTS, len + 5);
     emojis[EMO_CAT_SYMBOLS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_SYMBOLS, EMOJO_CAT_FLAGS - EMOJO_CAT_SYMBOLS, len + 6);
     emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, EMOJO_CAT_MAX - EMOJO_CAT_FLAGS, len + 6);
-    
-    struct emoji_picker_template data = {
-        .emojis_smileys = emojis[EMO_CAT_SMILEYS],
-        .emojis_animals = emojis[EMO_CAT_ANIMALS],
-        .emojis_food = emojis[EMO_CAT_FOOD],
-        .emojis_travel = emojis[EMO_CAT_TRAVEL],
-        .emojis_activities = emojis[EMO_CAT_ACTIVITIES],
-        .emojis_objects = emojis[EMO_CAT_OBJECTS],
-        .emojis_symbols = emojis[EMO_CAT_SYMBOLS],
-        .emojis_flags = emojis[EMO_CAT_FLAGS],
-    };
 
-    emoji_picker_html = tmpl_gen_emoji_picker(&data, size);
+    PERL_STACK_INIT;
+    XPUSHs(newRV_noinc((SV*)template_files));
+    AV* av = newAV();
+    for (int i = 0; i < EMO_CAT_LEN; ++i)
+    {
+        av_store(av, i, newSVpv(emojis + i, len + i));
+    }
+    XPUSHs(newRV_inc((SV*)av));
+    PERL_STACK_SCALAR_CALL("emojis::emoji_picker");
+
+    char* dup = PERL_GET_STACK_EXIT;
+
+    // Cleanup
     for (size_t i = 0; i < EMO_CAT_LEN; ++i)
         free(emojis[i]);
-    return emoji_picker_html;
+    return dup;
 }
 
 HV* perlify_emoji(struct mstdnt_emoji* const emoji)

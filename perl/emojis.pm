@@ -24,8 +24,11 @@ sub generate_emoji
 
 sub emoji_picker
 {
-    my ($ssn, $data, $emojis) = @_;
+    my ($data, $emojis) = @_;
 
+    my %vars = (
+        e => $emojis
+        );
 
     to_template(\%vars, \$data->{'emoji_picker.tt'});
 }

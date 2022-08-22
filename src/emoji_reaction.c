@@ -22,10 +22,6 @@
 #include <stdlib.h>
 #include "easprintf.h"
 
-// Templates
-#include "../static/custom_emoji_reaction.ctmpl"
-#include "../static/emoji_reaction.ctmpl"
-#include "../static/emoji_reactions.ctmpl"
 
 struct construct_emoji_reactions_args
 {
