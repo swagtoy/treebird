@@ -50,10 +50,10 @@ char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size)
     char* emoji_str;
 
     if (status_id)
-        easprintf(&emoji_str, "<a href=\"/status/%s/react/%s\" class=\"emoji\">%s</a>",
+        *size = easprintf(&emoji_str, "<a href=\"/status/%s/react/%s\" class=\"emoji\">%s</a>",
                   status_id, emoji->codes, emoji->codes);
     else
-        easprintf(&emoji_str, "<span class=\"emoji\">%s</span>", emoji->codes);
+        *size = easprintf(&emoji_str, "<span class=\"emoji\">%s</span>", emoji->codes);
     return emoji_str;
 }
 
@@ -102,16 +102,17 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     emojis[EMO_CAT_ACTIVITIES] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_ACTIVITIES, EMOJO_CAT_OBJECTS - EMOJO_CAT_ACTIVITIES, len + 4);
     emojis[EMO_CAT_OBJECTS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_OBJECTS, EMOJO_CAT_SYMBOLS - EMOJO_CAT_OBJECTS, len + 5);
     emojis[EMO_CAT_SYMBOLS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_SYMBOLS, EMOJO_CAT_FLAGS - EMOJO_CAT_SYMBOLS, len + 6);
-    emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, EMOJO_CAT_MAX - EMOJO_CAT_FLAGS, len + 6);
+    emojis[EMO_CAT_FLAGS] = construct_func_strings(construct_emoji_voidwrap, args + EMO_CAT_FLAGS, EMOJO_CAT_MAX - EMOJO_CAT_FLAGS, len + 7);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)template_files));
     AV* av = newAV();
+    av_extend(av, EMO_CAT_LEN);
     for (int i = 0; i < EMO_CAT_LEN; ++i)
     {
-        av_store(av, i, newSVpv(emojis[i], len[i]));
+        av_store(av, i, newSVpv(emojis[i], 0));
     }
-    XPUSHs(newRV_inc((SV*)av));
+    XPUSHs(newRV_noinc((SV*)av));
     PERL_STACK_SCALAR_CALL("emojis::emoji_picker");
 
     char* dup = PERL_GET_STACK_EXIT;

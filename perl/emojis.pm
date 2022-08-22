@@ -1,7 +1,6 @@
 package emojis;
 use strict;
 use warnings;
-use Data::Dumper;
 use Exporter 'import';
 
 our @EXPORT = qw( generate_emoji );
