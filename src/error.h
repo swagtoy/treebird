@@ -23,14 +23,6 @@
 #include "session.h"
 #include "path.h"
 
-enum error_type
-{
-    E_ERROR,
-    E_WARNING,
-    E_NOTICE
-};
-
-char* construct_error(const char* error, enum error_type type, unsigned pad, size_t* size);
 void content_not_found(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* path);
 
 #endif // ERROR_H

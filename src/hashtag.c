@@ -22,44 +22,7 @@
 #include "easprintf.h"
 #include "../config.h"
 
-// Pages
-#include "../static/hashtag.ctmpl"
-#include "../static/hashtag_page.ctmpl"
 
 #define TAG_SIZE_INITIAL 12
 
-static unsigned hashtag_history_daily_uses(size_t max, struct mstdnt_history* history, size_t history_len)
-{
-    unsigned total = 0;
-
-    for (int i = 0; i < history_len && i < max; ++i)
-        total += history[i].uses;
-    
-    return total;
-}
-
-char* construct_hashtag(struct mstdnt_tag* hashtag, size_t* size)
-{
-    // Lol!
-    unsigned hash_size = TAG_SIZE_INITIAL +
-        CLAMP(hashtag_history_daily_uses(7, hashtag->history, hashtag->history_len)*2, 0, 42);
-
-    struct hashtag_template data = {
-        .prefix = config_url_prefix,
-        .tag = hashtag->name,
-        .tag_size = hash_size,
-    };
-    return tmpl_gen_hashtag(&data, size);
-}
-
-static char* construct_hashtag_voidwrap(void* passed, size_t index, size_t* res)
-{
-    return construct_hashtag((struct mstdnt_tag*)passed + index, res);
-}
-
-char* construct_hashtags(struct mstdnt_tag* hashtags, size_t size, size_t* ret_size)
-{
-    if (!(hashtags && size)) return NULL;
-    return construct_func_strings(construct_hashtag_voidwrap, hashtags, size, ret_size);
-}
 

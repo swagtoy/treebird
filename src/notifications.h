@@ -23,28 +23,7 @@
 #include <fcgiapp.h>
 #include "session.h"
 #include "path.h"
-#include "type_string.h"
 #include "global_perl.h"
-
-char* construct_notification(struct session* ssn,
-                             mastodont_t* api,
-                             struct mstdnt_notification* notif,
-                             size_t* size);
-char* construct_notification_action(struct mstdnt_notification* notif, size_t* size);
-char* construct_notification_compact(struct session* ssn,
-                                     mastodont_t* api,
-                                     struct mstdnt_notification* notif,
-                                     size_t* size);
-char* construct_notifications(struct session* ssn,
-                              mastodont_t* api,
-                              struct mstdnt_notification* notifs,
-                              size_t size,
-                              size_t* ret_size);
-char* construct_notifications_compact(struct session* ssn,
-                                      mastodont_t* api,
-                                      struct mstdnt_notification* notifs,
-                                      size_t size,
-                                      size_t* ret_size);
 
 // Page contents
 void content_notifications(PATH_ARGS);

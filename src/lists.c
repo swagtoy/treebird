@@ -29,10 +29,6 @@
 #include "lists.h"
 #include "string_helpers.h"
 #include "http.h"
-// Files
-#include "../static/account.ctmpl"
-#include "../static/list.ctmpl"
-#include "../static/lists.ctmpl"
 
 void content_lists(PATH_ARGS)
 {

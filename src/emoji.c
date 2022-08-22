@@ -109,7 +109,7 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     AV* av = newAV();
     for (int i = 0; i < EMO_CAT_LEN; ++i)
     {
-        av_store(av, i, newSVpv(emojis + i, len + i));
+        av_store(av, i, newSVpv(emojis[i], len[i]));
     }
     XPUSHs(newRV_inc((SV*)av));
     PERL_STACK_SCALAR_CALL("emojis::emoji_picker");

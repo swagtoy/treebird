@@ -31,11 +31,6 @@
 #include "l10n.h"
 #include <fcgi_stdio.h>
 
-// Pages
-#include "../static/config_general.ctmpl"
-#include "../static/config_appearance.ctmpl"
-#include "../static/config_sidebar.ctmpl"
-
 #define bool_checked(key) (ssn->config.key ? "checked" : "")
 
 enum config_category

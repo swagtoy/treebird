@@ -19,8 +19,9 @@
 #ifndef SCROBBLE_H
 #define SCROBBLE_H
 #include <mastodont.h>
+#include "global_perl.h"
 
-char* construct_scrobble(struct mstdnt_scrobble* scrobble, size_t* size);
-char* construct_scrobbles(struct mstdnt_scrobble* scrobbles, size_t scrobbles_len, size_t* ret_size);
+HV* perlify_scrobble(struct mstdnt_scrobble* scrobble);
+AV* perlify_scrobbles(struct mstdnt_scrobble* scrobble, size_t len);
 
 #endif /* SCROBBLE_H */

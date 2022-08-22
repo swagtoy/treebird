@@ -31,7 +31,6 @@
 #include "base_page.h"
 #include "scrobble.h"
 #include "string_helpers.h"
-#include "navigation.h"
 #include "emoji.h"
 #include "timeline.h"
 
@@ -499,36 +498,6 @@ AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len)
     for (int i = 0; i < len; ++i)
     {
         av_store(av, i, newRV_inc((SV*)perlify_account(accounts + i)));
-    }
-
-    return av;
-}
-
-HV* perlify_scrobble(const struct mstdnt_scrobble* scrobble)
-{
-    if (!scrobble) return NULL;
-    HV* scrobble_hv = newHV();
-
-    hvstores_ref(scrobble_hv, "account", perlify_account(&(scrobble->account)));
-    hvstores_str(scrobble_hv, "album", scrobble->album);
-    hvstores_str(scrobble_hv, "artist", scrobble->artist);
-    hvstores_int(scrobble_hv, "created_at", scrobble->created_at);
-    hvstores_str(scrobble_hv, "id", scrobble->id);
-    hvstores_int(scrobble_hv, "length", scrobble->length);
-    hvstores_str(scrobble_hv, "title", scrobble->title);
-    
-    return scrobble_hv;
-}
-
-AV* perlify_scrobbles(const struct mstdnt_scrobble* scrobbles, size_t len)
-{
-    if (!(scrobbles && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_scrobble(scrobbles + i)));
     }
 
     return av;

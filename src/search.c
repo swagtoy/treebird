@@ -28,42 +28,6 @@
 #include "hashtag.h"
 #include "error.h"
 #include "account.h"
-#include "graphsnbars.h"
-
-// Pages
-#include "../static/search.ctmpl"
-#include "../static/search_all.ctmpl"
-
-void search_page(FCGX_Request* req,
-                 struct session* ssn,
-                 mastodont_t* api,
-                 enum search_tab tab,
-                 char* content)
-{
-    char* out_data;
-    struct search_template tdata = {
-        .prefix = config_url_prefix,
-        .query = keystr(ssn->query.query),
-        .accounts_active = MAKE_FOCUSED_IF(tab, SEARCH_ACCOUNTS),
-        .accounts = "Accounts",
-        .hashtags_active = MAKE_FOCUSED_IF(tab, SEARCH_HASHTAGS),
-        .hashtags = "Hashtags",
-        .statuses_active = MAKE_FOCUSED_IF(tab, SEARCH_STATUSES),
-        .statuses = "Statuses",
-        .results = content
-    };
-    out_data = tmpl_gen_search(&tdata, NULL);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = out_data,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, req, ssn, api);
-    free(out_data);
-}
 
 void content_search_all(PATH_ARGS)
 {

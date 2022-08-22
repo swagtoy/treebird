@@ -29,8 +29,6 @@
 #include <curl/curl.h>
 #include <fcgi_stdio.h>
 
-// Files
-#include "../static/login.ctmpl"
 
 #define LOGIN_SCOPE "read+write+follow+push"
 
@@ -163,7 +161,7 @@ void content_login(PATH_ARGS)
 
         if (mastodont_register_app(api, &m_args, &args_app, &storage, &app) != 0)
         {
-            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
+//            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
         }
         else {
             struct mstdnt_application_args args_token = {
@@ -183,7 +181,7 @@ void content_login(PATH_ARGS)
                                              &oauth_store,
                                              &token) != 0 && oauth_store.error)
             {
-                error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
+                //error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
             }
             else {
                 if (url_link)

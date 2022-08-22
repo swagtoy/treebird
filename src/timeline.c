@@ -26,14 +26,9 @@
 #include "index.h"
 #include "status.h"
 #include "easprintf.h"
-#include "reply.h"
-#include "navigation.h"
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
-
-#include "../static/timeline_options.ctmpl"
-#include "../static/navigation.ctmpl"
 
 void content_timeline(FCGX_Request* req,
                       struct session* ssn,
