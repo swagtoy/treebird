@@ -176,6 +176,7 @@
                                 [% icon('emoji') %]
                             </a>
                             [% IF emoji_picker -%]
+                                aaa
                                 [% emoji_picker %]
                             [%- END %]
                         </div>

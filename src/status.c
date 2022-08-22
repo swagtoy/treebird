@@ -352,6 +352,8 @@ void content_status(PATH_ARGS, uint8_t flags)
     struct mstdnt_status* statuses_before = NULL,
         *statuses_after = NULL,
         status = { 0 };
+    char* picker = NULL;
+    size_t picker_len;
     size_t stat_before_len = 0, stat_after_len = 0;
     
     try_post_status(ssn, api);
@@ -362,6 +364,9 @@ void content_status(PATH_ARGS, uint8_t flags)
                                  &storage,
                                  &statuses_before, &statuses_after,
                                  &stat_before_len, &stat_after_len);
+
+    if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
+        picker = construct_emoji_picker(status.id, &picker_len);
 
 
     PERL_STACK_INIT;
@@ -378,6 +383,11 @@ void content_status(PATH_ARGS, uint8_t flags)
         XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_after, stat_after_len)));
     else
         ARG_UNDEFINED();
+
+    if (picker)
+    {
+        XPUSHs(newSVpv(picker, picker_len));
+    } else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("status::content_status");
 
@@ -399,6 +409,7 @@ void content_status(PATH_ARGS, uint8_t flags)
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&status_storage);
     Safefree(dup);
+    free(picker);
 }
 
 void notice_redirect(PATH_ARGS)

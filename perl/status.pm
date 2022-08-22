@@ -18,7 +18,7 @@ my $rel_context = 0;
 
 sub generate_status
 {
-    my ($ssn, $data, $status, $notif, $is_compact) = @_;
+    my ($ssn, $data, $status, $notif, $is_compact, $picker) = @_;
     my $boost_acct;
 
     # Move status reference for boosts and keep account
@@ -37,6 +37,7 @@ sub generate_status
         status => $status,
         boost => $boost_acct, # May be undef
         data => $data,
+        emoji_picker => $picker,
         notif => $notif, # May be undef
         compact => $is_compact, # May be undef
         is_statusey_notif => $is_statusey_notif,
@@ -76,19 +77,19 @@ sub generate_status
 
 sub content_status
 {
-    my ($ssn, $data, $status, $statuses_before, $statuses_after) = @_;
+    my ($ssn, $data, $status, $statuses_before, $statuses_after, $picker) = @_;
 
     $rel_context = 0;
 
     my %vars = (
         prefix => '',
         ssn => $ssn,
-        data => $data,
         status => $status,
+        picker => $picker,
         statuses_before => $statuses_before,
         statuses_after => $statuses_after,
         # Functions
-        create_status => \&generate_status,
+        create_status => sub { generate_status($ssn, $data, shift, 0, 0, shift) },
         );
 
 
