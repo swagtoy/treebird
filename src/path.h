@@ -25,7 +25,13 @@
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
 
-#define PATH_ARGS FCGX_Request* req, struct session* ssn, mastodont_t* api, char** data
+#ifdef SINGLE_THREADED
+#define REQUEST_T FCGX_Request*
+#else
+#define REQUEST_T void*
+#endif
+
+#define PATH_ARGS REQUEST_T* req, struct session* ssn, mastodont_t* api, char** data
 
 struct path_info
 {
@@ -33,13 +39,19 @@ struct path_info
     void (*callback)(PATH_ARGS);
 };
 
-void handle_paths(FCGX_Request* req,
-                  struct session* ssn,
-                  mastodont_t* api,
-                  struct path_info* paths,
-                  size_t paths_len);
+void handle_paths(
+#ifdef SINGLE_THREADED
+    void*
+#else
+    FCGX_Request*
+#endif
+    req,
+    struct session* ssn,
+    mastodont_t* api,
+    struct path_info* paths,
+    size_t paths_len);
 
-int parse_path(FCGX_Request* req,
+int parse_path(REQUEST_T req,
                struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info);
