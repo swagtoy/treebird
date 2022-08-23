@@ -26,12 +26,12 @@
 #include <fcgiapp.h>
 
 #ifdef SINGLE_THREADED
-#define REQUEST_T FCGX_Request*
-#else
 #define REQUEST_T void*
+#else
+#define REQUEST_T FCGX_Request*
 #endif
 
-#define PATH_ARGS REQUEST_T* req, struct session* ssn, mastodont_t* api, char** data
+#define PATH_ARGS REQUEST_T req, struct session* ssn, mastodont_t* api, char** data
 
 struct path_info
 {
