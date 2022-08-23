@@ -26,7 +26,7 @@
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
 
-char* read_get_data(FCGX_Request* req, struct get_values* query)
+char* read_get_data(REQUEST_T req, struct get_values* query)
 {
     struct http_query_info info = { 0 };
     char* query_string = GET_ENV("QUERY_STRING", req);
@@ -76,7 +76,7 @@ char* read_get_data(FCGX_Request* req, struct get_values* query)
 
 
 
-char* read_post_data(FCGX_Request* req, struct post_values* post)
+char* read_post_data(REQUEST_T req, struct post_values* post)
 {
     ptrdiff_t begin_curr_size;
     struct http_query_info query_info;
@@ -212,7 +212,7 @@ char* parse_query(char* begin, struct http_query_info* info)
     return end ? NULL : begin+1;
 }
 
-char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg)
+char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*), void* arg)
 {
     char* request_method = GET_ENV("REQUEST_METHOD", req);
     char* post_query = NULL, * p_query_read;

@@ -46,6 +46,7 @@
 #include "conversations.h"
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
+#include "request.h"
 
 #define THREAD_COUNT 20
 
@@ -115,7 +116,7 @@ static struct path_info paths[] = {
     { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
-static void application(mastodont_t* api, FCGX_Request* req)
+static void application(mastodont_t* api, REQUEST_T req)
 {
     // Default config
     struct session ssn = {
@@ -174,7 +175,8 @@ static void application(mastodont_t* api, FCGX_Request* req)
         cleanup_media_storages(&ssn, attachments);
 }
 
-static void* cgi_start(void* arg)
+#ifndef SINGLE_THREADED
+static void* threaded_fcgi_start(void* arg)
 {
     mastodont_t* api = arg;
     int rc;
@@ -198,6 +200,7 @@ static void* cgi_start(void* arg)
 
     return NULL;
 }
+#endif
 
 EXTERN_C void xs_init(pTHX)
 {
@@ -230,6 +233,7 @@ int main(int argc, char **argv, char **env)
     // Fetch information about the current instance
     load_instance_info_cache(&api);
 
+#ifndef SINGLE_THREADED
     // Start thread pool
     pthread_t id[THREAD_COUNT];
 
@@ -237,12 +241,13 @@ int main(int argc, char **argv, char **env)
         pthread_create(&id[i], NULL, cgi_start, &api);
 
     // Hell, let's not sit around here either
-    cgi_start(&api);
+threaded_fcgi_start(&api);
     
     FCGX_ShutdownPending();
     
     for (unsigned i = 0; i < THREAD_COUNT; ++i)
         pthread_join(id[i], NULL);
+#endif
    
     free_instance_info_cache();
     mastodont_global_curl_cleanup();

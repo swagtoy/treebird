@@ -29,7 +29,7 @@ enum cookie_state
     STATE_V_START,
 };
 
-char* read_cookies_env(FCGX_Request* req, struct cookie_values* cookies)
+char* read_cookies_env(REQUEST_T req, struct cookie_values* cookies)
 {
     struct http_cookie_info info;
     char* cookies_env = GET_ENV("HTTP_COOKIE", req);

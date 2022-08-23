@@ -16,39 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PATH_H
-#define PATH_H
-#include "session.h"
-#include <mastodont.h>
-#include <stddef.h>
-#include "env.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
-#include "request.h"
+#ifndef REQUEST_H
+#define REQUEST_H
 
-#define PATH_ARGS REQUEST_T req, struct session* ssn, mastodont_t* api, char** data
-
-struct path_info
-{
-    char* path;
-    void (*callback)(PATH_ARGS);
-};
-
-void handle_paths(
 #ifdef SINGLE_THREADED
-    void*
+#define REQUEST_T void*
 #else
-    FCGX_Request*
+#define REQUEST_T FCGX_Request*
 #endif
-    req,
-    struct session* ssn,
-    mastodont_t* api,
-    struct path_info* paths,
-    size_t paths_len);
 
-int parse_path(REQUEST_T req,
-               struct session* ssn,
-               mastodont_t* api,
-               struct path_info* path_info);
-
-#endif // PATH_H
+#endif /* REQUEST_H */

@@ -22,6 +22,7 @@
 #include <fcgi_stdio.h>
 #include <stddef.h>
 #include "key.h"
+#include "request.h"
 
 struct http_query_info
 {
@@ -83,11 +84,11 @@ struct get_values
     struct key type; // Int
 };
 
-char* read_get_data(FCGX_Request* req, struct get_values* query);
-char* read_post_data(FCGX_Request* req, struct post_values* post);
+char* read_get_data(REQUEST_T req, struct get_values* query);
+char* read_post_data(REQUEST_T req, struct post_values* post);
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
-char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg);
+char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*), void* arg);
 
 void free_files(struct file_array* files);
 
