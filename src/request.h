@@ -26,7 +26,7 @@
 #else
 #define FPRINTF(str, ...) FCGX_FPrintF(req->out, str, __VA_ARGS__)
 // If this adds a newline (it shouldn't) then this is probably
-#define PRINTF(str) FCGX_PutS(req->out, str)
+#define PRINTF(str) FCGX_PutS(str, req->out)
 #define REQUEST_T FCGX_Request*
 #endif
 
