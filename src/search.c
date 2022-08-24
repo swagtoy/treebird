@@ -70,6 +70,7 @@ void content_search_all(PATH_ARGS)
             redirect(req, REDIRECT_303, url);
             break;
         }
+        free(url);
         curl_free(query);
         return;
     }
@@ -80,7 +81,7 @@ void content_search_all(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    mXPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
     
     PERL_STACK_SCALAR_CALL("search::content_search");
 
@@ -95,7 +96,7 @@ void content_search_all(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    
+
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
     Safefree(dup);
@@ -127,7 +128,8 @@ void content_search_statuses(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    mXPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    
     PERL_STACK_SCALAR_CALL("search::content_search_statuses");
 
     // Duplicate so we can free the TMPs
@@ -172,7 +174,7 @@ void content_search_accounts(PATH_ARGS)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
+    mXPUSHs(newRV_noinc((SV*)perlify_search_results(&results)));
     
     PERL_STACK_SCALAR_CALL("search::content_search_accounts");
 
@@ -190,6 +192,7 @@ void content_search_accounts(PATH_ARGS)
     
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
+    Safefree(dup);
 }
 
 void content_search_hashtags(PATH_ARGS)
@@ -217,6 +220,7 @@ void content_search_hashtags(PATH_ARGS)
     
     mstdnt_cleanup_search_results(&results);
     mastodont_storage_cleanup(&storage);
+//    Safefree(dup);
 }
 
 HV* perlify_search_results(struct mstdnt_search_results* results)

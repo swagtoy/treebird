@@ -112,7 +112,7 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     {
         av_store(av, i, newSVpv(emojis[i], 0));
     }
-    XPUSHs(newRV_noinc((SV*)av));
+    mXPUSHs(newRV_noinc((SV*)av));
     PERL_STACK_SCALAR_CALL("emojis::emoji_picker");
 
     char* dup = PERL_GET_STACK_EXIT;

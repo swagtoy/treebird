@@ -209,7 +209,7 @@ void content_login(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (storage.error || oauth_store.error)
-        XPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
+        mXPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
 
     PERL_STACK_SCALAR_CALL("login::content_login");
 

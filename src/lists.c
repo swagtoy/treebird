@@ -56,7 +56,7 @@ void content_lists(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (lists)
-        XPUSHs(newRV_noinc((SV*)perlify_lists(lists, lists_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_lists(lists, lists_len)));
     
     PERL_STACK_SCALAR_CALL("lists::content_lists");
 

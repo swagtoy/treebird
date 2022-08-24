@@ -74,21 +74,19 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     else
         mXPUSHs(newRV_noinc((SV*)perlify_session(ssn)));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
+    mXPUSHs(newSVpv(page->content, 0));
 
     if (notifs && notifs_len)
     {
-        AV* notifs_av = perlify_notifications(notifs, notifs_len);
-        mXPUSHs(newRV_inc((SV*)notifs_av));
+        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     }
-    else XPUSHs(&PL_sv_undef);
+    else ARG_UNDEFINED();
     
     // Run function
     PERL_STACK_SCALAR_CALL("base_page");
     char* dup = PERL_GET_STACK_EXIT;
     
     send_result(req, NULL, "text/html", dup, 0);
-    
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);

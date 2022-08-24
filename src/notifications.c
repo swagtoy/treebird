@@ -61,7 +61,7 @@ void content_notifications(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (notifs)
-        XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     
     // ARGS
     PERL_STACK_SCALAR_CALL("notifications::content_notifications");

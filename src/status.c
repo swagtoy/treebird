@@ -318,9 +318,9 @@ void content_status_interactions(FCGX_Request* req,
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (accts)
-        XPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
     else ARG_UNDEFINED();
-    XPUSHs(newSVpv(label, 0));
+    mXPUSHs(newSVpv(label, 0));
 
     PERL_STACK_SCALAR_CALL("account::status_interactions");
 
@@ -367,20 +367,20 @@ void content_status(PATH_ARGS, uint8_t flags)
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_status(&status)));
+    mXPUSHs(newRV_noinc((SV*)perlify_status(&status)));
     if (statuses_before)
-        XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_before, stat_before_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_before, stat_before_len)));
     else
         ARG_UNDEFINED();
     
     if (statuses_after)
-        XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_after, stat_after_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses_after, stat_after_len)));
     else
         ARG_UNDEFINED();
 
     if (picker)
     {
-        XPUSHs(newSVpv(picker, picker_len));
+        mXPUSHs(newSVpv(picker, picker_len));
     } else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("status::content_status");

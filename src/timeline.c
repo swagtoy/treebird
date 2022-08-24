@@ -47,11 +47,11 @@ void content_timeline(REQUEST_T req,
     XPUSHs(newRV_noinc((SV*)template_files));
     
     if (statuses)
-        XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
     else ARG_UNDEFINED();
 
     if (header_text)
-        XPUSHs(newSVpv(header_text, 0));
+        mXPUSHs(newSVpv(header_text, 0));
     else ARG_UNDEFINED();
 
     mXPUSHi(show_post_box);

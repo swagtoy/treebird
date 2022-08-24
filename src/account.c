@@ -58,14 +58,14 @@ static char* accounts_page(HV* session_hv,
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (acct)
-        XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+        mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
     else ARG_UNDEFINED();
     if (rel)
-        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
     
     if (accts && accts_len)
-        XPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
     else ARG_UNDEFINED();
 
     // perlapi doesn't specify if a string length of 0 calls strlen so calling just to be safe...
@@ -158,13 +158,13 @@ static char* account_statuses_cb(HV* session_hv,
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
     if (rel)
-        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
     
     if (statuses && statuses_len)
-        XPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("account::content_statuses");
@@ -203,13 +203,13 @@ static char* account_scrobbles_cb(HV* session_hv,
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    XPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
     if (rel)
-        XPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
     
     if (scrobbles && scrobbles_len)
-        XPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles, scrobbles_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles, scrobbles_len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("account::content_scrobbles");

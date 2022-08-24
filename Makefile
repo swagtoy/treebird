@@ -3,7 +3,7 @@ GIT ?= git
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
 CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libpcre2-8) `perl -MExtUtils::Embed -e ccopts`
-LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpcre2-8) -lfcgi -lpthread `perl -MExtUtils::Embed -e ldopts`
+LDFLAGS += -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpcre2-8) -lfcgi -lpthread `perl -MExtUtils::Embed -e ldopts`
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h) config.h
@@ -45,7 +45,7 @@ $(TARGET): $(HEADERS) $(OBJ)
 	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
 
 filec: src/file-to-c/main.o
-	$(CC) -o filec $<
+	$(CC) $(LDFLAGS) -o filec $<
 
 emojitoc: scripts/emoji-to.o
 	$(CC) -o emojitoc $< $(LDFLAGS)

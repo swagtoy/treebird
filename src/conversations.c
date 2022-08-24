@@ -50,7 +50,7 @@ void content_chats(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (chats)
-        XPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("chat::content_chats");

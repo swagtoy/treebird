@@ -51,14 +51,14 @@
 
 // Allow dynamic loading for Perl
 static void xs_init (pTHX);
-
-EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
+void boot_DynaLoader (pTHX_ CV* cv);
 
 #ifdef DEBUG
 static int quit = 0;
 static void exit_treebird(PATH_ARGS)
 {
     quit = 1;
+    exit(1);
 }
 #endif
 
@@ -221,17 +221,22 @@ void cgi_start(mastodont_t* api)
 }
 #endif
 
-EXTERN_C void xs_init(pTHX)
+void xs_init(pTHX)
 {
-       char *file = __FILE__;
-       newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+    static const char file[] = __FILE__;
+    dXSUB_SYS;
+    PERL_UNUSED_CONTEXT;
+    
+    newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
 }
 
 int main(int argc, char **argv, char **env)
 {
     // Global init
     mastodont_global_curl_init();
+#ifndef SINGLE_THREADED
     FCGX_Init();
+#endif
 
     // Initialize Perl
     PERL_SYS_INIT3(&argc, &argv, &env);
@@ -242,6 +247,7 @@ int main(int argc, char **argv, char **env)
 
     perl_parse(my_perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
     PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+    PL_perl_destruct_level = 2;
     perl_run(my_perl);
 
     init_template_files(aTHX);

@@ -26,7 +26,7 @@
 #define hvstores_str(hv, key, val) hv_stores((hv), key, ((val) ? newSVpv((val), 0) : &PL_sv_undef))
 #define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
 #define hvstores_ref(hv, key, val) hv_stores((hv), key,                 \
-                                             ((val) ? newRV_inc((SV* const)(val)) : &PL_sv_undef))
+                                             ((val) ? newRV_noinc((SV* const)(val)) : &PL_sv_undef))
 
 /* Seeing all this shit littered in Treebird's code made me decide to write some macros */
 #define PERL_STACK_INIT perl_lock(); \
@@ -59,7 +59,7 @@ extern pthread_mutex_t perllock_mutex;
 #define perl_unlock() ;;
 #endif
 
-#define ARG_UNDEFINED() do { XPUSHs(&PL_sv_undef); } while (0)
+#define ARG_UNDEFINED() do { mXPUSHs(&PL_sv_undef); } while (0)
 
 void init_template_files(pTHX);
 void cleanup_template_files();
