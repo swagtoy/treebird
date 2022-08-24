@@ -20,13 +20,12 @@
 #define REQUEST_H
 
 #ifdef SINGLE_THREADED
-#define FPRINTF(str, ...) fprintf(str, __VA_ARGS__)
-#define PRINTF(str) puts(str)
+#define PRINTF(str, ...) printf(str, __VA_ARGS__)
+#define PUT(str) printf(str)
 #define REQUEST_T void*
 #else
-#define FPRINTF(str, ...) FCGX_FPrintF(req->out, str, __VA_ARGS__)
-// If this adds a newline (it shouldn't) then this is probably
-#define PRINTF(str) FCGX_PutS(str, req->out)
+#define PRINTF(str, ...) FCGX_FPrintF(req->out, str, __VA_ARGS__)
+#define PUT(str) FCGX_FPrintF(req->out, str)
 #define REQUEST_T FCGX_Request*
 #endif
 

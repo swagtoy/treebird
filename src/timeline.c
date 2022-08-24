@@ -30,7 +30,7 @@
 #include "error.h"
 #include "string_helpers.h"
 
-void content_timeline(FCGX_Request* req,
+void content_timeline(REQUEST_T req,
                       struct session* ssn,
                       mastodont_t* api,
                       struct mstdnt_storage* storage,
@@ -78,7 +78,7 @@ void content_timeline(FCGX_Request* req,
     Safefree(dup);
 }
 
-void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local)
+void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -109,7 +109,7 @@ void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1, 0);
 }
 
-void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
+void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -137,7 +137,7 @@ void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0, 0);
 }
 
-void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -167,7 +167,7 @@ void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int loc
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
-void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* list_id)
+void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -195,7 +195,7 @@ void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* lis
 }
 
 
-void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag_id)
+void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

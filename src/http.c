@@ -31,10 +31,10 @@ void redirect(REQUEST_T req, char* status, char* location)
 {
     char* loc_str = location ? location : "/";
     
-    FPRINTF("Status: %s\r\n"
-            "Location: %s\r\n\r\n"
-            REDIR_HTML_BEGIN "Redirecting to <a href=\"\">%s</a>..." REDIR_HTML_END,
-            status,
-            loc_str,
-            loc_str);
+    PRINTF("Status: %s\r\n"
+           "Location: %s\r\n\r\n"
+           REDIR_HTML_BEGIN "Redirecting to <a href=\"\">%s</a>..." REDIR_HTML_END,
+           status,
+           loc_str,
+           loc_str);
 }
