@@ -54,6 +54,13 @@ static void xs_init (pTHX);
 
 EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 
+#ifdef DEBUG
+static void exit_treebird(PATH_ARGS)
+{
+    exit(0);
+}
+#endif
+
 /*******************
  *  Path handling  *
  ******************/
@@ -109,6 +116,10 @@ static struct path_info paths[] = {
     { "/tag/:", content_tl_tag },
     { "/chats/:", content_chat_view },
     { "/chats", content_chats },
+#ifdef DEBUG
+    { "/quit", exit_treebird },
+    { "/exit", exit_treebird },
+#endif
     // API
     { "/treebird_api/v1/notifications", api_notifications },
     { "/treebird_api/v1/interact", api_status_interact },

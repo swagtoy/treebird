@@ -28,6 +28,10 @@ ifneq ($(strip $(SINGLE_THREADED)),)
 CFLAGS += -DSINGLE_THREADED
 endif
 
+ifneq ($(strip $(SINGLE_THREADED)),)
+CFLAGS += -DDEBUG
+endif
+
 all:
 	$(MAKE) dep_build
 	$(MAKE) filec
