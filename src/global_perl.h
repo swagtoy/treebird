@@ -50,8 +50,14 @@ extern PerlInterpreter* my_perl;
 extern HV* template_files;
 extern pthread_mutex_t perllock_mutex;
 
+#ifndef SINGLE_THREADED
 #define perl_lock() do { pthread_mutex_lock(&perllock_mutex); } while (0)
 #define perl_unlock() do { pthread_mutex_unlock(&perllock_mutex); } while (0)
+#else
+// NOOP
+#define perl_lock() ;;
+#define perl_unlock() ;;
+#endif
 
 #define ARG_UNDEFINED() do { XPUSHs(&PL_sv_undef); } while (0)
 

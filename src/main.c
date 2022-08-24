@@ -200,6 +200,14 @@ static void* threaded_fcgi_start(void* arg)
 
     return NULL;
 }
+#else
+void cgi_start(mastodont_t* api)
+{
+    while (FCGI_Accept() >= 0)
+    {
+        application(api, NULL);
+    }
+}
 #endif
 
 EXTERN_C void xs_init(pTHX)
@@ -238,15 +246,17 @@ int main(int argc, char **argv, char **env)
     pthread_t id[THREAD_COUNT];
 
     for (unsigned i = 0; i < THREAD_COUNT; ++i)
-        pthread_create(&id[i], NULL, cgi_start, &api);
+        pthread_create(&id[i], NULL, threaded_fcgi_start, &api);
 
     // Hell, let's not sit around here either
-threaded_fcgi_start(&api);
+    threaded_fcgi_start(&api);
     
     FCGX_ShutdownPending();
     
     for (unsigned i = 0; i < THREAD_COUNT; ++i)
         pthread_join(id[i], NULL);
+#else
+    cgi_start(&api);
 #endif
    
     free_instance_info_cache();
