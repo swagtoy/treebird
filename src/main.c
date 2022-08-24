@@ -55,9 +55,10 @@ static void xs_init (pTHX);
 EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 
 #ifdef DEBUG
+static int quit = 0;
 static void exit_treebird(PATH_ARGS)
 {
-    exit(0);
+    quit = 1;
 }
 #endif
 
@@ -213,7 +214,7 @@ static void* threaded_fcgi_start(void* arg)
 #else
 void cgi_start(mastodont_t* api)
 {
-    while (FCGI_Accept() >= 0)
+    while (FCGI_Accept() >= 0 && quit == 0)
     {
         application(api, NULL);
     }

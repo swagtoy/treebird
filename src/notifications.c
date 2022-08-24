@@ -111,11 +111,11 @@ void content_notifications_compact(PATH_ARGS)
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
-    XPUSHs(newRV_noinc((SV*)session_hv));
+    mXPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (notifs)
-        XPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
-    
+        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
+
     PERL_STACK_SCALAR_CALL("notifications::embed_notifications");
 
     page = PERL_GET_STACK_EXIT;
@@ -124,6 +124,7 @@ void content_notifications_compact(PATH_ARGS)
 
     mastodont_storage_cleanup(&storage);
     mstdnt_cleanup_notifications(notifs, notifs_len);
+    Safefree(page);
 }
 
 void content_notifications_clear(PATH_ARGS)

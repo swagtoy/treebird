@@ -70,16 +70,16 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     PERL_STACK_INIT;
 
     if (page->session)
-        mXPUSHs(newRV_inc((SV*)page->session));
+        mXPUSHs(newRV_noinc((SV*)page->session));
     else
-        mXPUSHs(newRV_inc((SV*)perlify_session(ssn)));
-    XPUSHs(newRV_inc((SV*)template_files));
+        mXPUSHs(newRV_noinc((SV*)perlify_session(ssn)));
+    XPUSHs(newRV_noinc((SV*)template_files));
     XPUSHs(sv_2mortal(newSVpv(page->content, 0)));
 
     if (notifs && notifs_len)
     {
         AV* notifs_av = perlify_notifications(notifs, notifs_len);
-        XPUSHs(sv_2mortal(newRV_inc((SV*)notifs_av)));
+        mXPUSHs(newRV_inc((SV*)notifs_av));
     }
     else XPUSHs(&PL_sv_undef);
     
