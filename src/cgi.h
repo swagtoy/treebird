@@ -16,23 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NOTIFICATIONS_H
-#define NOTIFICATIONS_H
-#include <mastodont.h>
-#include "session.h"
-#include "path.h"
-#include "global_perl.h"
-#include "cgi.h"
+/* #ifndef IMPORT_CGI_H */
+/* #define IMPORT_CGI_H */
 
-// Page contents
-void content_notifications(PATH_ARGS);
-void content_notifications_compact(PATH_ARGS);
-void content_notifications_clear(PATH_ARGS);
-void content_notifications_read(PATH_ARGS);
+#ifndef NO_FCGI
+#include <fcgi_stdio.h>
+#endif // NO_FCGI
 
-void api_notifications(PATH_ARGS);
+#ifndef SINGLE_THREADED
+#include <fcgiapp.h>
+#endif // SINGLE_THREADED
 
-HV* perlify_notification(struct mstdnt_notification* notif);
-AV* perlify_notifications(struct mstdnt_notification* notif, size_t len);
-
-#endif // NOTIFICATION_H
+// #endif

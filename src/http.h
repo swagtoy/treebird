@@ -19,8 +19,7 @@
 #ifndef HTTP_H
 #define HTTP_H
 #include "request.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "cgi.h"
 
 #define REDIRECT_303 "303 See Other"
 

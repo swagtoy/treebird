@@ -22,8 +22,7 @@
 #include <mastodont.h>
 #include "path.h"
 #include "session.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "cgi.h"
 
 void content_config_appearance(PATH_ARGS);
 void content_config_general(PATH_ARGS);

@@ -27,7 +27,7 @@
 #include "../config.h"
 #include "local_config_set.h"
 #include "account.h"
-#include <fcgi_stdio.h>
+#include "cgi.h"
 #include "global_cache.h"
 
 #define BODY_STYLE "style=\"background:url('%s');\""

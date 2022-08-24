@@ -23,8 +23,8 @@
 #include <unistd.h>
 #include "env.h"
 #include "mime.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "cgi.h"
+
 
 char* read_get_data(REQUEST_T req, struct get_values* query)
 {

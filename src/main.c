@@ -44,9 +44,8 @@
 #include "local_config_set.h"
 #include "global_cache.h"
 #include "conversations.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include "request.h"
+#include "cgi.h"
 
 #define THREAD_COUNT 20
 

@@ -23,8 +23,7 @@
 #include "attachments.h"
 #include "local_config.h"
 #include "key.h"
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "cgi.h"
 
 enum config_page
 {

@@ -27,9 +27,8 @@
 #include "../config.h"
 #include "http.h"
 #include <curl/curl.h>
-#include <fcgi_stdio.h>
+#include "cgi.h"
 #include "request.h"
-
 
 #define LOGIN_SCOPE "read+write+follow+push"
 
