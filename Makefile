@@ -24,6 +24,10 @@ MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 # Not parallel friendly
 #all: $(MASTODONT_DIR) dep_build $(TARGET)
 
+ifneq ($(strip $(SINGLE_THREADED)),)
+CFLAGS += -DSINGLE_THREADED
+endif
+
 all:
 	$(MAKE) dep_build
 	$(MAKE) filec

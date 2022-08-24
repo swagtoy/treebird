@@ -221,14 +221,8 @@ void status_interact(PATH_ARGS)
     char* referer = GET_ENV("HTTP_REFERER", req);
     
     try_interact_status(ssn, api, data[0]);
-    
-    FCGX_FPrintF(req->out,
-                 "Status: 303 See Other\r\n"
-                 "Location: %s#id-%s\r\n"
-                 "Content-Length: 14\r\n\r\n"
-                 "Redirecting...",
-                 referer ? referer : "/",
-                 data[0]);
+
+    redirect(req, REDIRECT_303, referer);
 }
 
 void api_status_interact(PATH_ARGS)

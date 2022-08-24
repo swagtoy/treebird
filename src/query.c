@@ -143,7 +143,11 @@ char* read_post_data(REQUEST_T req, struct post_values* post)
         }
 
         // fread should be a macro to FCGI_fread, which is set by FCGI_Accept in previous definitions
+#ifndef SINGLE_THREADED
         size_t len = FCGX_GetStr(post_query, content_length, req->in);
+#else
+        size_t len = fread(post_query, 1, content_length, stdin);
+#endif
         post_query[content_length] = '\0';
 
         // For shifting through
@@ -229,10 +233,12 @@ char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*
             return NULL;
         }
 #ifdef SINGLE_THREADED
-        read(STDIN_FILENO, post_query, content_length);
+        int size = read(STDIN_FILENO, post_query, content_length);
 #else
-        FCGX_GetStr(post_query, content_length, req->in);
+        int size = FCGX_GetStr(post_query, content_length, req->in);
 #endif
+        if (size != content_length)
+            return NULL;
         post_query[content_length] = '\0';
         
 

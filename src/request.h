@@ -20,8 +20,16 @@
 #define REQUEST_H
 
 #ifdef SINGLE_THREADED
+#else
+#endif
+
+#ifdef SINGLE_THREADED
+#define FPRINTF(str, ...) fprintf(str, __VA_ARGS__)
+#define PRINTF(str) printf(str)
 #define REQUEST_T void*
 #else
+#define FPRINTF(str, ...) FCGX_FPrintF(req->out, str, __VA_ARGS__)
+#define PRINTF(str) FCGX_PrintF(req->out, str)
 #define REQUEST_T FCGX_Request*
 #endif
 

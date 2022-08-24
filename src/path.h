@@ -35,12 +35,7 @@ struct path_info
 };
 
 void handle_paths(
-#ifdef SINGLE_THREADED
-    void*
-#else
-    FCGX_Request*
-#endif
-    req,
+    REQUEST_T req,
     struct session* ssn,
     mastodont_t* api,
     struct path_info* paths,

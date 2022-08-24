@@ -34,9 +34,8 @@ void set_config_str(FCGX_Request* req,
     {
         if (ssn->post.set.is_set && post->is_set && page == curr_page)
         {
-            FCGX_FPrintF(req->out,
-                         "Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                         cookie_name, keypstr(post));
+            FPRINTF("Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                    cookie_name, keypstr(post));
         }
 
         if ((ssn->post.set.is_set && post->is_set) || cookie->is_set)
@@ -60,9 +59,8 @@ void set_config_int(FCGX_Request* req,
     {
         if (ssn->post.set.is_set && page == curr_page)
         {
-            FCGX_FPrintF(req->out,
-                         "Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                         cookie_name, post_bool_intp(post));
+            FPRINTF("Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                    cookie_name, post_bool_intp(post));
         } 
 
         // Checks if boolean option

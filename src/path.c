@@ -23,7 +23,7 @@
 #include "account.h"
 #include "error.h"
 
-int parse_path(FCGX_Request* req,
+int parse_path(REQUEST_T req,
                struct session* ssn,
                mastodont_t* api,
                struct path_info* path_info)
@@ -101,7 +101,7 @@ breakpt:
     return res;
 }
 
-void handle_paths(FCGX_Request* req,
+void handle_paths(REQUEST_T req,
                   struct session* ssn,
                   mastodont_t* api,
                   struct path_info* paths,

@@ -28,14 +28,15 @@
 #include "http.h"
 #include <curl/curl.h>
 #include <fcgi_stdio.h>
+#include "request.h"
 
 
 #define LOGIN_SCOPE "read+write+follow+push"
 
-void apply_access_token(FCGX_Request* req, char* token)
+static void apply_access_token(REQUEST_T req, char* token)
 {
-    FCGX_FPrintF(req->out, "Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
-    FCGX_FPrintF(req->out, "Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
+    FPRINTF("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
+    PRINTF("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
     // if config_url_prefix is empty, make it root
     redirect(req, REDIRECT_303, config_url_prefix &&
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
@@ -100,9 +101,9 @@ void content_login_oauth(PATH_ARGS)
                       decode_url, encode_id, urlify_redirect_url);
 
             // Set cookie and redirect
-            FCGX_FPrintF(req->out, "Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
-            FCGX_FPrintF(req->out, "Set-Cookie: client_id=%s; Path=/; Max-Age=3153600\r\n", app.client_id);
-            FCGX_FPrintF(req->out, "Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
+            FPRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
+            FPRINTF("Set-Cookie: client_id=%s; Path=/; Max-Age=3153600\r\n", app.client_id);
+            FPRINTF("Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
             
             redirect(req, REDIRECT_303, url);
             free(url);
@@ -185,10 +186,10 @@ void content_login(PATH_ARGS)
             }
             else {
                 if (url_link)
-                    FCGX_FPrintF(req->out, "Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
+                    FPRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
                 else
                     // Clear
-                    FCGX_FPrintF(req->out, "Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
+                    PRINTF("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
 
                 apply_access_token(req, token.access_token);
                 free(url_link);
