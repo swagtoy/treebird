@@ -35,7 +35,6 @@ If that doesn't work, you can open a CPAN shell
 ```
 perl -MCPAN -e shell
 install Template::Toolkit
-install HTML::Escape
 ```
 
 ## Installation
@@ -47,15 +46,14 @@ If this succeeds (assuming you used default variables), you can now find Treebir
 - `/usr/local/share/treebird/` - Contains CSS, images, and other meta files
 - `/usr/local/bin/treebird` - Regular executable CGI file, test it by running it as is, it shouldn't spit anything out
 
-### Using NGINX
+## Development
+
+For developing Treebird, see `DEVELOP.md`.
+
+## Nginx
 
 Treebird can be served over nginx by using a FastCGI daemon such as spawn-fcgi.
 
-The example static files will be in `/usr/local/share/treebird/`, with `treebird.cgi` at `/usr/local/bin/treebird`.
-
-After running `make`, Treebird's files will be in the `dist/` directory. _Copy_, ***DO NOT MOVE***, **everything but treebird.cgi** of this folder to your web server. Copy `treebird.cgi` to another directory of your choosing.
-
-## Nginx
 An example Nginx configuration is available in [treebird.nginx.conf](./sample/treebird.nginx.conf).
 * Make sure to change `example.com` to your instance's domain.
 * Make sure to change the `root` to wherever the static files are being stored
@@ -65,7 +63,7 @@ An example Nginx configuration is available in [treebird.nginx.conf](./sample/tr
 Apache hasn't caused many troubles, and is in fact, what I use for development. You can see how to start
 spawn-fcgi in `scripts/fcgistarter.sh`.
 
-Example Apache configuration is available in [treebird.apache.conf](./sample/treebird.apache.conf).
+An example Apache configuration is available in [treebird.apache.conf](./sample/treebird.apache.conf).
 
 #### spawn-fcgi
 
