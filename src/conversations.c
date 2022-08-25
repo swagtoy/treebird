@@ -70,7 +70,7 @@ void content_chats(PATH_ARGS)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    // TOOD cleanup chats
+    mstdnt_cleanup_chats(chats, chats_len);
     Safefree(dup);
 }
 
@@ -102,10 +102,10 @@ void content_chat_view(PATH_ARGS)
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (chat_code == 0)
-        XPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
+        mXPUSHs(newRV_noinc((SV*)perlify_chat(&chat)));
     else ARG_UNDEFINED();
     if (messages)
-        XPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_messages(messages, messages_len)));
     else ARG_UNDEFINED();
     
     PERL_STACK_SCALAR_CALL("chat::construct_chat");
@@ -125,6 +125,8 @@ void content_chat_view(PATH_ARGS)
 
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&storage_chat);
+    mstdnt_cleanup_chats(chats);
+    mstdnt_cleanup_messages(messages);
     Safefree(dup);
 }
 
