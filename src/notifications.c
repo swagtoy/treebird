@@ -79,6 +79,7 @@ void content_notifications(PATH_ARGS)
     // Output
     render_base_page(&b, req, ssn, api);
     mastodont_storage_cleanup(&storage);
+    mstdnt_cleanup_notifications(notifs, notifs_len);
     Safefree(dup);
 }
 
