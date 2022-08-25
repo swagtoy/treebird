@@ -70,7 +70,7 @@ void content_chats(PATH_ARGS)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_chats(chats, chats_len);
+    mstdnt_cleanup_chats(chats);
     Safefree(dup);
 }
 
@@ -125,7 +125,6 @@ void content_chat_view(PATH_ARGS)
 
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&storage_chat);
-    mstdnt_cleanup_chats(chats);
     mstdnt_cleanup_messages(messages);
     Safefree(dup);
 }
