@@ -37,7 +37,7 @@ void cleanup_media_ids(struct session* ssn, char** media_ids);
 void api_attachment_create(PATH_ARGS);
 
 // Perl
-HV* perlify_attachment(struct mstdnt_attachment* const attachment);
-AV* perlify_attachments(struct mstdnt_attachment* const attachments, size_t len);
+HV* perlify_attachment(const struct mstdnt_attachment* const attachment);
+AV* perlify_attachments(const struct mstdnt_attachment* const attachments, size_t len);
 
 #endif // ATTACHMENTS_H

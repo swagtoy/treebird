@@ -21,7 +21,7 @@
 #include <mastodont.h>
 #include "global_perl.h"
 
-HV* perlify_scrobble(struct mstdnt_scrobble* scrobble);
-AV* perlify_scrobbles(struct mstdnt_scrobble* scrobble, size_t len);
+HV* perlify_scrobble(const struct mstdnt_scrobble* const scrobble);
+AV* perlify_scrobbles(const struct mstdnt_scrobble* const scrobble, size_t len);
 
 #endif /* SCROBBLE_H */

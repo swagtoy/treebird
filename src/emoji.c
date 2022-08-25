@@ -123,7 +123,7 @@ char* construct_emoji_picker(char* status_id, size_t* size)
     return dup;
 }
 
-HV* perlify_emoji(struct mstdnt_emoji* const emoji)
+HV* perlify_emoji(const struct mstdnt_emoji* const emoji)
 {
     if (!emoji) return NULL;
     HV* emoji_hv = newHV();
@@ -135,16 +135,5 @@ HV* perlify_emoji(struct mstdnt_emoji* const emoji)
     return emoji_hv;
 }
 
-AV* perlify_emojis(struct mstdnt_emoji* const emos, size_t len)
-{
-    if (!(emos && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
+PERLIFY_MULTI(emoji, emojis, mstdnt_emoji)
 
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_emoji(emos + i)));
-    }
-
-    return av;
-}

@@ -489,19 +489,7 @@ void content_account_favourites(PATH_ARGS)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 }
 
-AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len)
-{
-    if (!(accounts && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_account(accounts + i)));
-    }
-
-    return av;
-}
+PERLIFY_MULTI(account, accounts, mstdnt_account)
 
 HV* perlify_account(const struct mstdnt_account* acct)
 {

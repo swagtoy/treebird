@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include "easprintf.h"
 
-HV* perlify_emoji_reaction(struct mstdnt_emoji_reaction* const emoji)
+HV* perlify_emoji_reaction(const struct mstdnt_emoji_reaction* const emoji)
 {
     if (!emoji) return NULL;
     HV* emoji_hv = newHV();
@@ -34,16 +34,5 @@ HV* perlify_emoji_reaction(struct mstdnt_emoji_reaction* const emoji)
     return emoji_hv;
 }
 
-AV* perlify_emoji_reactions(struct mstdnt_emoji_reaction* const emos, size_t len)
-{
-    if (!(emos && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
+PERLIFY_MULTI(emoji_reaction, emoji_reactions, mstdnt_emoji_reaction)
 
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_emoji_reaction(emos + i)));
-    }
-
-    return av;
-}

@@ -470,17 +470,4 @@ HV* perlify_status(const struct mstdnt_status* status)
     return status_hv;
 }
 
-
-AV* perlify_statuses(const struct mstdnt_status* statuses, size_t len)
-{
-    if (!(statuses && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_status(statuses + i)));
-    }
-
-    return av;
-}
+PERLIFY_MULTI(status, statuses, mstdnt_status)

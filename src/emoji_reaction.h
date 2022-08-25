@@ -22,7 +22,7 @@
 #include "global_perl.h"
 
 // Perl
-HV* perlify_emoji_reaction(struct mstdnt_emoji_reaction* const emoji);
-AV* perlify_emoji_reactions(struct mstdnt_emoji_reaction* const emos, size_t len);
+HV* perlify_emoji_reaction(const struct mstdnt_emoji_reaction* const emoji);
+AV* perlify_emoji_reactions(const struct mstdnt_emoji_reaction* const emos, size_t len);
 
 #endif // EMOJI_REACTION_H

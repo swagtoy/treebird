@@ -38,7 +38,7 @@ void content_emoji_picker(PATH_ARGS);
 char* construct_emoji_picker(char* status_id, size_t* size);
 
 // Perl
-HV* perlify_emoji(struct mstdnt_emoji* const emoji);
-AV* perlify_emojis(struct mstdnt_emoji* const emos, size_t len);
+HV* perlify_emoji(const struct mstdnt_emoji* const emoji);
+AV* perlify_emojis(const struct mstdnt_emoji* const emos, size_t len);
 
 #endif // EMOJI_H

@@ -70,7 +70,7 @@ void content_chats(PATH_ARGS)
 
     // Cleanup
     mastodont_storage_cleanup(&storage);
-    mstdnt_cleanup_chats(chats);
+    mstdnt_cleanup_chats(chats, chats_len);
     Safefree(dup);
 }
 
@@ -125,6 +125,7 @@ void content_chat_view(PATH_ARGS)
 
     mastodont_storage_cleanup(&storage);
     mastodont_storage_cleanup(&storage_chat);
+    mstdnt_cleanup_chat(&chat);
     mstdnt_cleanup_messages(messages);
     Safefree(dup);
 }
@@ -141,19 +142,7 @@ HV* perlify_chat(const struct mstdnt_chat* chat)
     return chat_hv;
 }
 
-AV* perlify_chats(const struct mstdnt_chat* chats, size_t len)
-{
-    if (!(chats && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_chat(chats + i)));
-    }
-
-    return av;
-}
+PERLIFY_MULTI(chat, chats, mstdnt_chat)
 
 HV* perlify_message(const struct mstdnt_message* message)
 {
@@ -171,17 +160,4 @@ HV* perlify_message(const struct mstdnt_message* message)
     return message_hv;
 }
 
-AV* perlify_messages(const struct mstdnt_message* messages, size_t len)
-{
-    if (!(messages && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_message(messages + i)));
-    }
-
-    return av;
-}
-
+PERLIFY_MULTI(message, messages, mstdnt_message)

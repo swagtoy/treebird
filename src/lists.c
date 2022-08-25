@@ -115,16 +115,5 @@ HV* perlify_list(const struct mstdnt_list* list)
     return list_hv;
 }
 
-AV* perlify_lists(const struct mstdnt_list* lists, size_t len)
-{
-    if (!(lists && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
+PERLIFY_MULTI(list, lists, mstdnt_list)
 
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_list(lists + i)));
-    }
-
-    return av;
-}

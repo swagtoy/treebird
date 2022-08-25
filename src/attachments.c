@@ -116,7 +116,7 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
     free(media_ids);
 }
 
-HV* perlify_attachment(struct mstdnt_attachment* const attachment)
+HV* perlify_attachment(const struct mstdnt_attachment* const attachment)
 {
     if (!attachment) return NULL;
     HV* attach_hv = newHV();
@@ -131,19 +131,7 @@ HV* perlify_attachment(struct mstdnt_attachment* const attachment)
     return attach_hv;
 }
 
-AV* perlify_attachments(struct mstdnt_attachment* const attachments, size_t len)
-{
-    if (!(attachments && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_attachment(attachments + i)));
-    }
-
-    return av;
-}
+PERLIFY_MULTI(attachment, attachments, mstdnt_attachment)
 
 void api_attachment_create(PATH_ARGS)
 {

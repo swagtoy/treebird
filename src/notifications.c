@@ -181,7 +181,7 @@ static HV* perlify_notification_pleroma(struct mstdnt_notification_pleroma* noti
 
 
 // Converts it into a perl struct
-HV* perlify_notification(struct mstdnt_notification* notif)
+HV* perlify_notification(const struct mstdnt_notification* const notif)
 {
     if (!notif) return NULL;
     HV* notif_hv = newHV();
@@ -197,20 +197,7 @@ HV* perlify_notification(struct mstdnt_notification* notif)
     return notif_hv;
 }
 
-// The same as above, but for multiple
-AV* perlify_notifications(struct mstdnt_notification* notifs, size_t len)
-{
-    if (!(notifs && len)) return NULL;
-    AV* av = newAV();
-    av_extend(av, len-1);
-
-    for (int i = 0; i < len; ++i)
-    {
-        av_store(av, i, newRV_inc((SV*)perlify_notification(notifs + i)));
-    }
-
-    return av;
-}
+PERLIFY_MULTI(notification, notifications, mstdnt_notification)
 
 void api_notifications(PATH_ARGS)
 {

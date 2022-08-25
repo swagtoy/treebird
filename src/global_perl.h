@@ -46,6 +46,17 @@
     LEAVE;                                          \
     perl_unlock()
 
+#define PERLIFY_MULTI(type, types, mstype) AV* perlify_##types(const struct mstype* const types, size_t len) { \
+        if (!(types && len)) return NULL;                               \
+        AV* av = newAV();                                               \
+        av_extend(av, len-1);                                           \
+        for (size_t i = 0; i < len; ++i)                                \
+            av_store(av, i, newRV_noinc((SV*)perlify_##type(types + i))); \
+        return av;                                                      \
+    }
+    
+
+
 extern PerlInterpreter* my_perl;
 extern HV* template_files;
 extern pthread_mutex_t perllock_mutex;
