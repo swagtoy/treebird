@@ -87,7 +87,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     char* dup = PERL_GET_STACK_EXIT;
     
     send_result(req, NULL, "text/html", dup, 0);
-    
+
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);
     Safefree(dup);

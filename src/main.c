@@ -247,7 +247,7 @@ int main(int argc, char **argv, char **env)
 
     perl_parse(my_perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
     PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
-    PL_perl_destruct_level = 2;
+    PL_perl_destruct_level = 1;
     perl_run(my_perl);
 
     init_template_files(aTHX);
