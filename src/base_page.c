@@ -73,7 +73,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
         mXPUSHs(newRV_noinc((SV*)page->session));
     else
         mXPUSHs(newRV_noinc((SV*)perlify_session(ssn)));
-    XPUSHs(newRV_noinc((SV*)template_files));
+    mXPUSHs(newRV_inc((SV*)template_files));
     mXPUSHs(newSVpv(page->content, 0));
 
     if (notifs && notifs_len)

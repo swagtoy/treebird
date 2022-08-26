@@ -45,7 +45,7 @@ void content_config_general(PATH_ARGS)
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
+    mXPUSHs(newRV_inc((SV*)template_files));
     
     PERL_STACK_SCALAR_CALL("config::general");
     
