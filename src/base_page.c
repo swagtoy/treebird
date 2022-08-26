@@ -81,6 +81,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
         mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
     }
     else ARG_UNDEFINED();
+
     
     // Run function
     PERL_STACK_SCALAR_CALL("base_page");
