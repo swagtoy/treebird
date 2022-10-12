@@ -84,26 +84,21 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     }
     else ARG_UNDEFINED();
 
-    SvREFCNT_dec(pl_notifs_rv);
-    SvREFCNT_dec(pl_notifs);
-    SvREFCNT_dec(content);
-    SvREFCNT_dec(real_ssn);
-
-    av_undef(pl_notifs);
-    sv_set_undef(pl_notifs_rv);
-    sv_set_undef(real_ssn);
-    sv_set_undef(content);
-    
     // Run function
     PERL_STACK_SCALAR_CALL("base_page");
     char* dup = PERL_GET_STACK_EXIT;
     
     send_result(req, NULL, "text/html", dup, 0);
 
-    free(page->content);
+     /* av_clear(pl_notifs); */
+     /* av_undef(pl_notifs); */
+     /* sv_free(pl_notifs_rv); */
+     //hv_undef(real_ssn);
+     //sv_free(content);
+    
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);
-    Safefree(dup);
+    free(dup);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

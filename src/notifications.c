@@ -191,11 +191,11 @@ HV* perlify_notification(const struct mstdnt_notification* const notif)
     hvstores_int(notif_hv, "created_at", notif->created_at);
     hvstores_str(notif_hv, "emoji", notif->emoji);
     hvstores_str(notif_hv, "type", mstdnt_notification_t_to_str(notif->type));
-    hvstores_ref(notif_hv, "account", sv_2mortal(perlify_account(notif->account)));
-    hvstores_ref(notif_hv, "pleroma", sv_2mortal(perlify_notification_pleroma(notif->pleroma)));
-hvstores_ref(notif_hv, "status", sv_2mortal(perlify_status(notif->status)));
+    hvstores_ref(notif_hv, "account", perlify_account(notif->account));
+    hvstores_ref(notif_hv, "pleroma", perlify_notification_pleroma(notif->pleroma));
+    hvstores_ref(notif_hv, "status", perlify_status(notif->status));
     
-    return (HV*)sv_2mortal((SV*)notif_hv);
+    return notif_hv;
 }
 
 PERLIFY_MULTI(notification, notifications, mstdnt_notification)

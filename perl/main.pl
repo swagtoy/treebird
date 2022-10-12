@@ -47,6 +47,9 @@ sub base_page
         notification => \&generate_notification,
         );
 
-    to_template(\%vars, \$data->{'main.tt'});
+    my $ret = to_template(\%vars, \$data->{'main.tt'});
+    undef($notifs);
+    undef($main);
+    undef($ssn);
+    return $ret;
 }
-

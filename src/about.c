@@ -25,10 +25,9 @@ void content_about(PATH_ARGS)
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
+    XPUSHs(newRV_inc((SV*)template_files));
 
     PERL_STACK_SCALAR_CALL("meta::about");
-
     char* dup = PERL_GET_STACK_EXIT;
     
     struct base_page b = {
@@ -39,7 +38,8 @@ void content_about(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    Safefree(dup);
+    free(dup);
+//    sv_free(session_hv);
 }
 
 
