@@ -23,9 +23,9 @@
 #include <pthread.h>
 
 //    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
-#define hvstores_str(hv, key, val) if (val) { hv_stores((hv), key, newSVpv((val), 0)); }
-#define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
-#define hvstores_ref(hv, key, val) if (val) {  hv_stores((hv), key, newRV_noinc((SV*)(val))); }
+#define hvstores_str(hv, key, val) if (val) { hv_stores((hv), key, sv_2mortal(newSVpv((val), 0))); }
+#define hvstores_int(hv, key, val) hv_stores((hv), key, sv_2mortal(newSViv((val))))
+#define hvstores_ref(hv, key, val) if (val) {  hv_stores((hv), key, sv_2mortal(newRV_noinc((SV*)(val)))); }
 
 /* Seeing all this shit littered in Treebird's code made me decide to write some macros */
 #define PERL_STACK_INIT perl_lock(); \
@@ -39,7 +39,7 @@
     SPAGAIN
 
 /* you MUST assign scalar from savesharedsvpv, then free when done */
-#define PERL_GET_STACK_EXIT savesharedsvpv(POPs);   \
+#define PERL_GET_STACK_EXIT savesvpv(POPs);   \
     PUTBACK;                                        \
     FREETMPS;                                       \
     LEAVE;                                          \
@@ -49,8 +49,8 @@
         if (!(types && len)) return NULL;                               \
         AV* av = newAV();                                               \
         for (size_t i = 0; i < len; ++i)                                \
-            av_push(av, newRV_noinc((SV*)perlify_##type(types + i))); \
-        return av;                                                      \
+            av_push(av, sv_2mortal(newRV_noinc((SV*)sv_2mortal(perlify_##type(types + i))))); \
+        return sv_2mortal(av);                                        \
     }
     
 

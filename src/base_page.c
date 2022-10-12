@@ -69,19 +69,30 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 
     PERL_STACK_INIT;
 
-    if (page->session)
-        mXPUSHs(newRV_noinc((SV*)page->session));
-    else
-        mXPUSHs(newRV_noinc((SV*)perlify_session(ssn)));
-    mXPUSHs(newRV_inc((SV*)template_files));
-    mXPUSHs(newSVpv(page->content, 0));
+    AV* pl_notifs = perlify_notifications(notifs, notifs_len);
+    SV* pl_notifs_rv = newRV_noinc(pl_notifs);
+    SV* real_ssn = page->session ? page->session : perlify_session(ssn);
+    XPUSHs(sv_2mortal(newRV_noinc((SV*)real_ssn)));
+
+    XPUSHs(sv_2mortal(newRV_inc((SV*)template_files)));
+    SV* content = newSVpv(page->content, 0);
+    XPUSHs(sv_2mortal(content));
 
     if (notifs && notifs_len)
     {
-        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
+        XPUSHs(sv_2mortal(pl_notifs_rv));
     }
     else ARG_UNDEFINED();
 
+    SvREFCNT_dec(pl_notifs_rv);
+    SvREFCNT_dec(pl_notifs);
+    SvREFCNT_dec(content);
+    SvREFCNT_dec(real_ssn);
+
+    av_undef(pl_notifs);
+    sv_set_undef(pl_notifs_rv);
+    sv_set_undef(real_ssn);
+    sv_set_undef(content);
     
     // Run function
     PERL_STACK_SCALAR_CALL("base_page");
@@ -89,6 +100,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     
     send_result(req, NULL, "text/html", dup, 0);
 
+    free(page->content);
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);
     Safefree(dup);
