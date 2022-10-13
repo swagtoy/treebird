@@ -1,29 +1,33 @@
 <div class="simple-page">
-    <h1>{{%s:login_header}}</h1>
-    
-    {{%s:error}}
+    <h1>[% lang('LOGIN') %]</h1>
+
+    [% IF error %]
+        <span class="e-error error-pad">
+            $error
+        </span>
+    [% END %]
 
     <form action="/login" method="post">
         <div class="form-group">
-            <label for="login-username">{{%s:username}}: </label>
+            <label for="login-username">[% lang('LOGIN') %]: </label>
             <input type="text" id="login-username" name="username">
         </div>
         <div class="form-group">
-            <label for="login-password">{{%s:password}}: </label>
+            <label for="login-password">[% lang('PASSWORD') %]: </label>
             <input type="password" id="login-password" name="password"><br>
         </div>
         <div class="form-group">
-            <input class="btn" type="submit" value="{{%s:login_submit}}">
+            <input class="btn" type="submit" value="[% lang('LOGIN_BTN') %]">
         </div>
     </form>
 
-    <h6>{{%s:instance_text}}</h6>
+    <div class="text-gap-hairline"></div><h6> OR </h6><div class="text-gap-hairline"></div>
 
     <form action="/login/oauth" method="post">
         <div class="form-group">
             <label for="instance-url">{{%s:instance_url}}: </label>
             <input type="url" id="instance-url" name="instance">
-            <input class="btn" type="submit" value="{{%s:instance_submit}}">
+            <input class="btn btn-single" type="submit" value="{{%s:instance_submit}}">
         </div>
     </form>
 </div>

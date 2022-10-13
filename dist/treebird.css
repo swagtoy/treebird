@@ -13,6 +13,18 @@
     --account-overlay-gradient-bottom: #dadada;
 }
 
+
+*
+{
+    transition: .1s box-shadow;
+}
+
+*:focus
+{
+    outline: 1px solid #aa0000;
+    box-shadow: 0px 0px 6px #aa00006f;
+}
+
 *
 {
     margin: 0;
@@ -119,7 +131,7 @@ table.ui-table td
 
 #navbar
 {
-    background: linear-gradient(#fbfbfb 40%, #efefef 50%, #e4e4e9);
+    background: linear-gradient(#fbfbfb 40%, #f5f5f5 50%, #efefef);
     width: 1000px;
     border-bottom: 2px solid #bfbfc4;
     z-index: 999;
@@ -157,6 +169,26 @@ table.ui-table td
     vertical-align: middle;
     display: inline-block;
     margin: 6px 0px 6px 18px;
+}
+
+#navbar a,
+#navbar a:focus
+{
+    box-shadow: 0px 0px 0px #00000000 !important;
+    outline: 0 !important;
+}
+
+#navbar a img
+{
+    transition: .4s transform, .4s filter;
+}
+
+#navbar a:focus img
+{
+    box-shadow: 0px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 !important;
+    transform: rotateZ(360deg);
+    filter: drop-shadow(0px 0px 3px #aa00006f);
 }
 
 #navbar span.info
@@ -273,7 +305,20 @@ table.ui-table td
 
 #searchbox
 {
+    padding-top: unset;
+    padding-bottom: unset;
+    height: 26px;
+    border-right: unset;
     padding-left: 27px;
+    transition: width .1s ease;
+    width: 180px;
+}
+
+#searchbox:focus
+{
+    box-shadow: 0;
+    outline: 0;
+    width: 300px;
 }
 
 .results-header
@@ -338,6 +383,14 @@ table.ui-table td
     font-weight: bold;
 }
 
+input[type=text],
+input[type=url],
+input[type=email],
+input[type=password]
+{
+    padding: 2px;
+    border: 1px solid #d3d3d3;
+}
 
 .menu.menu-compact .btn-menu,
 .status-compact .menu-container .menu .btn-menu
@@ -1352,6 +1405,22 @@ input[type=checkbox].hidden:not(:checked) + .sidebar-submenu
     border-bottom-right-radius: 5px;
 }
 
+.text-gap-hairline
+{
+    display: inline-block;
+    width: 64px;
+    text-align: center;
+    height: 1px;
+    background-color: #d3d3d3;
+    margin: 2px;
+}
+
+.text-gap-hairline + h6
+{
+    display: inline;
+    font-variant: small-caps;
+}
+
 /*************************
  *     Config            *
  ************************/
@@ -1984,6 +2053,14 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
 {
     padding: 5px;
     display: block;
+}
+
+.form-group label
+{
+    display: inline-block;
+    min-width: 70px;
+    font-size: 0.9rem;
+    text-align: middle;
 }
 
 /* Simple page layout */
