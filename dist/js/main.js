@@ -133,32 +133,40 @@
         });
     }
 
-    function status_interact_props(e)
+    function status_event(e)
     {
-        let interact = e.target.closest(".statbtn");
-        let type = interact.parentNode.querySelector(".itype");
-        if (type === null)
-            return true;
-        let status = interact.closest(".status");
+        let target = e.target.closest(".statbtn");
+        console.log(target);
+        if (target)
+        {
+            // Don't JS these
+            if (target.classList.contains("reply-btn") || target.classList.contains("view-btn"))
+                return true;
+            let type = target.parentNode.querySelector(".itype");
+            if (type === null)
+                return true;
+            let status = e.srcElement;
 
-        send_request("/treebird_api/v1/interact",
-                     {
-                         id: status.id,
-                         itype: type.value
-                     },
-                     "POST",
-                     (xhr, args) => {
-                         if (xhr.status !== 200)
+            send_request("/treebird_api/v1/interact",
                          {
-                             // Undo action if failure
-                             interact_action(status, type);
-                         }
-                     }, null);
+                             id: status.id,
+                             itype: type.value
+                         },
+                         "POST",
+                         (xhr, args) => {
+                             if (xhr.status !== 200)
+                             {
+                                 // Undo action if failure
+                                 interact_action(status, type);
+                             }
+                         }, null);
 
-        interact_action(status, type);
-        
+            interact_action(status, type);
+            
+            e.preventDefault();
+            return false;
+        }
         e.preventDefault();
-        return false;
     }
 
     function frame_resize()
@@ -279,13 +287,12 @@
 
     // Main (when loaded)
     document.addEventListener('DOMContentLoaded', () => {
-        let reply_btn = document.getElementsByClassName("reply-btn");
-        let interact_btn = document.getElementsByClassName("statbtn");
+        let interact_btn = document.getElementsByClassName("status");
 
         // Add event listener to add specificied buttons
         for (let i = 0; i < interact_btn.length; ++i)
         {
-            interact_btn[i].addEventListener('click', status_interact_props);
+            interact_btn[i].addEventListener('click', status_event);
         }
         
         // Resize notifications iFrame to full height
