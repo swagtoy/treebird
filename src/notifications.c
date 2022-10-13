@@ -58,7 +58,7 @@ void content_notifications(PATH_ARGS)
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
-    XPUSHs(newRV_noinc((SV*)session_hv));
+    mXPUSHs(newRV_inc((SV*)session_hv));
     mXPUSHs(newRV_inc((SV*)template_files));
     if (notifs)
         mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));

@@ -69,36 +69,27 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 
     PERL_STACK_INIT;
 
-    AV* pl_notifs = perlify_notifications(notifs, notifs_len);
-    SV* pl_notifs_rv = newRV_noinc(pl_notifs);
-    SV* real_ssn = page->session ? page->session : perlify_session(ssn);
-    XPUSHs(sv_2mortal(newRV_noinc((SV*)real_ssn)));
-
-    XPUSHs(sv_2mortal(newRV_inc((SV*)template_files)));
-    SV* content = newSVpv(page->content, 0);
-    XPUSHs(sv_2mortal(content));
+    HV* real_ssn = page->session ? page->session : perlify_session(ssn);
+    mXPUSHs(newRV_noinc((SV*)real_ssn));
+    mXPUSHs(newRV_inc((SV*)template_files));
+    mXPUSHs(newSVpv(page->content, 0));
 
     if (notifs && notifs_len)
     {
-        XPUSHs(sv_2mortal(pl_notifs_rv));
+        mXPUSHs(newRV_noinc(perlify_notifications(notifs, notifs_len)));
     }
     else ARG_UNDEFINED();
 
     // Run function
     PERL_STACK_SCALAR_CALL("base_page");
     char* dup = PERL_GET_STACK_EXIT;
+
     
     send_result(req, NULL, "text/html", dup, 0);
-
-     /* av_clear(pl_notifs); */
-     /* av_undef(pl_notifs); */
-     /* sv_free(pl_notifs_rv); */
-     //hv_undef(real_ssn);
-     //sv_free(content);
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mastodont_storage_cleanup(&storage);
-    free(dup);
+    Safefree(dup);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

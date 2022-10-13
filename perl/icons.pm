@@ -1,6 +1,7 @@
 package icons;
 use strict;
 use warnings;
+use Scalar::Util 'looks_like_number';
 
 use Exporter 'import';
 
@@ -57,6 +58,7 @@ sub visibility_to_icon
 {
     # I thought of an array, but I don't want to call get_icon UNLESS
     # we know the visibility
+    return unless looks_like_number($_[0]);
     my $vis = $_[0];
 
     return get_icon('public') if $vis == 1;

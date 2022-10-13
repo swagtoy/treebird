@@ -16,14 +16,10 @@ use config;
 use embed;
 use meta;
 use login;
+# use Devel::Leak;
 
-# my $template = Template->new(
-#     {
-#         INTERPOLATE => 1,
-#         POST_CHOMP => 1,
-#         EVAL_PERL => 1,
-#         TRIM => 1
-#     });
+# my $handle;
+# Devel::Leak::NoteSV($handle);
 
 sub base_page
 {
@@ -48,8 +44,15 @@ sub base_page
         );
 
     my $ret = to_template(\%vars, \$data->{'main.tt'});
-    undef($notifs);
-    undef($main);
-    undef($ssn);
+
+#    leaky_friend();
+
     return $ret;
 }
+
+# sub leaky_friend
+# {
+#     $count = Devel::Leak::CheckSV($handle);
+#     my $leakstr = "Memory: $count SVs\n";
+#     print STDERR $leakstr;
+# }

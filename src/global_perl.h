@@ -22,10 +22,15 @@
 #include <perl.h>
 #include <pthread.h>
 
-//    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0)); 
-#define hvstores_str(hv, key, val) if (val) { hv_stores((hv), key, Perl_newSVpv_share(aTHX_ (val), 0)); }
+//    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0));
+// TODO use sv_usepvn_flags soon
+#define hvstores_str(hv, key, val) if ((val)) { hv_stores((hv), key, newSVpvn((val), strlen(val))); }
 #define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
-#define hvstores_ref(hv, key, val) if (val) {  hv_stores((hv), key, newRV_noinc((SV*)(val))); }
+#define hvstores_ref(hv, key, val) if (1) {     \
+        SV* tmp = (SV*)(val);                   \
+        if (tmp)                                \
+            hv_stores((hv), key, newRV_noinc(tmp)); \
+    }
 
 /* Seeing all this shit littered in Treebird's code made me decide to write some macros */
 #define PERL_STACK_INIT perl_lock(); \
@@ -48,8 +53,9 @@
 #define PERLIFY_MULTI(type, types, mstype) AV* perlify_##types(const struct mstype* const types, size_t len) { \
         if (!(types && len)) return NULL;                               \
         AV* av = newAV();                                               \
+        av_extend(av, len-1);                                           \
         for (size_t i = 0; i < len; ++i)                                \
-            av_push(av, newRV_noinc((SV*)perlify_##type(types + i))); \
+            av_store(av, i, newRV_noinc((SV*)perlify_##type(types + i))); \
         return av;                                                      \
     }
     

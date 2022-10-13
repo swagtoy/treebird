@@ -2,6 +2,7 @@ package string_helpers;
 use strict;
 use warnings;
 use Exporter 'import';
+use Scalar::Util 'looks_like_number';
 
 our @EXPORT = qw( reltime_to_str greentextify emojify format_username get_mentions_from_content localize_mentions simple_escape random_error_kaomoji );
 
@@ -9,6 +10,7 @@ my $re_mentions = '(?=<a .*?mention.*?)<a .*?href="https?:\/\/(.*?)\/(?:@|users\
 
 sub reltime_to_str
 {
+    return unless looks_like_number($_[0]);
     my $since = time() - $_[0];
 
     return $since . 's' if $since < 60;
