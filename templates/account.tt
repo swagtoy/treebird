@@ -1,0 +1,84 @@
+[% IF relationship && relationship.blocked_by %]
+    <span class="e-notice">You are blocked by this user. You can still interact, but they will not be notifed of your interactions.</span>
+[% END %]
+[% IF acct.id == ssn.account.id %]
+    <div class="menubar">
+        <a href="$prefix/blocked">{{ %s : blocked_str }}</a>
+        <span class="bullet-separate">&bull;</span>
+        <a href="$prefix/muted">{{ %s : muted_str }}</a>
+        <span class="bullet-separate">&bull;</span>
+        <a href="$prefix/favourites">{{ %s : favourited_str }}</a>
+    </div>
+[% END %]
+<div class="account">
+    <div class="acct-banner" style="background-image:url('[% acct.header %]');">
+        [% IF relationship && relationship.following %]
+            
+        [% END %]
+        <div class="acct-info-data">
+            <span class="acct-displayname">[% emojify(escape(acct.display_name), acct.emojis) %]</span>
+            <span class="acct-username">@[% acct.acct %]</span>
+        </div>
+
+        <span class="menu-container user-options-btn">
+            Menu
+            <div class="menu menu-options">
+                <ul>
+                    <li><a class="nolink" href="$prefix/user/{{%s:userid}}/action/{{%s:unsubscribe}}subscribe"><input class="btn-menu" type="button" value="{{%s:subscribe_text}}"></a></li>
+                    <li><a class="nolink" href="$prefix/user/{{%s:userid}}/action/{{%s:unblock}}block"><input class="btn-menu" type="button" value="{{%s:block_text}}"></a></li>
+                    <li><a class="nolink" href="$prefix/user/{{%s:userid}}/action/{{%s:unmute}}mute"><input class="btn-menu" type="button" value="{{%s:mute_text}}"></a></li>
+                </ul>
+            </div>
+        </span>
+    </div>
+    
+    <div class="acct-header">
+        <a href="$prefix/@[% acct.acct %]" class="header-btn btn">
+            <span class="btn-header">[% lang('TAB_STATUSES') %]</span>
+            <span class="btn-content">[% acct.statuses_count %]</span>
+        </a>
+        
+        <a href="$prefix/@[% acct.acct %]/following" class="header-btn btn">
+            <span class="btn-header">[% lang('TAB_FOLLOWING') %]</span>
+            <span class="btn-content">[% acct.following_count %]</span>
+        </a>
+
+        <a href="$prefix/@[% acct.acct %]/followers" class="header-btn btn">
+            <span class="btn-header">[% lang('TAB_FOLLOWERS') %]</span>
+            <span class="btn-content">[% acct.followers_count %]</span>
+        </a>
+        
+        [%# {{%s:follow_btn}} %]
+    </div>
+    <div class="acct-pfp-wrapper">
+        <img class="acct-pfp" src="[% acct.avatar %]">
+    </div>
+</div>
+
+[% IF acct.note %]
+    <div class="account-info">
+        <div class="account-note">[% emojify(acct.note, acct.emojis) %]</div>
+    </div>
+[% END %]
+
+<table class="tabs ui-table">
+    <tr>
+        <td>
+            <a href="$prefix/@[% acct.acct %]/statuses"><input class="tab-btn btn {{%s:tab_statuses_focused}}" type="button" value="[% lang('TAB_STATUSES') %]"></a>
+        </td>
+        <td>
+            <a href="$prefix/@[% acct.acct %]/scrobbles"><input class="tab-btn btn {{%s:tab_scrobbles_focused}}" type="button" value="[% lang('TAB_SCROBBLES') %]"></a>
+        </td>
+        <td>
+            <a href="$prefix/@[% acct.acct %]/media"><input class="tab-btn btn {{%s:tab_media_focused}}" type="button" value="[% lang('TAB_MEDIA') %]"></a>
+        </td>
+        <td>
+            <a href="$prefix/@[% acct.acct %]/pinned"><input class="tab-btn btn {{%s:tab_pinned_focused}}" type="button" value="[% lang('TAB_PINNED') %]"></a>
+        </td>
+    </tr>
+</table>
+
+<div class="account-content">
+    [% content %]
+</div>
+

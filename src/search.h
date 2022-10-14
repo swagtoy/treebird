@@ -21,22 +21,12 @@
 #include <mastodont.h>
 #include "session.h"
 #include "path.h"
+#include "global_perl.h"
 
-enum search_tab
-{
-    SEARCH_STATUSES,
-    SEARCH_ACCOUNTS,
-    SEARCH_HASHTAGS,
-};
-
-void search_page(FCGX_Request* req,
-                 struct session* ssn,
-                 mastodont_t* api,
-                 enum search_tab tab,
-                 char* content);
 void content_search_all(PATH_ARGS);
 void content_search_statuses(PATH_ARGS);
 void content_search_accounts(PATH_ARGS);
 void content_search_hashtags(PATH_ARGS);
+HV* perlify_search_results(struct mstdnt_search_results* results);
 
 #endif /* SEARCH_H */

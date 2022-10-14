@@ -1,0 +1,17 @@
+<table class="notification-compact notification ui-table">
+  <tr>
+    <td class="pfp-compact-td">
+      <img src="[% notif.account.avatar %]">
+    </td>
+    <td>
+      <div class="notification-info">
+        <span class="notification-text-group">
+          <span title="[% notif.account.acct %]" class="username">[% notif.account.display_name %]</span>
+          <span class="action">{{%s:action}}</span>
+        </span> {{%s:notif_svg}}
+      </div>
+      <div class="notification-content {{%s:is_status}}">{{%s:content}}</div>
+      <div class="notification-stats">{{%s:stats}}</div>
+    </td>
+  </tr>
+</table>

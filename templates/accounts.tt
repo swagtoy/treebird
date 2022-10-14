@@ -1,0 +1,12 @@
+[% IF title %]
+    <h1 class="text-header">$title</h1>
+[% END %]
+
+[% FOREACH i IN accounts %]
+    [% create_account(i) %]
+[% END %]
+
+[%# TODO navigation %]
+[% IF accounts %]
+    [% nav() %]
+[% END %]

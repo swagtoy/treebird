@@ -1,0 +1,35 @@
+<div class="lists-view">
+    <h1 class="lists-view-header">Lists</h1>
+
+    <div class="lists-view-container">
+        <ul class="large-list center">
+            [% FOREACH list IN lists %]
+                <li>
+                    <a href="/lists/for/[% list.id %]" class="btn split list-item">[% list.title %]</a><label for="list-edit-[% list.id %]"><span class="btn edit-list-btn">Edit</span></label>
+
+                    <input type="checkbox" id="list-edit-[% list.id %]" class="list-radio-show hidden" name="list-radio" class="hidden">
+                    <div class="list-edit-content">
+                        <form action="/lists/edit/[% list.id %]" method="post">
+                            <input type="text" name="title">
+                            <select name="replies_policy">
+                                <option value="0">None</option>
+                                <option value="1">List</option>
+                                <option value="2">Followed</option>
+                            </select>
+                        </form>
+                    </div>
+                </li>
+
+            [% END %]
+        </ul>
+
+        <ul class="large-list center create-list">
+            <form action="/lists" method="post">
+                <li>
+                    <input type="text" name="title" class="create-list-form"><input type="submit" value="Create list" class="create-list-btn btn">
+                </li>
+            </form>
+        </ul>
+    </div>
+</div>
+

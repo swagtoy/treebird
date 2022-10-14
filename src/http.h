@@ -18,11 +18,11 @@
 
 #ifndef HTTP_H
 #define HTTP_H
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "request.h"
+#include "cgi.h"
 
 #define REDIRECT_303 "303 See Other"
 
-void redirect(FCGX_Request* req, char* status, char* location);
+void redirect(REQUEST_T req, char* status, char* location);
 
 #endif // HTTP_H

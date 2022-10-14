@@ -16,9 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <EXTERN.h>
+#include <perl.h>
+#include "global_perl.h"
 #include <pthread.h>
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include <string.h>
 #include <mastodont.h>
 #include <stdlib.h>
@@ -37,15 +38,29 @@
 #include "timeline.h"
 #include "session.h"
 #include "notifications.h"
-#include "test.h"
 #include "env.h"
 #include "search.h"
 #include "about.h"
 #include "local_config_set.h"
 #include "global_cache.h"
 #include "conversations.h"
+#include "request.h"
+#include "cgi.h"
 
 #define THREAD_COUNT 20
+
+// Allow dynamic loading for Perl
+static void xs_init (pTHX);
+void boot_DynaLoader (pTHX_ CV* cv);
+
+#ifdef DEBUG
+static int quit = 0;
+static void exit_treebird(PATH_ARGS)
+{
+    quit = 1;
+    exit(1);
+}
+#endif
 
 /*******************
  *  Path handling  *
@@ -57,7 +72,6 @@ static struct path_info paths[] = {
     { "/config", content_config },
     { "/login/oauth", content_login_oauth },
     { "/login", content_login },
-    { "/test", content_test },
     { "/user/:/action/:", content_account_action },
     { "/user/:", content_account_statuses },
     { "/@:/scrobbles", content_account_scrobbles },
@@ -95,24 +109,30 @@ static struct path_info paths[] = {
     { "/blocked", content_account_blocked },
     { "/muted", content_account_muted },
     { "/notifications_compact", content_notifications_compact },
+    { "/notification/:/read", content_notifications_read },
+    { "/notification/:/delete", content_notifications_clear },
+    { "/notifications/read", content_notifications_read },
+    { "/notifications/clear", content_notifications_clear },
     { "/notifications", content_notifications },
     { "/tag/:", content_tl_tag },
     { "/chats/:", content_chat_view },
     { "/chats", content_chats },
-    { "/chats_embed/:", content_chat_embed },
+#ifdef DEBUG
+    { "/quit", exit_treebird },
+    { "/exit", exit_treebird },
+#endif
     // API
     { "/treebird_api/v1/notifications", api_notifications },
     { "/treebird_api/v1/interact", api_status_interact },
     { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
-static void application(mastodont_t* api, FCGX_Request* req)
+static void application(mastodont_t* api, REQUEST_T req)
 {
     // Default config
     struct session ssn = {
         .config = {
             .theme = "treebird20",
-            .themeclr = 0,
             .lang = L10N_EN_US,
             .jsactions = 1,
             .jsreply = 1,
@@ -166,7 +186,8 @@ static void application(mastodont_t* api, FCGX_Request* req)
         cleanup_media_storages(&ssn, attachments);
 }
 
-static void* cgi_start(void* arg)
+#ifndef SINGLE_THREADED
+static void* threaded_fcgi_start(void* arg)
 {
     mastodont_t* api = arg;
     int rc;
@@ -189,12 +210,46 @@ static void* cgi_start(void* arg)
 
     return NULL;
 }
+#else
+void cgi_start(mastodont_t* api)
+{
+    while (FCGI_Accept() >= 0 && quit == 0)
+    {
+        application(api, NULL);
+    }
+}
+#endif
 
-int main(void)
+void xs_init(pTHX)
+{
+    static const char file[] = __FILE__;
+    dXSUB_SYS;
+    PERL_UNUSED_CONTEXT;
+    
+    newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+}
+
+int main(int argc, char **argv, char **env)
 {
     // Global init
     mastodont_global_curl_init();
+#ifndef SINGLE_THREADED
     FCGX_Init();
+#endif
+
+    // Initialize Perl
+    PERL_SYS_INIT3(&argc, &argv, &env);
+    my_perl = perl_alloc();
+    perl_construct(my_perl);
+    //char* perl_argv[] = { "", "-e", data_main_pl, NULL };
+    char* perl_argv[] = { "", "-I", "perl/", "perl/main.pl", NULL };
+
+    perl_parse(my_perl, xs_init, (sizeof(perl_argv) / sizeof(perl_argv[0])) - 1, perl_argv, (char**)NULL);
+    PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+    PL_perl_destruct_level = 1;
+    perl_run(my_perl);
+
+    init_template_files(aTHX);
 
     // Initiate mastodont library
     mastodont_t api;
@@ -202,17 +257,32 @@ int main(void)
     // Fetch information about the current instance
     load_instance_info_cache(&api);
 
+#ifndef SINGLE_THREADED
     // Start thread pool
     pthread_t id[THREAD_COUNT];
 
     for (unsigned i = 0; i < THREAD_COUNT; ++i)
-        pthread_create(&id[i], NULL, cgi_start, &api);
+        pthread_create(&id[i], NULL, threaded_fcgi_start, &api);
 
     // Hell, let's not sit around here either
+    threaded_fcgi_start(&api);
+    
+    FCGX_ShutdownPending();
+    
+    for (unsigned i = 0; i < THREAD_COUNT; ++i)
+        pthread_join(id[i], NULL);
+#else
     cgi_start(&api);
-
+#endif
    
     free_instance_info_cache();
-    mastodont_cleanup(&api);
     mastodont_global_curl_cleanup();
+    mastodont_cleanup(&api);
+
+    cleanup_template_files();
+
+    perl_destruct(my_perl);
+    perl_free(my_perl);
+    PERL_SYS_TERM();
+    return 0;
 }

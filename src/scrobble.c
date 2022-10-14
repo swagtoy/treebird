@@ -19,35 +19,23 @@
 #include "scrobble.h"
 #include "easprintf.h"
 #include "string_helpers.h"
+#include "account.h"
 
-#include "../static/scrobble.ctmpl"
-
-char* construct_scrobble(struct mstdnt_scrobble* scrobble, size_t* size)
+// Converts it into a perl struct
+HV* perlify_scrobble(const struct mstdnt_scrobble* const scrobble)
 {
-    struct scrobble_template tdata = {
-        .scrobble_id = scrobble->id,
-        .avatar = scrobble->account.avatar,
-        .username = scrobble->account.display_name,
-        .activity = "is listening to...",
-        .title_key = "Title",
-        .title = scrobble->title,
-        .artist_key = "Artist",
-        .artist = scrobble->artist,
-        .album_key = "Album",
-        .album = scrobble->album,
-        .length_key = "Duration",
-        .length = scrobble->length
-    };
+    if (!scrobble) return NULL;
+    HV* scrobble_hv = newHV();
 
-    return tmpl_gen_scrobble(&tdata, size);
+    hvstores_str(scrobble_hv, "album", scrobble->album);
+    hvstores_str(scrobble_hv, "artist", scrobble->artist);
+    hvstores_str(scrobble_hv, "id", scrobble->id);
+    hvstores_str(scrobble_hv, "title", scrobble->title);
+    hvstores_int(scrobble_hv, "created_at", scrobble->created_at);
+    hvstores_int(scrobble_hv, "length", scrobble->created_at);
+    hvstores_ref(scrobble_hv, "account", perlify_account(&(scrobble->account)));
+    
+    return scrobble_hv;
 }
 
-static char* construct_scrobble_voidwrap(void* passed, size_t index, size_t* res)
-{
-    return construct_scrobble((struct mstdnt_scrobble*)passed + index, res);
-}
-
-char* construct_scrobbles(struct mstdnt_scrobble* scrobbles, size_t scrobbles_len, size_t* ret_size)
-{
-    return construct_func_strings(construct_scrobble_voidwrap, scrobbles, scrobbles_len, ret_size);
-}
+PERLIFY_MULTI(scrobble, scrobbles, mstdnt_scrobble)

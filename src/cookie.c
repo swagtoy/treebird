@@ -16,11 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "cookie.h"
 #include <string.h>
 #include <stdlib.h>
-#include "cookie.h"
 #include "env.h"
 
 enum cookie_state
@@ -31,7 +29,7 @@ enum cookie_state
     STATE_V_START,
 };
 
-char* read_cookies_env(FCGX_Request* req, struct cookie_values* cookies)
+char* read_cookies_env(REQUEST_T req, struct cookie_values* cookies)
 {
     struct http_cookie_info info;
     char* cookies_env = GET_ENV("HTTP_COOKIE", req);
@@ -163,4 +161,36 @@ int cookie_get_val(char* src, char* key, struct http_cookie_info* info)
     }
 
     return 1;
+}
+
+HV* perlify_cookies(struct cookie_values* cookies)
+{
+    HV* ssn_cookies_hv = newHV();
+
+    hv_stores(ssn_cookies_hv, "lang", newSViv(keyint(cookies->lang)));
+    hv_stores(ssn_cookies_hv, "interact_img", newSViv(keyint(cookies->interact_img)));
+    hv_stores(ssn_cookies_hv, "themeclr", newSViv(keyint(cookies->themeclr)));
+    hv_stores(ssn_cookies_hv, "jsactions", newSViv(keyint(cookies->jsactions)));
+    hv_stores(ssn_cookies_hv, "jsreply", newSViv(keyint(cookies->jsreply)));
+    hv_stores(ssn_cookies_hv, "jslive", newSViv(keyint(cookies->jslive)));
+    hv_stores(ssn_cookies_hv, "js", newSViv(keyint(cookies->js)));
+    hv_stores(ssn_cookies_hv, "interact_img", newSViv(keyint(cookies->interact_img)));
+    hv_stores(ssn_cookies_hv, "statattachments", newSViv(keyint(cookies->stat_attachments)));
+    hv_stores(ssn_cookies_hv, "statgreentexts", newSViv(keyint(cookies->stat_greentexts)));
+    hv_stores(ssn_cookies_hv, "statdope", newSViv(keyint(cookies->stat_dope)));
+    hv_stores(ssn_cookies_hv, "statoneclicksoftware", newSViv(keyint(cookies->stat_oneclicksoftware)));
+    hv_stores(ssn_cookies_hv, "statemojolikes", newSViv(keyint(cookies->stat_emojo_likes)));
+    hv_stores(ssn_cookies_hv, "stathidemuted", newSViv(keyint(cookies->stat_hide_muted)));
+    hv_stores(ssn_cookies_hv, "instanceshowshoutbox", newSViv(keyint(cookies->instance_show_shoutbox)));
+    hv_stores(ssn_cookies_hv, "instancepanel", newSViv(keyint(cookies->instance_panel)));
+    hv_stores(ssn_cookies_hv, "notifembed", newSViv(keyint(cookies->notif_embed)));
+    hv_stores(ssn_cookies_hv, "access_token", newSVpv(keystr(cookies->access_token), 0));
+    hv_stores(ssn_cookies_hv, "logged_in", newSVpv(keystr(cookies->logged_in), 0));
+    hv_stores(ssn_cookies_hv, "theme", newSVpv(keystr(cookies->theme), 0));
+    hv_stores(ssn_cookies_hv, "instance_url", newSVpv(keystr(cookies->instance_url), 0));
+    hv_stores(ssn_cookies_hv, "background_url", newSVpv(keystr(cookies->background_url), 0));
+    hv_stores(ssn_cookies_hv, "client_id", newSVpv(keystr(cookies->client_id), 0));
+    hv_stores(ssn_cookies_hv, "client_secret", newSVpv(keystr(cookies->client_secret), 0));
+
+    return ssn_cookies_hv;
 }

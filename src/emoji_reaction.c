@@ -22,67 +22,17 @@
 #include <stdlib.h>
 #include "easprintf.h"
 
-// Templates
-#include "../static/custom_emoji_reaction.ctmpl"
-#include "../static/emoji_reaction.ctmpl"
-#include "../static/emoji_reactions.ctmpl"
-
-struct construct_emoji_reactions_args
+HV* perlify_emoji_reaction(const struct mstdnt_emoji_reaction* const emoji)
 {
-    struct mstdnt_emoji_reaction* emojis;
-    char* id;
-};
-
-char* construct_emoji_reaction(char* id, struct mstdnt_emoji_reaction* emo, size_t* str_size)
-{
-    char* ret;
-    char* emoji = emo->name;
-    if (emo->url)
-    {
-        struct custom_emoji_reaction_template c_data = {
-            .url = emo->url,
-        };
-        emoji = tmpl_gen_custom_emoji_reaction(&c_data, NULL);
-    }
-    
-    struct emoji_reaction_template data = {
-        .prefix = config_url_prefix,
-        .status_id = id,
-        .custom_emoji = emo->url ? "custom-emoji-container" : NULL,
-        .emoji = emo->name,
-        .emoji_display = emoji,
-        .emoji_active = emo->me ? "active" : NULL,
-        .emoji_count = emo->count
-    };
-
-    ret = tmpl_gen_emoji_reaction(&data, str_size);
-    if (emoji != emo->name)
-        free(emoji);
-    return ret;
+    if (!emoji) return NULL;
+    HV* emoji_hv = newHV();
+    hvstores_str(emoji_hv, "name", emoji->name);
+    hvstores_str(emoji_hv, "url", emoji->url);
+    hvstores_str(emoji_hv, "static_url", emoji->static_url);
+    hvstores_int(emoji_hv, "count", emoji->count);
+    hvstores_int(emoji_hv, "me", emoji->me);
+    return emoji_hv;
 }
 
-static char* construct_emoji_reactions_voidwrap(void* passed, size_t index, size_t* res)
-{
-    struct construct_emoji_reactions_args* args = passed;
-    return construct_emoji_reaction(args->id, args->emojis + index, res);
-}
-
-char* construct_emoji_reactions(char* id, struct mstdnt_emoji_reaction* emos, size_t emos_len, size_t* str_size)
-{
-    size_t elements_size;
-    struct construct_emoji_reactions_args args = {
-        .emojis = emos,
-        .id = id
-    };
-    char* elements = construct_func_strings(construct_emoji_reactions_voidwrap, &args, emos_len, &elements_size);
-    char* emos_view;
-
-    struct emoji_reactions_template data = {
-        .emojis = elements
-    };
-    emos_view = tmpl_gen_emoji_reactions(&data, str_size);
-    // Cleanup
-    free(elements);
-    return emos_view;
-}
+PERLIFY_MULTI(emoji_reaction, emoji_reactions, mstdnt_emoji_reaction)
 

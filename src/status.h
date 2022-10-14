@@ -23,6 +23,7 @@
 #include "l10n.h"
 #include "path.h"
 #include "session.h"
+#include "global_perl.h"
 
 // Flags
 #define STATUS_NOOP 0
@@ -52,63 +53,16 @@ void content_status_create(PATH_ARGS);
 void content_status_react(PATH_ARGS);
 
 // HTML Builders
-char* construct_status(struct session* ssn,
-                       mastodont_t* api,
-                       struct mstdnt_status* status,
-                       size_t* size,
-                       struct mstdnt_notification* notif,
-                       struct construct_statuses_args* args,
-                       uint8_t flags);
-char* construct_statuses(struct session* ssn,
-                         mastodont_t* api,
-                         struct mstdnt_status* statuses,
-                         size_t size,
-                         struct construct_statuses_args* args,
-                         size_t* ret_size);
-char* construct_interaction_buttons(struct session* ssn,
-                                    struct mstdnt_status* status,
-                                    size_t* size,
-                                    uint8_t flags);
+
 // Reply to
+/** Deprecated: May be used in the future for Mastodon only */
 char* get_in_reply_to(mastodont_t* api,
                       struct session* ssn,
                       struct mstdnt_status* status,
                       size_t* size);
-char* construct_in_reply_to(struct mstdnt_status* status,
-                            struct mstdnt_account* account,
-                            size_t* size);
-
-char* construct_status_interactions(char* status_id,
-                                    int fav_count,
-                                    int reblog_count,
-                                    struct mstdnt_account* fav_accounts,
-                                    size_t fav_accounts_len,
-                                    struct mstdnt_account* reblog_accounts,
-                                    size_t reblog_accounts_len,
-                                    size_t* size);
-
-char* construct_status_interaction_profiles(struct mstdnt_account* reblogs,
-                                            struct mstdnt_account* favourites,
-                                            size_t reblogs_len,
-                                            size_t favourites_len,
-                                            size_t* ret_size);
-char* construct_status_interaction_profile(struct interact_profile_args* args, size_t index, size_t* size);
-char* construct_status_interactions_label(char* status_id,
-                                          int is_favourites,
-                                          char* header,
-                                          int val,
-                                          size_t* size);
-char* reformat_status(struct session* ssn,
-                      char* content,
-                      struct mstdnt_emoji* emos,
-                      size_t emos_len);
-char* greentextify(char* content);
-char* make_mentions_local(char* content);
 
 void status_view_reblogs(PATH_ARGS);
 void status_view_favourites(PATH_ARGS);
-
-const char* status_visibility_str(enum l10n_locale locale, enum mstdnt_visibility_type visibility);
 
 void content_status_interactions(FCGX_Request* req,
                                  struct session* ssn,
@@ -133,5 +87,10 @@ void notice_redirect(PATH_ARGS);
 
 // API
 void api_status_interact(PATH_ARGS);
+
+// Perl
+HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma);
+HV* perlify_status(const struct mstdnt_status* status);
+AV* perlify_statuses(const struct mstdnt_status* statuses, size_t len); 
 
 #endif // STATUS_H

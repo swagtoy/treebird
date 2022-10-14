@@ -19,12 +19,11 @@
 #ifndef LOCAL_CONFIG_SET_H
 #define LOCAL_CONFIG_SET_H
 #include <mastodont.h>
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
-#include "local_config.h"
 #include "session.h"
 #include "attachments.h"
+#include "local_config.h"
 #include "key.h"
+#include "cgi.h"
 
 enum config_page
 {

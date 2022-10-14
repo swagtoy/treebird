@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "helpers.h"
@@ -28,11 +27,8 @@
 #include "../config.h"
 #include "local_config_set.h"
 #include "account.h"
+#include "cgi.h"
 #include "global_cache.h"
-
-// Files
-#include "../static/index.ctmpl"
-#include "../static/quick_login.ctmpl"
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
@@ -40,167 +36,60 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* cookie = GET_ENV("HTTP_COOKIE", req);
-    enum l10n_locale locale = l10n_normalize(ssn->config.lang);
-    char* theme_str = NULL;
-    const char* login_string = "<a href=\"login\" id=\"login-header\">Login / Register</a>";
-    const char* sidebar_embed = "<iframe class=\"sidebar-frame\" loading=\"lazy\" src=\"/notifications_compact\"></iframe>";
-    char* background_url_css = NULL;
-    // Sidebar
-    char* sidebar_str,
-        * main_sidebar_str = NULL,
-        * account_sidebar_str = NULL,
-        * instance_str = NULL;
-    // Mastodont, used for notifications sidebar
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_notification* notifs = NULL;
     size_t notifs_len = 0;
-#define SIDEBAR_CSS_LEN 128
-    char sidebar_css[SIDEBAR_CSS_LEN];
 
-    if (keyint(ssn->cookies.logged_in))
-        login_string = "";
-
-    if (ssn->config.background_url)
+    // Fetch notification (if not iFrame)
+    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token) &&
+        !ssn->config.notif_embed)
     {
-        easprintf(&background_url_css, BODY_STYLE, ssn->config.background_url);
-    }
-
-    // If user is logged in
-    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token))
-    {
-        account_sidebar_str = construct_account_sidebar(&(ssn->acct), NULL);
-
-        // Get / Show notifications on sidebar
-        if (ssn->config.notif_embed)
-        {
-            main_sidebar_str = (char*)sidebar_embed;
-        }
-        else {
-            struct mstdnt_get_notifications_args args = {
-                .exclude_types = 0,
-                .account_id = NULL,
-                .exclude_visibilities = 0,
-                .include_types = 0,
-                .with_muted = 1,
-                .max_id = NULL,
-                .min_id = NULL,
-                .since_id = NULL,
-                .offset = 0,
-                .limit = 8,
-            };
-        
-            if (mastodont_get_notifications(api,
-                                            &m_args,
-                                            &args,
-                                            &storage,
-                                            &notifs,
-                                            &notifs_len) == 0)
-            {
-                main_sidebar_str = construct_notifications_compact(ssn, api, notifs, notifs_len, NULL);
-            }
-
-            mstdnt_cleanup_notifications(notifs, notifs_len);
-            mastodont_storage_cleanup(&storage);
-        }
-    }
-    else {
-        // Construct small login page
-        struct quick_login_template tdata = {
-            .prefix = config_url_prefix,
-            .username = L10N[locale][L10N_USERNAME],
-            .password = L10N[locale][L10N_PASSWORD],
-            .login = L10N[locale][L10N_LOGIN_BTN],
+        struct mstdnt_notifications_args args = {
+            .exclude_types = 0,
+            .account_id = NULL,
+            .exclude_visibilities = 0,
+            .include_types = 0,
+            .with_muted = 1,
+            .max_id = NULL,
+            .min_id = NULL,
+            .since_id = NULL,
+            .offset = 0,
+            .limit = 8,
         };
-        main_sidebar_str = tmpl_gen_quick_login(&tdata, NULL);
+        
+        mastodont_get_notifications(
+            api,
+            &m_args,
+            &args,
+            &storage,
+            &notifs,
+            &notifs_len
+            );
     }
 
-    // Combine into sidebar
-    easprintf(&sidebar_str, "%s%s",
-              account_sidebar_str ? account_sidebar_str : "",
-              main_sidebar_str ? main_sidebar_str : "");
+    PERL_STACK_INIT;
 
-    // Create instance panel
-    if (g_cache.panel_html.response)
-        easprintf(&instance_str, "<div class=\"static-html\" id=\"instance-panel\">%s</div>",
-                  (g_cache.panel_html.response ?
-                   g_cache.panel_html.response : ""));
+    HV* real_ssn = page->session ? page->session : perlify_session(ssn);
+    mXPUSHs(newRV_noinc((SV*)real_ssn));
+    mXPUSHs(newRV_inc((SV*)template_files));
+    mXPUSHs(newSVpv(page->content, 0));
 
-    if (ssn->config.theme && !(strcmp(ssn->config.theme, "treebird") == 0 &&
-          ssn->config.themeclr == 0))
+    if (notifs && notifs_len)
     {
-        easprintf(&theme_str, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s%s.css\">",
-                  ssn->config.theme,
-                  ssn->config.themeclr ? "-dark" : "");
+        mXPUSHs(newRV_noinc(perlify_notifications(notifs, notifs_len)));
     }
+    else ARG_UNDEFINED();
 
-    if (ssn->config.sidebar_opacity)
-    {
-        float sidebar_opacity = (float)ssn->config.sidebar_opacity / 255.0f;
-        snprintf(sidebar_css, SIDEBAR_CSS_LEN, ":root { --sidebar-opacity: %.2f; }",
-                 sidebar_opacity);
-    }
+    // Run function
+    PERL_STACK_SCALAR_CALL("base_page");
+    char* dup = PERL_GET_STACK_EXIT;
 
-    struct index_template index_tmpl = {
-        .title = L10N[locale][L10N_APP_NAME],
-        .sidebar_css = sidebar_css,
-        .theme_str = theme_str,
-        .prefix = config_url_prefix,
-        .background_url = background_url_css,
-        .name = L10N[locale][L10N_APP_NAME],
-        .sidebar_cnt = login_string,
-        .placeholder = L10N[locale][L10N_SEARCH_PLACEHOLDER],
-        .search_btn = L10N[locale][L10N_SEARCH_BUTTON],
-        .active_home = CAT_TEXT(page->category, BASE_CAT_HOME),
-        .home = L10N[locale][L10N_HOME],
-        .active_local = CAT_TEXT(page->category, BASE_CAT_LOCAL),
-        .local = L10N[locale][L10N_LOCAL],
-        .active_federated = CAT_TEXT(page->category, BASE_CAT_FEDERATED),
-        .federated = L10N[locale][L10N_FEDERATED],
-        .active_notifications = CAT_TEXT(page->category, BASE_CAT_NOTIFICATIONS),
-        .notifications = L10N[locale][L10N_NOTIFICATIONS],
-        .active_lists = CAT_TEXT(page->category, BASE_CAT_LISTS),
-        .lists = L10N[locale][L10N_LISTS],
-        .active_favourites = CAT_TEXT(page->category, BASE_CAT_FAVOURITES),
-        .favourites = L10N[locale][L10N_FAVOURITES],
-        .active_bookmarks = CAT_TEXT(page->category, BASE_CAT_BOOKMARKS),
-        .bookmarks = L10N[locale][L10N_BOOKMARKS],
-        .active_direct = CAT_TEXT(page->category, BASE_CAT_DIRECT),
-        .direct = L10N[locale][L10N_DIRECT],
-        .active_chats = CAT_TEXT(page->category, BASE_CAT_CHATS),
-        .chats = "Chats",
-        .active_config = CAT_TEXT(page->category, BASE_CAT_CONFIG),
-        .config = L10N[locale][L10N_CONFIG],
-        .sidebar_leftbar = page->sidebar_left,
-        .instance_panel = ssn->config.instance_panel ? instance_str : "",
-        .main = page->content,
-        .sidebar_rightbar = sidebar_str,
-        .about_link_str = "About",
-        .license_link_str = "License",
-        .source_link_str = "Source code",
-    };
     
-    size_t len;
-    char* data = tmpl_gen_index(&index_tmpl, &len);
+    send_result(req, NULL, "text/html", dup, 0);
     
-    if (!data)
-    {
-        perror("malloc");
-        goto cleanup;
-    }
-    
-    send_result(req, NULL, "text/html", data, len);
-
-    // Cleanup
-/* cleanup_all: */
-    free(data);
-cleanup:
-    free(sidebar_str);
-    if (main_sidebar_str != sidebar_embed) free(main_sidebar_str);
-    free(account_sidebar_str);
-    free(background_url_css);
-    free(instance_str);
-    free(theme_str);
+    mstdnt_cleanup_notifications(notifs, notifs_len);
+    mastodont_storage_cleanup(&storage);
+    Safefree(dup);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
@@ -216,7 +105,7 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
                  "Content-Length: %d\r\n\r\n",
                  status ? status : "200 OK",
                  content_type ? content_type : "text/html",
-                 data_len + 1);
+                 data_len);
 #ifdef SINGLE_THREADED
     puts(data);
 #else

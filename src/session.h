@@ -19,6 +19,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 #include <mastodont.h>
+#include "global_perl.h"
 #include "query.h"
 #include "local_config.h"
 #include "cookie.h"
@@ -36,5 +37,6 @@ struct session
 
 const char* const get_instance(struct session* ssn);
 const char* const get_token(struct session* ssn);
+HV* perlify_session(struct session* ssn);
 
 #endif // SESSION_H

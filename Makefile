@@ -2,42 +2,59 @@ CC ?= cc
 GIT ?= git
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
-CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libpcre2-8)
-LDFLAGS = -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpcre2-8) -lfcgi -lpthread
+CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libpcre2-8) `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
+LDFLAGS += -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpcre2-8) -lfcgi -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h) config.h
-PAGES_DIR = static
-PAGES = $(wildcard $(PAGES_DIR)/*.tmpl)
-PAGES_CMP = $(patsubst %.tmpl,%.ctmpl,$(PAGES))
-PAGES_C = $(patsubst %.tmpl, %.c,$(PAGES))
-PAGES_C_OBJ = $(patsubst %.c,%.o,$(PAGES_C))
+TMPL_DIR = templates
+TMPLS = $(wildcard $(TMPL_DIR)/*.tt)
+TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))
+TEST_DIR = test/unit
+TESTS = $(wildcard $(TEST_DIR)/t*.c)
+UNIT_TESTS = $(patsubst %.c,%.bin,$(TESTS))
 DIST = dist/
 PREFIX ?= /usr/local
 TARGET = treebird
+# For tests
+OBJ_NO_MAIN = $(filter-out src/main.o,$(OBJ))
 
 MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 
-all: $(MASTODONT_DIR) dep_build $(TARGET)
-apache: all apache_start
+# Not parallel friendly
+#all: $(MASTODONT_DIR) dep_build $(TARGET)
 
-$(TARGET): filec template $(PAGES_CMP) $(PAGES_C) $(PAGES_C_OBJ)  $(OBJ) $(HEADERS)
+ifneq ($(strip $(SINGLE_THREADED)),)
+CFLAGS += -DSINGLE_THREADED
+endif
+
+ifneq ($(strip $(SINGLE_THREADED)),)
+CFLAGS += -DDEBUG
+endif
+
+all:
+	$(MAKE) dep_build
+	$(MAKE) filec
+	$(MAKE) make_tmpls
+	$(MAKE) $(TARGET)
+
+install_deps:
+	cpan Template::Toolkit
+
+$(TARGET): $(HEADERS) $(OBJ)
 	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
 
-template: src/template/main.o
-	$(CC) $(LDFLAGS) -o template $<
-
 filec: src/file-to-c/main.o
-	$(CC) -o filec $<
+	$(CC) $(LDFLAGS) -o filec $<
 
 emojitoc: scripts/emoji-to.o
 	$(CC) -o emojitoc $< $(LDFLAGS)
 	./emojitoc meta/emoji.json > src/emoji_codes.h
 
-# Redirect stdout and stderr into separate contents as a hack
-# Let bash do the work :)
-$(PAGES_DIR)/%.ctmpl: $(PAGES_DIR)/%.tmpl
-	./template $< $(notdir $*) 2> $(PAGES_DIR)/$(notdir $*).c 1> $@
+$(TMPL_DIR)/%.ctt: $(TMPL_DIR)/%.tt
+	./filec $< data_$(notdir $*)_tt > $@
+
+make_tmpls: $(TMPLS_C)
 
 $(MASTODONT_DIR): 
 	cd ..; fossil clone $(MASTODONT_URL) || true
@@ -48,11 +65,9 @@ install: $(TARGET)
 	install -d $(PREFIX)/share/treebird/
 	cp -r dist/ $(PREFIX)/share/treebird/
 
-test:
-	make -C test
-
-apache_start:
-	./scripts/fcgistarter.sh
+test: all $(UNIT_TESTS)
+	@echo " ... Tests ready"
+	@./test/test.pl
 
 dep_build:
 	make -C $(MASTODONT_DIR)
@@ -60,10 +75,17 @@ dep_build:
 %.o: %.c %.h $(PAGES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# For tests
+%.bin: %.c
+	@$(CC) $(CFLAGS) $< -o $@ $(OBJ_NO_MAIN) $(PAGES_C_OBJ) $(LDFLAGS)
+	@echo -n " $@"
+
 clean:
 	rm -f $(OBJ) src/file-to-c/main.o
-	rm -f $(PAGES_CMP)
-	rm -f filec
+	rm -f $(TMPLS_C)
+	rm -f test/unit/*.bin
+	rm -f filec ctemplate
+	rm $(TARGET) || true
 	make -C $(MASTODONT_DIR) clean
 
 clean_deps:
@@ -71,4 +93,4 @@ clean_deps:
 
 clean_all: clean clean_deps
 
-.PHONY: all filec clean update clean clean_deps clean_all test
+.PHONY: all filec clean update clean clean_deps clean_all test install_deps

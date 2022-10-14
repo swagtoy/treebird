@@ -20,14 +20,13 @@
 #define PAGE_CONFIG_H
 #include <stddef.h>
 #include <mastodont.h>
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include "path.h"
 #include "session.h"
+#include "cgi.h"
 
 void content_config_appearance(PATH_ARGS);
 void content_config_general(PATH_ARGS);
-void content_config_account(PATH_ARGS);
+//void content_config_account(PATH_ARGS);
 void content_config(PATH_ARGS);
 
 #endif // PAGE_CONFIG_H

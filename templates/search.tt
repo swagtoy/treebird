@@ -1,0 +1,19 @@
+<h1 class="results-header">Showing results for <span class="result">&quot;[% ssn.query.query %]&quot;</span></h1>
+
+<table class="tabs ui-table">
+  <tr>
+    <td>
+      <a href="/search/statuses?q="><input class="tab-btn btn[% IF tab == 0 %] active[% END %]" type="button" value="Statuses"></a>
+    </td>
+    <td>
+      <a href="/search/accounts?q="><input class="tab-btn btn[% IF tab == 1 %] active[% END %]" type="button" value="Accounts"></a>
+    </td>
+    <td>
+      <a href="/search/hashtags?q="><input class="tab-btn btn [% IF tab == 2 %] active[% END %]" type="button" value="Hashtags"></a>
+    </td>
+  </tr>
+</table>
+
+<div class="search-results">
+  [% content %]
+</div>

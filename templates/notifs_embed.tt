@@ -1,0 +1,13 @@
+[% nav() %]
+<div class="notifications-compact">
+    [% IF notifs %]
+        [% FOREACH notif IN notifs %]
+            [% notification(notif, 1) %]
+        [% END %]
+    [% ELSE %]
+        <div class="fancy-error">
+            <span class="fancy-error-text">No notifications.</span>
+        </div>
+    [% END %]
+</div>
+

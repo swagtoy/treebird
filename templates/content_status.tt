@@ -1,0 +1,7 @@
+[% FOREACH i IN statuses_before %]
+    [% create_status(i) %]
+[% END %]
+[% create_status(status, picker) %]
+[% FOREACH i IN statuses_after %]
+    [% create_status(i) %]
+[% END %]

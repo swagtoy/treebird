@@ -1,0 +1,8 @@
+[%# So.. sometimes Pleroma just shows a `0` emoji count, I suppose when an instance gets blocked or the user deletes their account.
+   I'm not sure, but we should check if the emoji count is more than zero (as a workaround) or else it display's `0` %]
+[% IF emoji.count > 0 %]
+    <a href="$prefix/status/[% status_id %]/react/[% emoji.name %]" class="emoji-react-box [% IF emoji.url %]custom-emoji-container[% END %] btn btn-alt [% IF emoji.me %]active[% END %]">
+        <span class="emoji">[%- IF emoji.url -%]<img src="[% emoji.url %]" class="custom-emoji-react">[%- ELSE -%][%- emoji.name -%][%- END -%]</span>
+        <span class="emoji-num">[% emoji.count %]</span>
+    </a>
+[% END %]

@@ -23,30 +23,13 @@
 #include <mastodont.h>
 #include "session.h"
 
-char* construct_chat(mastodont_t* api,
-                     struct mstdnt_args* m_args,
-                     struct mstdnt_chat* chat,
-                     size_t* size);
-char* construct_chats(mastodont_t* api,
-                      struct mstdnt_args* m_args,
-                      struct mstdnt_chat* chats,
-                      size_t size,
-                      size_t* ret_size);
-char* construct_chats_view(char* lists_string, size_t* size);
-// Message
-char* construct_message(struct mstdnt_message* message,
-                        struct mstdnt_account* your_profile,
-                        struct mstdnt_account* their_profile,
-                        size_t* size);
-char* construct_messages(struct mstdnt_message* message,
-                         struct mstdnt_account* your_profile,
-                         struct mstdnt_account* their_profile,
-                         size_t size,
-                         size_t* ret_size);
-
 void content_chats(PATH_ARGS);
-char* construct_chat_view(struct session* ssn, mastodont_t* api, char* id, size_t* len);
-void content_chat_embed(PATH_ARGS);
 void content_chat_view(PATH_ARGS);
+
+AV* perlify_chats(const struct mstdnt_chat* chats, size_t chats_len);
+HV* perlify_chat(const struct mstdnt_chat* chat);
+
+AV* perlify_messages(const struct mstdnt_message* messages, size_t messages_len);
+HV* perlify_message(const struct mstdnt_message* message);
 
 #endif // LISTS_H

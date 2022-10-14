@@ -1,0 +1,209 @@
+<input type="checkbox" class="status-hide" id="status-toggle-[% status.id %]-[% unique_toggle_id %]"[% IF status.muted %] checked[% END %]>
+<div class="status
+            [%- IF notif %] status-notification[% IF notif.pleroma && !notif.pleroma.is_seen %] notification-unread[% END %][% END %]
+            [%- IF is_statusey_notif -%] status-notification-mention[% END %]
+            [%- IF compact -%] status-compact[% END %]
+            [%# Blame CSS for this class %]
+            [%- IF interacted_with && !compact %] notification-info-lookahead[% END -%]
+            " id="[% status.id %]">
+    [% IF interacted_with && !compact %]
+        <div class="notification-info">
+            <img src="[% boost.avatar || notif.account.avatar %]" loading="lazy" class="avatar">
+            <div class="notification-user">
+                <span class="notification-text-group-with-icon">
+                    <span class="username">[% format_username(boost || notif.account) %]</span>
+                    <span class="action">
+                        [% action_to_string() %]
+                    </span>
+                </span>
+                [% action_to_icon() %]
+            </div>
+        </div>
+    [% END %]
+    <table class="status-table ui-table">
+        <tr>
+            <td class="pfp-td {{%s:is_cat}} {{%s:is_bun}}">
+                <img src="[% compact && interacted_with ?
+                             boost.account.avatar || notif.account.avatar : status.account.avatar %]" loading="lazy">
+            </td>
+            <td class="status-info">
+                <div class="poster-stats">
+                    <span class="username">
+                        [% format_username(compact && interacted_with ?
+                            boost || notif.account : status.account) %]
+                    </span>
+                    
+                    [% IF interacted_with && compact %]
+                        <span class="action">
+                            [% action_to_string() %]
+                        </span>
+                        <span class="action-icon">
+                            [% action_to_icon() %]
+                        </span>
+                    [% END %]
+                    
+                    [% UNLESS compact %]
+                        <a class="instance-info" href="$prefix/@[% status.account.acct %]">[% status.account.acct %]</a>
+                    [% END %]
+                    <span class="alignend">
+                        <div class="menu-container status-visibility">
+                            [% UNLESS notif && compact && interacted_with %]
+                                [% vis_to_icon(status.visibility) %]
+                            [% ELSE %]
+                                <span class="time">[% rel_to_str(notif.created_at) %]</span>
+                            [% END %]
+                            <div class="menu">
+                                [% IF notif %]
+                                    <ul>
+                                        <li>
+                                            <a href="$prefix/notification/[% notif.id %]/read" class="btn-menu">Mark as read</a>
+                                        </li>
+                                        <li>
+                                            <a href="$prefix/notification/[% notif.id %]/delete" class="btn-menu">Clear notification</a>
+                                        </li>
+                                    </ul>
+                                [% END %]
+                                [% UNLESS notif && compact && interacted_with %]
+                                    <ul>
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="mute">
+                                                <input type="submit" class="btn-menu" value="Mute">
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="bookmark">
+                                                <input type="submit" class="btn-menu" value="Bookmark">
+                                            </form>
+                                        </li>
+                                        [%# pin %]
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="pin">
+                                                <input type="submit" class="btn-menu" value="Pin">
+                                            </form>
+                                        </li>
+                                        [%# Delete %]
+                                        <li>
+                                            <form action="$prefix/status/[% status.id %]/interact" method="post">
+                                                <input type="hidden" name="itype" value="delete">
+                                                <input type="submit" class="btn-menu" value="Delete status">
+                                            </form>
+                                        </li>
+
+                                    </ul>
+                                [% END %]
+                            </div>
+                        </div>
+                        
+                        <label for="status-toggle-[% status.id %]-[% unique_toggle_id %]" class="status-view"></label>
+                    </span>
+                </div>
+                <div class="status-data">
+                    [%# Note: The id may actually (99.5% of the time) be the acct %]
+                    [% IF status.in_reply_to_id && !(compact && interacted_with) %]
+                        <span class="in-reply-to">
+                            <svg class="in-reply-to-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h11"/></svg> <a class="in-reply-to-id" href="$prefix/status/[% status.in_reply_to_id %]#[% status.in_reply_to_id %]"> [% UNLESS compact %]<span class="in-reply-to-text">In reply to</span>[% END %] <span class="acct">[% status.pleroma.in_reply_to_account_acct || status.in_reply_to_account_id %]</span></a>
+                        </span>
+                    [% END %]
+                    <span class="status-content">
+                        [% IF status.spoiler_text %]
+                            <span class="title">[% emojify(escape(status.spoiler_text), status.emojis) %]</span>
+                        [% END %]
+                        [% greentextify(emojify(fix_mentions(status.content), status.emojis)) %]
+                    </span>
+                    [% IF status.media_attachments %]
+                        <div class="attachments">
+                            [% i = 0 %]
+                            [% FOREACH att IN status.media_attachments %]
+                                [%# Set a limit if compact %]
+                                [% LAST IF i >= 6 && compact %]
+                                    
+                                [% make_att(ssn, data, att, status.sensitive) %]
+                                [% i = i + 1 %]
+                            [% END %]
+                        </div>
+                    [% END %]
+                    [%# TODO {{%s:interactions}} %]
+                    [% IF status.pleroma.emoji_reactions %]
+                        <div class="emoji-reactions">
+                        [% FOREACH emo IN status.pleroma.emoji_reactions %]
+                            [% make_emoji(ssn, data, status.id, emo) %]
+                        [% END %]
+                        </div>
+                    [% END %]
+                    <div class="status-interact">
+                        [% IF !notif || is_statusey_notif %]
+                        <div class="status-buttons">
+                            <label for="status-quickreply-[% status.id %]" class="pointer statbtn reply-btn">
+                                [% icon('reply') %]
+                                [% IF status.replies_count %]
+                                    <span class="count">[% status.replies_count %]</span>
+                                [% END %]
+                            </label>
+                            <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                <input class="itype" type="hidden" name="itype" value="[% IF status.favourited %]un[% END %]like">
+                                <label class="pointer statbtn like-btn[% IF status.favourited %] interacted[% END %]">
+                                    [% icon('like') %]
+                                    [% IF status.favourites_count && !compact %]
+                                        <span class="count">[% status.favourites_count %]</span>
+                                    [% END %]
+                                    <input class="hidden" type="submit" value="Like">
+                                </label>
+                            </form>
+                            <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                <input class="itype" type="hidden" name="itype" value="[% IF status.reblogged %]un[% END %]repeat">
+                                <label class="repeat-btn pointer statbtn[% IF status.reblogged %] interacted[% END %]">
+                                    [% icon('repeat') %]
+                                    [% IF status.reblogs_count && !compact %]
+                                        <span class="count">[% status.reblogs_count %]</span>
+                                    [% END %]
+                                    <input class="hidden" type="submit" value="Repeat">
+                                </label>
+                            </form>
+                            [% IF ssn.config.stat_oneclicksoftware %]
+                                <form action="$prefix/status/[% status.id %]/interact" method="post" class="statbtn-form">
+                                    <input class="itype" type="hidden" name="itype" value="likeboost">
+                                    <label class="pointer statbtn likeboost-btn">
+                                        [% icon('likeboost') %]
+                                        
+                                        <input class="hidden" type="submit" value="L+R">
+                                    </label>
+                                </form>
+                            [% END %]
+                            <a target="_parent" class="statbtn pointer statbtn-last react-btn" href="$prefix/status/[% status.id %]/react#[% status.id %]">
+                                [% icon('emoji') %]
+                            </a>
+                            [% IF emoji_picker -%]
+                                aaa
+                                [% emoji_picker %]
+                            [%- END %]
+                        </div>
+                        [% END %]
+                        [%# Put these at the end, incase someone wants to move status icons to the beginning (this makes it easier %]
+                        [% UNLESS compact %]
+                            <a target="_parent" href="$prefix/status/[% status.id %]#[% status.id %]" class="pointer statbtn view-btn">
+                                [% icon('expand') %]
+                            </a> 
+                            <span class="status-meta">
+                                <a href="#[% status.id %]" title="[% time_to_str(status.created_at) %]" class="time">[%- rel_to_str(status.created_at) -%]</a>
+                                [% IF status.application && status.application.name && !notif %]
+                                    [% IF status.application.url %]
+                                        <a class="application-name" href="[% status.application.url %]">[% status.application.name %]</a>
+                                    [% ELSE %]
+                                        <span class="application-name">[% status.application.name %]</span>
+                                    [% END %]
+                                [% END %]
+                            </span>
+                        [% END %]
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<input type="checkbox" class="quickreply-hide hidden" id="status-quickreply-[% status.id %]">
+[% IF ssn.logged_in %]
+    [% make_postbox(ssn, data, status) %]
+[% END %]

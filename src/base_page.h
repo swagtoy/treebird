@@ -18,14 +18,14 @@
 
 #ifndef BASE_PAGE_H
 #define BASE_PAGE_H
+#include "global_perl.h"
+#include "session.h"
 #include <fcgi_stdio.h>
 #include <fcgiapp.h>
 #include <mastodont.h>
 #include "l10n.h"
 #include "local_config.h"
 #include "path.h"
-#include "session.h"
-
 enum base_category
 {
     BASE_CAT_NONE,
@@ -46,6 +46,7 @@ struct base_page
     enum base_category category;
     char* content;
     char* sidebar_left;
+    HV* session;
 };
 
 void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api);

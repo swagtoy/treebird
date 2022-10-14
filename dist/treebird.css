@@ -1,9 +1,28 @@
+/*
+ * Notes:
+ * - Good luck :^3
+ * - Look into position: sticky; to handle overflows? Not sure if this works but i saw it work i think
+ */
+
+
 /* Variables */
 :root
 {
     --sidebar-opacity: 1.0;
     --account-overlay-gradient-top: rgba(255, 255, 255, 0.6);
     --account-overlay-gradient-bottom: #dadada;
+}
+
+
+input
+{
+    transition: .1s box-shadow;
+}
+
+input:focus
+{
+    outline: 1px solid #aa0000;
+    box-shadow: 0px 0px 6px #aa00006f;
 }
 
 *
@@ -30,6 +49,18 @@ body
     font-family: sans-serif, Arial, Helvetica;
     color: #040404;
     height: 100%;
+}
+
+form
+{
+    display: inline;
+}
+
+html.embed
+{
+    background-color: unset;
+    scrollbar-color: #808080 #eaecf0;
+    scrollbar-width: thin;
 }
 
 /* Basic elements */
@@ -85,10 +116,9 @@ a, a:visited, a:hover, a:active
     border-radius: 3px;
 }
 
-.greentext
-{
-    color: #00aa00;
-}
+.greentext { color: #00aa00; }
+.bluetext { color: #0060aa; }
+.yellowtext { color: #cccc00; }
 
 /* Cleans up most of the tables */
 table.ui-table td
@@ -101,8 +131,7 @@ table.ui-table td
 
 #navbar
 {
-    border-top: 2px solid #fff;
-    background: linear-gradient(#fbfbfb, #ececef);
+    background: linear-gradient(#fbfbfb 40%, #f5f5f5 50%, #efefef);
     width: 1000px;
     border-bottom: 2px solid #bfbfc4;
     z-index: 999;
@@ -139,7 +168,27 @@ table.ui-table td
 {
     vertical-align: middle;
     display: inline-block;
-    margin: 4px 0px 6px 18px;
+    margin: 6px 0px 6px 18px;
+}
+
+#navbar a,
+#navbar a:focus
+{
+    box-shadow: 0px 0px 0px #00000000 !important;
+    outline: 0 !important;
+}
+
+#navbar a img
+{
+    transition: .4s transform, .4s filter;
+}
+
+#navbar a:focus img
+{
+    box-shadow: 0px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 !important;
+    transform: rotateZ(360deg);
+    filter: drop-shadow(0px 0px 3px #aa00006f);
 }
 
 #navbar span.info
@@ -204,10 +253,10 @@ table.ui-table td
 
 .sidebar
 {
-    width: 180px;
+    width: 181px;
     min-height: 600px;
-    max-width: 180px;
-    min-width: 180px;
+    max-width: 181px;
+    min-width: 181px;
     background-color: rgba(234, 236, 240, var(--sidebar-opacity));
 }
 
@@ -220,7 +269,7 @@ table.ui-table td
 }
 
 
-.sidebar-embed-container .navigation
+.embed .navigation
 {
     position: sticky;
     top: 0px;
@@ -230,20 +279,20 @@ table.ui-table td
     padding: 0;
 }
 
-.sidebar-embed-container .btn,
-.sidebar-embed-container .nav-btn
+.embed .btn,
+.embed .nav-btn
 {
     background: unset;
     padding: 2px !important;
     font-size: 13px;
 }
 
-.sidebar-embed-container .btn-disabled
+.embed .btn-disabled
 {
     background: unset;
 }
 
-.sidebar-embed-container .btn:hover
+.embed .btn:hover
 {
     background: unset;
     background-color: rgba(0, 0, 0, 0.2);
@@ -252,6 +301,112 @@ table.ui-table td
 #leftbar
 {
     border-right: 1px solid #dadada;
+}
+
+#searchbox
+{
+    padding-top: unset;
+    padding-bottom: unset;
+    height: 26px;
+    border-right: unset;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-left: 27px;
+    box-shadow: unset;
+    transition: width .1s ease;
+    width: 180px;
+}
+
+#searchbox:focus
+{
+    box-shadow: 0;
+    outline: 0;
+    width: 300px;
+}
+
+.results-header
+{
+    font-size: 1.4rem;
+    font-weight: normal;
+    padding: 8px 16px;
+    border-bottom: 1px solid #cacaca;
+    margin: 0;
+}
+
+.results-header .result
+{
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+#navbar .search-menu-dropdown
+{
+    display: inline;
+    position: relative;
+    left: 30px;
+    /* Fix weird offset */
+    margin-left: -30px;
+    top: 6px;
+}
+
+.menu .btn-menu input[type=radio]
+{
+    display: none;
+}
+
+.menu .btn-menu input[type=radio] + span
+{
+    margin-left: 8px;
+    position: relative;
+}
+
+.menu .btn-menu input[type=radio]:checked + span:before
+{
+    position: absolute;
+    content: "";
+    left: -12px;
+    top: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #202020;
+    font-weight: bold;
+}
+
+.menu .btn-menu input[type=radio]:checked + span:before
+{
+    position: absolute;
+    content: "";
+    left: -12px;
+    top: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #202020;
+    font-weight: bold;
+}
+
+input[type=text],
+input[type=url],
+input[type=email],
+input[type=password]
+{
+    padding: 2px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 3px #00000005;
+    border: 1px solid #d3d3d3;
+}
+
+.menu.menu-compact .btn-menu,
+.status-compact .menu-container .menu .btn-menu
+{
+    font-size: 11px;
+}
+
+#navbar .search-menu-dropdown svg
+{
+    stroke: #606060;
+    cursor: pointer;
 }
 
 #leftbar ul
@@ -265,39 +420,9 @@ table.ui-table td
     list-style-type: none;
 }
 
-
-.sidebarbtn-sub
-{
-    display: block;
-    color: #000;
-    padding: 8px;
-    border-radius: 4px;
-    padding-left: 24px;
-    text-decoration: none;
-    border: 1px solid transparent;
-}
-
-#leftbar ul.sidebar-config
-{
-    background: linear-gradient(#eef1f9, #bbc3d0);
-    color: #fff;
-    border-radius: 6px;
-    padding: 4px;
-    margin: 8px;
-    border: 1px solid #aaa;
-    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.1);
-}
-
-.sidebarbtn-sub.active
+.sidebar-submenu .sidebarbtn.active
 {
     font-weight: bold;
-}
-
-.sidebarbtn-sub:active, .sidebarbtn-sub:hover
-{
-    background-color: #bbc6d5;
-    border: 1px solid #a8accbcc;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 #rightbar
@@ -398,6 +523,36 @@ table.present th, table.present td
     font-weight: bold;
 }
 
+.fancy-error
+{
+    margin: 36px 0;
+    text-align: center;
+}
+
+.fancy-error-text
+{
+    display: block;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.fancy-error-subtext
+{
+    display: block;
+    margin: 12px 24px 0 24px;
+    font-size: 1rem;
+    color: #222;
+}
+
+.fancy-error-kaomoji
+{
+    display: block;
+    font-size: 2.4rem;
+    color: #aaa;
+    user-select: none;
+}
+
 .search-highlight
 {
     background-color: yellow;
@@ -442,6 +597,7 @@ table.present th, table.present td
     padding: 3px 12px;
     width: 100%;
     border: 0;
+    font-size: 14px;
     cursor: pointer;
     text-align: left;
     box-sizing: border-box;
@@ -464,8 +620,8 @@ select:hover
 input[type=range] {
     -webkit-appearance: none;
     appearance: none;
-    height: 12px;
-    background: linear-gradient(#f3f3f3, #d5d5d5);
+    height: 4px;
+    background: linear-gradient(#f3f3f3, #c5c5c5);
     border: 1px solid #cacaca;
     border-radius: 4px;
     outline: none;
@@ -479,8 +635,9 @@ input[type=range]::-moz-range-thumb
     appearance: none;
     width: 20px;
     height: 20px;
-    border: 1px solid #303236;
-    background: linear-gradient(#75777c, #505256);
+    border-radius: 50%;
+    border: 1px solid #909090;
+    background: conic-gradient(#ddd, #aaa, #ddd, #aaa, #ddd, #aaa, #ddd);
     cursor: pointer;
 }
 
@@ -498,7 +655,8 @@ input[type=range]::-moz-range-thumb
 .btn:hover,
 .btn:active,
 .btn-menu:hover,
-.sidebarbtn:hover
+.sidebarbtn:hover,
+.sidebar .sidebarbtn:hover
 { 
     background: linear-gradient(#606060, #d3d3d3);
     /* box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.2); */
@@ -526,6 +684,7 @@ input[type=range]::-moz-range-thumb
 .btn-alt:hover
 {
     background: linear-gradient(#aa0000, #ee0000);
+    border-color: #800000;
 }
 
 .btn-disabled
@@ -588,11 +747,23 @@ input[type=submit].post-btn
 
 .btn-single
 {
+    display: inline-block;
     border-radius: 4px;
     border: 1px solid #cacaca;
 }
 
-.sidebarbtn, .sidebarbtn:visited
+.btn-small
+{
+    font-size: 12px;
+}
+
+.btn-single.btn-small
+{
+    padding: 4px 8px;
+}
+
+.sidebar .sidebarbtn,
+.sidebar .sidebarbtn:visited
 {
     display: block;
     margin: 7px 8px;
@@ -603,10 +774,35 @@ input[type=submit].post-btn
     color: #505050;
 }
 
+
+.sidebar-submenu .sidebarbtn,
+.sidebar-submenu .sidebarbtn:visited
+{
+    color: #202020;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+    padding-left: 24px;
+}
+
+.sidebar-submenu .sidebarbtn:hover
+{
+    background: #abafb4;
+}
+
 .sidebar-login
 {
     padding: 18px;
 }
+
+#leftbar .sidebar-submenu
+{
+    border-left: 4px solid #aa0000;
+    background-color: rgb(214, 219, 225);
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+}
+
 
 /****************************
  *      Notifications       *
@@ -630,40 +826,6 @@ input[type=submit].post-btn
     object-fit: cover;
 }
 
-.notification-compact
-{
-    min-width: 100%;
-    padding: 3px;
-}
-
-.notification-compact p
-{
-    margin: 0;
-}
-
-.notification-compact .notification-content
-{
-    max-height: 100px;
-    overflow: auto;
-    margin-left: 2px;
-}
-
-.notification-compact .notification-info
-{
-    font-size: 12px;
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-top: 0;
-    vertical-align: middle;
-    font-weight: bold;
-}
-
-.notification-compact .username .emoji
-{
-    width: 16px;
-    height: 16px;
-}
-
 .notification-info svg,
 .notification-info-format svg
 {
@@ -681,6 +843,12 @@ input[type=submit].post-btn
 .notification .notification-text-group-with-icon
 {
     vertical-align: middle;
+}
+
+/* CSS issue, hope for the proposed $ selected :^) */
+.status.notification-info-lookahead
+{
+    padding-top: 7px;
 }
 
 .notification-info svg.like,
@@ -715,42 +883,10 @@ svg.in-reply-to-icon
     line-height: 23px;
 }
 
-input[type=checkbox].hidden:not(:checked) + .reply-form
+input[type=checkbox].hidden:not(:checked) + .reply-form,
+input[type=checkbox].hidden:not(:checked) + .sidebar-submenu
 {
     display: none;
-}
-
-.notification-compact .notification-content
-{
-    color: #808080;
-    font-size: 12px;
-    padding: 4px 0 2px 0;
-}
-
-.notification-compact .notification-content.is-mention
-{
-    color: #101010;
-}
-
-.notification-compact .notification-stats
-{
-    font-size: 10px;
-}
-
-.notification-compact .notification-stats .status-interact
-{
-    margin-top: 2px;
-}
-
-.notification-compact .notification-stats svg
-{
-    width: 15px;
-    height: 15px;
-}
-
-.notification-compact .notification-stats .statbtn
-{
-    padding: 2px 4px;
 }
 
 .notification-info
@@ -758,13 +894,6 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     margin-left: 28px;
     margin-bottom: 7px;
 }
-
-.notification-compact .notification-info
-{
-    margin-left: unset;
-    margin-bottom: unset;
-}
-
 
 .notification-info img.avatar,
 .notification-info .pfp-compact-td img,
@@ -784,18 +913,49 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: inline;
 }
 
-.notification-text-group-with-icon,
-.notification-text-group
+.status.status-notification:not(.status-notification-mention) .status-content
 {
-    vertical-align: middle;
+    color: #808080;
+}
+
+.notification-unread
+{
+    position: relative;
+}
+
+
+.notification-unread::before
+{
+    content:"";
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(135deg, rgba(255,0,0,1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
+}
+
+.notification-unread::after
+{
+    content:"";
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, rgba(255,0,0,.2) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
 }
 
 /***************************
  *      Statuses           *
  **************************/
-.status
+.status,
+.notification-regular
 {
-    padding: 11px 0px 0px 11px;
+    padding: 11px;
+    padding-bottom: 6px;
     border-bottom: 1px dashed #cacaca;
 }
 
@@ -815,9 +975,14 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 .status.focused,
 .status:target
 {
-    background-color: #ffdddd;
-    border-left: 3px solid #aa0000;
-    padding-left: 7px;
+    background: #ffdddd;
+    border-left: 2px solid #aa0000;
+    padding-left: 9px;
+}
+
+.status:not(:target) .status-meta .application-name
+{
+    display: none;
 }
 
 .notification-info + .status,
@@ -881,11 +1046,21 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     display: none;
 }
 
+.status-hide:checked + .status.status-compact .action-icon
+{
+    position: initial;
+    float: left;
+    left: initial;
+    top: initial;
+}
+
 .pfp-td
 {
+    position: relative;
     width: 52px;
     border-collapse: collapse !important;
     padding: 6px;
+    z-index: 1;
 }
 
 .pfp-td img
@@ -894,6 +1069,7 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     width: 52px;
     height: 52px;
     object-fit: cover;
+    z-index: 1;
 }
 
 .status table tr
@@ -910,21 +1086,41 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     font-size: 10px;
 }
 
-.status .time:before,
-.notification-compact .time:before
+.status .time
+{
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.status .status-meta
+{
+    vertical-align: middle;
+}
+
+.status .application-name
+{
+    display: inline-block;
+    margin-left: 4px;
+    max-width: 140px;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 13px;
+    text-overflow: ellipsis;
+}
+
+.status .application-name:before
 {
     content: "•";
     padding-right: 10px;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .status .time,
-.notification-compact .time
+.status .status-meta
 {
     color: #606060;
-    vertical-align: middle;
     font-size: 14px;
-    padding-left: 5px;
     text-decoration: none;
 }
 
@@ -933,9 +1129,14 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 .notification-content
 {
     position: relative;
-    min-width: 0;
-    width: auto;
+    width: 100%;
     padding: 0 0 0 10px;
+}
+
+.notification-regular .notification-content
+{
+    margin-top: 4px;
+    font-size: 14px;
 }
 
 .status .status-info > table.ui-table
@@ -963,15 +1164,12 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 
 .status .poster-stats
 {
-    position: relative;
     display: block;
-    max-width: 490px;
 }
 
-.status-hide:checked + .status .poster-stats
-{
-    max-width: 550px;
-}
+/* .status-hide:checked + .status .poster-stats */
+/* { */
+/* } */
 
 .poster-stats .alignend
 {
@@ -999,13 +1197,126 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     min-width: 0;
 }
 
+/* Compact notifications (statuses) */
+.notifications-compact,
+.status-compact
+{
+    position: relative;
+    font-size: 14px;
+}
+
+.status-compact.status.status-notification,
+.notifications-compact .notification.notification-regular
+{
+    padding: 5px;
+}
+
+.status-compact .pfp-td img,
+.notifications-compact .notification.notification-regular .pfp-td img
+{
+    width: 28px;
+    height: 28px;
+}
+
+.notifications-compact .notification.notification-regular .pfp-td
+{
+    width: 28px;
+}
+
+.status-compact .action-icon
+{
+    position: absolute;
+    background-color: #eaecf0;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    padding: 3px;
+    top: 15px;
+    left: -15px;
+    z-index: 8;
+    font-size: 12px;
+}
+
+.status-compact .action-icon svg
+{
+    width: 16px;
+    height: 16px;
+    stroke: #40455a;
+    /* Little fix */
+    position: relative;
+    top: -1px;
+}
+
+.status-compact .poster-stats .alignend
+{
+    background-color: rgb(234, 236, 240);
+    /* Hack - Fix the right padding regarding the icon being a little wider than it should */
+    padding: 1px 0px 1px 5px;
+}
+
+.status-compact .menu-container .menu
+{
+    margin-left: -80px;
+}
+
+.status-compact.notification-unread::before
+{
+    content:"";
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, rgba(255,0,0,1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%); 
+}
+
+.status-compact .in-reply-to-id
+{
+    font-size: 13px;
+}
+
+.status-compact .in-reply-to-icon
+{
+    width: 14px;
+    height: 14px;
+    /* Pixel perfect... */
+    top: -2px;
+}
+
+.status-compact .attachments img,
+.status-compact .attachments video
+{
+    display: inline;
+    margin-right: 6px;
+    width: 70px;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid #cacaca;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.status-compact .status-buttons
+{
+    float: initial;
+}
+
 .status .status-content
 {
     margin: 4px 0 0 0;
     overflow-wrap: anywhere;
-    width: 490px;
     line-height: 1.2;
     display: block;
+}
+
+.status-content .title
+{
+    display: block;
+    padding: 2px 2px 7px;
+    margin-bottom: 7px;
+    font-style: italic;
+    border-bottom: 1px solid #cacaca;
 }
 
 .status .status-content p,
@@ -1034,8 +1345,15 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
     cursor: pointer;
     color: #808080;
     display: inline;
-    font-size: 12px;
     margin-right: 5px;
+}
+
+.status-visibility .visibility
+{
+    stroke: #808080;
+    vertical-align: middle;
+    width: 17px;
+    height: 17px;
 }
 
 .status-interact
@@ -1090,6 +1408,22 @@ input[type=checkbox].hidden:not(:checked) + .reply-form
 {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+.text-gap-hairline
+{
+    display: inline-block;
+    width: 64px;
+    text-align: center;
+    height: 1px;
+    background-color: #d3d3d3;
+    margin: 2px;
+}
+
+.text-gap-hairline + h6
+{
+    display: inline;
+    font-variant: small-caps;
 }
 
 /*************************
@@ -1414,6 +1748,11 @@ p}
     background: linear-gradient(#aa0000, #600000);
 }
 
+.action
+{
+    vertical-align: middle;
+}
+
 /****************
  *   Statusbox  *
  ****************/
@@ -1441,6 +1780,11 @@ p}
     padding: 5px;
 }
 
+.status-buttons
+{
+    float: right;
+}
+
 .statusbox .statusfooter
 {
     display: block;
@@ -1458,22 +1802,44 @@ p}
     float: right;
 }
 
+.status-interact .statbtn-form
+{
+    display: inline-block;
+}
+
 .status-interact .statbtn
 {
-    display: block;
-    padding: 3px 2px 5px;
-    min-width: 42px;
+    display: inline-block;
+    padding: 3px 0px 3px;
+    min-width: 25px;
+}
+
+.status-interact .statbtn.view-btn
+{
+    min-width: 19px;
 }
 
 .status-interact .statbtn svg
 {
     width: 18px;
     height: 18px;
+    stroke: #666;
+    vertical-align: middle;
 }
 
-.view-btn
+.status-interact svg.expand
 {
-    min-width: 25px !important;
+    width: 13px;
+    height: 13px;
+}
+
+.status-interact .count
+{
+    padding-top: 3px;
+    font-size: 12px;
+    padding-bottom: 3px;
+    padding-right: 7px;
+    vertical-align: middle;
 }
 
 .statusbox .post-group
@@ -1523,17 +1889,12 @@ p}
     top: 5px;
 }
 
-.notification-compact .status-interact .statbtn
-{
-    min-width: 0px !important;
-}
-
 .status-interact svg
 {
     stroke: #303030;
 }
 
-.active-anim
+.interacted-anim
 {
     animation: interact .7s 1;
 }
@@ -1544,12 +1905,12 @@ p}
     100% { transform: rotateZ(360deg); }
 }
 
-.status-interact svg.repeat.active
+.status-interact .statbtn.interacted svg.repeat
 {
     stroke: #08d345;
 }
 
-.status-interact svg.like.active
+.status-interact .statbtn.interacted svg.like
 {
     fill: #fcd202;
     stroke: #fcd202;
@@ -1565,7 +1926,7 @@ p}
 
 .status-interact svg.like:hover,
 .status-interact svg.like:active,
-.statis-interact svg.like:focus
+.status-interact svg.like:focus
 {
     stroke: #fcd202;
     pointer: select;
@@ -1573,17 +1934,9 @@ p}
 
 .status-interact svg.repeat:hover,
 .status-interact svg.repeat:active,
-.statis-interact svg.repeat:focus
+.status-interact svg.repeat:focus
 {
     stroke: #08d345;
-}
-
-.status-interact .count
-{
-    padding-top: 3px;
-    font-size: 12px;
-    padding-bottom: 3px;
-    vertical-align: middle;
 }
 
 /* Emoji */
@@ -1633,12 +1986,6 @@ p}
 {
     border-radius: 4px;
     border: 1px solid #cacaca;
-}
-
-.emoji-btn
-{
-    position: relative;
-    top: 2px;
 }
 
 /* Emojo picker */
@@ -1713,17 +2060,43 @@ input[type=radio].hidden:not(:checked) + .emoji-picker-emojos
     display: block;
 }
 
+.form-group label
+{
+    display: inline-block;
+    min-width: 70px;
+    font-size: 0.9rem;
+    text-align: middle;
+}
+
 /* Simple page layout */
 .simple-page
 {
     padding: 0 12px;
 }
 
-.simple-page h1
+.simple-page h1,
+.text-header
 {
+    font-size: 1.5rem;
     padding-left: 12px;
     padding-bottom: 7px;
     border-bottom: 1px solid #cacaca;
+}
+
+.text-header
+{
+    padding-top: 10px;
+    margin: 0;
+    background-color: #f3f3f3;
+    background: repeating-linear-gradient(
+        -45deg,
+        #efefef,
+        #efefef 10px,
+        #f6f6f6 10px,
+        #f6f6f6 20px
+    );
+    box-shadow: inset 0px -2px 2px rgba(60, 60, 60, 0.2);
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .simple-page h3
@@ -1964,6 +2337,12 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     padding: 6px;
 }
 
+.navigation .nav-up
+{
+    width: 50px;
+    text-align: center;
+}
+
 .nav-symbol
 {
     color: #505050;
@@ -2023,6 +2402,10 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 }
 
 /* MENUS */
+
+/* Transition animations are possible with dropdown menus, e.g. fade, if you use 
+ * visibility: visible; instead of display:block; (and their counter values)
+ * but some things seemed buggy like the search dropdown, so try with care */
 .menu-container:hover .menu,
 .menu-container:hover + .menu
 {
@@ -2049,10 +2432,22 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
     padding: 4px 0 4px 0;
 }
 
+.menu ul + ul
+{
+    border-top: 2px solid #cacaca;
+}
+
+
 .menu ul li
 {
     list-style-type: none;
     display: block;
+}
+
+.menu.menu-search.menu-compact
+{
+    margin-left: -8px;
+    margin-top: -3px;
 }
 
 .user-options-btn
@@ -2106,7 +2501,7 @@ input[type=checkbox].hidden:not(:checked) + .list-edit-content
 {
     color: #ccc;
     font-size: 8px;
-    margin: unset;e
+    margin: unset;
 }
 
 #instance-panel + .mini-links

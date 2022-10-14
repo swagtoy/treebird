@@ -1,0 +1,4 @@
+[% FOREACH i IN search.statuses %]
+    [% create_status(i); %]
+[% END %]
+

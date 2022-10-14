@@ -18,9 +18,11 @@
 
 #ifndef QUERY_H
 #define QUERY_H
+#include "global_perl.h"
 #include <fcgi_stdio.h>
 #include <stddef.h>
 #include "key.h"
+#include "request.h"
 
 struct http_query_info
 {
@@ -79,14 +81,19 @@ struct get_values
     struct key offset; // String
     struct key query; // String
     struct key code; // String
+    struct key type; // Int
 };
 
-char* read_get_data(FCGX_Request* req, struct get_values* query);
-char* read_post_data(FCGX_Request* req, struct post_values* post);
+char* read_get_data(REQUEST_T req, struct get_values* query);
+char* read_post_data(REQUEST_T req, struct post_values* post);
 /* A stupidly quick query parser */
 char* parse_query(char* begin, struct http_query_info* info);
-char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg);
+char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*), void* arg);
 
 void free_files(struct file_array* files);
+
+// Perl stuff
+HV* perlify_post_values(struct post_values* post);
+HV* perlify_get_values(struct get_values* get);
 
 #endif // QUERY_H

@@ -34,9 +34,8 @@ void set_config_str(FCGX_Request* req,
     {
         if (ssn->post.set.is_set && post->is_set && page == curr_page)
         {
-            FCGX_FPrintF(req->out,
-                         "Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                         cookie_name, keypstr(post));
+            PRINTF("Set-Cookie: %s=%s; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                    cookie_name, keypstr(post));
         }
 
         if ((ssn->post.set.is_set && post->is_set) || cookie->is_set)
@@ -60,9 +59,8 @@ void set_config_int(FCGX_Request* req,
     {
         if (ssn->post.set.is_set && page == curr_page)
         {
-            FCGX_FPrintF(req->out,
-                         "Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
-                         cookie_name, post_bool_intp(post));
+            PRINTF("Set-Cookie: %s=%d; HttpOnly; Path=/; Max-Age=31536000; SameSite=Strict;\r\n",
+                    cookie_name, post_bool_intp(post));
         } 
 
         // Checks if boolean option
@@ -93,7 +91,6 @@ struct mstdnt_storage* load_config(FCGX_Request* req,
     set_config_str(req, ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("sidebaropacity",       sidebar_opacity), CONFIG_APPEARANCE);
     set_config_str(LOAD_CFG_SIM("theme",                theme), CONFIG_APPEARANCE);
-    set_config_int(LOAD_CFG_SIM("themeclr",             themeclr), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("jsactions",            jsactions), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("jsreply",              jsreply), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("jslive",               jslive), CONFIG_GENERAL);

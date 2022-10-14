@@ -1,0 +1,33 @@
+[% IF title %]
+    <h1 class="text-header">$title</h1>
+[% END %]
+
+[% IF show_post_box %]
+    [% postbox(ssn, data, undef) %]
+[% END %]
+
+[% UNLESS fake_timeline %]
+    <div class="menubar">
+        <form action="." method="post">
+            Only media:
+            <input type="checkbox" name="only_media" value="1" [% ssn.post.only_media %]>
+            <span class="bullet-separate">&bull;</span>
+            Replies: 
+            <select name="replies_only">
+                <option value="0">Show replies</option>
+                <option value="1">Self</option>
+                <option value="2">Following</option>
+            </select>
+            <input type="submit" class="btn btn-single" value="Filter">
+        </form>
+    </div>
+[% END %]
+
+[% FOREACH i IN statuses %]
+    [% create_status(i) %]
+[% END %]
+
+[%# TODO navigation %]
+[% IF statuses %]
+    [% nav() %]
+[% END %]

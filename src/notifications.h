@@ -19,36 +19,20 @@
 #ifndef NOTIFICATIONS_H
 #define NOTIFICATIONS_H
 #include <mastodont.h>
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
 #include "session.h"
 #include "path.h"
-#include "type_string.h"
-
-char* construct_notification(struct session* ssn,
-                             mastodont_t* api,
-                             struct mstdnt_notification* notif,
-                             size_t* size);
-char* construct_notification_action(struct mstdnt_notification* notif, size_t* size);
-char* construct_notification_compact(struct session* ssn,
-                                     mastodont_t* api,
-                                     struct mstdnt_notification* notif,
-                                     size_t* size);
-char* construct_notifications(struct session* ssn,
-                              mastodont_t* api,
-                              struct mstdnt_notification* notifs,
-                              size_t size,
-                              size_t* ret_size);
-char* construct_notifications_compact(struct session* ssn,
-                                      mastodont_t* api,
-                                      struct mstdnt_notification* notifs,
-                                      size_t size,
-                                      size_t* ret_size);
+#include "global_perl.h"
+#include "cgi.h"
 
 // Page contents
 void content_notifications(PATH_ARGS);
 void content_notifications_compact(PATH_ARGS);
+void content_notifications_clear(PATH_ARGS);
+void content_notifications_read(PATH_ARGS);
 
 void api_notifications(PATH_ARGS);
+
+HV* perlify_notification(const struct mstdnt_notification* const notif);
+AV* perlify_notifications(const struct mstdnt_notification* const notif, size_t len);
 
 #endif // NOTIFICATION_H

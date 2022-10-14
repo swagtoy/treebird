@@ -16,17 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <fcgi_stdio.h>
-#include <fcgiapp.h>
+#include "query.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "query.h"
 #include "env.h"
 #include "mime.h"
+#include "cgi.h"
 
-char* read_get_data(FCGX_Request* req, struct get_values* query)
+
+char* read_get_data(REQUEST_T req, struct get_values* query)
 {
     struct http_query_info info = { 0 };
     char* query_string = GET_ENV("QUERY_STRING", req);
@@ -37,6 +37,7 @@ char* read_get_data(FCGX_Request* req, struct get_values* query)
         { "offset", &(query->offset), key_string },
         { "q", &(query->query), key_string },
         { "code", &(query->code), key_string },
+        { "type", &(query->type), key_int },
     };
     // END Query references
     
@@ -75,7 +76,7 @@ char* read_get_data(FCGX_Request* req, struct get_values* query)
 
 
 
-char* read_post_data(FCGX_Request* req, struct post_values* post)
+char* read_post_data(REQUEST_T req, struct post_values* post)
 {
     ptrdiff_t begin_curr_size;
     struct http_query_info query_info;
@@ -142,7 +143,11 @@ char* read_post_data(FCGX_Request* req, struct post_values* post)
         }
 
         // fread should be a macro to FCGI_fread, which is set by FCGI_Accept in previous definitions
+#ifndef SINGLE_THREADED
         size_t len = FCGX_GetStr(post_query, content_length, req->in);
+#else
+        size_t len = fread(post_query, 1, content_length, stdin);
+#endif
         post_query[content_length] = '\0';
 
         // For shifting through
@@ -211,7 +216,7 @@ char* parse_query(char* begin, struct http_query_info* info)
     return end ? NULL : begin+1;
 }
 
-char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, void*), void* arg)
+char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*), void* arg)
 {
     char* request_method = GET_ENV("REQUEST_METHOD", req);
     char* post_query = NULL, * p_query_read;
@@ -228,10 +233,12 @@ char* try_handle_post(FCGX_Request* req, void (*call)(struct http_query_info*, v
             return NULL;
         }
 #ifdef SINGLE_THREADED
-        read(STDIN_FILENO, post_query, content_length);
+        int size = read(STDIN_FILENO, post_query, content_length);
 #else
-        FCGX_GetStr(post_query, content_length, req->in);
+        int size = FCGX_GetStr(post_query, content_length, req->in);
 #endif
+        if (size != content_length)
+            return NULL;
         post_query[content_length] = '\0';
         
 
@@ -261,4 +268,62 @@ void free_files(struct file_array* files)
         free(content[i].content);
     }
     free(content);
+}
+
+// TODO use hvstores_XXX macros
+HV* perlify_post_values(struct post_values* post)
+{
+    HV* ssn_post_hv = newHV();
+
+    // This ugly...
+    hv_stores(ssn_post_hv, "theme", newSVpv(keystr(post->theme), 0));
+    hv_stores(ssn_post_hv, "themeclr", newSViv(keyint(post->themeclr)));
+    hv_stores(ssn_post_hv, "lang", newSViv(keyint(post->lang)));
+    hv_stores(ssn_post_hv, "title", newSViv(keyint(post->title)));
+    hv_stores(ssn_post_hv, "jsactions", newSViv(keyint(post->jsactions)));
+    hv_stores(ssn_post_hv, "jsreply", newSViv(keyint(post->jsreply)));
+    hv_stores(ssn_post_hv, "jslive", newSViv(keyint(post->jslive)));
+    hv_stores(ssn_post_hv, "js", newSViv(keyint(post->js)));
+    hv_stores(ssn_post_hv, "interact_img", newSViv(keyint(post->interact_img)));
+    hv_stores(ssn_post_hv, "stat_attachments", newSViv(keyint(post->stat_attachments)));
+    hv_stores(ssn_post_hv, "stat_greentexts", newSViv(keyint(post->stat_greentexts)));
+    hv_stores(ssn_post_hv, "stat_dope", newSViv(keyint(post->stat_dope)));
+    hv_stores(ssn_post_hv, "stat_oneclicksoftware", newSViv(keyint(post->stat_oneclicksoftware)));
+    hv_stores(ssn_post_hv, "stat_emojo_likes", newSViv(keyint(post->stat_emojo_likes)));
+    hv_stores(ssn_post_hv, "stat_hide_muted", newSViv(keyint(post->stat_hide_muted)));
+    hv_stores(ssn_post_hv, "instance_show_shoutbox", newSViv(keyint(post->instance_show_shoutbox)));
+    hv_stores(ssn_post_hv, "instance_panel", newSViv(keyint(post->instance_panel)));
+    hv_stores(ssn_post_hv, "notif_embed", newSViv(keyint(post->notif_embed)));
+    hv_stores(ssn_post_hv, "set", newSViv(keyint(post->set)));
+    hv_stores(ssn_post_hv, "only_media", newSViv(keyint(post->only_media)));
+    hv_stores(ssn_post_hv, "replies_only", newSViv(keyint(post->replies_only)));
+    hv_stores(ssn_post_hv, "replies_policy", newSViv(keyint(post->replies_policy)));
+    hv_stores(ssn_post_hv, "emojoindex", newSViv(keyint(post->emojoindex)));
+    hv_stores(ssn_post_hv, "sidebar_opacity", newSViv(keyint(post->sidebar_opacity)));
+    hv_stores(ssn_post_hv, "file_ids", newSVpv(keystr(post->file_ids), 0));
+    hv_stores(ssn_post_hv, "content", newSVpv(keystr(post->content), 0));
+    hv_stores(ssn_post_hv, "itype", newSVpv(keystr(post->itype), 0));
+    hv_stores(ssn_post_hv, "id", newSVpv(keystr(post->id), 0));
+    hv_stores(ssn_post_hv, "username", newSVpv(keystr(post->username), 0));
+    hv_stores(ssn_post_hv, "password", newSVpv(keystr(post->password), 0));
+    hv_stores(ssn_post_hv, "replyid", newSVpv(keystr(post->replyid), 0));
+    hv_stores(ssn_post_hv, "visibility", newSVpv(keystr(post->visibility), 0));
+    hv_stores(ssn_post_hv, "instance", newSVpv(keystr(post->instance), 0));
+    hv_stores(ssn_post_hv, "min_id", newSVpv(keystr(post->min_id), 0));
+    hv_stores(ssn_post_hv, "max_id", newSVpv(keystr(post->max_id), 0));
+    hv_stores(ssn_post_hv, "start_id", newSVpv(keystr(post->start_id), 0));
+
+    return ssn_post_hv;
+}
+
+HV* perlify_get_values(struct get_values* get)
+{
+    HV* ssn_query_hv = newHV();
+
+    hv_stores(ssn_query_hv, "offset", newSVpv(keystr(get->offset), 0));
+    hv_stores(ssn_query_hv, "query", newSVpv(keystr(get->query), 0));
+    hv_stores(ssn_query_hv, "code", newSVpv(keystr(get->code), 0));
+    hvstores_int(ssn_query_hv, "type", keyint(get->type));
+    
+    return ssn_query_hv;
 }

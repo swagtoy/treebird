@@ -1,0 +1,81 @@
+<div class="emoji-picker">
+    <table class="tabs ui-table">
+        <tr>
+            <td>
+                <label for="cat-smileys">
+                    <span class="tab-btn btn btn-alt">😃</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-animals">
+                    <span class="tab-btn btn btn-alt">🐻</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-food">
+                    <span class="tab-btn btn btn-alt">🍔</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-travel">
+                    <span class="tab-btn btn btn-alt">🚀</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-activities">
+                    <span class="tab-btn btn btn-alt">⚽</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-objects">
+                    <span class="tab-btn btn btn-alt">🔧</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-symbols">
+                    <span class="tab-btn btn btn-alt">🔢</span>
+                </label>
+            </td>
+            <td>
+                <label for="cat-flags">
+                    <span class="tab-btn btn btn-alt">🎌</span>
+                </label>
+            </td>
+        </tr>
+    </table>
+
+    <div class="emoji-picker-emojos-wrapper">
+        <input type="radio" class="hidden" id="cat-smileys" name="emoji-cat" checked>
+        <div class="emoji-picker-emojos">
+            [% e.0 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-animals" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.1 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-food" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.2 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-travel" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.3 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-activities" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.4 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-objects" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.5 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-symbols" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.6 %]
+        </div>
+        <input type="radio" class="hidden" id="cat-flags" name="emoji-cat">
+        <div class="emoji-picker-emojos">
+            [% e.7 %]
+        </div>
+    </div>
+</div>

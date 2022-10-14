@@ -19,7 +19,10 @@
 #ifndef COOKIE_H
 #define COOKIE_H
 #include <stddef.h>
+#include "global_perl.h"
 #include "key.h"
+#include "cgi.h"
+#include "request.h"
 
 struct cookie_values
 {
@@ -58,7 +61,9 @@ struct http_cookie_info
 
 // Stupidly fast simple cookie parser
 char* parse_cookies(char* begin, struct http_cookie_info* info);
-char* read_cookies_env(FCGX_Request* req, struct cookie_values* cookies);
+char* read_cookies_env(REQUEST_T req, struct cookie_values* cookies);
 int cookie_get_val(char* src, char* key, struct http_cookie_info* info);
+
+HV* perlify_cookies(struct cookie_values* cookies);
 
 #endif // COOKIE_H

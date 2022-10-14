@@ -22,10 +22,15 @@
 #include <mastodont.h>
 #include "session.h"
 
-char* construct_list(struct mstdnt_list* list, size_t* size);
-char* construct_lists(struct mstdnt_list* lists, size_t size, size_t* ret_size);
-char* construct_lists_view(char* lists_string, size_t* size);
+/** Creates the main lists view */
 void content_lists(PATH_ARGS);
+/** Creates a list and then redirects */
 void list_edit(PATH_ARGS);
+
+/** Converts list to perl hash */
+HV* perlify_list(const struct mstdnt_list* list);
+    
+/** Converts lists to perl array */
+AV* perlify_lists(const struct mstdnt_list* lists, size_t len);
 
 #endif // LISTS_H

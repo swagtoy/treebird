@@ -1,0 +1,34 @@
+<table class="tabs ui-table">
+    <tr>
+        <td>
+            <label for="statuses-results-hidden">
+                <span class="tab-btn btn">Statuses</span>
+            </label>
+        </td>
+        <td>
+            <label for="accounts-results-hidden">
+                <span class="tab-btn btn">Accounts</span>
+            </label>
+        </td>
+        <td>
+            <label for="hashtags-results-hidden">
+                <span class="tab-btn btn">Hashtags</span>
+            </label>
+        </td>
+    </tr>
+</table>
+
+<div class="search-results">
+    <input type="radio" class="search-page-hidden hidden" id="statuses-results-hidden" name="searchpage"[% UNLESS search.statuses %] disabled[% ELSE %] checked[% END %]>
+    <div class="statuses-results search-page">
+        [% statuses %]
+    </div>
+    <input type="radio" class="search-page-hidden hidden" id="accounts-results-hidden" name="searchpage"[% UNLESS search.accounts %] disabled[% END %]>
+    <div class="accounts-results search-page">
+        [% accounts %]
+    </div>
+    <input type="radio" class="search-page-hidden hidden" id="hashtags-results-hidden" name="searchpage"[% UNLESS search.hashtags %] disabled[% END %]>
+    <div class="hashtags-results search-page">
+        [% hashtags %]
+    </div>
+</div>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html [% IF ssn.config.background_url %]style="background:url('[% ssn.config.background_url %]')"[% END %]>
+    <head>
+        <meta charset="utf-8">
+        <title>$title</title>
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <link rel="stylesheet" type="text/css" href="/treebird.css">
+        [% UNLESS ssn.config.theme == "treebird" %]
+            <link
+                rel="stylesheet"
+                type="text/css"
+                href="/[% ssn.config.theme %].css">
+        [% END %]
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{{ %s : title }} is a decentralized social media platform">
+        [% IF ssn.config.sidebar_opacity %]
+            <style>
+             :root { --sidebar-opacity: [% sidebar_opacity %]; }
+            </style>
+        [% END %]
+    </head>
+    <body>
+        <div id="main-page">
+            <header id="navbar">
+                <label for="leftbar-show">
+                    <svg class="leftbar-btn navbar-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </label>
+                <a href="$prefix/"><img src="/treebird_logo.png" height="42"></a>
+                <span class="info">$title</span>
+                <label for="rightbar-show">
+                    <svg class="rightbar-btn navbar-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
+                </label>
+                <label for="searchbar-show">
+                    <svg class="search-btn-show" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </label>
+                <input type="checkbox" class="hidden" id="searchbar-show">
+                <div id="navbar-right-container">
+                    <div id="navbar-right">
+                        [% IF !ssn.logged_in -%]
+                            <a href="login" id="login-header">Login / Register</a>
+                        [%- END %]
+                        <!-- Searchbox -->
+                        <form class="searchbox-container" action="$prefix/search" method="get">
+                            <span class="menu-container search-menu-dropdown">
+                                [% icon('search-menu') %]
+                                <div class="menu menu-search menu-compact">
+                                    <ul>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <!-- NO-OP -->
+                                                    <input type="radio" name="type" value="0" checked>
+                                                    <span>All</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="type" value="1">
+                                                    <span>Statuses</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="type" value="2">
+                                                    <span>Accounts</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <div class="btn-menu">
+                                                    <input type="radio" name="type" value="3">
+                                                    <span>Hashtags</span>
+                                                </div>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </span>
+                                
+                            <input type="text" class="group group-left group-inputbox" placeholder="[% lang('SEARCH_PLACEHOLDER') %]" id="searchbox" name="q"><input type="submit" class="btn group group-right" value="[% lang('SEARCH_BUTTON') %]">
+                        </form>
+                    </div>
+                </div>
+            </header>
+            <input type="checkbox" id="leftbar-show" class="hidden">
+            <input type="checkbox" id="rightbar-show" class="hidden">
+            <table id="content" class="ui-table">
+                <!-- Navigation -->
+                <tr>
+                    <td id="leftbar" class="sidebar">
+                        <ul class="sidebar-menu">
+                            <li><a class="sidebarbtn" href="$prefix/">[% lang('HOME') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/local/">[% lang('LOCAL') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/federated/">[% lang('FEDERATED') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/notifications">[% lang('NOTIFICATIONS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/lists">[% lang('LISTS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/favourites">[% lang('FAVOURITES') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/bookmarks">[% lang('BOOKMARKS') %]</a></li>
+                            <li><a class="sidebarbtn" href="$prefix/direct">[% lang('DIRECT') %]</a></li>
+                            <li><a class="sidebarbtn sidebarbtn-dropdown" href="$prefix/chats">Chats</a></li>
+                            <li>
+                                <label for="config-dropdown-checkbox">
+                                    <span class="sidebarbtn">
+                                        [% lang('CONFIG') %]
+                                    </span>
+                                </label>
+                                <input type="checkbox" id="config-dropdown-checkbox" class="hidden">
+                                <ul class="sidebar-submenu">
+                                    <li><a class="sidebarbtn" href="/config/general">General</a></li>
+                                    <li><a class="sidebarbtn" href="/config/appearance">Appearance</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+
+
+                        <!-- <div class="static-html" id="instance-panel"></div> -->
+                        <div class="mini-links">
+                            <a href="$prefix/about">About</a>
+                            <span class="bullet-separate">&bull;</span>
+                            <a href="$prefix/about/license">License</a>
+                            <span class="bullet-separate">&bull;</span>
+                            <a href="https://fossil.nekobit.net/treebird">Source code</a>
+                        </div>
+                    </td>
+                    
+                    <!-- Display for posts -->
+                    <td id="main">
+                        $main
+                    </td>
+
+                    <!-- Notifications and such -->
+                    <td id="rightbar" class="sidebar">
+                        [% IF ssn.cookies.logged_in %]
+                            <div class="account-sidebar"
+                                 [%- IF acct.header -%]
+                                 style="background: linear-gradient(var(--account-overlay-gradient-top), var(--account-overlay-gradient-bottom)), url([% acct.header %]);"
+                                 [%- END %]>
+                                <table class="acct-info">
+                                    <tr>
+                                        <td>
+                                            <img src="[% acct.avatar %]" class="acct-pfp" loading="lazy">
+                                        </td>
+                                        <td class="acct-info-right">
+                                            <span class="username">[% acct.username %]</span>
+                                            <span class="acct">@<span class="acct-js-grep">[% acct.acct %]</span></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acct-stats">
+                                    <tr>
+                                        <td class="header-btn btn">
+                                            <a href="$prefix/@[% acct.acct %]">
+                                                <span class="btn-header">[% lang('TAB_STATUSES') %]</span>
+                                                <span class="btn-content">[% acct.statuses_count %]</span>
+                                            </a>
+                                        </td>
+                                        <td class="header-btn btn">
+                                            <a href="$prefix/@[% acct.acct %]/following">
+                                                <span class="btn-header">[% lang('TAB_FOLLOWING') %]</span>
+                                                <span class="btn-content">[% acct.following_count %]</span>
+                                            </a>
+                                        </td>
+                                        <td class="header-btn btn">
+                                            <a href="$prefix/@[% acct.acct %]/followers">
+                                                <span class="btn-header">[% lang('TAB_FOLLOWERS') %]</span>
+                                                <span class="btn-content">[% acct.followers_count %]</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Notifications -->
+                            [% IF ssn.config.notif_embed %]
+                                <iframe class="sidebar-frame" loading="lazy" src="/notifications_compact"></iframe>
+                            [% ELSE %]
+                                <div class="notifications-compact">
+                                    [% FOREACH notif IN notifs %]
+                                        [% notification(ssn, data, notif, 1) %]
+                                    [% END %]
+                                </div>
+                            [% END %]
+                        [% ELSE %]
+                            <div class="sidebar-login">
+                                <form action="$prefix/login" method="post">
+                                    <div class="form-group">
+                                        <label for="login-username">[% lang('USERNAME') %]: </label>
+                                        <input type="text" id="login-username" name="username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="login-password">[% lang('PASSWORD') %]: </label>
+                                        <input type="password" id="login-password" name="password"><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="btn" type="submit" value="[% lang('LOGIN_BTN') %]">
+                                    </div>
+                                </form>
+                            </div>
+                        [% END %]
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Soy filled JS lib -->
+        <script src="$prefix/js/redom.min.js"></script>
+        <!-- Source -->
+        <script src="$prefix/js/main.js"></script>
+        <script src="$prefix/js/emoji.js"></script>
+    </body>
+</html>

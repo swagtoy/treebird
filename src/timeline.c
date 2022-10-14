@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "global_perl.h"
 #include "timeline.h"
 #include <stdlib.h>
 #include "helpers.h"
@@ -25,16 +26,11 @@
 #include "index.h"
 #include "status.h"
 #include "easprintf.h"
-#include "reply.h"
-#include "navigation.h"
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
 
-#include "../static/timeline_options.ctmpl"
-#include "../static/navigation.ctmpl"
-
-void content_timeline(FCGX_Request* req,
+void content_timeline(REQUEST_T req,
                       struct session* ssn,
                       mastodont_t* api,
                       struct mstdnt_storage* storage,
@@ -42,67 +38,34 @@ void content_timeline(FCGX_Request* req,
                       size_t statuses_len,
                       enum base_category cat,
                       char* header_text,
-                      int show_post_box)
+                      int show_post_box,
+                      int fake_timeline)
 {
-    size_t statuses_html_count = 0;
-    char* status_format = NULL,
-        * header = NULL,
-        * post_box = NULL,
-        * navigation_box = NULL,
-        * timeline_options,
-        * output = NULL,
-        * start_id;
-
-    if (storage->error)
-        status_format = construct_error(storage->error, E_ERROR, 1, NULL);
-    else
-    {
-        // Construct statuses into HTML
-        status_format = construct_statuses(ssn, api, statuses, statuses_len, NULL, &statuses_html_count);
-        if (!status_format)
-            status_format = construct_error("No statuses", E_NOTICE, 1, NULL);
-    }
-
-    // Create post box
-    if (show_post_box)
-        post_box = construct_post_box(NULL, "", NULL);
-
-    if (statuses)
-    {
-        // If not set, set it
-        start_id = keystr(ssn->post.start_id) ? keystr(ssn->post.start_id) : statuses[0].id;
-        navigation_box = construct_navigation_box(start_id,
-                                                  statuses[0].id,
-                                                  statuses[statuses_len-1].id,
-                                                  NULL);
-    }
-
-    // Create timeline options/menubar
-    struct timeline_options_template todata = {
-        .only_media = "Only media?",
-        .replies = "Replies?",
-        .only_media_active = keyint(ssn->post.only_media) ? "checked" : NULL,
-    };
-
-    timeline_options = tmpl_gen_timeline_options(&todata, NULL);
-
-    // Display a header bar, usually customized for specific pages
-    if (header_text)
-    {
-        easprintf(&header, "<div class=\"simple-page simple-page-header\"><h1>%s</h1></div>",
-                  header_text);
-    }
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    mXPUSHs(newRV_inc((SV*)session_hv));
+    mXPUSHs(newRV_inc((SV*)template_files));
     
-    easprintf(&output, "%s%s%s%s%s",
-              STR_NULL_EMPTY(header),
-              STR_NULL_EMPTY(post_box),
-              STR_NULL_EMPTY(timeline_options),
-              STR_NULL_EMPTY(status_format),
-              STR_NULL_EMPTY(navigation_box));
+    if (statuses)
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
+    else ARG_UNDEFINED();
 
+    if (header_text)
+        mXPUSHs(newSVpv(header_text, 0));
+    else ARG_UNDEFINED();
+
+    mXPUSHi(show_post_box);
+    mXPUSHi(fake_timeline);
+
+    PERL_STACK_SCALAR_CALL("timeline::content_timeline");
+
+    // Duplicate to free temps
+    char* dup = PERL_GET_STACK_EXIT;
+    
     struct base_page b = {
         .category = cat,
-        .content = output,
+        .content = dup,
+        .session = session_hv,
         .sidebar_left = NULL
     };
 
@@ -112,15 +75,10 @@ void content_timeline(FCGX_Request* req,
     // Cleanup
     mastodont_storage_cleanup(storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
-    free(status_format);
-    free(post_box);
-    free(header);
-    free(timeline_options);
-    free(navigation_box);
-    free(output);
+    Safefree(dup);
 }
 
-void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local)
+void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -148,10 +106,10 @@ void tl_home(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local
     
     mastodont_timeline_home(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1, 0);
 }
 
-void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
+void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -176,10 +134,10 @@ void tl_direct(FCGX_Request* req, struct session* ssn, mastodont_t* api)
     
     mastodont_timeline_direct(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0, 0);
 }
 
-void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -206,10 +164,10 @@ void tl_public(FCGX_Request* req, struct session* ssn, mastodont_t* api, int loc
 
     mastodont_timeline_public(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
-void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* list_id)
+void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -233,11 +191,11 @@ void tl_list(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* lis
     
     mastodont_timeline_list(api, &m_args, list_id, &args, &storage, &statuses, &statuses_len);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_LISTS, "List timeline", 0, 0);
 }
 
 
-void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag_id)
+void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -262,7 +220,7 @@ void tl_tag(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* tag_
 
     easprintf(&header, "Hashtag - #%s", tag_id);
 
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0);
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0, 0);
     free(header);
 }
 

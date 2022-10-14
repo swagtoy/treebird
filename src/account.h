@@ -18,9 +18,11 @@
 
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
+#include "global_perl.h"
 #include <stddef.h>
 #include <mastodont.h>
 #include "session.h"
+#include "path.h"
 #include "l10n.h"
 
 #define ACCOUNT_NOP 0
@@ -55,33 +57,6 @@ struct account_page
 };
 
 void get_account_info(mastodont_t* api, struct session* ssn);
-char* construct_account_sidebar(struct mstdnt_account* acct, size_t* size);
-
-char* construct_account(mastodont_t* api,
-                        struct mstdnt_account* account,
-                        uint8_t flags,
-                        size_t* size);
-char* construct_accounts(mastodont_t* api,
-                         struct mstdnt_account* accounts,
-                         size_t size,
-                         uint8_t flags,
-                         size_t* ret_size);
-
-size_t construct_account_page(struct session *ssn,
-                              char** result,
-                              struct account_page* page,
-                              char* content);
-
-char* load_account_page(struct session* ssn,
-                        mastodont_t* api,
-                        struct mstdnt_account* acct,
-                        struct mstdnt_relationship* relationship,
-                        enum account_tab tab,
-                        char* content,
-                        size_t* res_size);
-
-char* load_account_info(struct mstdnt_account* acct,
-                        size_t* size);
 
 void content_account_followers(PATH_ARGS);
 void content_account_following(PATH_ARGS);
@@ -94,5 +69,9 @@ void content_account_media(PATH_ARGS);
 void content_account_action(PATH_ARGS);
 void content_account_favourites(PATH_ARGS);
 void content_account_bookmarks(PATH_ARGS);
+
+HV* perlify_account(const struct mstdnt_account* acct);
+AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len);
+HV* perlify_relationship(const struct mstdnt_relationship* rel);
 
 #endif // ACCOUNT_H

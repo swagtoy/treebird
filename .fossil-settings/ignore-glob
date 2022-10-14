@@ -1,4 +1,5 @@
 template
+ctemplate
 filec
 emojitoc
 **/*.cgi
@@ -10,3 +11,5 @@ config.h
 treebird
 test/tests
 scripts/*.o
+templates/*.ctt
+test/unit/*.bin

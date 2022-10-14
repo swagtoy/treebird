@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html class="embed">
+    <head>
+        <title>Embed</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/treebird.css">
+        [% UNLESS ssn.config.theme == "treebird" %]
+            <link
+                rel="stylesheet"
+                type="text/css"
+                href="/[% ssn.config.theme %].css">
+        [% END %]
+
+        <style>
+         /* Overrides */
+         html, body
+         {
+             margin: 0;
+             padding: 0;
+             background-color: unset;
+         }
+        </style>
+    </head>
+    <body>
+        <div class="embed">
+            [% content %]
+        </div>
+    </body>
+</html>

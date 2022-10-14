@@ -1,0 +1,25 @@
+<div class="notification-container">
+    <h1 class="text-header">Notifications</h1>
+    <div class="menubar">
+        [% IF notifs %]
+            <a class="btn btn-single btn-small" href="/notifications/clear">Clear notifications</a>
+            <form action="/notifications/read" method="post">
+                <input type="hidden" name="max_id" value="[% notifs.0.id %]">
+                <input type="submit" class="btn btn-single btn-small" value="Mark as read">
+            </form>
+        [% ELSE %]
+            <span class="btn btn-single btn-small btn-disabled">Clear notifications</span>
+            <span class="btn btn-single btn-small btn-disabled">Mark as read</span>
+        [% END %]
+    </div>
+    [% IF notifs %]
+        [% FOREACH notif IN notifs %]
+            [% notification(notif) %]
+        [% END %]
+    [% ELSE %]
+        <div class="fancy-error">
+            <span class="fancy-error-kaomoji">[% random_error_kaomoji() %]</span>
+            <span class="fancy-error-text">No notifications.</span>
+        </div>
+    [% END %]
+</div>
