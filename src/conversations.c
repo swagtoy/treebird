@@ -43,7 +43,7 @@ void content_chats(PATH_ARGS)
         .limit = 20,
     };
 
-    mastodont_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len);
+    mstdnt_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -69,7 +69,7 @@ void content_chats(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
 
     // Cleanup
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_chats(chats, chats_len);
     Safefree(dup);
 }
@@ -93,8 +93,8 @@ void content_chat_view(PATH_ARGS)
         .limit = 20,
     };
     
-    mastodont_get_chat_messages(api, &m_args, data[0], &args, &storage, &messages, &messages_len);
-    int chat_code = mastodont_get_chat(api, &m_args, data[0],
+    mstdnt_get_chat_messages(api, &m_args, data[0], &args, &storage, &messages, &messages_len);
+    int chat_code = mstdnt_get_chat(api, &m_args, data[0],
                        &storage_chat, &chat);
 
     PERL_STACK_INIT;
@@ -123,8 +123,8 @@ void content_chat_view(PATH_ARGS)
     // Output
     render_base_page(&b, req, ssn, api);
 
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&storage_chat);
+    mstdnt_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage_chat);
     mstdnt_cleanup_chat(&chat);
     mstdnt_cleanup_messages(messages);
     Safefree(dup);

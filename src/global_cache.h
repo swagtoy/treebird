@@ -18,7 +18,7 @@
 
 #ifndef GLOBAL_CACHE_H
 #define GLOBAL_CACHE_H
-#include "mastodont.h"
+#include <mastodont.h>
 
 struct global_cache
 {
@@ -28,7 +28,7 @@ struct global_cache
 
 extern struct global_cache g_cache;
 
-void load_instance_info_cache(mastodont_t* api);
+void load_instance_info_cache(mstdnt_t* api);
 void free_instance_info_cache();
 
 #endif /* GLOBAL_CACHE_H */

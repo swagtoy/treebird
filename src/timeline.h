@@ -27,19 +27,19 @@
 #include "request.h"
 
 /** Wrapper for content_tl_federated */
-void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local);
+void tl_home(REQUEST_T req, struct session* ssn, mstdnt_t* api, int local);
 
 /** Wrapper for content_tl_direct */
-void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api);
+void tl_direct(REQUEST_T req, struct session* ssn, mstdnt_t* api);
 
 /** Wrapper for content_tl_federated */
-void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat);
+void tl_public(REQUEST_T req, struct session* ssn, mstdnt_t* api, int local, enum base_category cat);
 
 /** Wrapper for content_tl_list */
-void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id);
+void tl_list(REQUEST_T req, struct session* ssn, mstdnt_t* api, char* list_id);
 
 /** Wrapper for content_tl_tag */
-void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag);
+void tl_tag(REQUEST_T req, struct session* ssn, mstdnt_t* api, char* tag);
 
 /* ------------------------------------------------ */
 
@@ -80,7 +80,7 @@ void content_tl_tag(PATH_ARGS);
  */
 void content_timeline(REQUEST_T req,
                       struct session* ssn,
-                      mastodont_t* api,
+                      mstdnt_t* api,
                       struct mstdnt_storage* storage,
                       struct mstdnt_status* statuses,
                       size_t statuses_len,

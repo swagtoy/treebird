@@ -127,7 +127,7 @@ static struct path_info paths[] = {
     { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
-static void application(mastodont_t* api, REQUEST_T req)
+static void application(mstdnt_t* api, REQUEST_T req)
 {
     // Default config
     struct session ssn = {
@@ -181,7 +181,7 @@ static void application(mastodont_t* api, REQUEST_T req)
     if (get_str) free(get_str);
     free_files(&(keyfile(ssn.post.files)));
     if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
-    mastodont_storage_cleanup(&(ssn.acct_storage));
+    mstdnt_storage_cleanup(&(ssn.acct_storage));
     if (attachments)
         cleanup_media_storages(&ssn, attachments);
 }
@@ -189,7 +189,7 @@ static void application(mastodont_t* api, REQUEST_T req)
 #ifndef SINGLE_THREADED
 static void* threaded_fcgi_start(void* arg)
 {
-    mastodont_t* api = arg;
+    mstdnt_t* api = arg;
     int rc;
     FCGX_Request req;
     FCGX_InitRequest(&req, 0, 0);
@@ -211,7 +211,7 @@ static void* threaded_fcgi_start(void* arg)
     return NULL;
 }
 #else
-void cgi_start(mastodont_t* api)
+void cgi_start(mstdnt_t* api)
 {
     while (FCGI_Accept() >= 0 && quit == 0)
     {
@@ -232,7 +232,7 @@ void xs_init(pTHX)
 int main(int argc, char **argv, char **env)
 {
     // Global init
-    mastodont_global_curl_init();
+    mstdnt_global_curl_init();
 #ifndef SINGLE_THREADED
     FCGX_Init();
 #endif
@@ -251,9 +251,9 @@ int main(int argc, char **argv, char **env)
 
     init_template_files(aTHX);
 
-    // Initiate mastodont library
-    mastodont_t api;
-    mastodont_init(&api);
+    // Initiate mstdnt library
+    mstdnt_t api;
+    mstdnt_init(&api);
     // Fetch information about the current instance
     load_instance_info_cache(&api);
 
@@ -276,8 +276,8 @@ int main(int argc, char **argv, char **env)
 #endif
    
     free_instance_info_cache();
-    mastodont_global_curl_cleanup();
-    mastodont_cleanup(&api);
+    mstdnt_global_curl_cleanup();
+    mstdnt_cleanup(&api);
 
     cleanup_template_files();
 

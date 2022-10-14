@@ -47,8 +47,8 @@ struct interact_profile_args
     size_t favourites_len;
 };
 
-int try_post_status(struct session* ssn, mastodont_t* api);
-int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
+int try_post_status(struct session* ssn, mstdnt_t* api);
+int try_interact_status(struct session* ssn, mstdnt_t* api, char* id);
 void content_status_create(PATH_ARGS);
 void content_status_react(PATH_ARGS);
 
@@ -56,7 +56,7 @@ void content_status_react(PATH_ARGS);
 
 // Reply to
 /** Deprecated: May be used in the future for Mastodon only */
-char* get_in_reply_to(mastodont_t* api,
+char* get_in_reply_to(mstdnt_t* api,
                       struct session* ssn,
                       struct mstdnt_status* status,
                       size_t* size);
@@ -66,7 +66,7 @@ void status_view_favourites(PATH_ARGS);
 
 void content_status_interactions(FCGX_Request* req,
                                  struct session* ssn,
-                                 mastodont_t* api,
+                                 mstdnt_t* api,
                                  char* label,
                                  struct mstdnt_account* accts,
                                  size_t accts_len);

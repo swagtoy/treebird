@@ -21,6 +21,6 @@
 #include <mastodont.h>
 #include "session.h"
 
-void content_index(FCGX_Request* req, struct session* ssn, mastodont_t* api);
+void content_index(FCGX_Request* req, struct session* ssn, mstdnt_t* api);
 
 #endif // INDEX_H

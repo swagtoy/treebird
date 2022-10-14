@@ -75,7 +75,7 @@ void content_search_all(PATH_ARGS)
         return;
     }
 
-    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -98,7 +98,7 @@ void content_search_all(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
 
     mstdnt_cleanup_search_results(&results);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     Safefree(dup);
 }
 
@@ -122,7 +122,7 @@ void content_search_statuses(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -145,7 +145,7 @@ void content_search_statuses(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
 
     mstdnt_cleanup_search_results(&results);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     Safefree(dup);
 }
 
@@ -168,7 +168,7 @@ void content_search_accounts(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
     
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -191,7 +191,7 @@ void content_search_accounts(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
     
     mstdnt_cleanup_search_results(&results);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     Safefree(dup);
 }
 
@@ -214,12 +214,12 @@ void content_search_hashtags(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mastodont_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
     
     // TODO
     
     mstdnt_cleanup_search_results(&results);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
 //    Safefree(dup);
 }
 

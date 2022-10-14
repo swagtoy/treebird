@@ -67,7 +67,7 @@ void content_login_oauth(PATH_ARGS)
             .code = keystr(ssn->query.code),
         };
 
-        if (mastodont_obtain_oauth_token(api,
+        if (mstdnt_obtain_oauth_token(api,
                                          &m_args,
                                          &args_token,
                                          &oauth_storage,
@@ -88,7 +88,7 @@ void content_login_oauth(PATH_ARGS)
             .website = keystr(ssn->post.instance)
         };
 
-        if (mastodont_register_app(api,
+        if (mstdnt_register_app(api,
                                    &m_args,
                                    &args_app,
                                    &storage,
@@ -115,8 +115,8 @@ void content_login_oauth(PATH_ARGS)
     redirect(req, REDIRECT_303, config_url_prefix &&
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
 
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&oauth_storage);
+    mstdnt_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&oauth_storage);
     if (urlify_redirect_url) free(urlify_redirect_url);
     if (decode_url) curl_free(decode_url);
 }
@@ -159,7 +159,7 @@ void content_login(PATH_ARGS)
             m_args.url = config_instance_url;
         }
 
-        if (mastodont_register_app(api, &m_args, &args_app, &storage, &app) != 0)
+        if (mstdnt_register_app(api, &m_args, &args_app, &storage, &app) != 0)
         {
 //            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
         }
@@ -175,7 +175,7 @@ void content_login(PATH_ARGS)
                 .password = keystr(ssn->post.password)
             };
 
-            if (mastodont_obtain_oauth_token(api,
+            if (mstdnt_obtain_oauth_token(api,
                                              &m_args,
                                              &args_token,
                                              &oauth_store,
@@ -226,7 +226,7 @@ void content_login(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
 
     // Cleanup
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&oauth_store);
+    mstdnt_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&oauth_store);
     Safefree(page);
 }

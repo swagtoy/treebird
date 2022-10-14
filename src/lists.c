@@ -45,11 +45,11 @@ void content_lists(PATH_ARGS)
             .title = keystr(ssn->post.title),
             .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
         };
-        mastodont_create_list(api, &m_args, &args, &create_storage, NULL);
-        mastodont_storage_cleanup(&create_storage);
+        mstdnt_create_list(api, &m_args, &args, &create_storage, NULL);
+        mstdnt_storage_cleanup(&create_storage);
     }
 
-    mastodont_get_lists(api, &m_args, &storage, &lists, &lists_len);
+    mstdnt_get_lists(api, &m_args, &storage, &lists, &lists_len);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -74,7 +74,7 @@ void content_lists(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
 
     // Cleanup
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_lists(lists);
     Safefree(dup);
 }
@@ -92,7 +92,7 @@ void list_edit(PATH_ARGS)
         .replies_policy = keyint(ssn->post.replies_policy)
     };
 
-    mastodont_update_list(api,
+    mstdnt_update_list(api,
                           &m_args,
                           id,
                           &args,
@@ -100,7 +100,7 @@ void list_edit(PATH_ARGS)
                           NULL);
 
     redirect(req, REDIRECT_303, referer);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
 }
 
 HV* perlify_list(const struct mstdnt_list* list)

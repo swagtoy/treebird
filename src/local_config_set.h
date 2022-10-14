@@ -75,13 +75,13 @@ void set_config_int(FCGX_Request* req,
  * Loads the config and sets the values based on POST or session
  * 
  * @param ssn The session
- * @param api mastodont-c api
+ * @param api mstdnt-c api
  * @param page Page enum, to ensure that config changes on different pages don't effect other cookies
  * @return Storage if files were uploaded, must free. This might change
  */
 struct mstdnt_storage* load_config(FCGX_Request* req,
                                    struct session* ssn,
-                                   mastodont_t* api,
+                                   mstdnt_t* api,
                                    enum config_page page);
 
 #endif // LOCAL_CONFIG_SET_H

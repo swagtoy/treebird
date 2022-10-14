@@ -21,19 +21,19 @@
 
 struct global_cache g_cache = { {} };
 
-void load_instance_info_cache(mastodont_t* api)
+void load_instance_info_cache(mstdnt_t* api)
 {
     struct mstdnt_args m_args = {
         .url = config_instance_url,
         .token = 0,
         .flags = config_library_flags,
     };
-    mastodont_instance_panel(api, &m_args, &(g_cache.panel_html));
-    mastodont_terms_of_service(api, &m_args, &(g_cache.tos_html));
+    mstdnt_instance_panel(api, &m_args, &(g_cache.panel_html));
+    mstdnt_terms_of_service(api, &m_args, &(g_cache.tos_html));
 }
 
 void free_instance_info_cache()
 {
-    mastodont_fetch_results_cleanup(&(g_cache.panel_html));
-    mastodont_fetch_results_cleanup(&(g_cache.tos_html));
+    mstdnt_fetch_results_cleanup(&(g_cache.panel_html));
+    mstdnt_fetch_results_cleanup(&(g_cache.tos_html));
 }

@@ -38,13 +38,13 @@
 
 struct account_args
 {
-    mastodont_t* api;
+    mstdnt_t* api;
     struct mstdnt_account* accts;
     uint8_t flags;
 };
 
 static char* accounts_page(HV* session_hv,
-                           mastodont_t* api,
+                           mstdnt_t* api,
                            struct mstdnt_account* acct,
                            struct mstdnt_relationship* rel,
                            char* header,
@@ -76,14 +76,14 @@ static char* accounts_page(HV* session_hv,
     
     output = PERL_GET_STACK_EXIT;
 
-    mastodont_storage_cleanup(storage);
+    mstdnt_storage_cleanup(storage);
     mstdnt_cleanup_accounts(accts, accts_len);
     return output;
 }
 
 static char* account_followers_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mastodont_t* api,
+                                  mstdnt_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -104,14 +104,14 @@ static char* account_followers_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mastodont_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
+    mstdnt_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
     return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
 
 static char* account_following_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mastodont_t* api,
+                                  mstdnt_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -132,14 +132,14 @@ static char* account_following_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mastodont_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
+    mstdnt_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
 
     return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
 
 static char* account_statuses_cb(HV* session_hv,
                                  struct session* ssn,
-                                 mastodont_t* api,
+                                 mstdnt_t* api,
                                  struct mstdnt_account* acct,
                                  struct mstdnt_relationship* rel, 
                                  void* _args)
@@ -153,7 +153,7 @@ static char* account_statuses_cb(HV* session_hv,
     size_t statuses_len = 0;
     char* result;
     
-    mastodont_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len);
+    mstdnt_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
@@ -171,7 +171,7 @@ static char* account_statuses_cb(HV* session_hv,
     
     result = PERL_GET_STACK_EXIT;
     
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
     
     return result;
@@ -179,7 +179,7 @@ static char* account_statuses_cb(HV* session_hv,
 
 static char* account_scrobbles_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mastodont_t* api,
+                                  mstdnt_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -198,7 +198,7 @@ static char* account_scrobbles_cb(HV* session_hv,
         .offset = 0,
         .limit = 20
     };
-    mastodont_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
+    mstdnt_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
@@ -216,15 +216,15 @@ static char* account_scrobbles_cb(HV* session_hv,
     
     result = PERL_GET_STACK_EXIT;
 
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     return result;
 }
 
-void get_account_info(mastodont_t* api, struct session* ssn)
+void get_account_info(mstdnt_t* api, struct session* ssn)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    if (ssn->cookies.access_token.is_set && mastodont_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
+    if (ssn->cookies.access_token.is_set && mstdnt_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
     {
         ssn->logged_in = 1;
     }
@@ -245,11 +245,11 @@ void get_account_info(mastodont_t* api, struct session* ssn)
  */
 static void fetch_account_page(FCGX_Request* req,
                                struct session* ssn,
-                               mastodont_t* api,
+                               mstdnt_t* api,
                                char* id,
                                void* args,
                                enum account_tab tab,
-                               char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
+                               char* (*callback)(HV* ssn_hv, struct session* ssn, mstdnt_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
 {
     struct mstdnt_storage storage = { 0 },
         relations_storage = { 0 };
@@ -261,9 +261,9 @@ static void fetch_account_page(FCGX_Request* req,
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
-    mastodont_get_account(api, &m_args, lookup_type, id, &acct, &storage);
+    mstdnt_get_account(api, &m_args, lookup_type, id, &acct, &storage);
     // Relationships may fail
-    mastodont_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+    mstdnt_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
 
     HV* session_hv = perlify_session(ssn);
     
@@ -281,8 +281,8 @@ static void fetch_account_page(FCGX_Request* req,
     /* Output */
     mstdnt_cleanup_account(&acct);
     mstdnt_cleanup_relationships(relationships);
-    mastodont_storage_cleanup(&storage);
-    mastodont_storage_cleanup(&relations_storage);
+    mstdnt_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&relations_storage);
     Safefree(data);
 }
 
@@ -367,23 +367,23 @@ void content_account_action(PATH_ARGS)
     struct mstdnt_relationship acct = { 0 };
     
     if (strcmp(data[1], "follow") == 0)
-        mastodont_follow_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_follow_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unfollow") == 0)
-        mastodont_unfollow_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unfollow_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "mute") == 0)
-        mastodont_mute_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_mute_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unmute") == 0)
-        mastodont_unmute_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unmute_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "block") == 0)
-        mastodont_block_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_block_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unblock") == 0)
-        mastodont_unblock_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unblock_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "subscribe") == 0)
-        mastodont_subscribe_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_subscribe_account(api, &m_args, data[0], &storage, &acct);
     else if (strcmp(data[1], "unsubscribe") == 0)
-        mastodont_unsubscribe_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unsubscribe_account(api, &m_args, data[0], &storage, &acct);
 
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
 
     redirect(req, REDIRECT_303, referer);
 }
@@ -402,7 +402,7 @@ void content_account_bookmarks(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
 
-    mastodont_get_bookmarks(api, &m_args, &args, &storage, &statuses, &statuses_len);
+    mstdnt_get_bookmarks(api, &m_args, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 }
@@ -423,7 +423,7 @@ void content_account_blocked(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     
-    mastodont_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
+    mstdnt_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
 
     HV* session_hv = perlify_session(ssn);
     char* result = accounts_page(session_hv, api, NULL, NULL, "Blocked users", &storage, accts, accts_len);
@@ -455,7 +455,7 @@ void content_account_muted(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     
-    mastodont_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
+    mstdnt_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
 
     HV* session_hv = perlify_session(ssn);
     char* result = accounts_page(session_hv, api, NULL, NULL, "Muted users", &storage, accts, accts_len);
@@ -484,7 +484,7 @@ void content_account_favourites(PATH_ARGS)
         .limit = 20,
     };
 
-    mastodont_get_favourites(api, &m_args, &args, &storage, &statuses, &statuses_len);
+    mstdnt_get_favourites(api, &m_args, &args, &storage, &statuses, &statuses_len);
     
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 }

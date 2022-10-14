@@ -34,7 +34,7 @@ struct attachments_args
 
 int try_upload_media(struct mstdnt_storage** storage,
                      struct session* ssn,
-                     mastodont_t* api,
+                     mstdnt_t* api,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids)
 {
@@ -64,7 +64,7 @@ int try_upload_media(struct mstdnt_storage** storage,
             .description = NULL,
         };
         
-        if (mastodont_upload_media(api,
+        if (mstdnt_upload_media(api,
                                    &m_args,
                                    &args,
                                    *storage + i,
@@ -73,7 +73,7 @@ int try_upload_media(struct mstdnt_storage** storage,
             for (size_t j = 0; j < i; ++j)
             {
                 if (media_ids) free((*media_ids)[j]);
-                mastodont_storage_cleanup(*storage + j);
+                mstdnt_storage_cleanup(*storage + j);
             }
 
             if (media_ids)
@@ -103,7 +103,7 @@ void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage)
 {
     if (!FILES_READY(ssn)) return;
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
-        mastodont_storage_cleanup(storage + i);
+        mstdnt_storage_cleanup(storage + i);
     free(storage);
 }
 

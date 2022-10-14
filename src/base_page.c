@@ -32,7 +32,7 @@
 
 #define BODY_STYLE "style=\"background:url('%s');\""
 
-void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
+void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mstdnt_t* api)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -57,7 +57,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
             .limit = 8,
         };
         
-        mastodont_get_notifications(
+        mstdnt_get_notifications(
             api,
             &m_args,
             &args,
@@ -88,7 +88,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     send_result(req, NULL, "text/html", dup, 0);
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
-    mastodont_storage_cleanup(&storage);
+    mstdnt_storage_cleanup(&storage);
     Safefree(dup);
 }
 
