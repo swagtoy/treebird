@@ -10,7 +10,9 @@ The goal is to create a frontend that's lightweight enough to be viewed without 
 usable enough to improve the experience with JS.
 
 Treebird uses C with FCGI, mastodont-c (library designed for Treebird, but can be used
-for other applications as well), and plain JavaScript for the frontend (100% optional).
+for other applications as well), and **optional** JavaScript for the frontend (100% functional without
+javascript, it only helps). Uses [RE:DOM](https://redom.js.org/) (3kb js library) to assist with DOM
+creation and native JS apis. (bundled, no need to build)
 
 ## Why?
 

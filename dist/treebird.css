@@ -14,12 +14,12 @@
 }
 
 
-*
+input
 {
     transition: .1s box-shadow;
 }
 
-*:focus
+input:focus
 {
     outline: 1px solid #aa0000;
     box-shadow: 0px 0px 6px #aa00006f;
@@ -309,7 +309,10 @@ table.ui-table td
     padding-bottom: unset;
     height: 26px;
     border-right: unset;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
     padding-left: 27px;
+    box-shadow: unset;
     transition: width .1s ease;
     width: 180px;
 }
@@ -389,6 +392,8 @@ input[type=email],
 input[type=password]
 {
     padding: 2px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 3px #00000005;
     border: 1px solid #d3d3d3;
 }
 

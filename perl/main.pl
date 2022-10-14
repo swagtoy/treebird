@@ -16,10 +16,18 @@ use config;
 use embed;
 use meta;
 use login;
+
 # use Devel::Leak;
 
 # my $handle;
 # Devel::Leak::NoteSV($handle);
+
+# sub leaky_friend
+# {
+#     $count = Devel::Leak::CheckSV($handle);
+#     my $leakstr = "Memory: $count SVs\n";
+#     print STDERR $leakstr;
+# }
 
 sub base_page
 {
@@ -49,10 +57,3 @@ sub base_page
 
     return $ret;
 }
-
-# sub leaky_friend
-# {
-#     $count = Devel::Leak::CheckSV($handle);
-#     my $leakstr = "Memory: $count SVs\n";
-#     print STDERR $leakstr;
-# }
