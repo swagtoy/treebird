@@ -8,23 +8,33 @@ For the following GNU/Linux distributions, you will need the following libraries
 
 ###### Debian
 
-`# apt install libcurl4-gnutls-dev libpcre2-dev libfcgi-dev base-devel`
+`# apt install libcurl4-gnutls-dev libpcre2-dev libfcgi-dev build-essential perl libperl-dev libtemplate-perl`
 
 ###### Void GNU/Linux
 
-`# xbps-install libcurl libcurl-devel base-devel pcre2 pcre2-devel fcgi fcgi-devel`
+`# xbps-install libcurl libcurl-devel base-devel pcre2 pcre2-devel fcgi fcgi-devel perl-Template-Toolkit`
 
 ###### Arch
 
-`# pacman -S curl base-devel`
+`# pacman -S curl base-devel perl perl-template-toolkit`
+
+###### Gentoo
+
+TODO
 
 Create a copy of `config.def.h` at `config.h`, edit the file with your information
 
-Run `make`. This will also clone mastodont-c, and compile both it and Treebird.
+Run `make`. (**hint:** Pass -j3 to speed up compilation). This will also clone mastodont-c, and compile both it and Treebird.
 
 If you `fossil update` any changes, `make update` should be run after updating
 
-## Perl dependencies
+## Perl dependencies manual install
+
+**Note:** You **WONT** need to do this if your distribution above included all the deps (Template Toolkit)
+
+At the moment, all of them listed above do, but if your distro is nonstandard, keep reading:
+
+---
 
 Treebird renders most of the content that you see in Perl using the Template Toolkit.
 

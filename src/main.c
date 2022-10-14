@@ -208,7 +208,6 @@ static void* threaded_fcgi_start(void* arg)
         FCGX_Finish_r(&req);
     }
 
-
     return NULL;
 }
 #else
