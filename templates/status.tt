@@ -172,7 +172,7 @@
                                     </label>
                                 </form>
                             [% END %]
-                            <a target="_parent" class="statbtn statbtn-last" href="$prefix/status/[% status.id %]/react#[% status.id %]" class="pointer statbtn react-btn">
+                            <a target="_parent" class="statbtn pointer statbtn-last react-btn" href="$prefix/status/[% status.id %]/react#[% status.id %]">
                                 [% icon('emoji') %]
                             </a>
                             [% IF emoji_picker -%]

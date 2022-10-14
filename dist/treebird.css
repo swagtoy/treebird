@@ -1894,7 +1894,7 @@ p}
     stroke: #303030;
 }
 
-.active-anim
+.interacted-anim
 {
     animation: interact .7s 1;
 }

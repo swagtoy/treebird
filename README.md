@@ -10,9 +10,9 @@ The goal is to create a frontend that's lightweight enough to be viewed without 
 usable enough to improve the experience with JS.
 
 Treebird uses C with FCGI, mastodont-c (library designed for Treebird, but can be used
-for other applications as well), and **optional** JavaScript for the frontend (100% functional without
-javascript, it only helps). Uses [RE:DOM](https://redom.js.org/) (3kb js library) to assist with DOM
-creation and native JS apis. (bundled, no need to build)
+for other applications as well), Perl, and **optional** JavaScript for the frontend (100% functional without
+javascript, it only helps). Uses [RE:DOM](https://redom.js.org/) (2kb JS library) to assist with DOM
+creation and native JS apis. (Already bundled)
 
 ## Why?
 
@@ -26,7 +26,7 @@ This led me to one choice, to develop my own frontend.
 
 Treebird respects compatibility with old browsers, and thus uses HTML table layouts, which are
 supported even by most modern terminal web browsers. The core browser we aim to at least maintain compatibility
-with is Netsurf, but most other browsers like GNU Emacs EWW, elinks, render Treebird wonderfully.
+with is Netsurf, but most other browsers like GNU Emacs EWW, elinks, render Treebird just alright.
 
 ## Credits
 
