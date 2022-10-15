@@ -185,8 +185,9 @@ void content_login(PATH_ARGS)
             }
             else {
                 if (url_link)
+                {
                     PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
-                else
+                } else
                     // Clear
                     PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
 

@@ -26,6 +26,9 @@
 #include "l10n.h"
 #include "local_config.h"
 #include "path.h"
+#include <pthread.h>
+
+
 enum base_category
 {
     BASE_CAT_NONE,

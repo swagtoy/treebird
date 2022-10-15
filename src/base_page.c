@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 #include <string.h>
 #include <stdlib.h>
 #include "helpers.h"
@@ -30,7 +31,9 @@
 #include "cgi.h"
 #include "global_cache.h"
 
+
 #define BODY_STYLE "style=\"background:url('%s');\""
+
 
 void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mstdnt_t* api)
 {
@@ -94,10 +97,12 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
 {
+    static pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
     if (data_len == 0) data_len = strlen(data);
 #ifdef SINGLE_THREADED
     printf(
 #else
+    pthread_mutex_lock(&print_mutex);
     FCGX_FPrintF(req->out,
 #endif
                  "Status: %s\r\n"
@@ -110,5 +115,6 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
     puts(data);
 #else
     FCGX_PutStr(data, data_len, req->out);
+    pthread_mutex_unlock(&print_mutex);
 #endif
 }
