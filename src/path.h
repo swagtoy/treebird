@@ -25,7 +25,7 @@
 #include "cgi.h"
 #include "request.h"
 
-#define PATH_ARGS REQUEST_T req, struct session* ssn, mstdnt_t* api, char** data
+#define PATH_ARGS REQUEST_T req, struct session* ssn, mastodont_t* api, char** data
 
 struct path_info
 {
@@ -36,13 +36,13 @@ struct path_info
 void handle_paths(
     REQUEST_T req,
     struct session* ssn,
-    mstdnt_t* api,
+    mastodont_t* api,
     struct path_info* paths,
     size_t paths_len);
 
 int parse_path(REQUEST_T req,
                struct session* ssn,
-               mstdnt_t* api,
+               mastodont_t* api,
                struct path_info* path_info);
 
 #endif // PATH_H

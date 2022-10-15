@@ -56,7 +56,7 @@ struct account_page
     struct mstdnt_relationship* relationship;
 };
 
-void get_account_info(mstdnt_t* api, struct session* ssn);
+void get_account_info(mastodont_t* api, struct session* ssn);
 
 void content_account_followers(PATH_ARGS);
 void content_account_following(PATH_ARGS);

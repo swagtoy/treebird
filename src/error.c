@@ -21,7 +21,7 @@
 #include "easprintf.h"
 #include "l10n.h"
 
-void content_not_found(FCGX_Request* req, struct session* ssn, mstdnt_t* api, char* path)
+void content_not_found(FCGX_Request* req, struct session* ssn, mastodont_t* api, char* path)
 {
     struct base_page b = {
         .content = "Content not found",

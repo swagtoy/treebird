@@ -35,7 +35,7 @@
 #define BODY_STYLE "style=\"background:url('%s');\""
 
 
-void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mstdnt_t* api)
+void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

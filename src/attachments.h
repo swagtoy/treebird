@@ -29,7 +29,7 @@
 
 int try_upload_media(struct mstdnt_storage** storage,
                      struct session* ssn,
-                     mstdnt_t* api,
+                     mastodont_t* api,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids);
 void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage);

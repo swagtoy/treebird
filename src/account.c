@@ -38,13 +38,13 @@
 
 struct account_args
 {
-    mstdnt_t* api;
+    mastodont_t* api;
     struct mstdnt_account* accts;
     uint8_t flags;
 };
 
 static char* accounts_page(HV* session_hv,
-                           mstdnt_t* api,
+                           mastodont_t* api,
                            struct mstdnt_account* acct,
                            struct mstdnt_relationship* rel,
                            char* header,
@@ -83,7 +83,7 @@ static char* accounts_page(HV* session_hv,
 
 static char* account_followers_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mstdnt_t* api,
+                                  mastodont_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -111,7 +111,7 @@ static char* account_followers_cb(HV* session_hv,
 
 static char* account_following_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mstdnt_t* api,
+                                  mastodont_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -139,7 +139,7 @@ static char* account_following_cb(HV* session_hv,
 
 static char* account_statuses_cb(HV* session_hv,
                                  struct session* ssn,
-                                 mstdnt_t* api,
+                                 mastodont_t* api,
                                  struct mstdnt_account* acct,
                                  struct mstdnt_relationship* rel, 
                                  void* _args)
@@ -179,7 +179,7 @@ static char* account_statuses_cb(HV* session_hv,
 
 static char* account_scrobbles_cb(HV* session_hv,
                                   struct session* ssn,
-                                  mstdnt_t* api,
+                                  mastodont_t* api,
                                   struct mstdnt_account* acct,
                                   struct mstdnt_relationship* rel, 
                                   void* _args)
@@ -220,7 +220,7 @@ static char* account_scrobbles_cb(HV* session_hv,
     return result;
 }
 
-void get_account_info(mstdnt_t* api, struct session* ssn)
+void get_account_info(mastodont_t* api, struct session* ssn)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -245,11 +245,11 @@ void get_account_info(mstdnt_t* api, struct session* ssn)
  */
 static void fetch_account_page(FCGX_Request* req,
                                struct session* ssn,
-                               mstdnt_t* api,
+                               mastodont_t* api,
                                char* id,
                                void* args,
                                enum account_tab tab,
-                               char* (*callback)(HV* ssn_hv, struct session* ssn, mstdnt_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
+                               char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
 {
     struct mstdnt_storage storage = { 0 },
         relations_storage = { 0 };

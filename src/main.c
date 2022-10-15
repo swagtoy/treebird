@@ -125,7 +125,7 @@ static struct path_info paths[] = {
     { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
-static void application(mstdnt_t* api, REQUEST_T req)
+static void application(mastodont_t* api, REQUEST_T req)
 {
     // Default config
     struct session ssn = {
@@ -187,7 +187,7 @@ static void application(mstdnt_t* api, REQUEST_T req)
 #ifndef SINGLE_THREADED
 static void* threaded_fcgi_start(void* arg)
 {
-    mstdnt_t* api = arg;
+    mastodont_t* api = arg;
     int rc;
     FCGX_Request req;
     FCGX_InitRequest(&req, 0, 0);
@@ -209,7 +209,7 @@ static void* threaded_fcgi_start(void* arg)
     return NULL;
 }
 #else
-void cgi_start(mstdnt_t* api)
+void cgi_start(mastodont_t* api)
 {
     while (FCGI_Accept() >= 0 && quit == 0)
     {
@@ -260,7 +260,7 @@ int main(int argc, char **argv, char **env)
     mstdnt_set_hooks(&hooks);
 
     // Initiate mstdnt library
-    mstdnt_t api;
+    mastodont_t api;
     mstdnt_init(&api);
     // Fetch information about the current instance
     load_instance_info_cache(&api);

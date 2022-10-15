@@ -25,7 +25,7 @@
 
 int parse_path(REQUEST_T req,
                struct session* ssn,
-               mstdnt_t* api,
+               mastodont_t* api,
                struct path_info* path_info)
 {
     int res = 0;
@@ -103,7 +103,7 @@ breakpt:
 
 void handle_paths(REQUEST_T req,
                   struct session* ssn,
-                  mstdnt_t* api,
+                  mastodont_t* api,
                   struct path_info* paths,
                   size_t paths_len)
 {

@@ -40,7 +40,7 @@
 #define ACCOUNT_INTERACTIONS_LIMIT 11
 #define NUM_STR "%u"
 
-int try_post_status(struct session* ssn, mstdnt_t* api)
+int try_post_status(struct session* ssn, mastodont_t* api)
 {
     if (!(keystr(ssn->post.content))) return 1;
     struct mstdnt_args m_args;
@@ -119,7 +119,7 @@ int try_post_status(struct session* ssn, mstdnt_t* api)
     return 0;
 }
 
-int try_react_status(struct session* ssn, mstdnt_t* api, char* id, char* emoji)
+int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoji)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -151,7 +151,7 @@ void content_status_react(PATH_ARGS)
     redirect(req, REDIRECT_303, referer);
 }
 
-int try_interact_status(struct session* ssn, mstdnt_t* api, char* id)
+int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -190,7 +190,7 @@ int try_interact_status(struct session* ssn, mstdnt_t* api, char* id)
     return res;
 }
 
-char* get_in_reply_to(mstdnt_t* api,
+char* get_in_reply_to(mastodont_t* api,
                       struct session* ssn,
                       struct mstdnt_status* status,
                       size_t* size)
@@ -308,7 +308,7 @@ void status_view_favourites(PATH_ARGS)
 
 void content_status_interactions(FCGX_Request* req,
                                  struct session* ssn,
-                                 mstdnt_t* api,
+                                 mastodont_t* api,
                                  char* label,
                                  struct mstdnt_account* accts,
                                  size_t accts_len)

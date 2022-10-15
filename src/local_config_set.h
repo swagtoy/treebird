@@ -81,7 +81,7 @@ void set_config_int(FCGX_Request* req,
  */
 struct mstdnt_storage* load_config(FCGX_Request* req,
                                    struct session* ssn,
-                                   mstdnt_t* api,
+                                   mastodont_t* api,
                                    enum config_page page);
 
 #endif // LOCAL_CONFIG_SET_H

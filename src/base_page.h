@@ -52,7 +52,7 @@ struct base_page
     HV* session;
 };
 
-void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mstdnt_t* api);
+void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api);
 
 /**
  * Outputs HTML in format for CGI. This can only be called once!
