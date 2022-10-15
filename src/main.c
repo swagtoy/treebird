@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <EXTERN.h>
-#include <perl.h>
 #include "global_perl.h"
 #include <pthread.h>
 #include <string.h>
@@ -251,10 +249,10 @@ int main(int argc, char **argv, char **env)
 
     init_template_files(aTHX);
 
-    // Setup mstdnt hooks
+    // Setup mstdnt hooks to use Perl functions
     struct mstdnt_hooks hooks = {
         .malloc = safemalloc,
-        // Not sure how this differs from Safefree?
+        // Not sure how this differs from Safefree? That's undefined... (but used elsewhere in the code just fine)
         .free = safefree,
         .calloc = safecalloc,
         .realloc = saferealloc,

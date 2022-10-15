@@ -22,9 +22,12 @@
 #include <perl.h>
 #include <pthread.h>
 
-//    hv_stores(ssn_hv, "id", newSVpv(acct->id, 0));
-// TODO use sv_usepvn_flags soon
-#define hvstores_str(hv, key, val) if ((val)) { hv_stores((hv), key, newSVpvn((val), strlen(val))); }
+// Note: val MUST be a pointer to a value, and must end with a \0 (hence SvSETMAGIC)
+#define hvstores_str(hv, key, val) if (val) {                   \
+        SV* tmpsv = newSV(0);                                   \
+        sv_usepvn_flags(tmpsv, val, strlen(val), SvSETMAGIC);   \
+        hv_stores((hv), key, tmpsv);                            \
+    }   
 #define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
 #define hvstores_ref(hv, key, val) if (1) {     \
         SV* tmp = (SV*)(val);                   \
