@@ -22,11 +22,11 @@
 #include <perl.h>
 #include <pthread.h>
 
+        /* SV* tmpsv = newSV(0);                                           \ */
+        /* sv_usepvn_flags(tmpsv, val, strlen(val), SV_HAS_TRAILING_NUL);  \ */
 // Note: val MUST be a pointer to a value, and must end with a \0 (hence SvSETMAGIC)
-#define hvstores_str(hv, key, val) if (val) {                   \
-        SV* tmpsv = newSV(0);                                   \
-        sv_usepvn_flags(tmpsv, val, strlen(val), SvSETMAGIC);   \
-        hv_stores((hv), key, tmpsv);                            \
+#define hvstores_str(hv, key, val) if (val) {                           \
+        hv_stores((hv), key, newSVpvn_share(val, strlen(val), 0));        \
     }   
 #define hvstores_int(hv, key, val) hv_stores((hv), key, newSViv((val)))
 #define hvstores_ref(hv, key, val) if (1) {     \
