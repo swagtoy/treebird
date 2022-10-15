@@ -29,7 +29,7 @@ void load_instance_info_cache(mastodont_t* api)
         .flags = config_library_flags,
     };
     mstdnt_instance_panel(api, &m_args, &(g_cache.panel_html));
-    mastodont_terms_of_service(api, &m_args, &(g_cache.tos_html));
+    mstdnt_terms_of_service(api, &m_args, &(g_cache.tos_html));
 }
 
 void free_instance_info_cache()
