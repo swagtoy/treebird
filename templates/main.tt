@@ -208,8 +208,6 @@
             </table>
         </div>
 
-        <!-- Soy filled JS lib -->
-        <script src="$prefix/js/redom.min.js"></script>
         <!-- Source -->
         <script src="$prefix/js/main.js"></script>
         <script src="$prefix/js/emoji.js"></script>

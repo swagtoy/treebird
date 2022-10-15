@@ -1,6 +1,11 @@
-const { el, mount } = redom;
+"use strict";
 
-'use strict';
+function em(tag, values, child)
+{
+    let element = document.createElement(tag);
+    
+    return element;
+}
 
 function get_cookie(cookiestr)
 {

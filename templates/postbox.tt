@@ -1,6 +1,6 @@
 <form class="reply-form" action="$prefix/status/create" method="post" enctype="multipart/form-data">
     [% IF status %]
-        <input type="hidden" name="replyid" value="[% status.in_reply_to_id %]">
+        <input type="hidden" name="replyid" value="[% status.id %]">
     [% END %]
     <div class="statusbox">
         <textarea name="content" placeholder="Just landed in N.Y." rows="5">[% IF status %][% mentionify(ssn, status) %][% END %]</textarea>
