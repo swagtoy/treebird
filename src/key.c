@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "global_perl.h"
 #include <stdlib.h>
 #include <limits.h>
 #include "key.h"
@@ -46,13 +47,13 @@ void key_files(char* val, struct file_content* form, struct key* arg)
     struct file_array* arr = &(arg->type.f);
     char* content_cpy;
 
-    arr->content = realloc(arr->content,
+    arr->content = saferealloc(arr->content,
                            sizeof(struct file_content) * ++(arr->array_size));
     if (!(arr->content))
         return;
 
     // Make a copy so we can remember it later
-    if (!(content_cpy = malloc(form->content_size+1)))
+    if (!(content_cpy = safemalloc(form->content_size+1)))
         return;
     
     memcpy(content_cpy, val, form->content_size+1);

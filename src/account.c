@@ -436,7 +436,7 @@ void content_account_blocked(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    free(result);
+    Safefree(result);
 }
 
 void content_account_muted(PATH_ARGS)
@@ -468,7 +468,7 @@ void content_account_muted(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    free(result);
+    Safefree(result);
 }
 
 void content_account_favourites(PATH_ARGS)

@@ -20,6 +20,7 @@
 #define _DEFAULT_SOURCE
 #include <time.h>
 #include <math.h>
+#include "global_perl.h"
 #include "easprintf.h"
 #include <stdlib.h>
 #include <stddef.h>
@@ -110,7 +111,7 @@ char* strrepl(char* source, char* find, char* repl, int flags)
         str_size += curr - last;
 
         // Create and copy
-        result = realloc(result, str_size + (!is_last ? repl_len : 0) + 1);
+        result = saferealloc(result, str_size + (!is_last ? repl_len : 0) + 1);
         strncpy(result + last_str_size, last, curr - last);
         if (!is_last)
         {
@@ -134,9 +135,9 @@ char* sanitize_html(char* html)
     char* left = strrepl(amp, "<", "&lt;", STRREPL_ALL);
     char* right = strrepl(left, ">", "&gt;", STRREPL_ALL);
     char* quot = strrepl(right, "\"", "&quot;", STRREPL_ALL);
-    if (quot != right && right != html && right != left) free(right);
-    if (left != html && left != amp) free(left);
-    if (amp != html) free(amp);
+    if (quot != right && right != html && right != left) Safefree(right);
+    if (left != html && left != amp) Safefree(left);
+    if (amp != html) Safefree(amp);
     
     return quot;
 }

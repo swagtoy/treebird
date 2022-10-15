@@ -70,7 +70,7 @@ int try_post_status(struct session* ssn, mstdnt_t* api)
         json_ids_len = cJSON_GetArraySize(json_ids);
         if (json_ids_len)
         {
-            media_ids = malloc(json_ids_len * sizeof(char*));
+            media_ids = safemalloc(json_ids_len * sizeof(char*));
             // TODO error
             cJSON* id;
             int i = 0;
@@ -110,11 +110,11 @@ int try_post_status(struct session* ssn, mstdnt_t* api)
         cleanup_media_storages(ssn, att_storage);
     
     if (json_ids)
-        free(media_ids);
+        Safefree(media_ids);
     else
         cleanup_media_ids(ssn, media_ids);
     
-    free(attachments);
+    Safefree(attachments);
     if (json_ids) cJSON_Delete(json_ids);
     return 0;
 }
@@ -403,7 +403,7 @@ void content_status(PATH_ARGS, uint8_t flags)
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&status_storage);
     Safefree(dup);
-    free(picker);
+    Safefree(picker);
 }
 
 void notice_redirect(PATH_ARGS)
@@ -411,7 +411,7 @@ void notice_redirect(PATH_ARGS)
     char* url;
     easprintf(&url, "%s/status/%s", config_url_prefix, data[0]);
     redirect(req, REDIRECT_303, url);
-    free(url);
+    Safefree(url);
 }
 
 HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma)

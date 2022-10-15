@@ -17,6 +17,7 @@
  */
 
 #include <ctype.h>
+#include "global_perl.h"
 #include <fcgi_stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -33,7 +34,7 @@ char* get_mime_boundary(char* content_type_str, char** bound)
     char* content = content_type_str;
 
     // Data gets changed in place
-    char* content_type = malloc(strlen(content)+1);
+    char* content_type = safemalloc(strlen(content)+1);
     if (!content_type)
     {
         perror("malloc");
@@ -66,7 +67,7 @@ char* get_mime_boundary(char* content_type_str, char** bound)
     
     return content_type;
 error:
-    free(content_type);
+    Safefree(content_type);
     return NULL;
 }
 

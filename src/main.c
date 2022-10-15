@@ -176,9 +176,9 @@ static void application(mstdnt_t* api, REQUEST_T req)
     handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
 
     // Cleanup
-    if (cookies_str) free(cookies_str);
-    if (post_str) free(post_str);
-    if (get_str) free(get_str);
+    if (cookies_str) Safefree(cookies_str);
+    if (post_str) Safefree(post_str);
+    if (get_str) Safefree(get_str);
     free_files(&(keyfile(ssn.post.files)));
     if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
     mstdnt_storage_cleanup(&(ssn.acct_storage));
@@ -250,6 +250,16 @@ int main(int argc, char **argv, char **env)
     perl_run(my_perl);
 
     init_template_files(aTHX);
+
+    // Setup mstdnt hooks
+    struct mstdnt_hooks hooks = {
+        .malloc = safemalloc,
+        // Not sure how this differs from Safefree?
+        .free = safefree,
+        .calloc = safecalloc,
+        .realloc = saferealloc,
+    };
+    mstdnt_set_hooks(&hooks);
 
     // Initiate mstdnt library
     mstdnt_t api;

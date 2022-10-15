@@ -72,7 +72,7 @@ void content_emoji_picker(PATH_ARGS)
 
     send_result(req, NULL, NULL, picker, 0);
 
-    free(picker);
+    Safefree(picker);
 }
 
 char* construct_emoji_picker(char* status_id, size_t* size)
@@ -119,7 +119,7 @@ char* construct_emoji_picker(char* status_id, size_t* size)
 
     // Cleanup
     for (size_t i = 0; i < EMO_CAT_LEN; ++i)
-        free(emojis[i]);
+        Safefree(emojis[i]);
     return dup;
 }
 

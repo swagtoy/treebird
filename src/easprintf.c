@@ -18,6 +18,7 @@
 
 #include <fcgi_stdio.h>
 #include <stdlib.h>
+#include "global_perl.h"
 #include "easprintf.h"
 
 int evasprintf(char** ret, const char* format, va_list ap)
@@ -28,7 +29,7 @@ int evasprintf(char** ret, const char* format, va_list ap)
     int sz = vsnprintf(NULL, 0, format, ap);
     va_end(ap);
 
-    *ret = malloc(sz + 1);
+    *ret = safemalloc(sz + 1);
     if(*ret == NULL)
     {
         perror("malloc");

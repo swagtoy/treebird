@@ -36,7 +36,7 @@ char* read_cookies_env(REQUEST_T req, struct cookie_values* cookies)
     if (!cookies_env)
         return NULL;
     
-    char* cookies_str = malloc(strlen(cookies_env) + 1);
+    char* cookies_str = safemalloc(strlen(cookies_env) + 1);
     if (!cookies_str)
     {
         perror("malloc");

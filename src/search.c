@@ -70,7 +70,7 @@ void content_search_all(PATH_ARGS)
             redirect(req, REDIRECT_303, url);
             break;
         }
-        free(url);
+        Safefree(url);
         curl_free(query);
         return;
     }

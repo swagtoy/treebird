@@ -17,6 +17,7 @@
  */
 
 #include <fcgi_stdio.h>
+#include "global_perl.h"
 #include <string.h>
 #include <stdlib.h>
 #include "string_helpers.h"
@@ -42,24 +43,24 @@ char* construct_func_strings(char* (*func)(void*, size_t, size_t*),
         
         if (parse_size == -1) /* Malloc error */
         {
-            if (result) free(result);
+            if (result) Safefree(result);
             return NULL;
         }
         last_parse_size = curr_parse_size;
         curr_parse_size += parse_size;
         
-        result = realloc(result, curr_parse_size + 1);
+        result = saferealloc(result, curr_parse_size + 1);
         if (result == NULL)
         {
             perror("malloc");
-            free(res_html);
+            Safefree(res_html);
             return NULL;
         }
 
         // Copy res_html to result in correct position
         strncpy(result + last_parse_size, res_html, parse_size);
         // Cleanup
-        free(res_html);
+        Safefree(res_html);
     }
 
     if (result)

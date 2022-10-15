@@ -221,7 +221,7 @@ void tl_tag(REQUEST_T req, struct session* ssn, mstdnt_t* api, char* tag_id)
     easprintf(&header, "Hashtag - #%s", tag_id);
 
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0, 0);
-    free(header);
+    Safefree(header);
 }
 
 void content_tl_home(PATH_ARGS)
