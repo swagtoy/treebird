@@ -29,10 +29,10 @@ extern pthread_mutex_t print_mutex;
 #else
 #define PRINTF(str, ...) do { pthread_mutex_lock(&print_mutex);  \
     FCGX_FPrintF(req->out, str, __VA_ARGS__);              \
-    pthread_mutex_unlock(&print_mutex); } while (1);
+    pthread_mutex_unlock(&print_mutex); } while (0);
 #define PUT(str) do { pthread_mutex_lock(&print_mutex);  \
     FCGX_FPrintF(req->out, str); \
-    pthread_mutex_unlock(&print_mutex); } while (1);
+    pthread_mutex_unlock(&print_mutex); } while (0);
 #define REQUEST_T FCGX_Request*
 #endif
 
