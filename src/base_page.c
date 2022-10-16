@@ -97,7 +97,6 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
 {
-    static pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
     if (data_len == 0) data_len = strlen(data);
 #ifdef SINGLE_THREADED
     printf(

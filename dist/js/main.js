@@ -1,8 +1,30 @@
 "use strict";
 
+// Helper function for manipulating the DOM / creating DOM elements
 function em(tag, values, child)
 {
     let element = document.createElement(tag);
+
+    // Can either be a "append"-able type, or properties
+    // If it's properties, then child must be set
+    if ((typeof values === 'string' ||
+         typeof values === 'number' ||
+         values instanceof HTMLElement) && !child)
+    {
+        element.append(element);
+    }
+    else if (typeof values === 'object' && child) {
+        for (const prop in values)
+        {
+            element[prop] = values[prop];
+        }
+    } // ???
+
+    // Type doesn't matter, just append whatever is in child
+    if (child)
+    {
+        element.append(child);
+    }
     
     return element;
 }
