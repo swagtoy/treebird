@@ -8,10 +8,12 @@ function em(tag, values, child)
     // Can either be a "append"-able type, or properties
     // If it's properties, then child must be set
     if ((typeof values === 'string' ||
-         typeof values === 'number' ||
          values instanceof HTMLElement) && !child)
     {
         element.append(element);
+    }
+    else if (typeof values === 'number') {
+        element.append(values.toString());
     }
     else if (typeof values === 'object' && child) {
         for (const prop in values)
@@ -23,7 +25,11 @@ function em(tag, values, child)
     // Type doesn't matter, just append whatever is in child
     if (child)
     {
-        element.append(child);
+        // Well, except if it's a string
+        if (typeof values === 'number')
+            element.append(child.toString());
+        else
+            element.append(child);
     }
     
     return element;
@@ -146,8 +152,8 @@ function interact_action(status, type)
         }
         else {
             // Nobody interacted with this yet, create counter
-            const counter = el("span.count", 1)
-            mount(label, counter);
+            const counter = em("span", { className: "count" }, 1)
+            label.append(counter);
             is_interacted = false;
         }
 
