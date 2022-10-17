@@ -105,7 +105,7 @@ void content_login_oauth(PATH_ARGS)
             PRINTF("Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
             
             redirect(req, REDIRECT_303, url);
-            Safefree(url);
+            tb_free(url);
             curl_free(encode_id);
         }
     }
@@ -117,7 +117,7 @@ void content_login_oauth(PATH_ARGS)
 
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&oauth_storage);
-    if (urlify_redirect_url) Safefree(urlify_redirect_url);
+    if (urlify_redirect_url) tb_free(urlify_redirect_url);
     if (decode_url) curl_free(decode_url);
 }
 
@@ -192,7 +192,7 @@ void content_login(PATH_ARGS)
                     PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
 
                 apply_access_token(req, token.access_token);
-                Safefree(url_link);
+                tb_free(url_link);
                 return;
             }
         }
@@ -201,7 +201,7 @@ void content_login(PATH_ARGS)
         {
             // Restore and cleanup, an error occured
             m_args.url = orig_url;
-            Safefree(url_link);
+            tb_free(url_link);
         }
     }
 
@@ -229,5 +229,5 @@ void content_login(PATH_ARGS)
     // Cleanup
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&oauth_store);
-    Safefree(page);
+    tb_free(page);
 }

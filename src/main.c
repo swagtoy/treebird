@@ -19,6 +19,7 @@
 #include "global_perl.h"
 #include <pthread.h>
 #include <string.h>
+#include "memory.h"
 #include <mastodont.h>
 #include <stdlib.h>
 #include "../config.h"
@@ -127,6 +128,8 @@ static struct path_info paths[] = {
 
 static void application(mastodont_t* api, REQUEST_T req)
 {
+    propagate_memory();
+
     // Default config
     struct session ssn = {
         .config = {
@@ -174,9 +177,9 @@ static void application(mastodont_t* api, REQUEST_T req)
     handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
 
     // Cleanup
-    if (cookies_str) Safefree(cookies_str);
-    if (post_str) Safefree(post_str);
-    if (get_str) Safefree(get_str);
+    if (cookies_str) tb_free(cookies_str);
+    if (post_str) tb_free(post_str);
+    if (get_str) tb_free(get_str);
     free_files(&(keyfile(ssn.post.files)));
     if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
     mstdnt_storage_cleanup(&(ssn.acct_storage));
@@ -251,11 +254,11 @@ int main(int argc, char **argv, char **env)
 
     // Setup mstdnt hooks to use Perl functions
     struct mstdnt_hooks hooks = {
-        .malloc = safemalloc,
-        // Not sure how this differs from Safefree? That's undefined... (but used elsewhere in the code just fine)
-        .free = safefree,
-        .calloc = safecalloc,
-        .realloc = saferealloc,
+        .malloc = tb_malloc,
+        // Not sure how this differs from tb_free? That's undefined... (but used elsewhere in the code just fine)
+        .free = tb_free,
+        .calloc = tb_calloc,
+        .realloc = tb_realloc,
     };
     mstdnt_set_hooks(&hooks);
 

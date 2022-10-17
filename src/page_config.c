@@ -60,7 +60,7 @@ void content_config_general(PATH_ARGS)
 
     render_base_page(&b, req, ssn, api);
     // Cleanup
-    Safefree(dup);
+    tb_free(dup);
 }
 
 
@@ -84,7 +84,7 @@ void content_config_appearance(PATH_ARGS)
 
     render_base_page(&b, req, ssn, api);
     // Cleanup
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_config(PATH_ARGS)

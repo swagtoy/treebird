@@ -80,7 +80,7 @@ void content_notifications(PATH_ARGS)
     render_base_page(&b, req, ssn, api);
     mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_notifications(notifs, notifs_len);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_notifications_compact(PATH_ARGS)
@@ -125,7 +125,7 @@ void content_notifications_compact(PATH_ARGS)
 
     mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_notifications(notifs, notifs_len);
-    Safefree(page);
+    tb_free(page);
 }
 
 void content_notifications_clear(PATH_ARGS)

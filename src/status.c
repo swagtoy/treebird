@@ -70,7 +70,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         json_ids_len = cJSON_GetArraySize(json_ids);
         if (json_ids_len)
         {
-            media_ids = safemalloc(json_ids_len * sizeof(char*));
+            media_ids = tb_malloc(json_ids_len * sizeof(char*));
             // TODO error
             cJSON* id;
             int i = 0;
@@ -110,11 +110,11 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         cleanup_media_storages(ssn, att_storage);
     
     if (json_ids)
-        Safefree(media_ids);
+        tb_free(media_ids);
     else
         cleanup_media_ids(ssn, media_ids);
     
-    Safefree(attachments);
+    tb_free(attachments);
     if (json_ids) cJSON_Delete(json_ids);
     return 0;
 }
@@ -335,7 +335,7 @@ void content_status_interactions(FCGX_Request* req,
     render_base_page(&page, req, ssn, api);
 
     // Cleanup
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_status(PATH_ARGS, uint8_t flags)
@@ -402,8 +402,8 @@ void content_status(PATH_ARGS, uint8_t flags)
     mstdnt_cleanup_status(&status);
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&status_storage);
-    Safefree(dup);
-    Safefree(picker);
+    tb_free(dup);
+    tb_free(picker);
 }
 
 void notice_redirect(PATH_ARGS)
@@ -411,7 +411,7 @@ void notice_redirect(PATH_ARGS)
     char* url;
     easprintf(&url, "%s/status/%s", config_url_prefix, data[0]);
     redirect(req, REDIRECT_303, url);
-    Safefree(url);
+    tb_free(url);
 }
 
 HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma)

@@ -43,7 +43,7 @@ char* read_get_data(REQUEST_T req, struct get_values* query)
     
     if (query_string)
     {
-        get_query = safemalloc(strlen(query_string) + 1);
+        get_query = tb_malloc(strlen(query_string) + 1);
         if (!get_query)
         {
             perror("malloc");
@@ -135,7 +135,7 @@ char* read_post_data(REQUEST_T req, struct post_values* post)
         char* mime_boundary;
         char* mime_mem = get_mime_boundary(GET_ENV("CONTENT_TYPE", req), &mime_boundary);
         int content_length = atoi(GET_ENV("CONTENT_LENGTH", req));
-        post_query = safemalloc(content_length + 1);
+        post_query = tb_malloc(content_length + 1);
         if (!post_query)
         {
             perror("malloc");
@@ -188,7 +188,7 @@ char* read_post_data(REQUEST_T req, struct post_values* post)
             }
         while (p_query_read);
 
-        if (mime_mem) Safefree(mime_mem);
+        if (mime_mem) tb_free(mime_mem);
     }
 
     // Free me afterwards!
@@ -226,7 +226,7 @@ char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*
     if (request_method && (strcmp("POST", request_method) == 0))
     {
         int content_length = atoi(GET_ENV("CONTENT_LENGTH", req));
-        post_query = safemalloc(content_length + 1);
+        post_query = tb_malloc(content_length + 1);
         if (!post_query)
         {
             puts("Malloc error!");
@@ -265,9 +265,9 @@ void free_files(struct file_array* files)
     struct file_content* content = files->content;
     for (size_t i = 0; i < files->array_size; ++i)
     {
-        Safefree(content[i].content);
+        tb_free(content[i].content);
     }
-    Safefree(content);
+    tb_free(content);
 }
 
 // TODO use hvstores_XXX macros

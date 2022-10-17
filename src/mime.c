@@ -34,7 +34,7 @@ char* get_mime_boundary(char* content_type_str, char** bound)
     char* content = content_type_str;
 
     // Data gets changed in place
-    char* content_type = safemalloc(strlen(content)+1);
+    char* content_type = tb_malloc(strlen(content)+1);
     if (!content_type)
     {
         perror("malloc");
@@ -67,7 +67,7 @@ char* get_mime_boundary(char* content_type_str, char** bound)
     
     return content_type;
 error:
-    Safefree(content_type);
+    tb_free(content_type);
     return NULL;
 }
 

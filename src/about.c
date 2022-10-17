@@ -38,7 +38,7 @@ void content_about(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 
@@ -61,6 +61,6 @@ void content_about_license(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    Safefree(dup);
+    tb_free(dup);
 }
 

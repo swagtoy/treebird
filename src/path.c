@@ -63,11 +63,11 @@ int parse_path(REQUEST_T req,
 
             read_len = (size_t)after_str - (size_t)(p2 + i);
             // Copy in new data from the string we just read
-            tmp = safemalloc(read_len+1);
+            tmp = tb_malloc(read_len+1);
             strncpy(tmp, after_str - read_len, read_len);
             tmp[read_len] = '\0';
             // Add our new string
-            data = saferealloc(data, ++size * sizeof(tmp));
+            data = tb_realloc(data, ++size * sizeof(tmp));
             data[size-1] = tmp;
             // Move ahead (-1 because we move again)
             i += read_len - 1;
@@ -95,9 +95,9 @@ breakpt:
     // Cleanup
     for (size_t i = 0; i < size; ++i)
     {
-        Safefree(data[i]);
+        tb_free(data[i]);
     }
-    if (data) Safefree(data);
+    if (data) tb_free(data);
     return res;
 }
 

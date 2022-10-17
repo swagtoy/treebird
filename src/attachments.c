@@ -45,10 +45,10 @@ int try_upload_media(struct mstdnt_storage** storage,
         return 1;
 
     if (media_ids)
-        *media_ids = safemalloc(sizeof(char*) * size);
+        *media_ids = tb_malloc(sizeof(char*) * size);
 
-    *attachments = safemalloc(sizeof(struct mstdnt_attachment) * size);
-    *storage = safecalloc(1, sizeof(struct mstdnt_storage) * size);
+    *attachments = tb_malloc(sizeof(struct mstdnt_attachment) * size);
+    *storage = tb_calloc(1, sizeof(struct mstdnt_storage) * size);
 
     for (int i = 0; i < size; ++i)
     {
@@ -72,26 +72,26 @@ int try_upload_media(struct mstdnt_storage** storage,
         {
             for (size_t j = 0; j < i; ++j)
             {
-                if (media_ids) Safefree((*media_ids)[j]);
+                if (media_ids) tb_free((*media_ids)[j]);
                 mstdnt_storage_cleanup(*storage + j);
             }
 
             if (media_ids)
             {
-                Safefree(*media_ids);
+                tb_free(*media_ids);
                 *media_ids = NULL;
             }
             
-            Safefree(*attachments);
+            tb_free(*attachments);
             *attachments = NULL;
-            Safefree(*storage);
+            tb_free(*storage);
             *storage = NULL;
             return 1;
         }
 
         if (media_ids)
         {
-            (*media_ids)[i] = safemalloc(strlen((*attachments)[i].id)+1);
+            (*media_ids)[i] = tb_malloc(strlen((*attachments)[i].id)+1);
             strcpy((*media_ids)[i], (*attachments)[i].id);
         }
     }
@@ -104,7 +104,7 @@ void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage)
     if (!FILES_READY(ssn)) return;
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
         mstdnt_storage_cleanup(storage + i);
-    Safefree(storage);
+    tb_free(storage);
 }
 
 void cleanup_media_ids(struct session* ssn, char** media_ids)
@@ -112,8 +112,8 @@ void cleanup_media_ids(struct session* ssn, char** media_ids)
     if (!FILES_READY(ssn)) return;
     if (!media_ids) return;
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
-        Safefree(media_ids[i]);
-    Safefree(media_ids);
+        tb_free(media_ids[i]);
+    tb_free(media_ids);
 }
 
 HV* perlify_attachment(const struct mstdnt_attachment* const attachment)
@@ -153,7 +153,7 @@ void api_attachment_create(PATH_ARGS)
     {
         string = cJSON_Print(root);
         send_result(req, NULL, "application/json", string, 0);
-        Safefree(string);
+        tb_free(string);
     }
     else
         send_result(req, NULL, "application/json", "{\"status\":\"Couldn't\"}", 0);
@@ -161,6 +161,6 @@ void api_attachment_create(PATH_ARGS)
     // Cleanup media stuff
     cleanup_media_storages(ssn, att_storage);
     cleanup_media_ids(ssn, media_ids);
-    Safefree(attachments);
+    tb_free(attachments);
     cJSON_Delete(root);
 }

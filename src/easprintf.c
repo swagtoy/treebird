@@ -29,7 +29,7 @@ int evasprintf(char** ret, const char* format, va_list ap)
     int sz = vsnprintf(NULL, 0, format, ap);
     va_end(ap);
 
-    *ret = safemalloc(sz + 1);
+    *ret = tb_malloc(sz + 1);
     if(*ret == NULL)
     {
         perror("malloc");

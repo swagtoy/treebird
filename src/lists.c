@@ -76,7 +76,7 @@ void content_lists(PATH_ARGS)
     // Cleanup
     mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_lists(lists);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void list_edit(PATH_ARGS)

@@ -70,7 +70,7 @@ void content_search_all(PATH_ARGS)
             redirect(req, REDIRECT_303, url);
             break;
         }
-        Safefree(url);
+        tb_free(url);
         curl_free(query);
         return;
     }
@@ -99,7 +99,7 @@ void content_search_all(PATH_ARGS)
 
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_search_statuses(PATH_ARGS)
@@ -146,7 +146,7 @@ void content_search_statuses(PATH_ARGS)
 
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_search_accounts(PATH_ARGS)
@@ -192,7 +192,7 @@ void content_search_accounts(PATH_ARGS)
     
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_search_hashtags(PATH_ARGS)
@@ -220,7 +220,7 @@ void content_search_hashtags(PATH_ARGS)
     
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
-//    Safefree(dup);
+//    tb_free(dup);
 }
 
 HV* perlify_search_results(struct mstdnt_search_results* results)

@@ -75,7 +75,7 @@ void content_timeline(REQUEST_T req,
     // Cleanup
     mstdnt_storage_cleanup(storage);
     mstdnt_cleanup_statuses(statuses, statuses_len);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
@@ -221,7 +221,7 @@ void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
     easprintf(&header, "Hashtag - #%s", tag_id);
 
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_NONE, header, 0, 0);
-    Safefree(header);
+    tb_free(header);
 }
 
 void content_tl_home(PATH_ARGS)

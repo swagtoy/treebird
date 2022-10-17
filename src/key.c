@@ -47,13 +47,13 @@ void key_files(char* val, struct file_content* form, struct key* arg)
     struct file_array* arr = &(arg->type.f);
     char* content_cpy;
 
-    arr->content = saferealloc(arr->content,
+    arr->content = tb_realloc(arr->content,
                            sizeof(struct file_content) * ++(arr->array_size));
     if (!(arr->content))
         return;
 
     // Make a copy so we can remember it later
-    if (!(content_cpy = safemalloc(form->content_size+1)))
+    if (!(content_cpy = tb_malloc(form->content_size+1)))
         return;
     
     memcpy(content_cpy, val, form->content_size+1);

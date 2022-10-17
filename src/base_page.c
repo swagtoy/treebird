@@ -92,7 +92,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     
     mstdnt_cleanup_notifications(notifs, notifs_len);
     mstdnt_storage_cleanup(&storage);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

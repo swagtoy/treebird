@@ -111,7 +111,7 @@ char* strrepl(char* source, char* find, char* repl, int flags)
         str_size += curr - last;
 
         // Create and copy
-        result = saferealloc(result, str_size + (!is_last ? repl_len : 0) + 1);
+        result = tb_realloc(result, str_size + (!is_last ? repl_len : 0) + 1);
         strncpy(result + last_str_size, last, curr - last);
         if (!is_last)
         {
@@ -135,9 +135,9 @@ char* sanitize_html(char* html)
     char* left = strrepl(amp, "<", "&lt;", STRREPL_ALL);
     char* right = strrepl(left, ">", "&gt;", STRREPL_ALL);
     char* quot = strrepl(right, "\"", "&quot;", STRREPL_ALL);
-    if (quot != right && right != html && right != left) Safefree(right);
-    if (left != html && left != amp) Safefree(left);
-    if (amp != html) Safefree(amp);
+    if (quot != right && right != html && right != left) tb_free(right);
+    if (left != html && left != amp) tb_free(left);
+    if (amp != html) tb_free(amp);
     
     return quot;
 }

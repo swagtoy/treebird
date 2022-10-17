@@ -71,7 +71,7 @@ void content_chats(PATH_ARGS)
     // Cleanup
     mstdnt_storage_cleanup(&storage);
     mstdnt_cleanup_chats(chats, chats_len);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 void content_chat_view(PATH_ARGS)
@@ -127,7 +127,7 @@ void content_chat_view(PATH_ARGS)
     mstdnt_storage_cleanup(&storage_chat);
     mstdnt_cleanup_chat(&chat);
     mstdnt_cleanup_messages(messages);
-    Safefree(dup);
+    tb_free(dup);
 }
 
 HV* perlify_chat(const struct mstdnt_chat* chat)

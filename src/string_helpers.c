@@ -43,24 +43,24 @@ char* construct_func_strings(char* (*func)(void*, size_t, size_t*),
         
         if (parse_size == -1) /* Malloc error */
         {
-            if (result) Safefree(result);
+            if (result) tb_free(result);
             return NULL;
         }
         last_parse_size = curr_parse_size;
         curr_parse_size += parse_size;
         
-        result = saferealloc(result, curr_parse_size + 1);
+        result = tb_realloc(result, curr_parse_size + 1);
         if (result == NULL)
         {
             perror("malloc");
-            Safefree(res_html);
+            tb_free(res_html);
             return NULL;
         }
 
         // Copy res_html to result in correct position
         strncpy(result + last_parse_size, res_html, parse_size);
         // Cleanup
-        Safefree(res_html);
+        tb_free(res_html);
     }
 
     if (result)

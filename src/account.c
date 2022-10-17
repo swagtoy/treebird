@@ -283,7 +283,7 @@ static void fetch_account_page(FCGX_Request* req,
     mstdnt_cleanup_relationships(relationships);
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&relations_storage);
-    Safefree(data);
+    tb_free(data);
 }
 
 void content_account_statuses(PATH_ARGS)
@@ -436,7 +436,7 @@ void content_account_blocked(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    Safefree(result);
+    tb_free(result);
 }
 
 void content_account_muted(PATH_ARGS)
@@ -468,7 +468,7 @@ void content_account_muted(PATH_ARGS)
     };
 
     render_base_page(&b, req, ssn, api);
-    Safefree(result);
+    tb_free(result);
 }
 
 void content_account_favourites(PATH_ARGS)

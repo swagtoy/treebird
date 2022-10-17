@@ -20,6 +20,7 @@
 #define GLOBAL_PERL_H
 #include <EXTERN.h>
 #include <perl.h>
+#include "memory.h"
 #include <pthread.h>
 
         /* SV* tmpsv = newSV(0);                                           \ */
