@@ -31,6 +31,7 @@
 #include "login.h"
 #include "local_config.h"
 #include "cookie.h"
+#include "memory_page.h"
 #include "query.h"
 #include "status.h"
 #include "lists.h"
@@ -120,6 +121,8 @@ static struct path_info paths[] = {
     { "/quit", exit_treebird },
     { "/exit", exit_treebird },
 #endif
+    // Debug, but cool to see
+    { "/memory_stats", content_memory_stats },
     // API
     { "/treebird_api/v1/notifications", api_notifications },
     { "/treebird_api/v1/interact", api_status_interact },

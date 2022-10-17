@@ -51,13 +51,13 @@ void* tb_malloc(size_t size)
 // Nothing....
 void* tb_calloc(size_t nmemb, size_t size)
 {
-    tb_memory_allocated_est += size * nmemb;
+    tb_memory_allocated_est = size * nmemb;
     return calloc(nmemb, size);
 }
 
 void* tb_realloc(void* ptr, size_t size)
 {
-    tb_memory_allocated_est += size;
+    tb_memory_allocated_est = size;
     return realloc(ptr, size);
 }
 

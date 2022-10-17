@@ -51,6 +51,7 @@
 #include "../templates/license.ctt"
 #include "../templates/login.ctt"
 #include "../templates/status_interactions.ctt"
+#include "../templates/memory.ctt"
 
 PerlInterpreter* my_perl;
 HV* template_files;
@@ -92,6 +93,7 @@ void init_template_files(pTHX)
     hv_stores(template_files, "license.tt", newSVpv(data_license_tt, data_license_tt_size));
     hv_stores(template_files, "login.tt", newSVpv(data_login_tt, data_login_tt_size));
     hv_stores(template_files, "status_interactions.tt", newSVpv(data_status_interactions_tt, data_status_interactions_tt_size));
+    hv_stores(template_files, "memory.tt", newSVpv(data_memory_tt, data_memory_tt_size));
 }
 
 void cleanup_template_files()

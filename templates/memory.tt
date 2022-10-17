@@ -1,0 +1,27 @@
+
+<div class="simple-page">
+    <h1>Memory information</h1>
+    <p>Information scaling doesn't mean there is a memleak! Memory free'd won't match because we haven't hit the next free since this page was rendered.</p>
+    <table class="present">
+        <tr>
+            <th>Memory Allocated (malloc)</th>
+            <td>$mem_alloc</td>
+        </tr>
+        <tr>
+            <th>Memory Allocated Total (estimated)</th>
+            <td>$mem_alloc_est</td>
+        </tr>
+        <tr>
+            <th>Memory Free</th>
+            <td>$mem_free</td>
+        </tr>
+        <tr>
+            <th>Times Allocated (total)</th>
+            <td>$mem_time_alloc</td>
+        </tr>
+        <tr>
+            <th>Times Free'd (total)</th>
+            <td>$mem_time_freed</td>
+        </tr>
+    </table>
+</div>
