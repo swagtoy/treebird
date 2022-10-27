@@ -63,6 +63,7 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
         mstdnt_get_notifications(
             api,
             &m_args,
+            NULL, NULL,
             &args,
             &storage,
             &notifs,

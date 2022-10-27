@@ -75,7 +75,7 @@ void content_search_all(PATH_ARGS)
         return;
     }
 
-    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, NULL, NULL, keystr(ssn->query.query), &storage, &args, &results);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -122,7 +122,7 @@ void content_search_statuses(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, NULL, NULL, keystr(ssn->query.query), &storage, &args, &results);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -168,7 +168,7 @@ void content_search_accounts(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, NULL, NULL, keystr(ssn->query.query), &storage, &args, &results);
     
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -214,7 +214,7 @@ void content_search_hashtags(PATH_ARGS)
     };
     struct mstdnt_search_results results = { 0 };
 
-    mstdnt_search(api, &m_args, keystr(ssn->query.query), &storage, &args, &results);
+    mstdnt_search(api, &m_args, NULL, NULL, keystr(ssn->query.query), &storage, &args, &results);
     
     // TODO
     

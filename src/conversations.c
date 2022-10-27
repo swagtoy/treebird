@@ -43,7 +43,7 @@ void content_chats(PATH_ARGS)
         .limit = 20,
     };
 
-    mstdnt_get_chats_v2(api, &m_args, &args, &storage, &chats, &chats_len);
+    mstdnt_get_chats_v2(api, &m_args, NULL, NULL, &args, &storage, &chats, &chats_len);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -93,8 +93,8 @@ void content_chat_view(PATH_ARGS)
         .limit = 20,
     };
     
-    mstdnt_get_chat_messages(api, &m_args, data[0], &args, &storage, &messages, &messages_len);
-    int chat_code = mstdnt_get_chat(api, &m_args, data[0],
+    mstdnt_get_chat_messages(api, &m_args, NULL, NULL, data[0], &args, &storage, &messages, &messages_len);
+    int chat_code = mstdnt_get_chat(api, &m_args, NULL, NULL, data[0],
                        &storage_chat, &chat);
 
     PERL_STACK_INIT;

@@ -55,11 +55,13 @@ void content_status_react(PATH_ARGS);
 // HTML Builders
 
 // Reply to
+#if 0
 /** Deprecated: May be used in the future for Mastodon only */
 char* get_in_reply_to(mastodont_t* api,
                       struct session* ssn,
                       struct mstdnt_status* status,
                       size_t* size);
+#endif
 
 void status_view_reblogs(PATH_ARGS);
 void status_view_favourites(PATH_ARGS);

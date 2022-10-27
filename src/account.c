@@ -104,7 +104,7 @@ static char* account_followers_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mstdnt_get_followers(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
+    mstdnt_get_followers(api, &m_args, NULL, NULL, acct->id, &args, &storage, &accounts, &accts_len);
 
     return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
@@ -132,7 +132,7 @@ static char* account_following_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mstdnt_get_following(api, &m_args, acct->id, &args, &storage, &accounts, &accts_len);
+    mstdnt_get_following(api, &m_args, NULL, NULL, acct->id, &args, &storage, &accounts, &accts_len);
 
     return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
 }
@@ -153,7 +153,7 @@ static char* account_statuses_cb(HV* session_hv,
     size_t statuses_len = 0;
     char* result;
     
-    mstdnt_get_account_statuses(api, &m_args, acct->id, args, &storage, &statuses, &statuses_len);
+    mstdnt_get_account_statuses(api, &m_args, NULL, NULL, acct->id, args, &storage, &statuses, &statuses_len);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
@@ -198,7 +198,7 @@ static char* account_scrobbles_cb(HV* session_hv,
         .offset = 0,
         .limit = 20
     };
-    mstdnt_get_scrobbles(api, &m_args, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
+    mstdnt_get_scrobbles(api, &m_args, NULL, NULL, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
@@ -224,7 +224,7 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    if (ssn->cookies.access_token.is_set && mstdnt_verify_credentials(api, &m_args, &(ssn->acct), &(ssn->acct_storage)) == 0)
+    if (ssn->cookies.access_token.is_set && mstdnt_verify_credentials(api, &m_args, NULL, NULL, &(ssn->acct), &(ssn->acct_storage)) == 0)
     {
         ssn->logged_in = 1;
     }
@@ -261,9 +261,9 @@ static void fetch_account_page(FCGX_Request* req,
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
     
-    mstdnt_get_account(api, &m_args, lookup_type, id, &acct, &storage);
+    mstdnt_get_account(api, &m_args, NULL, NULL, lookup_type, id, &acct, &storage);
     // Relationships may fail
-    mstdnt_get_relationships(api, &m_args, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
+    mstdnt_get_relationships(api, &m_args, NULL, NULL, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
 
     HV* session_hv = perlify_session(ssn);
     
@@ -367,21 +367,21 @@ void content_account_action(PATH_ARGS)
     struct mstdnt_relationship acct = { 0 };
     
     if (strcmp(data[1], "follow") == 0)
-        mstdnt_follow_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_follow_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "unfollow") == 0)
-        mstdnt_unfollow_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unfollow_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "mute") == 0)
-        mstdnt_mute_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_mute_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "unmute") == 0)
-        mstdnt_unmute_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unmute_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "block") == 0)
-        mstdnt_block_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_block_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "unblock") == 0)
-        mstdnt_unblock_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unblock_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "subscribe") == 0)
-        mstdnt_subscribe_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_subscribe_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
     else if (strcmp(data[1], "unsubscribe") == 0)
-        mstdnt_unsubscribe_account(api, &m_args, data[0], &storage, &acct);
+        mstdnt_unsubscribe_account(api, &m_args, NULL, NULL, data[0], &storage, &acct);
 
     mstdnt_storage_cleanup(&storage);
 
@@ -402,7 +402,7 @@ void content_account_bookmarks(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
 
-    mstdnt_get_bookmarks(api, &m_args, &args, &storage, &statuses, &statuses_len);
+    mstdnt_get_bookmarks(api, &m_args, NULL, NULL, &args, &storage, &statuses, &statuses_len);
 
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 }
@@ -423,7 +423,7 @@ void content_account_blocked(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     
-    mstdnt_get_blocks(api, &m_args, &args, &storage, &accts, &accts_len);
+    mstdnt_get_blocks(api, &m_args, NULL, NULL, &args, &storage, &accts, &accts_len);
 
     HV* session_hv = perlify_session(ssn);
     char* result = accounts_page(session_hv, api, NULL, NULL, "Blocked users", &storage, accts, accts_len);
@@ -455,7 +455,7 @@ void content_account_muted(PATH_ARGS)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     
-    mstdnt_get_mutes(api, &m_args, &args, &storage, &accts, &accts_len);
+    mstdnt_get_mutes(api, &m_args, NULL, NULL, &args, &storage, &accts, &accts_len);
 
     HV* session_hv = perlify_session(ssn);
     char* result = accounts_page(session_hv, api, NULL, NULL, "Muted users", &storage, accts, accts_len);
@@ -484,7 +484,7 @@ void content_account_favourites(PATH_ARGS)
         .limit = 20,
     };
 
-    mstdnt_get_favourites(api, &m_args, &args, &storage, &statuses, &statuses_len);
+    mstdnt_get_favourites(api, &m_args, NULL, NULL, &args, &storage, &statuses, &statuses_len);
     
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 }

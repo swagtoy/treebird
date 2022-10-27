@@ -54,7 +54,7 @@ void content_notifications(PATH_ARGS)
     };
 
     if (keystr(ssn->cookies.logged_in))
-        mstdnt_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len);
+        mstdnt_get_notifications(api, &m_args, NULL, NULL, &args, &storage, &notifs, &notifs_len);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -107,7 +107,7 @@ void content_notifications_compact(PATH_ARGS)
             .limit = 20,
         };
 
-        mstdnt_get_notifications(api, &m_args, &args, &storage, &notifs, &notifs_len);
+        mstdnt_get_notifications(api, &m_args, NULL, NULL, &args, &storage, &notifs, &notifs_len);
     }
 
     PERL_STACK_INIT;
@@ -137,10 +137,10 @@ void content_notifications_clear(PATH_ARGS)
 
     if (data)
     {
-        mstdnt_notification_dismiss(api, &m_args, &storage, data[0]);
+        mstdnt_notification_dismiss(api, &m_args, NULL, NULL, &storage, data[0]);
     }
     else {
-        mstdnt_notifications_clear(api, &m_args, &storage);
+        mstdnt_notifications_clear(api, &m_args, NULL, NULL, &storage);
     }
 
     mstdnt_storage_cleanup(&storage);
@@ -157,11 +157,11 @@ void content_notifications_read(PATH_ARGS)
     if (data)
     {
         struct mstdnt_notifications_args args = { .id = data[0] };
-        mstdnt_notifications_read(api, &m_args, &args, &storage, NULL);
+        mstdnt_notifications_read(api, &m_args, NULL, NULL, &args, &storage, NULL);
     }
     else {
         struct mstdnt_notifications_args args = { .max_id = keystr(ssn->post.max_id) };
-        mstdnt_notifications_read(api, &m_args, &args, &storage, NULL);
+        mstdnt_notifications_read(api, &m_args, NULL, NULL, &args, &storage, NULL);
     }
 
     mstdnt_storage_cleanup(&storage);

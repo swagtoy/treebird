@@ -18,8 +18,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#define PCRE2_CODE_UNIT_WIDTH 8
-#include <pcre2.h>
+/* #define PCRE2_CODE_UNIT_WIDTH 8 */
+/* #include <pcre2.h> */
 #include "helpers.h"
 #include "http.h"
 #include "base_page.h"
@@ -102,7 +102,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
     };
 
     // Finally, create (no error checking)
-    mstdnt_create_status(api, &m_args, &args, &storage);
+    mstdnt_create_status(api, &m_args, NULL, NULL, &args, &storage);
 
     mstdnt_storage_cleanup(&storage);
     
@@ -126,7 +126,7 @@ int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoj
     struct mstdnt_storage storage = { 0 };
     struct mstdnt_status status = { 0 };
 
-    mstdnt_status_emoji_react(api, &m_args, id, emoji, &storage, &status);
+    mstdnt_status_emoji_react(api, &m_args, NULL, NULL, id, emoji, &storage, &status);
 
     mstdnt_cleanup_status(&status);
     mstdnt_storage_cleanup(&storage);
@@ -162,34 +162,35 @@ int try_interact_status(struct session* ssn, mastodont_t* api, char* id)
     // Pretty up the type
     if (strcmp(keystr(ssn->post.itype), "like") == 0 ||
         strcmp(keystr(ssn->post.itype), "likeboost") == 0)
-        res = mstdnt_favourite_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_favourite_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     // Not else if because possibly a like-boost
     if (strcmp(keystr(ssn->post.itype), "repeat") == 0 ||
         strcmp(keystr(ssn->post.itype), "likeboost") == 0)
-        res = mstdnt_reblog_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_reblog_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "bookmark") == 0)
-        res = mstdnt_bookmark_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_bookmark_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "pin") == 0)
-        res = mstdnt_pin_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_pin_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "mute") == 0)
-        res = mstdnt_mute_conversation(api, &m_args, id, &storage, NULL);
+        res = mstdnt_mute_conversation(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "delete") == 0)
-        res = mstdnt_delete_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_delete_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unlike") == 0)
-        res = mstdnt_unfavourite_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_unfavourite_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unrepeat") == 0)
-        res = mstdnt_unreblog_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_unreblog_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unbookmark") == 0)
-        res = mstdnt_unbookmark_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_unbookmark_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unpin") == 0)
-        res = mstdnt_unpin_status(api, &m_args, id, &storage, NULL);
+        res = mstdnt_unpin_status(api, &m_args, NULL, NULL, id, &storage, NULL);
     else if (strcmp(keystr(ssn->post.itype), "unmute") == 0)
-        res = mstdnt_unmute_conversation(api, &m_args, id, &storage, NULL);
+        res = mstdnt_unmute_conversation(api, &m_args, NULL, NULL, id, &storage, NULL);
 
     mstdnt_storage_cleanup(&storage);
     return res;
 }
 
+#if 0
 char* get_in_reply_to(mastodont_t* api,
                       struct session* ssn,
                       struct mstdnt_status* status,
@@ -201,20 +202,22 @@ char* get_in_reply_to(mastodont_t* api,
     struct mstdnt_account acct = { 0 };
     
     int res = mstdnt_get_account(api,
-                                    &m_args,
-                                    1,
-                                    status->in_reply_to_account_id,
-                                    &acct,
-                                    &storage);
+                                 &m_args,
+                                 NULL, NULL,
+                                 1,
+                                 status->in_reply_to_account_id,
+                                 &acct,
+                                 &storage);
 
     char* html = "TODO";
 
-//    char* html = construct_in_reply_to(status, res == 0 ? &acct : NULL, size);
+    // char* html = construct_in_reply_to(status, res == 0 ? &acct : NULL, size);
 
     if (res == 0) mstdnt_cleanup_account(&acct);
     mstdnt_storage_cleanup(&storage);
     return html;
 }
+#endif
 
 void status_interact(PATH_ARGS)
 {
@@ -260,11 +263,12 @@ void status_view_reblogs(PATH_ARGS)
     char* status_id = data[0];
 
     mstdnt_status_reblogged_by(api,
-                                  &m_args,
-                                  status_id,
-                                  &storage,
-                                  &reblogs,
-                                  &reblogs_len);
+                               &m_args,
+                               NULL, NULL,
+                               status_id,
+                               &storage,
+                               &reblogs,
+                               &reblogs_len);
     
     content_status_interactions(
         req,
@@ -288,11 +292,12 @@ void status_view_favourites(PATH_ARGS)
     char* status_id = data[0];
 
     mstdnt_status_favourited_by(api,
-                                   &m_args,
-                                   status_id,
-                                   &storage,
-                                   &favourites,
-                                   &favourites_len);
+                                &m_args,
+                                NULL, NULL,
+                                status_id,
+                                &storage,
+                                &favourites,
+                                &favourites_len);
     
     content_status_interactions(
         req,
@@ -351,13 +356,14 @@ void content_status(PATH_ARGS, uint8_t flags)
     size_t stat_before_len = 0, stat_after_len = 0;
     
     try_post_status(ssn, api);
-    mstdnt_get_status(api, &m_args, data[0], &status_storage, &status);
+    mstdnt_get_status(api, &m_args, NULL, NULL, data[0], &status_storage, &status);
     mstdnt_get_status_context(api,
-                                 &m_args,
-                                 data[0],
-                                 &storage,
-                                 &statuses_before, &statuses_after,
-                                 &stat_before_len, &stat_after_len);
+                              &m_args,
+                              NULL, NULL,
+                              data[0],
+                              &storage,
+                              &statuses_before, &statuses_after,
+                              &stat_before_len, &stat_after_len);
 
     if ((flags & STATUS_EMOJI_PICKER) == STATUS_EMOJI_PICKER)
         picker = construct_emoji_picker(status.id, &picker_len);

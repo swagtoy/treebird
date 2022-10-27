@@ -68,10 +68,11 @@ void content_login_oauth(PATH_ARGS)
         };
 
         if (mstdnt_obtain_oauth_token(api,
-                                         &m_args,
-                                         &args_token,
-                                         &oauth_storage,
-                                         &token) == 0)
+                                      &m_args,
+                                      NULL, NULL,
+                                      &args_token,
+                                      &oauth_storage,
+                                      &token) == 0)
         {
             apply_access_token(req, token.access_token);
         }
@@ -89,10 +90,11 @@ void content_login_oauth(PATH_ARGS)
         };
 
         if (mstdnt_register_app(api,
-                                   &m_args,
-                                   &args_app,
-                                   &storage,
-                                   &app) == 0)
+                                &m_args,
+                                NULL, NULL,
+                                &args_app,
+                                &storage,
+                                &app) == 0)
         {
             char* url;
             char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
@@ -159,7 +161,7 @@ void content_login(PATH_ARGS)
             m_args.url = config_instance_url;
         }
 
-        if (mstdnt_register_app(api, &m_args, &args_app, &storage, &app) != 0)
+        if (mstdnt_register_app(api, &m_args, NULL, NULL, &args_app, &storage, &app) != 0)
         {
 //            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
         }
@@ -176,10 +178,11 @@ void content_login(PATH_ARGS)
             };
 
             if (mstdnt_obtain_oauth_token(api,
-                                             &m_args,
-                                             &args_token,
-                                             &oauth_store,
-                                             &token) != 0 && oauth_store.error)
+                                          &m_args,
+                                          NULL, NULL,
+                                          &args_token,
+                                          &oauth_store,
+                                          &token) != 0 && oauth_store.error)
             {
                 //error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
             }

@@ -269,7 +269,7 @@ int main(int argc, char **argv, char **env)
     mastodont_t api;
     mstdnt_init(&api);
     // Fetch information about the current instance
-    load_instance_info_cache(&api);
+//    load_instance_info_cache(&api);
 
 #ifndef SINGLE_THREADED
     // Start thread pool
@@ -289,7 +289,7 @@ int main(int argc, char **argv, char **env)
     cgi_start(&api);
 #endif
    
-    free_instance_info_cache();
+//    free_instance_info_cache();
     mstdnt_global_curl_cleanup();
     mstdnt_cleanup(&api);
 

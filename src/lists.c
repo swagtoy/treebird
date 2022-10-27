@@ -45,11 +45,11 @@ void content_lists(PATH_ARGS)
             .title = keystr(ssn->post.title),
             .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
         };
-        mstdnt_create_list(api, &m_args, &args, &create_storage, NULL);
+        mstdnt_create_list(api, &m_args, NULL, NULL, &args, &create_storage, NULL);
         mstdnt_storage_cleanup(&create_storage);
     }
 
-    mstdnt_get_lists(api, &m_args, &storage, &lists, &lists_len);
+    mstdnt_get_lists(api, &m_args, NULL, NULL, &storage, &lists, &lists_len);
 
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -93,11 +93,13 @@ void list_edit(PATH_ARGS)
     };
 
     mstdnt_update_list(api,
-                          &m_args,
-                          id,
-                          &args,
-                          &storage,
-                          NULL);
+                       &m_args,
+                       NULL,
+                       NULL,
+                       id,
+                       &args,
+                       &storage,
+                       NULL);
 
     redirect(req, REDIRECT_303, referer);
     mstdnt_storage_cleanup(&storage);

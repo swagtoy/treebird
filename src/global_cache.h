@@ -20,6 +20,7 @@
 #define GLOBAL_CACHE_H
 #include <mastodont.h>
 
+#if 0
 struct global_cache
 {
     struct mstdnt_fetch_results tos_html;
@@ -30,5 +31,6 @@ extern struct global_cache g_cache;
 
 void load_instance_info_cache(mastodont_t* api);
 void free_instance_info_cache();
+#endif
 
 #endif /* GLOBAL_CACHE_H */
