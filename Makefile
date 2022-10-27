@@ -2,8 +2,9 @@ CC ?= cc
 GIT ?= git
 MASTODONT_DIR = mastodont-c/
 MASTODONT = $(MASTODONT_DIR)libmastodont.a
-CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libpcre2-8) `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
-LDFLAGS += -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl libpcre2-8) -lfcgi -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
+CFLAGS += -Wall -I $(MASTODONT_DIR)include/ -Wno-unused-variable -Wno-ignored-qualifiers -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl) `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
+LDFLAGS += -L$(MASTODONT_DIR) -lmastodont $(shell pkg-config --libs libcurl) -lfcgi -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
+# libpcre2-8 (?)
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 HEADERS = $(wildcard src/*.h) config.h
