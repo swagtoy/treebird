@@ -16,33 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SESSION_H
-#define SESSION_H
-#include <mastodont.h>
-#include "global_perl.h"
-#include "query.h"
-#include "local_config.h"
-#include "cookie.h"
+#include "types.h"
+#include <fcgiapp.h>
 
-struct session
+struct request_args*
+request_args_create(REQUEST_T req, struct session* ssn)
 {
-    struct post_values post;
-    struct get_values query;
-    struct cookie_values cookies;
-    struct local_config config;
-    int logged_in;
-    struct mstdnt_account acct;
-    struct mstdnt_storage acct_storage;
+    struct request_args* args = malloc(sizeof(struct request_args));
+    if (!args)
+        perror("request_args_create: malloc");
+    args->req = req;
+    args->ssn = ssn;
+    return args;
+}
 
-    char* cookies_str;
-    char* post_str;
-    char* get_str;
-};
 
-const char* const get_instance(struct session* ssn);
-const char* const get_token(struct session* ssn);
-HV* perlify_session(struct session* ssn);
+void request_args_cleanup(struct request_args* args)
+{
+    FCGX_Finish_r(args->req);
+    free(args->req);
+    free(args->ssn);
+}
 
-void session_cleanup(struct session* ssn);
-
-#endif // SESSION_H

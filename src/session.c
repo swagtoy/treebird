@@ -50,3 +50,14 @@ HV* perlify_session(struct session* ssn)
     return ssn_hv;
 }
 
+void session_cleanup(struct session* ssn)
+{
+    tb_free(ssn->cookies_str);
+    tb_free(ssn->post_str);
+    tb_free(ssn->get_str);
+    free_files(&(keyfile(ssn->post.files)));
+    if (ssn->logged_in) mstdnt_cleanup_account(&(ssn->acct));
+    mstdnt_storage_cleanup(&(ssn->acct_storage));
+    if (attachments)
+        cleanup_media_storages(ssn, attachments);
+}

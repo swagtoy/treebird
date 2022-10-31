@@ -29,6 +29,7 @@
 #include "query.h"
 #include "error.h"
 #include "string_helpers.h"
+#include "types.h"
 
 void content_timeline(REQUEST_T req,
                       struct session* ssn,
@@ -103,6 +104,7 @@ int tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
     };
     
     try_post_status(ssn, api);
+
     
     mstdnt_timeline_home(api, &m_args, NULL, NULL, &args, &storage, &statuses, &statuses_len);
 
@@ -140,7 +142,6 @@ int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 static void request_cb_tl_public(mstdnt_request_cb_data_t data, void* args)
 {
     
-    free(-123);
 }
 
 int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
@@ -168,6 +169,7 @@ int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, e
 
     try_post_status(ssn, api);
 
+    struct request_args cb_args
     mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args, &storage, &statuses, &statuses_len);
 
     return 1;

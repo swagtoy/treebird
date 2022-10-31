@@ -16,33 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SESSION_H
-#define SESSION_H
-#include <mastodont.h>
-#include "global_perl.h"
-#include "query.h"
-#include "local_config.h"
-#include "cookie.h"
+#ifndef TB_TYPES_H
+#define TB_TYPES_H
+#include "types.h"
+#include "session.h"
 
-struct session
+struct request_args
 {
-    struct post_values post;
-    struct get_values query;
-    struct cookie_values cookies;
-    struct local_config config;
-    int logged_in;
-    struct mstdnt_account acct;
-    struct mstdnt_storage acct_storage;
-
-    char* cookies_str;
-    char* post_str;
-    char* get_str;
+    REQUEST_T req;
+    struct session* ssn;
 };
 
-const char* const get_instance(struct session* ssn);
-const char* const get_token(struct session* ssn);
-HV* perlify_session(struct session* ssn);
+struct request_args*
+request_args_create(REQUEST_T req, struct session* ssn);
 
-void session_cleanup(struct session* ssn);
+void request_args_cleanup(struct request_args* req);
 
-#endif // SESSION_H
+#endif // TB_TYPES_H

@@ -133,7 +133,7 @@ static int application(mastodont_t* api, REQUEST_T req)
     propagate_memory();
 
     // Default config
-    struct session ssn = {
+    static struct session ssn_def = {
         .config = {
             .theme = "treebird20",
             .lang = L10N_EN_US,
@@ -160,34 +160,28 @@ static int application(mastodont_t* api, REQUEST_T req)
         .acct_storage = { 0 },
         .logged_in = 0,
     };
+
+    // Make our own from copy
+    struct session* ssn = malloc(sizeof(struct session));
+    memcpy(ssn, &ssn_def, sizeof(struct session));
         
     // Load cookies
-    char* cookies_str = read_cookies_env(req, &(ssn.cookies));
-    char* post_str = read_post_data(req, &(ssn.post));
-    char* get_str = read_get_data(req, &(ssn.query));
+    ssn->cookies_str = read_cookies_env(req, &(ssn->cookies));
+    ssn->post_str = read_post_data(req, &(ssn->post));
+    ssn->get_str = read_get_data(req, &(ssn->query));
 
     // Read config options
     enum config_page page = CONFIG_GENERAL;
     char* path_info = GET_ENV("PATH_INFO", req);
     if (path_info && strcmp(path_info, "/config/appearance") == 0)
         page = CONFIG_APPEARANCE;
-    struct mstdnt_storage* attachments = load_config(req, &ssn, api, page);
+    struct mstdnt_storage* attachments = load_config(req, ssn, api, page);
 
     // Load current account information
-    get_account_info(api, &ssn);
+    get_account_info(api, ssn);
 
-    rc = handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
+    rc = handle_paths(req, ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
 
-    // Cleanup
-    if (cookies_str) tb_free(cookies_str);
-    if (post_str) tb_free(post_str);
-    if (get_str) tb_free(get_str);
-    free_files(&(keyfile(ssn.post.files)));
-    if (ssn.logged_in) mstdnt_cleanup_account(&(ssn.acct));
-    mstdnt_storage_cleanup(&(ssn.acct_storage));
-    if (attachments)
-        cleanup_media_storages(&ssn, attachments);
-    
     return rc;
 }
 
@@ -195,30 +189,32 @@ static int application(mastodont_t* api, REQUEST_T req)
 static void fcgi_start(mastodont_t* api)
 {
     int rc;
-    FCGX_Request req;
+    FCGX_Request* req;
 
     while (1)
     {
-        FCGX_InitRequest(&req, 0, 0);
+        req = malloc(sizeof(FCGX_Request));
+        FCGX_InitRequest(req, 0, 0);
 
         struct mstdnt_fd fds[] = {
             {
                 // The docs says not to use this directly, but we don't care
                 // what the docs say
-                .fd = req.listen_sock,
+                .fd = req->listen_sock,
                 .events = MSTDNT_POLLIN,
             }
         };
+
+        // Will poll until we get a request 
+        mstdnt_await(api, 0, fds, sizeof(fds)/sizeof(fds[0]));
         
-        mstdnt_poll(api, 0, fds, sizeof(fds)/sizeof(fds[0]));
-        
-        rc = FCGX_Accept_r(&req);
+        rc = FCGX_Accept_r(req);
         if (rc < 0) break;
 
-        rc = application(api, &req);
+        rc = application(api, req);
 
         if (rc != 1)
-            FCGX_Finish_r(&req);
+            FCGX_Finish_r(req);
     }
 }
 #else
