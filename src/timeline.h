@@ -27,19 +27,19 @@
 #include "request.h"
 
 /** Wrapper for content_tl_federated */
-void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local);
+int tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local);
 
 /** Wrapper for content_tl_direct */
-void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api);
+int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api);
 
 /** Wrapper for content_tl_federated */
-void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat);
+int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat);
 
 /** Wrapper for content_tl_list */
-void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id);
+int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id);
 
 /** Wrapper for content_tl_tag */
-void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag);
+int tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag);
 
 /* ------------------------------------------------ */
 

@@ -78,7 +78,7 @@ void content_timeline(REQUEST_T req,
     tb_free(dup);
 }
 
-void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
+int tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -109,7 +109,7 @@ void tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1, 0);
 }
 
-void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
+int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -140,9 +140,10 @@ void tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 static void request_cb_tl_public(mstdnt_request_cb_data_t data, void* args)
 {
     
+    free(-123);
 }
 
-void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -169,10 +170,12 @@ void tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, 
 
     mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args, &storage, &statuses, &statuses_len);
 
+    return 1;
+
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
-void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
+int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -200,7 +203,7 @@ void tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id
 }
 
 
-void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
+int tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -232,35 +235,35 @@ void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
 int content_tl_home(PATH_ARGS)
 {
     if (keystr(ssn->cookies.logged_in))
-        tl_home(req, ssn, api, 0);
+        return tl_home(req, ssn, api, 0);
     else
-        content_tl_federated(req, ssn, api, data);
+        return content_tl_federated(req, ssn, api, data);
 }
 
 int content_tl_direct(PATH_ARGS)
 {
     (void)data;
-    tl_direct(req, ssn, api);
+    return tl_direct(req, ssn, api);
 }
 
 int content_tl_federated(PATH_ARGS)
 {
     (void)data;
-    tl_public(req, ssn, api, 0, BASE_CAT_FEDERATED);
+    return tl_public(req, ssn, api, 0, BASE_CAT_FEDERATED);
 }
 
 int content_tl_local(PATH_ARGS)
 {
     (void)data;
-    tl_public(req, ssn, api, 1, BASE_CAT_LOCAL);
+    return tl_public(req, ssn, api, 1, BASE_CAT_LOCAL);
 }
 
 int content_tl_list(PATH_ARGS)
 {
-    tl_list(req, ssn, api, data[0]);
+    return tl_list(req, ssn, api, data[0]);
 }
 
 int content_tl_tag(PATH_ARGS)
 {
-    tl_tag(req, ssn, api, data[0]);
+    return tl_tag(req, ssn, api, data[0]);
 }

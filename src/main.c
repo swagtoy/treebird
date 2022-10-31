@@ -187,6 +187,8 @@ static int application(mastodont_t* api, REQUEST_T req)
     mstdnt_storage_cleanup(&(ssn.acct_storage));
     if (attachments)
         cleanup_media_storages(&ssn, attachments);
+    
+    return rc;
 }
 
 #ifndef CGI_MODE
@@ -194,16 +196,28 @@ static void fcgi_start(mastodont_t* api)
 {
     int rc;
     FCGX_Request req;
-    FCGX_InitRequest(&req, 0, 0);
 
     while (1)
     {
+        FCGX_InitRequest(&req, 0, 0);
+
+        struct mstdnt_fd fds[] = {
+            {
+                // The docs says not to use this directly, but we don't care
+                // what the docs say
+                .fd = req.listen_sock,
+                .events = MSTDNT_POLLIN,
+            }
+        };
+        
+        mstdnt_poll(api, 0, fds, sizeof(fds)/sizeof(fds[0]));
+        
         rc = FCGX_Accept_r(&req);
         if (rc < 0) break;
 
         rc = application(api, &req);
 
-        if (rc)
+        if (rc != 1)
             FCGX_Finish_r(&req);
     }
 }
