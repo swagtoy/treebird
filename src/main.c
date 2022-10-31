@@ -53,7 +53,7 @@ void boot_DynaLoader (pTHX_ CV* cv);
 
 #ifdef DEBUG
 static int quit = 0;
-static void exit_treebird(PATH_ARGS)
+static int exit_treebird(PATH_ARGS)
 {
     quit = 1;
     exit(1);
@@ -127,8 +127,9 @@ static struct path_info paths[] = {
     { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
-static void application(mastodont_t* api, REQUEST_T req)
+static int application(mastodont_t* api, REQUEST_T req)
 {
+    int rc;
     propagate_memory();
 
     // Default config
@@ -175,7 +176,7 @@ static void application(mastodont_t* api, REQUEST_T req)
     // Load current account information
     get_account_info(api, &ssn);
 
-    handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
+    rc = handle_paths(req, &ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
 
     // Cleanup
     if (cookies_str) tb_free(cookies_str);
@@ -200,9 +201,10 @@ static void fcgi_start(mastodont_t* api)
         rc = FCGX_Accept_r(&req);
         if (rc < 0) break;
 
-        application(api, &req);
+        rc = application(api, &req);
 
-        FCGX_Finish_r(&req);
+        if (rc)
+            FCGX_Finish_r(&req);
     }
 }
 #else

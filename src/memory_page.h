@@ -22,6 +22,6 @@
 #include "session.h"
 #include "path.h"
 
-void content_memory_stats(PATH_ARGS);
+int content_memory_stats(PATH_ARGS);
 
 #endif // MEMORY_PAGE_H

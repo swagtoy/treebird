@@ -286,7 +286,7 @@ static void fetch_account_page(FCGX_Request* req,
     tb_free(data);
 }
 
-void content_account_statuses(PATH_ARGS)
+int content_account_statuses(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 0,
@@ -305,22 +305,22 @@ void content_account_statuses(PATH_ARGS)
     fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
 }
 
-void content_account_followers(PATH_ARGS)
+int content_account_followers(PATH_ARGS)
 {
     fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
 }
 
-void content_account_following(PATH_ARGS)
+int content_account_following(PATH_ARGS)
 {
     fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
 }
 
-void content_account_scrobbles(PATH_ARGS)
+int content_account_scrobbles(PATH_ARGS)
 {
     fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
 }
 
-void content_account_pinned(PATH_ARGS)
+int content_account_pinned(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 1,
@@ -339,7 +339,7 @@ void content_account_pinned(PATH_ARGS)
     fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
 }
 
-void content_account_media(PATH_ARGS)
+int content_account_media(PATH_ARGS)
 {
     struct mstdnt_account_statuses_args args = {
         .pinned = 0,
@@ -358,7 +358,7 @@ void content_account_media(PATH_ARGS)
     fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
-void content_account_action(PATH_ARGS)
+int content_account_action(PATH_ARGS)
 {
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_storage storage = { 0 };
@@ -388,7 +388,7 @@ void content_account_action(PATH_ARGS)
     redirect(req, REDIRECT_303, referer);
 }
 
-void content_account_bookmarks(PATH_ARGS)
+int content_account_bookmarks(PATH_ARGS)
 {
     size_t statuses_len = 0;
     struct mstdnt_status* statuses = NULL;
@@ -407,7 +407,7 @@ void content_account_bookmarks(PATH_ARGS)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 }
 
-void content_account_blocked(PATH_ARGS)
+int content_account_blocked(PATH_ARGS)
 {
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -439,7 +439,7 @@ void content_account_blocked(PATH_ARGS)
     tb_free(result);
 }
 
-void content_account_muted(PATH_ARGS)
+int content_account_muted(PATH_ARGS)
 {
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -471,7 +471,7 @@ void content_account_muted(PATH_ARGS)
     tb_free(result);
 }
 
-void content_account_favourites(PATH_ARGS)
+int content_account_favourites(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

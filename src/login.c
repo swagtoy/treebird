@@ -41,7 +41,7 @@ static void apply_access_token(REQUEST_T req, char* token)
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
 }
 
-void content_login_oauth(PATH_ARGS)
+int content_login_oauth(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -123,7 +123,7 @@ void content_login_oauth(PATH_ARGS)
     if (decode_url) curl_free(decode_url);
 }
 
-void content_login(PATH_ARGS)
+int content_login(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

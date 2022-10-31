@@ -30,7 +30,7 @@
 #include "string_helpers.h"
 #include "http.h"
 
-void content_lists(PATH_ARGS)
+int content_lists(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -79,7 +79,7 @@ void content_lists(PATH_ARGS)
     tb_free(dup);
 }
 
-void list_edit(PATH_ARGS)
+int list_edit(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

@@ -134,7 +134,7 @@ HV* perlify_attachment(const struct mstdnt_attachment* const attachment)
 
 PERLIFY_MULTI(attachment, attachments, mstdnt_attachment)
 
-void api_attachment_create(PATH_ARGS)
+int api_attachment_create(PATH_ARGS)
 {
     struct mstdnt_storage *att_storage = NULL;
     struct mstdnt_attachment* attachments = NULL;

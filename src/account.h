@@ -58,17 +58,17 @@ struct account_page
 
 void get_account_info(mastodont_t* api, struct session* ssn);
 
-void content_account_followers(PATH_ARGS);
-void content_account_following(PATH_ARGS);
-void content_account_statuses(PATH_ARGS);
-void content_account_scrobbles(PATH_ARGS);
-void content_account_pinned(PATH_ARGS);
-void content_account_blocked(PATH_ARGS);
-void content_account_muted(PATH_ARGS);
-void content_account_media(PATH_ARGS);
-void content_account_action(PATH_ARGS);
-void content_account_favourites(PATH_ARGS);
-void content_account_bookmarks(PATH_ARGS);
+int content_account_followers(PATH_ARGS);
+int content_account_following(PATH_ARGS);
+int content_account_statuses(PATH_ARGS);
+int content_account_scrobbles(PATH_ARGS);
+int content_account_pinned(PATH_ARGS);
+int content_account_blocked(PATH_ARGS);
+int content_account_muted(PATH_ARGS);
+int content_account_media(PATH_ARGS);
+int content_account_action(PATH_ARGS);
+int content_account_favourites(PATH_ARGS);
+int content_account_bookmarks(PATH_ARGS);
 
 HV* perlify_account(const struct mstdnt_account* acct);
 AV* perlify_accounts(const struct mstdnt_account* accounts, size_t len);

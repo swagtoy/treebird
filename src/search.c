@@ -29,7 +29,7 @@
 #include "error.h"
 #include "account.h"
 
-void content_search_all(PATH_ARGS)
+int content_search_all(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -102,7 +102,7 @@ void content_search_all(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_search_statuses(PATH_ARGS)
+int content_search_statuses(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -149,7 +149,7 @@ void content_search_statuses(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_search_accounts(PATH_ARGS)
+int content_search_accounts(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -195,7 +195,7 @@ void content_search_accounts(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_search_hashtags(PATH_ARGS)
+int content_search_hashtags(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

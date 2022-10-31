@@ -23,9 +23,9 @@
 #include "session.h"
 
 /** Creates the main lists view */
-void content_lists(PATH_ARGS);
+int content_lists(PATH_ARGS);
 /** Creates a list and then redirects */
-void list_edit(PATH_ARGS);
+int list_edit(PATH_ARGS);
 
 /** Converts list to perl hash */
 HV* perlify_list(const struct mstdnt_list* list);

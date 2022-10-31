@@ -23,7 +23,7 @@
 #include "session.h"
 #include "path.h"
 
-void content_login_oauth(PATH_ARGS);
-void content_login(PATH_ARGS);
+int content_login_oauth(PATH_ARGS);
+int content_login(PATH_ARGS);
 
 #endif // LOGIN_H

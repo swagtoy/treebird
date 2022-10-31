@@ -32,7 +32,7 @@
 #include "account.h"
 #include "../config.h"
 
-void content_notifications(PATH_ARGS)
+int content_notifications(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -83,7 +83,7 @@ void content_notifications(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_notifications_compact(PATH_ARGS)
+int content_notifications_compact(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -128,7 +128,7 @@ void content_notifications_compact(PATH_ARGS)
     tb_free(page);
 }
 
-void content_notifications_clear(PATH_ARGS)
+int content_notifications_clear(PATH_ARGS)
 {
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
@@ -147,7 +147,7 @@ void content_notifications_clear(PATH_ARGS)
     redirect(req, REDIRECT_303, referer);
 }
 
-void content_notifications_read(PATH_ARGS)
+int content_notifications_read(PATH_ARGS)
 {
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
@@ -200,7 +200,7 @@ HV* perlify_notification(const struct mstdnt_notification* const notif)
 
 PERLIFY_MULTI(notification, notifications, mstdnt_notification)
 
-void api_notifications(PATH_ARGS)
+int api_notifications(PATH_ARGS)
 {
     send_result(req, NULL, "application/json", "{\"status\":0}", 0);
 }

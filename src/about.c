@@ -20,7 +20,7 @@
 #include "base_page.h"
 #include "about.h"
 
-void content_about(PATH_ARGS)
+int content_about(PATH_ARGS)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -42,7 +42,7 @@ void content_about(PATH_ARGS)
 }
 
 
-void content_about_license(PATH_ARGS)
+int content_about_license(PATH_ARGS)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);

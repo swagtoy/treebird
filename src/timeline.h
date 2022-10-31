@@ -44,22 +44,22 @@ void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag);
 /* ------------------------------------------------ */
 
 /** Federated timeline */
-void content_tl_federated(PATH_ARGS);
+int content_tl_federated(PATH_ARGS);
 
 /** Home timeline. Shows federated timeline if not logged in */
-void content_tl_home(PATH_ARGS);
+int content_tl_home(PATH_ARGS);
 
 /** Direct message timeline */
-void content_tl_direct(PATH_ARGS);
+int content_tl_direct(PATH_ARGS);
 
 /** Local/instance timeline */
-void content_tl_local(PATH_ARGS);
+int content_tl_local(PATH_ARGS);
 
 /** List timeline */
-void content_tl_list(PATH_ARGS);
+int content_tl_list(PATH_ARGS);
 
 /** Hashtag timeline */
-void content_tl_tag(PATH_ARGS);
+int content_tl_tag(PATH_ARGS);
 
 /**
  * Used to create generic timeline content. This timeline includes other features

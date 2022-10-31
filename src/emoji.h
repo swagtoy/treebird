@@ -34,7 +34,7 @@ enum emoji_picker_cat
 };
 
 char* construct_emoji(struct emoji_info* emoji, char* status_id, size_t* size);
-void content_emoji_picker(PATH_ARGS);
+int content_emoji_picker(PATH_ARGS);
 char* construct_emoji_picker(char* status_id, size_t* size);
 
 // Perl

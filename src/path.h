@@ -30,10 +30,10 @@
 struct path_info
 {
     char* path;
-    void (*callback)(PATH_ARGS);
+    int (*callback)(PATH_ARGS);
 };
 
-void handle_paths(
+int handle_paths(
     REQUEST_T req,
     struct session* ssn,
     mastodont_t* api,

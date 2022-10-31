@@ -28,7 +28,7 @@ int parse_path(REQUEST_T req,
                mastodont_t* api,
                struct path_info* path_info)
 {
-    int res = 0;
+    int res = -1;
     int fail = 0, fin = 0;
     char* p = path_info->path + 1;
     char* p2 = GET_ENV("PATH_INFO", req) + 1;
@@ -85,11 +85,11 @@ int parse_path(REQUEST_T req,
 breakpt:
     if (!fail)
     {
-        path_info->callback(req, ssn, api, data);
+        res = path_info->callback(req, ssn, api, data);
     }
     else
     {
-        res = 1;
+        res = -1;
     }
 
     // Cleanup
@@ -101,22 +101,23 @@ breakpt:
     return res;
 }
 
-void handle_paths(REQUEST_T req,
+int handle_paths(REQUEST_T req,
                   struct session* ssn,
                   mastodont_t* api,
                   struct path_info* paths,
                   size_t paths_len)
 {
+    int res;
     char* path = GET_ENV("PATH_INFO", req);
     // "default" path
     if (path == NULL || (path && strcmp(path, "/") == 0))
     {
-        content_index(req, ssn, api);
+        return content_index(req, ssn, api);
     }
     else {   // Generic path
         for (size_t i = 0; i < paths_len; ++i)
         {
-            if (parse_path(req, ssn, api, paths + i) == 0)
+            if ((res = parse_path(req, ssn, api, paths + i)) != -1)
                 return;
         }
 

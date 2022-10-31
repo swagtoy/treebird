@@ -26,7 +26,7 @@
 #include "error.h"
 #include "base_page.h"
 
-void content_chats(PATH_ARGS)
+int content_chats(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -74,7 +74,7 @@ void content_chats(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_chat_view(PATH_ARGS)
+int content_chat_view(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);

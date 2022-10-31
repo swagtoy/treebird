@@ -34,7 +34,7 @@ int try_upload_media(struct mstdnt_storage** storage,
                      char*** media_ids);
 void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage);
 void cleanup_media_ids(struct session* ssn, char** media_ids);
-void api_attachment_create(PATH_ARGS);
+int api_attachment_create(PATH_ARGS);
 
 // Perl
 HV* perlify_attachment(const struct mstdnt_attachment* const attachment);

@@ -133,7 +133,7 @@ int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoj
     return 0;
 }
 
-void content_status_create(PATH_ARGS)
+int content_status_create(PATH_ARGS)
 {
     char* referer = getenv("HTTP_REFERER");
 
@@ -142,7 +142,7 @@ void content_status_create(PATH_ARGS)
     redirect(req, REDIRECT_303, referer);
 }
 
-void content_status_react(PATH_ARGS)
+int content_status_react(PATH_ARGS)
 {
     char* referer = getenv("HTTP_REFERER");
 
@@ -219,7 +219,7 @@ char* get_in_reply_to(mastodont_t* api,
 }
 #endif
 
-void status_interact(PATH_ARGS)
+int status_interact(PATH_ARGS)
 {
     char* referer = GET_ENV("HTTP_REFERER", req);
     
@@ -228,7 +228,7 @@ void status_interact(PATH_ARGS)
     redirect(req, REDIRECT_303, referer);
 }
 
-void api_status_interact(PATH_ARGS)
+int api_status_interact(PATH_ARGS)
 {
     if (try_interact_status(ssn, api, keystr(ssn->post.id)) == 0)
     {
@@ -238,22 +238,22 @@ void api_status_interact(PATH_ARGS)
         send_result(req, NULL, "application/json", "{\"status\":\"Couldn't load status\"}", 0);
 }
 
-void status_view(PATH_ARGS)
+int status_view(PATH_ARGS)
 {
     content_status(req, ssn, api, data, STATUS_FOCUSED);
 }
 
-void status_emoji(PATH_ARGS)
+int status_emoji(PATH_ARGS)
 {
     content_status(req, ssn, api, data, STATUS_FOCUSED | STATUS_EMOJI_PICKER);
 }
 
-void status_reply(PATH_ARGS)
+int status_reply(PATH_ARGS)
 {
     content_status(req, ssn, api, data, STATUS_FOCUSED | STATUS_REPLY);
 }
 
-void status_view_reblogs(PATH_ARGS)
+int status_view_reblogs(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -282,7 +282,7 @@ void status_view_reblogs(PATH_ARGS)
     mstdnt_cleanup_accounts(reblogs, reblogs_len);
 }
 
-void status_view_favourites(PATH_ARGS)
+int status_view_favourites(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -412,7 +412,7 @@ void content_status(PATH_ARGS, uint8_t flags)
     tb_free(picker);
 }
 
-void notice_redirect(PATH_ARGS)
+int notice_redirect(PATH_ARGS)
 {
     char* url;
     easprintf(&url, "%s/status/%s", config_url_prefix, data[0]);

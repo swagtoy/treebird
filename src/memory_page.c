@@ -20,7 +20,7 @@
 #include "base_page.h"
 #include "memory.h"
 
-void content_memory_stats(PATH_ARGS)
+int content_memory_stats(PATH_ARGS)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);

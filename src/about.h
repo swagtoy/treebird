@@ -22,7 +22,7 @@
 #include "session.h"
 #include "path.h"
 
-void content_about_license(PATH_ARGS);
-void content_about(PATH_ARGS);
+int content_about_license(PATH_ARGS);
+int content_about(PATH_ARGS);
 
 #endif /* ABOUT_H */

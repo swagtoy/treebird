@@ -49,8 +49,8 @@ struct interact_profile_args
 
 int try_post_status(struct session* ssn, mastodont_t* api);
 int try_interact_status(struct session* ssn, mastodont_t* api, char* id);
-void content_status_create(PATH_ARGS);
-void content_status_react(PATH_ARGS);
+int content_status_create(PATH_ARGS);
+int content_status_react(PATH_ARGS);
 
 // HTML Builders
 
@@ -63,8 +63,8 @@ char* get_in_reply_to(mastodont_t* api,
                       size_t* size);
 #endif
 
-void status_view_reblogs(PATH_ARGS);
-void status_view_favourites(PATH_ARGS);
+int status_view_reblogs(PATH_ARGS);
+int status_view_favourites(PATH_ARGS);
 
 void content_status_interactions(FCGX_Request* req,
                                  struct session* ssn,
@@ -74,10 +74,10 @@ void content_status_interactions(FCGX_Request* req,
                                  size_t accts_len);
 
 // Status frontends
-void status_view(PATH_ARGS);
-void status_reply(PATH_ARGS);
-void status_interact(PATH_ARGS);
-void status_emoji(PATH_ARGS);
+int status_view(PATH_ARGS);
+int status_reply(PATH_ARGS);
+int status_interact(PATH_ARGS);
+int status_emoji(PATH_ARGS);
 // Above wraps to the below function
 void content_status(PATH_ARGS, uint8_t flags);
 
@@ -85,10 +85,10 @@ void content_status(PATH_ARGS, uint8_t flags);
 void cleanup_media_ids(struct session* ssn, char** media_ids);
 
 // Redirects
-void notice_redirect(PATH_ARGS);
+int notice_redirect(PATH_ARGS);
 
 // API
-void api_status_interact(PATH_ARGS);
+int api_status_interact(PATH_ARGS);
 
 // Perl
 HV* perlify_status_pleroma(const struct mstdnt_status_pleroma* pleroma);

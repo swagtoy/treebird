@@ -40,7 +40,7 @@ enum config_category
     CONFIG_CAT_ACCOUNT
 };
 
-void content_config_general(PATH_ARGS)
+int content_config_general(PATH_ARGS)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -64,7 +64,7 @@ void content_config_general(PATH_ARGS)
 }
 
 
-void content_config_appearance(PATH_ARGS)
+int content_config_appearance(PATH_ARGS)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -87,7 +87,7 @@ void content_config_appearance(PATH_ARGS)
     tb_free(dup);
 }
 
-void content_config(PATH_ARGS)
+int content_config(PATH_ARGS)
 {
     redirect(req, REDIRECT_303, "/config/general");
 }

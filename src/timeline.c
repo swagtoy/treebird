@@ -229,7 +229,7 @@ void tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
     tb_free(header);
 }
 
-void content_tl_home(PATH_ARGS)
+int content_tl_home(PATH_ARGS)
 {
     if (keystr(ssn->cookies.logged_in))
         tl_home(req, ssn, api, 0);
@@ -237,30 +237,30 @@ void content_tl_home(PATH_ARGS)
         content_tl_federated(req, ssn, api, data);
 }
 
-void content_tl_direct(PATH_ARGS)
+int content_tl_direct(PATH_ARGS)
 {
     (void)data;
     tl_direct(req, ssn, api);
 }
 
-void content_tl_federated(PATH_ARGS)
+int content_tl_federated(PATH_ARGS)
 {
     (void)data;
     tl_public(req, ssn, api, 0, BASE_CAT_FEDERATED);
 }
 
-void content_tl_local(PATH_ARGS)
+int content_tl_local(PATH_ARGS)
 {
     (void)data;
     tl_public(req, ssn, api, 1, BASE_CAT_LOCAL);
 }
 
-void content_tl_list(PATH_ARGS)
+int content_tl_list(PATH_ARGS)
 {
     tl_list(req, ssn, api, data[0]);
 }
 
-void content_tl_tag(PATH_ARGS)
+int content_tl_tag(PATH_ARGS)
 {
     tl_tag(req, ssn, api, data[0]);
 }
