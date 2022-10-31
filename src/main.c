@@ -175,12 +175,18 @@ static int application(mastodont_t* api, REQUEST_T req)
     char* path_info = GET_ENV("PATH_INFO", req);
     if (path_info && strcmp(path_info, "/config/appearance") == 0)
         page = CONFIG_APPEARANCE;
-    struct mstdnt_storage* attachments = load_config(req, ssn, api, page);
+    load_config(req, ssn, api, page);
 
     // Load current account information
-    get_account_info(api, ssn);
+    //get_account_info(api, ssn);
 
     rc = handle_paths(req, ssn, api, paths, sizeof(paths)/sizeof(paths[0]));
+
+    // This is a direct page, no requests made, so cleanup now
+    if (rc == 0)
+    {
+        session_cleanup(ssn);
+    }
 
     return rc;
 }
@@ -213,8 +219,11 @@ static void fcgi_start(mastodont_t* api)
 
         rc = application(api, req);
 
-        if (rc != 1)
+        if (rc == 0)
+        {
             FCGX_Finish_r(req);
+            
+        }
     }
 }
 #else

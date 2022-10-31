@@ -79,9 +79,9 @@ void set_config_int(FCGX_Request* req,
  * @param page Page enum, to ensure that config changes on different pages don't effect other cookies
  * @return Storage if files were uploaded, must free. This might change
  */
-struct mstdnt_storage* load_config(FCGX_Request* req,
-                                   struct session* ssn,
-                                   mastodont_t* api,
-                                   enum config_page page);
+void load_config(FCGX_Request* req,
+                 struct session* ssn,
+                 mastodont_t* api,
+                 enum config_page page);
 
 #endif // LOCAL_CONFIG_SET_H

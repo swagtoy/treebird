@@ -75,20 +75,20 @@ void set_config_int(FCGX_Request* req,
 // Shorthand for the arguments passed into functions below
 #define LOAD_CFG_SIM(strcookie, varname) req, ssn, &(ssn->config.varname), (strcookie), &(ssn->post.varname), &(ssn->cookies.varname), page
 
-struct mstdnt_storage* load_config(FCGX_Request* req,
-                                   struct session* ssn,
-                                   mastodont_t* api,
-                                   enum config_page page)
+void load_config(FCGX_Request* req,
+                 struct session* ssn,
+                 mastodont_t* api,
+                 enum config_page page)
 {
-    struct mstdnt_attachment* attachments = NULL;
-    struct mstdnt_storage* storage = NULL;
-    size_t attachments_len = 0;
-    if (ssn->post.set.is_set)
-    {
-        try_upload_media(&storage, ssn, api, &attachments, NULL);
-    }
-    struct key atm = { .type.s = attachments ? attachments[0].url : NULL, .is_set = attachments ? 1 : 0 };
-    set_config_str(req, ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE);
+    /* struct mstdnt_attachment* attachments = NULL; */
+    /* struct mstdnt_storage* storage = NULL; */
+    /* size_t attachments_len = 0; */
+    /* if (ssn->post.set.is_set) */
+    /* { */
+    /*     try_upload_media(&storage, ssn, api, &attachments, NULL); */
+    /* } */
+    /* struct key atm = { .type.s = attachments ? attachments[0].url : NULL, .is_set = attachments ? 1 : 0 }; */
+    /* set_config_str(req, ssn, &(ssn->config.background_url), "background_url", &(atm), &(ssn->cookies.background_url), page, CONFIG_APPEARANCE); */
     set_config_int(LOAD_CFG_SIM("sidebaropacity",       sidebar_opacity), CONFIG_APPEARANCE);
     set_config_str(LOAD_CFG_SIM("theme",                theme), CONFIG_APPEARANCE);
     set_config_int(LOAD_CFG_SIM("jsactions",            jsactions), CONFIG_GENERAL);

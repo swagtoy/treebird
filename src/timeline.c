@@ -141,7 +141,8 @@ int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 
 static void request_cb_tl_public(mstdnt_request_cb_data_t data, void* args)
 {
-    
+    struct request_args* cb_args = args;
+    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
 int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
@@ -169,12 +170,11 @@ int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, e
 
     try_post_status(ssn, api);
 
-    struct request_args cb_args
+    struct request_args cb_args =
+        request_args_create(req, ssn);
     mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args, &storage, &statuses, &statuses_len);
 
     return 1;
-
-    content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
 }
 
 int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
