@@ -47,8 +47,6 @@
 #include "request.h"
 #include "cgi.h"
 
-#define THREAD_COUNT 20
-
 // Allow dynamic loading for Perl
 static void xs_init (pTHX);
 void boot_DynaLoader (pTHX_ CV* cv);
@@ -190,34 +188,32 @@ static void application(mastodont_t* api, REQUEST_T req)
         cleanup_media_storages(&ssn, attachments);
 }
 
-#ifndef SINGLE_THREADED
-static void* threaded_fcgi_start(void* arg)
+#ifndef CGI_MODE
+static void fcgi_start(mastodont_t* api)
 {
-    mastodont_t* api = arg;
     int rc;
     FCGX_Request req;
     FCGX_InitRequest(&req, 0, 0);
 
     while (1)
     {
-        static pthread_mutex_t accept_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-        pthread_mutex_lock(&accept_mutex);
         rc = FCGX_Accept_r(&req);
-        pthread_mutex_unlock(&accept_mutex);
         if (rc < 0) break;
 
         application(api, &req);
 
         FCGX_Finish_r(&req);
     }
-
-    return NULL;
 }
 #else
 void cgi_start(mastodont_t* api)
 {
-    while (FCGI_Accept() >= 0 && quit == 0)
+    while (FCGI_Accept() >= 0
+#ifdef DEBUG
+           && quit == 0)
+#else
+        )
+#endif
     {
         application(api, NULL);
     }
@@ -237,7 +233,7 @@ int main(int argc, char **argv, char **env)
 {
     // Global init
     mstdnt_global_curl_init();
-#ifndef SINGLE_THREADED
+#ifndef CGI_MODE
     FCGX_Init();
 #endif
 
@@ -255,10 +251,8 @@ int main(int argc, char **argv, char **env)
 
     init_template_files(aTHX);
 
-    // Setup mstdnt hooks to use Perl functions
     struct mstdnt_hooks hooks = {
         .malloc = tb_malloc,
-        // Not sure how this differs from tb_free? That's undefined... (but used elsewhere in the code just fine)
         .free = tb_free,
         .calloc = tb_calloc,
         .realloc = tb_realloc,
@@ -271,20 +265,12 @@ int main(int argc, char **argv, char **env)
     // Fetch information about the current instance
 //    load_instance_info_cache(&api);
 
-#ifndef SINGLE_THREADED
-    // Start thread pool
-    pthread_t id[THREAD_COUNT];
-
-    for (unsigned i = 0; i < THREAD_COUNT; ++i)
-        pthread_create(&id[i], NULL, threaded_fcgi_start, &api);
-
+#ifndef CGI_MODE
     // Hell, let's not sit around here either
-    threaded_fcgi_start(&api);
+    fcgi_start(&api);
+    // Blocks
     
     FCGX_ShutdownPending();
-    
-    for (unsigned i = 0; i < THREAD_COUNT; ++i)
-        pthread_join(id[i], NULL);
 #else
     cgi_start(&api);
 #endif

@@ -19,7 +19,7 @@
 #ifndef ENV_H
 #define ENV_H
 
-#ifdef SINGLE_THREADED
+#ifdef CGI_MODE
 #define GET_ENV(var, reqp) getenv(var)
 #else
 #define GET_ENV(var, reqp) FCGX_GetParam(var, req->envp)

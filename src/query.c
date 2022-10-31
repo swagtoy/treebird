@@ -143,7 +143,7 @@ char* read_post_data(REQUEST_T req, struct post_values* post)
         }
 
         // fread should be a macro to FCGI_fread, which is set by FCGI_Accept in previous definitions
-#ifndef SINGLE_THREADED
+#ifndef CGI_MODE
         size_t len = FCGX_GetStr(post_query, content_length, req->in);
 #else
         size_t len = fread(post_query, 1, content_length, stdin);
@@ -218,7 +218,7 @@ char* parse_query(char* begin, struct http_query_info* info)
 
 char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*), void* arg)
 {
-    char* request_method = GET_ENV("REQUEST_METHOD", req);
+    char* request_method = GET_ENV("REQUEST_ETHOD", req);
     char* post_query = NULL, * p_query_read;
     struct http_query_info info;
     
@@ -232,7 +232,7 @@ char* try_handle_post(REQUEST_T req, void (*call)(struct http_query_info*, void*
             puts("Malloc error!");
             return NULL;
         }
-#ifdef SINGLE_THREADED
+#ifdef CGI_MODE
         int size = read(STDIN_FILENO, post_query, content_length);
 #else
         int size = FCGX_GetStr(post_query, content_length, req->in);

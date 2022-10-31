@@ -99,10 +99,9 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)
 {
     if (data_len == 0) data_len = strlen(data);
-#ifdef SINGLE_THREADED
+#ifdef CGI_MODE
     printf(
 #else
-    pthread_mutex_lock(&print_mutex);
     FCGX_FPrintF(req->out,
 #endif
                  "Status: %s\r\n"
@@ -111,10 +110,9 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
                  status ? status : "200 OK",
                  content_type ? content_type : "text/html",
                  data_len);
-#ifdef SINGLE_THREADED
+#ifdef CGI_MODE
     puts(data);
 #else
     FCGX_PutStr(data, data_len, req->out);
-    pthread_mutex_unlock(&print_mutex);
 #endif
 }

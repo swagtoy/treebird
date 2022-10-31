@@ -20,19 +20,13 @@
 #define REQUEST_H
 #include <pthread.h>
 
-extern pthread_mutex_t print_mutex;
-
-#ifdef SINGLE_THREADED
+#ifdef CGI_MODE
 #define PRINTF(str, ...) printf(str, __VA_ARGS__)
 #define PUT(str) printf(str)
 #define REQUEST_T void*
 #else
-#define PRINTF(str, ...) do { pthread_mutex_lock(&print_mutex);  \
-    FCGX_FPrintF(req->out, str, __VA_ARGS__);              \
-    pthread_mutex_unlock(&print_mutex); } while (0);
-#define PUT(str) do { pthread_mutex_lock(&print_mutex);  \
-    FCGX_FPrintF(req->out, str); \
-    pthread_mutex_unlock(&print_mutex); } while (0);
+#define PRINTF(str, ...) do { FCGX_FPrintF(req->out, str, __VA_ARGS__); } while (0);
+#define PUT(str) do { FCGX_FPrintF(req->out, str); } while (0);
 #define REQUEST_T FCGX_Request*
 #endif
 
