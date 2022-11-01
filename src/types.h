@@ -30,13 +30,14 @@ struct request_args
     void* args;
 };
 
-#define DESTRUCT_TB_ARGS(_args) REQUEST_T req = _args->req; \
-    struct session* ssn = _args->ssn;                       \
-    mastodont_t* api = _args->api;                          \
-    void* args = _args->args;                               \
-    (void)req;                                              \
-    (void)ssn;                                              \
-    (void)api;                                              \
+#define DESTRUCT_TB_ARGS(_args)                                 \
+    REQUEST_T req = ((struct request_args*)_args)->req;         \
+    struct session* ssn = ((struct request_args*)_args)->ssn;   \
+    mastodont_t* api = ((struct request_args*)_args)->api;      \
+    void* args = ((struct request_args*)_args)->args;           \
+    (void)req;                                                  \
+    (void)ssn;                                                  \
+    (void)api;                                                  \
     (void)args;  
 
 struct request_args*
