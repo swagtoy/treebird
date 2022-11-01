@@ -20,13 +20,14 @@
 #include <fcgiapp.h>
 
 struct request_args*
-request_args_create(REQUEST_T req, struct session* ssn)
+request_args_create(REQUEST_T req, struct session* ssn, mastodont_t* api, void* _args)
 {
     struct request_args* args = malloc(sizeof(struct request_args));
     if (!args)
         perror("request_args_create: malloc");
     args->req = req;
     args->ssn = ssn;
+    args->args = _args;
     return args;
 }
 

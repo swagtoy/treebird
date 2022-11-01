@@ -106,6 +106,4 @@ void load_config(FCGX_Request* req,
     set_config_int(LOAD_CFG_SIM("notifembed",           notif_embed), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("interact_img",         interact_img), CONFIG_GENERAL);
     set_config_int(LOAD_CFG_SIM("lang",                 lang), CONFIG_GENERAL);
-
-    return storage;
 }

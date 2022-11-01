@@ -58,6 +58,6 @@ void session_cleanup(struct session* ssn)
     free_files(&(keyfile(ssn->post.files)));
     if (ssn->logged_in) mstdnt_cleanup_account(&(ssn->acct));
     mstdnt_storage_cleanup(&(ssn->acct_storage));
-    if (attachments)
-        cleanup_media_storages(ssn, attachments);
+    /* if (attachments) */
+    /*     cleanup_media_storages(ssn, attachments); */
 }

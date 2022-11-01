@@ -139,10 +139,13 @@ int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0, 0);
 }
 
-static void request_cb_tl_public(mstdnt_request_cb_data_t data, void* args)
+static void request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
-    struct request_args* cb_args = args;
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
     content_timeline(req, ssn, api, &storage, statuses, statuses_len, cat, NULL, 1, 0);
+    mstdnt_request_cb_cleanup(cb_data);
 }
 
 int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
@@ -170,9 +173,9 @@ int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, e
 
     try_post_status(ssn, api);
 
-    struct request_args cb_args =
-        request_args_create(req, ssn);
-    mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args, &storage, &statuses, &statuses_len);
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
+    mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args);
 
     return 1;
 }

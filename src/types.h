@@ -18,6 +18,7 @@
 
 #ifndef TB_TYPES_H
 #define TB_TYPES_H
+#include <mastodont.h>
 #include "types.h"
 #include "session.h"
 
@@ -25,10 +26,21 @@ struct request_args
 {
     REQUEST_T req;
     struct session* ssn;
+    mastodont_t* api;
+    void* args;
 };
 
+#define DESTRUCT_TB_ARGS(_args) REQUEST_T req = _args->req; \
+    struct session* ssn = _args->ssn;                       \
+    mastodont_t* api = _args->api;                          \
+    void* args = _args->args;                               \
+    (void)req;                                              \
+    (void)ssn;                                              \
+    (void)api;                                              \
+    (void)args;  
+
 struct request_args*
-request_args_create(REQUEST_T req, struct session* ssn);
+request_args_create(REQUEST_T req, struct session* ssn, mastodont_t* api, void* args);
 
 void request_args_cleanup(struct request_args* req);
 
