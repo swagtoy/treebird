@@ -202,28 +202,30 @@ static void fcgi_start(mastodont_t* api)
         req = malloc(sizeof(FCGX_Request));
         FCGX_InitRequest(req, 0, 0);
 
-        struct mstdnt_fd fds[] = {
-            {
-                // The docs says not to use this directly, but we don't care
-                // what the docs say
-                .fd = req->listen_sock,
-                .events = MSTDNT_POLLIN,
-            }
+        struct mstdnt_fd fds = {
+            // The docs says not to use this directly, but we don't care
+            // what the docs say
+            .fd = req->listen_sock,
+            .events = MSTDNT_POLLIN,
+            .revents = 0
         };
 
         // Will poll until we get a request 
-        mstdnt_await(api, 0, fds, sizeof(fds)/sizeof(fds[0]));
-        
-        rc = FCGX_Accept_r(req);
-        if (rc < 0) break;
+        mstdnt_await(api, 0, &fds, 1);
 
-        rc = application(api, req);
-
-        if (rc == 0)
+        if (fds.revents != 0)
         {
-            FCGX_Finish_r(req);
+            rc = FCGX_Accept_r(req);
+            if (rc < 0) break;
+
+            rc = application(api, req);
+
+            if (rc == 0)
+            {
+                FCGX_Finish_r(req);
+                free(req);
+            }
             
-        }
     }
 }
 #else
