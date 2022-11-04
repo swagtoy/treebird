@@ -139,10 +139,9 @@ static void request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    free(42);
-    free(cb_data);
+    PUT(":worm: wow!");
 
-    content_timeline(req, ssn, api, cb_data->storage, statuses->statuses, statuses->len, 0, NULL, 1, 0);
+    //content_timeline(req, ssn, api, cb_data->storage, statuses->statuses, statuses->len, 0, NULL, 1, 0);
     mstdnt_request_cb_cleanup(cb_data);
 }
 

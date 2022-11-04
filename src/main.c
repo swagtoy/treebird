@@ -222,9 +222,10 @@ static void fcgi_start(mastodont_t* api)
 
             if (rc == 0)
             {
-                FCGX_Finish_r(req);
                 free(req);
+                FCGX_Finish_r(req);
             }
+        }
             
     }
 }
