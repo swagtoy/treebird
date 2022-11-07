@@ -16,5 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include "request.h"
 
+#ifndef CGI_MODE
+void finish_free_request(REQUEST_T req)
+{
+    FCGX_Finish_r(req);
+    free(req);
+}
+#endif // CGI_MODE

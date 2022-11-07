@@ -31,16 +31,17 @@
 #include "string_helpers.h"
 #include "types.h"
 
-void content_timeline(REQUEST_T req,
-                      struct session* ssn,
-                      mastodont_t* api,
-                      struct mstdnt_storage* storage,
-                      struct mstdnt_status* statuses,
-                      size_t statuses_len,
-                      enum base_category cat,
-                      char* header_text,
-                      int show_post_box,
-                      int fake_timeline)
+void
+content_timeline(REQUEST_T req,
+                 struct session* ssn,
+                 mastodont_t* api,
+                 struct mstdnt_storage* storage,
+                 struct mstdnt_status* statuses,
+                 size_t statuses_len,
+                 enum base_category cat,
+                 char* header_text,
+                 int show_post_box,
+                 int fake_timeline)
 {
     PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
@@ -74,12 +75,95 @@ void content_timeline(REQUEST_T req,
     render_base_page(&b, req, ssn, api);
 
     // Cleanup
-    /* mstdnt_storage_cleanup(storage); */
-    /* mstdnt_cleanup_statuses(statuses, statuses_len); */
     tb_free(dup);
 }
 
-int tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
+// Callback: tl_home
+static void
+request_cb_tl_home(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_HOME, NULL, 1, 0);
+
+    finish_free_request(req);
+}
+
+// Callback: tl_local
+static void
+request_cb_tl_local(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_LOCAL, NULL, 1, 0);
+
+    finish_free_request(req);
+}
+
+// Callback: tl_public
+static void
+request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_FEDERATED, NULL, 1, 0);
+
+    finish_free_request(req);
+}
+
+// Callback: tl_list
+static void
+request_cb_tl_list(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_LISTS, NULL, 0, 0);
+
+    finish_free_request(req);
+}
+
+// Callback: tl_direct
+static void
+request_cb_tl_direct(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_DIRECT, NULL, 0, 0);
+
+    finish_free_request(req);
+}
+
+// Callback: tl_direct
+static void
+request_cb_tl_tags(mstdnt_request_cb_data* cb_data, void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    content_timeline(req, ssn, api, cb_data->storage,
+                     statuses->statuses, statuses->len,
+                     BASE_CAT_NONE, NULL, 0, 0);
+
+    finish_free_request(req);
+}
+
+int
+tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -101,14 +185,16 @@ int tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
     };
     
     try_post_status(ssn, api);
-
     
-    return mstdnt_timeline_home(api, &m_args, NULL, NULL, &args);
-
-//    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_HOME, NULL, 1, 0);
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
+        
+    return mstdnt_timeline_home(api, &m_args, request_cb_tl_home,
+                                cb_args, &args);
 }
 
-int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
+int
+tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -128,25 +214,19 @@ int tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
     
     try_post_status(ssn, api);
     
-    return mstdnt_timeline_direct(api, &m_args, NULL, NULL, &args);
-
-//    content_timeline(req, ssn, api, &storage, statuses, statuses_len, BASE_CAT_DIRECT, "Direct", 0, 0);
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
+    
+    return mstdnt_timeline_direct(api, &m_args, request_cb_tl_direct,
+                                  cb_args, &args);
 }
 
-// Callback: tl_public
-static void request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
-{
-    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
-    DESTRUCT_TB_ARGS(tbargs);
-
-    if (statuses)
-        content_timeline(req, ssn, api, cb_data->storage, statuses->statuses, statuses->len, 0, NULL, 1, 0);
-
-    FCGX_Finish_r(req);
-    free(req);
-}
-
-int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, enum base_category cat)
+int
+tl_public(REQUEST_T req,
+          struct session* ssn,
+          mastodont_t* api,
+          int local,
+          enum base_category cat)
 {
     struct mstdnt_args m_args = { 0 };
     set_mstdnt_args(&m_args, ssn);
@@ -171,10 +251,15 @@ int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, e
     struct request_args* cb_args =
         request_args_create(req, ssn, api, NULL);
     
-    return mstdnt_timeline_public(api, &m_args, request_cb_tl_public, cb_args, &args);
+    return mstdnt_timeline_public(api, &m_args, request_cb_tl_public,
+                                  cb_args, &args);
 }
 
-int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
+int
+tl_list(REQUEST_T req,
+        struct session* ssn,
+        mastodont_t* api,
+        char* list_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -193,13 +278,19 @@ int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
 
     try_post_status(ssn, api);
     
-    return mstdnt_timeline_list(api, &m_args, NULL, NULL, list_id, &args);
-
-    //content_timeline(req, ssn, api, BASE_CAT_LISTS, "List timeline", 0, 0);
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
+    
+    return mstdnt_timeline_list(api, &m_args, request_cb_tl_list, cb_args,
+                                list_id, &args);
 }
 
 
-int tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
+int
+tl_tag(REQUEST_T req,
+       struct session* ssn,
+       mastodont_t* api,
+       char* tag_id)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -216,12 +307,16 @@ int tl_tag(REQUEST_T req, struct session* ssn, mastodont_t* api, char* tag_id)
         .limit = 20,
     };
 
-    return mstdnt_timeline_tag(api, &m_args, NULL, NULL, tag_id, &args);
+        
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
 
-    //content_timeline(req, ssn, api, BASE_CAT_NONE, header, 0, 0);
+    return mstdnt_timeline_tag(api, &m_args, request_cb_tl_tags, cb_args,
+                               tag_id, &args);
 }
 
-int content_tl_home(PATH_ARGS)
+int
+content_tl_home(PATH_ARGS)
 {
     if (keystr(ssn->cookies.logged_in))
         return tl_home(req, ssn, api, 0);
@@ -229,30 +324,35 @@ int content_tl_home(PATH_ARGS)
         return content_tl_federated(req, ssn, api, data);
 }
 
-int content_tl_direct(PATH_ARGS)
+int
+content_tl_direct(PATH_ARGS)
 {
     (void)data;
     return tl_direct(req, ssn, api);
 }
 
-int content_tl_federated(PATH_ARGS)
+int
+content_tl_federated(PATH_ARGS)
 {
     (void)data;
     return tl_public(req, ssn, api, 0, BASE_CAT_FEDERATED);
 }
 
-int content_tl_local(PATH_ARGS)
+int
+content_tl_local(PATH_ARGS)
 {
     (void)data;
     return tl_public(req, ssn, api, 1, BASE_CAT_LOCAL);
 }
 
-int content_tl_list(PATH_ARGS)
+int
+content_tl_list(PATH_ARGS)
 {
     return tl_list(req, ssn, api, data[0]);
 }
 
-int content_tl_tag(PATH_ARGS)
+int
+content_tl_tag(PATH_ARGS)
 {
     return tl_tag(req, ssn, api, data[0]);
 }
