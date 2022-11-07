@@ -128,7 +128,7 @@ int try_react_status(struct session* ssn, mastodont_t* api, char* id, char* emoj
 
     mstdnt_status_emoji_react(api, &m_args, NULL, NULL, id, emoji, &storage, &status);
 
-    mstdnt_cleanup_status(&status);
+    mstdnt_cleanup_status(&status, 0);
     mstdnt_storage_cleanup(&storage);
     return 0;
 }
@@ -405,7 +405,7 @@ void content_status(PATH_ARGS, uint8_t flags)
 
     mstdnt_cleanup_statuses(statuses_before, stat_before_len);
     mstdnt_cleanup_statuses(statuses_after, stat_after_len);
-    mstdnt_cleanup_status(&status);
+    mstdnt_cleanup_status(&status, 0);
     mstdnt_storage_cleanup(&storage);
     mstdnt_storage_cleanup(&status_storage);
     tb_free(dup);

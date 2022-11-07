@@ -222,8 +222,8 @@ static void fcgi_start(mastodont_t* api)
 
             if (rc == 0)
             {
-                free(req);
                 FCGX_Finish_r(req);
+                free(req);
             }
         }
             

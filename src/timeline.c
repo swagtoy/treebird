@@ -141,6 +141,9 @@ static void request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
 
     PUT(":worm: wow!");
 
+    FCGX_Finish_r(req);
+    free(req);
+
     //content_timeline(req, ssn, api, cb_data->storage, statuses->statuses, statuses->len, 0, NULL, 1, 0);
     mstdnt_request_cb_cleanup(cb_data);
 }
@@ -170,7 +173,7 @@ int tl_public(REQUEST_T req, struct session* ssn, mastodont_t* api, int local, e
     struct request_args* cb_args =
         request_args_create(req, ssn, api, NULL);
     
-    return mstdnt_timeline_public(api, &m_args, request_cb_tl_public, ssn, &args);
+    return mstdnt_timeline_public(api, &m_args, request_cb_tl_public, cb_args, &args);
 }
 
 int tl_list(REQUEST_T req, struct session* ssn, mastodont_t* api, char* list_id)
