@@ -39,6 +39,7 @@ int content_about(PATH_ARGS)
 
     render_base_page(&b, req, ssn, api);
     tb_free(dup);
+    return 0;
 }
 
 
@@ -62,5 +63,6 @@ int content_about_license(PATH_ARGS)
 
     render_base_page(&b, req, ssn, api);
     tb_free(dup);
+    return 0;
 }
 

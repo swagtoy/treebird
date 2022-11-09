@@ -43,6 +43,13 @@ struct account_args
     uint8_t flags;
 };
 
+/// Used to pair accounts and relations for requests
+typedef struct mstdnt_acct_relations_pair
+{
+    mstdnt_account* acct;
+    mstdnt_relationship* rels;
+} mstdnt_acct_relations_pair;
+
 static char*
 accounts_page(HV* session_hv,
               mastodont_t* api,
@@ -232,6 +239,33 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 #endif
 }
 
+// Callback: fetch_account_page
+static int
+request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
+                                      void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    
+
+    finish_free_request(req);
+
+    return MSTDNT_REQUEST_DONE;
+}
+
+// Callback: fetch_account_page
+static int
+request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
+                             void* tbargs)
+{
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+    
+
+    finish_free_request(req);
+}
+
 /**
  * Fetches the account information, and then calls a callback on the information received which
  * passes the account information
@@ -245,28 +279,45 @@ void get_account_info(mastodont_t* api, struct session* ssn)
  * @param callback Calls back with a perlified session, session and api as you passed in, the account,
  *                 the relationship, and additional arguments passed
  */
-static void fetch_account_page(FCGX_Request* req,
-                               struct session* ssn,
-                               mastodont_t* api,
-                               char* id,
-                               void* args,
-                               enum account_tab tab,
-                               char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
+static void
+fetch_account_page(FCGX_Request* req,
+                   struct session* ssn,
+                   mastodont_t* api,
+                   char* id,
+                   void* args,
+                   enum account_tab tab,
+                   char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
 {
-    struct mstdnt_storage storage = { 0 },
-        relations_storage = { 0 };
-    struct mstdnt_account acct = { 0 };
-    struct mstdnt_relationship* relationships = NULL;
-    size_t relationships_len = 0;
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
-    
-    mstdnt_get_account(api, &m_args, NULL, NULL, lookup_type, id, &acct, &storage);
-    // Relationships may fail
-    mstdnt_get_relationships(api, &m_args, NULL, NULL, &(acct.id), 1, &relations_storage, &relationships, &relationships_len);
 
+    /* Send 2 requests.
+     *
+     * These requests should come in any order, so create a pair to synchronize
+     *  them
+     */
+    mstdnt_acct_relations_pair* pair = malloc(sizeof(mstdnt_acct_relations_pair));
+    mstdnt_get_account(api,
+                       &m_args,
+                       request_cb_account_page_acct,
+                       pair,
+                       lookup_type,
+                       id);
+    
+    // Relationships may fail
+    mstdnt_get_relationships(api,
+                             &m_args,
+                             request_cb_account_page_relationships,
+                             pair,
+                             &(acct.id),
+                             1);
+
+    return 1;
+
+#if 0
+    // TODO
     HV* session_hv = perlify_session(ssn);
     
     char* data = callback(session_hv, ssn, api, &acct, relationships, args);
@@ -283,6 +334,7 @@ static void fetch_account_page(FCGX_Request* req,
     /* Output */
     tb_free(data);
     finish_free_request(req);
+#endif
 }
 
 int content_account_statuses(PATH_ARGS)

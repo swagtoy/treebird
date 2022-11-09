@@ -88,6 +88,7 @@ static struct path_info paths[] = {
     { "/status/:/boosted_by", status_view_reblogs },
     { "/status/:/reblogged_by", status_view_reblogs },
     { "/status/:", status_view },
+#if 0
     { "/notice/:", notice_redirect },
     { "/about/license", content_about_license },
     { "/about", content_about },
