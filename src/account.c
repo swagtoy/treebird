@@ -36,6 +36,13 @@
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
+typedef char* (*account_page_cb)(HV* ssn_hv,
+                                 struct session* ssn,
+                                 mastodont_t* api,
+                                 struct mstdnt_account* acct,
+                                 struct mstdnt_relationship* rel,
+                                 void* args);
+
 struct account_args
 {
     mastodont_t* api;
@@ -44,11 +51,16 @@ struct account_args
 };
 
 /// Used to pair accounts and relations for requests
-typedef struct mstdnt_acct_relations_pair
+typedef struct _acct_relations_pair
 {
     mstdnt_account* acct;
     mstdnt_relationship* rels;
-} mstdnt_acct_relations_pair;
+} acct_relations_pair;
+
+typedef struct _fetch_args
+{
+    acct_relations_pair* pair;
+} fetch_args;
 
 static char*
 accounts_page(HV* session_hv,
@@ -97,9 +109,6 @@ account_followers_cb(HV* session_hv,
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_account* accounts = NULL;
-    size_t accts_len = 0;
     char* result;
     
     struct mstdnt_account_args args = {
@@ -111,18 +120,19 @@ account_followers_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mstdnt_get_followers(api, &m_args, NULL, NULL, acct->id, &args, &storage, &accounts, &accts_len);
+    mstdnt_get_followers(api, &m_args, NULL, NULL, acct->id, &args);
 
-    return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
+    return accounts_page(session_hv, api, acct, rel, NULL,
+                         &storage, accounts, accts_len);
 }
 
 static char*
 account_following_cb(HV* session_hv,
-                                  struct session* ssn,
-                                  mastodont_t* api,
-                                  struct mstdnt_account* acct,
-                                  struct mstdnt_relationship* rel, 
-                                  void* _args)
+                     struct session* ssn,
+                     mastodont_t* api,
+                     struct mstdnt_account* acct,
+                     struct mstdnt_relationship* rel, 
+                     void* _args)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -244,12 +254,17 @@ static int
 request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
                                       void* tbargs)
 {
-    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    
+    acct_relations_pair* pair = args;
+    pair->rels = MSTDNT_CB_DATA(cb_data);
+    // TODO if this fails (it definitely can), then set to 0x1
+    if (pair->relationship && pair->acct)
+    {
+        finish_free_request(req);
+        
+    }
 
-    finish_free_request(req);
 
     return MSTDNT_REQUEST_DONE;
 }
@@ -261,9 +276,16 @@ request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
-    
 
-    finish_free_request(req);
+    acct_relations_pair* pair = args;
+    pair->acct = MSTDNT_CB_DATA(cb_data);
+    if ((pair->relationship || pair->relationship == 0x1) && pair->acct)
+    {
+        
+        finish_free_request(req);
+    }
+
+    return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
 
 /**
@@ -286,7 +308,7 @@ fetch_account_page(FCGX_Request* req,
                    char* id,
                    void* args,
                    enum account_tab tab,
-                   char* (*callback)(HV* ssn_hv, struct session* ssn, mastodont_t* api, struct mstdnt_account* acct, struct mstdnt_relationship* rel, void* args))
+                   account_page_cb callback)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -298,7 +320,8 @@ fetch_account_page(FCGX_Request* req,
      * These requests should come in any order, so create a pair to synchronize
      *  them
      */
-    mstdnt_acct_relations_pair* pair = malloc(sizeof(mstdnt_acct_relations_pair));
+    
+    fetch_args* arg = tb_malloc(sizeof(fetchargs));
     mstdnt_get_account(api,
                        &m_args,
                        request_cb_account_page_acct,
