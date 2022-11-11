@@ -79,7 +79,7 @@ content_timeline(REQUEST_T req,
 }
 
 // Callback: tl_home
-static void
+static int
 request_cb_tl_home(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -90,10 +90,11 @@ request_cb_tl_home(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_HOME, NULL, 1, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: tl_local
-static void
+static int
 request_cb_tl_local(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -104,10 +105,11 @@ request_cb_tl_local(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_LOCAL, NULL, 1, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: tl_public
-static void
+static int
 request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -118,10 +120,11 @@ request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_FEDERATED, NULL, 1, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: tl_list
-static void
+static int
 request_cb_tl_list(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -132,10 +135,11 @@ request_cb_tl_list(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_LISTS, NULL, 0, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: tl_direct
-static void
+static int
 request_cb_tl_direct(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -146,10 +150,11 @@ request_cb_tl_direct(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_DIRECT, NULL, 0, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: tl_direct
-static void
+static int
 request_cb_tl_tags(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -160,6 +165,7 @@ request_cb_tl_tags(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_NONE, NULL, 0, 0);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 int

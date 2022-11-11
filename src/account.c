@@ -33,6 +33,7 @@
 #include "string_helpers.h"
 #include "emoji.h"
 #include "timeline.h"
+#include "types.h"
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
@@ -53,14 +54,19 @@ struct account_args
 /// Used to pair accounts and relations for requests
 typedef struct _acct_relations_pair
 {
-    mstdnt_account* acct;
-    mstdnt_relationship* rels;
+    mstdnt_request_cb_data* acct_data;
+    mstdnt_request_cb_data* rels_data;
 } acct_relations_pair;
 
-typedef struct _fetch_args
+typedef struct _acct_fetch_args
 {
-    acct_relations_pair* pair;
-} fetch_args;
+    acct_relations_pair pair;
+    char* id;
+    enum account_tab tab;
+    account_page_cb callback;
+    void* args;
+    struct request_args* req_args;
+} acct_fetch_args;
 
 static char*
 accounts_page(HV* session_hv,
@@ -195,11 +201,11 @@ account_statuses_cb(HV* session_hv,
 
 static char*
 account_scrobbles_cb(HV* session_hv,
-                                  struct session* ssn,
-                                  mastodont_t* api,
-                                  struct mstdnt_account* acct,
-                                  struct mstdnt_relationship* rel, 
-                                  void* _args)
+                     struct session* ssn,
+                     mastodont_t* api,
+                     struct mstdnt_account* acct,
+                     struct mstdnt_relationship* rel, 
+                     void* _args)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -249,6 +255,33 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 #endif
 }
 
+static void
+generate_account_page(acct_fetch_args* args)
+{
+    HV* session_hv = perlify_session(args->ssn);
+    
+    char* data = callback(session_hv,
+                          args->ssn,
+                          args->api,
+                          args->pair.acct,
+                          args->pair.rels,
+                          args);
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = data,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    render_base_page(&b, req, ssn, api);
+        
+    /* Output */
+    tb_free(data);
+    // CLEANUP REST OF TEH DATA
+    request_args_cleanup(args->req_args);
+}
+
 // Callback: fetch_account_page
 static int
 request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
@@ -256,17 +289,15 @@ request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
 {
     DESTRUCT_TB_ARGS(tbargs);
 
-    acct_relations_pair* pair = args;
-    pair->rels = MSTDNT_CB_DATA(cb_data);
+    acct_fetch_args* data = args;
+    data->pair.rels_data = cb_data;
     // TODO if this fails (it definitely can), then set to 0x1
-    if (pair->relationship && pair->acct)
+    if (data->pair.rels_data->data && data->pair.acct_data->data)
     {
-        finish_free_request(req);
-        
+        generate_account_page(data);
     }
 
-
-    return MSTDNT_REQUEST_DONE;
+    return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
 
 // Callback: fetch_account_page
@@ -274,15 +305,15 @@ static int
 request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
                              void* tbargs)
 {
-    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    acct_relations_pair* pair = args;
-    pair->acct = MSTDNT_CB_DATA(cb_data);
-    if ((pair->relationship || pair->relationship == 0x1) && pair->acct)
+    acct_fetch_args* data = args;
+    data->pair.acct_data = cb_data;
+    if (data->pair.rels_data->data != 0x1 &&
+        data->pair.rels_data->data &&
+        data->pair.acct_data->data)
     {
-        
-        finish_free_request(req);
+        generate_account_page(data);
     }
 
     return MSTDNT_REQUEST_DATA_NOCLEANUP;
@@ -300,8 +331,9 @@ request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
  * @param tab Current tab to focus
  * @param callback Calls back with a perlified session, session and api as you passed in, the account,
  *                 the relationship, and additional arguments passed
+ * @return 1, don't end request
  */
-static void
+static int
 fetch_account_page(FCGX_Request* req,
                    struct session* ssn,
                    mastodont_t* api,
@@ -320,12 +352,22 @@ fetch_account_page(FCGX_Request* req,
      * These requests should come in any order, so create a pair to synchronize
      *  them
      */
+
+    // Make empty
+    acct_fetch_args* f_arg = tb_calloc(1, sizeof(acct_fetch_args));
+    f_arg->id = id;
+    f_arg->args = args;
+    f_arg->tab = tab;
+    f_arg->callback = callback;
     
-    fetch_args* arg = tb_malloc(sizeof(fetchargs));
+    struct request_args* req_args =
+        request_args_create(req, ssn, api, f_arg);
+    f_arg->req_args = req_args;
+        
     mstdnt_get_account(api,
                        &m_args,
                        request_cb_account_page_acct,
-                       pair,
+                       f_arg,
                        lookup_type,
                        id);
     
@@ -333,31 +375,11 @@ fetch_account_page(FCGX_Request* req,
     mstdnt_get_relationships(api,
                              &m_args,
                              request_cb_account_page_relationships,
-                             pair,
+                             f_arg,
                              &(acct.id),
                              1);
 
     return 1;
-
-#if 0
-    // TODO
-    HV* session_hv = perlify_session(ssn);
-    
-    char* data = callback(session_hv, ssn, api, &acct, relationships, args);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = data,
-        .session = session_hv,
-        .sidebar_left = NULL
-    };
-
-    render_base_page(&b, req, ssn, api);
-        
-    /* Output */
-    tb_free(data);
-    finish_free_request(req);
-#endif
 }
 
 int content_account_statuses(PATH_ARGS)
@@ -376,22 +398,22 @@ int content_account_statuses(PATH_ARGS)
         .limit = 20,
     };
     
-    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
 }
 
 int content_account_followers(PATH_ARGS)
 {
-    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
+    return fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_followers_cb);
 }
 
 int content_account_following(PATH_ARGS)
 {
-    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
+    return fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_NONE, account_following_cb);
 }
 
 int content_account_scrobbles(PATH_ARGS)
 {
-    fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
+    return fetch_account_page(req, ssn, api, data[0], NULL, ACCT_TAB_SCROBBLES, account_scrobbles_cb);
 }
 
 int content_account_pinned(PATH_ARGS)
@@ -410,7 +432,7 @@ int content_account_pinned(PATH_ARGS)
         .limit = 20,
     };
     
-    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
 }
 
 int content_account_media(PATH_ARGS)
@@ -429,7 +451,7 @@ int content_account_media(PATH_ARGS)
         .limit = 20,
     };
     
-    fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
 static void
@@ -439,8 +461,7 @@ request_cb_content_account_action(mstdnt_request_cb_data* cb_data, void* tbargs)
     DESTRUCT_TB_ARGS(tbargs);
     
     redirect(req, REDIRECT_303, referer);
-    
-    finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 
@@ -448,39 +469,36 @@ int
 content_account_action(PATH_ARGS)
 {
     char* referer = GET_ENV("HTTP_REFERER", req);
-    struct mstdnt_storage storage = { 0 };
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_relationship acct = { 0 };
     
     if (strcmp(data[1], "follow") == 0)
-        mstdnt_follow_account(api, &m_args,
+        return mstdnt_follow_account(api, &m_args,
                               request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "unfollow") == 0)
-        mstdnt_unfollow_account(api, &m_args,
+        return mstdnt_unfollow_account(api, &m_args,
                                 request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "mute") == 0)
-        mstdnt_mute_account(api, &m_args,
+        return mstdnt_mute_account(api, &m_args,
                             request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "unmute") == 0)
-        mstdnt_unmute_account(api, &m_args,
+        return mstdnt_unmute_account(api, &m_args,
                               request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "block") == 0)
-        mstdnt_block_account(api, &m_args,
+        return mstdnt_block_account(api, &m_args,
                              request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "unblock") == 0)
-        mstdnt_unblock_account(api, &m_args,
+        return mstdnt_unblock_account(api, &m_args,
                                request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "subscribe") == 0)
-        mstdnt_subscribe_account(api, &m_args,
+        return mstdnt_subscribe_account(api, &m_args,
                                  request_cb_content_account_action, cb_args, data[0]);
     else if (strcmp(data[1], "unsubscribe") == 0)
-        mstdnt_unsubscribe_account(api, &m_args,
+        return mstdnt_unsubscribe_account(api, &m_args,
                                    request_cb_content_account_action, cb_args, data[0]);
-
 }
 
-static void
+static int
 request_cb_content_bookmarks(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -491,6 +509,7 @@ request_cb_content_bookmarks(mstdnt_request_cb_data* cb_data, void* tbargs)
                      BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 int content_account_bookmarks(PATH_ARGS)
@@ -551,7 +570,7 @@ int content_account_blocked(PATH_ARGS)
 }
 
 // Callback: content_account_favourites
-static void
+static int
 request_cb_content_mutes(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
 #if 0
@@ -567,6 +586,7 @@ request_cb_content_mutes(mstdnt_request_cb_data* cb_data, void* tbargs)
                   BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 #endif
 }
 
