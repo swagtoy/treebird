@@ -25,12 +25,12 @@
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
-typedef char* (*account_page_cb)(HV* ssn_hv,
-                                 struct session* ssn,
-                                 mastodont_t* api,
-                                 struct mstdnt_account* acct,
-                                 struct mstdnt_relationship* rel,
-                                 void* args);
+typedef void (*account_page_cb)(HV* ssn_hv,
+                                struct session* ssn,
+                                mastodont_t* api,
+                                struct mstdnt_account* acct,
+                                struct mstdnt_relationship* rel,
+                                void* args);
 
 struct account_args
 {
