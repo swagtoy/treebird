@@ -1,7 +1,7 @@
 /*
  * Treebird - Lightweight frontend for Pleroma
  *
- * Licensed under the BSD 2-Clause License
+ * Licensed under the BSD 3-Clause License
  */
 
 /* Everything seen here is info for the super curious, and does not really
