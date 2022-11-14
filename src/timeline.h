@@ -58,8 +58,6 @@ int content_tl_tag(PATH_ARGS);
  * @param req This request
  * @param ssn This session
  * @param api The api
- * @param storage The storage for statuses, will be cleaned up in this function, do NOT
- *                cleanup yourself.
  * @param statuses The statuses, will be cleaned up in this function, do NOT cleanup yourself.
  * @param statuses_len Length of `statuses`
  * @param cat The category to "highlight" on the sidebar
@@ -69,7 +67,6 @@ int content_tl_tag(PATH_ARGS);
 void content_timeline(REQUEST_T req,
                       struct session* ssn,
                       mastodont_t* api,
-                      struct mstdnt_storage* storage,
                       struct mstdnt_status* statuses,
                       size_t statuses_len,
                       enum base_category cat,

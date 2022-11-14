@@ -48,6 +48,7 @@ typedef struct _acct_relations_pair
 
 typedef struct _acct_fetch_args
 {
+    HV* session_hv;
     acct_relations_pair pair;
     char* id;
     enum account_tab tab;
@@ -58,11 +59,9 @@ typedef struct _acct_fetch_args
 
 static char*
 accounts_page(HV* session_hv,
-              mastodont_t* api,
               struct mstdnt_account* acct,
               struct mstdnt_relationship* rel,
               char* header,
-              struct mstdnt_storage* storage,
               struct mstdnt_account* accts,
               size_t accts_len)
 {
@@ -93,7 +92,27 @@ accounts_page(HV* session_hv,
     return output;
 }
 
-static char*
+// Callback: account_followers_cb
+static int
+request_cb_account_followers_page(mstdnt_request_cb_data* cb_data,
+                                  void* args)
+{
+    struct mstdnt_accounts* accts = MSTDNT_CB_DATA(cb_data);
+    acct_fetch_args* data = args;
+    
+    accounts_page(data->session_hv,
+                  (data->pair.acct_data ?
+                   data->pair.acct_data->data : NULL),
+                  (data->pair.rels_data ?
+                   data->pair.rels_data->data : NULL),
+                  NULL,
+                  accts->accts,
+                  accts->len);
+
+    return MSTDNT_REQUEST_DONE;
+}
+
+static void
 account_followers_cb(HV* session_hv,
                      struct session* ssn,
                      mastodont_t* api,
@@ -104,6 +123,7 @@ account_followers_cb(HV* session_hv,
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     char* result;
+    acct_fetch_args* fetch_args = _args;
     
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -114,13 +134,14 @@ account_followers_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mstdnt_get_followers(api, &m_args, NULL, NULL, acct->id, &args);
+    mstdnt_get_followers(api, &m_args,
+                         request_cb_account_followers_page, fetch_args,
+                         acct->id, args);
 
-    return accounts_page(session_hv, api, acct, rel, NULL,
-                         &storage, accounts, accts_len);
+    //return accounts_page(session_hv, api, acct, rel, NULL, accts->accts, accts->len);
 }
 
-static char*
+static void
 account_following_cb(HV* session_hv,
                      struct session* ssn,
                      mastodont_t* api,
@@ -130,10 +151,8 @@ account_following_cb(HV* session_hv,
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_account* accounts = NULL;
-    size_t accts_len = 0;
     char* result;
+    acct_fetch_args* fetch_args = _args;
     
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -144,18 +163,18 @@ account_following_cb(HV* session_hv,
         .with_relationships = 0,
     };
     
-    mstdnt_get_following(api, &m_args, NULL, NULL, acct->id, &args, &storage, &accounts, &accts_len);
-
-    return accounts_page(session_hv, api, acct, rel, NULL, &storage, accounts, accts_len);
+    mstdnt_get_following(api, &m_args,
+                         NULL, NULL,
+                         acct->id, args);
 }
 
-static char*
+static void
 account_statuses_cb(HV* session_hv,
-                                 struct session* ssn,
-                                 mastodont_t* api,
-                                 struct mstdnt_account* acct,
-                                 struct mstdnt_relationship* rel, 
-                                 void* _args)
+                    struct session* ssn,
+                    mastodont_t* api,
+                    struct mstdnt_account* acct,
+                    struct mstdnt_relationship* rel, 
+                    void* _args)
 
 {
     struct mstdnt_args m_args;
@@ -187,7 +206,7 @@ account_statuses_cb(HV* session_hv,
     return result;
 }
 
-static char*
+static void
 account_scrobbles_cb(HV* session_hv,
                      struct session* ssn,
                      mastodont_t* api,
@@ -247,13 +266,14 @@ static void
 generate_account_page(acct_fetch_args* args)
 {
     HV* session_hv = perlify_session(args->ssn);
+    args->session_hv = session_hv;
     
-    char* data = callback(session_hv,
-                          args->ssn,
-                          args->api,
-                          args->pair.acct,
-                          args->pair.rels,
-                          args);
+    char* data = args->callback(session_hv,
+                                args->ssn,
+                                args->api,
+                                args->pair.acct,
+                                args->pair.rels,
+                                args);
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
@@ -271,6 +291,7 @@ generate_account_page(acct_fetch_args* args)
 }
 
 // Callback: fetch_account_page
+#if 0
 static int
 request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
                                       void* tbargs)
@@ -287,6 +308,7 @@ request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
 
     return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
+#endif
 
 // Callback: fetch_account_page
 static int
@@ -297,14 +319,18 @@ request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
 
     acct_fetch_args* data = args;
     data->pair.acct_data = cb_data;
-    if (data->pair.rels_data->data != 0x1 &&
-        data->pair.rels_data->data &&
-        data->pair.acct_data->data)
-    {
-        generate_account_page(data);
-    }
+#if 0
+    // Relationships may fail
+    mstdnt_get_relationships(api,
+                             &m_args,
+                             request_cb_account_page_relationships,
+                             f_arg,
+                             &(acct.id),
+                             1);
+#endif
+    generate_account_page(data);
 
-    return MSTDNT_REQUEST_DATA_NOCLEANUP;
+    return MSTDNT_REQUEST_DONE;
 }
 
 /**
@@ -335,12 +361,6 @@ fetch_account_page(FCGX_Request* req,
 
     int lookup_type = config_experimental_lookup ? MSTDNT_LOOKUP_ACCT : MSTDNT_LOOKUP_ID;
 
-    /* Send 2 requests.
-     *
-     * These requests should come in any order, so create a pair to synchronize
-     *  them
-     */
-
     // Make empty
     acct_fetch_args* f_arg = tb_calloc(1, sizeof(acct_fetch_args));
     f_arg->id = id;
@@ -359,13 +379,6 @@ fetch_account_page(FCGX_Request* req,
                        lookup_type,
                        id);
     
-    // Relationships may fail
-    mstdnt_get_relationships(api,
-                             &m_args,
-                             request_cb_account_page_relationships,
-                             f_arg,
-                             &(acct.id),
-                             1);
 
     return 1;
 }
@@ -442,7 +455,7 @@ int content_account_media(PATH_ARGS)
     return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
-static void
+static int
 request_cb_content_account_action(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     mstdnt_relationship* rel = MSTDNT_CB_DATA(cb_data);
@@ -459,6 +472,9 @@ content_account_action(PATH_ARGS)
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
+
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
     
     if (strcmp(data[1], "follow") == 0)
         return mstdnt_follow_account(api, &m_args,
@@ -608,11 +624,12 @@ request_cb_content_favorites(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
     
-    content_timeline(req, ssn, api, &storage,
+    content_timeline(req, ssn, api,
                      statuses->statuses, statuses->len,
                      BASE_CAT_BOOKMARKS, "Favorites", 0, 1);
 
     finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 int

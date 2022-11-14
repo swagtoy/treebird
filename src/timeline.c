@@ -23,7 +23,6 @@ void
 content_timeline(REQUEST_T req,
                  struct session* ssn,
                  mastodont_t* api,
-                 struct mstdnt_storage* storage,
                  struct mstdnt_status* statuses,
                  size_t statuses_len,
                  enum base_category cat,
