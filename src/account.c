@@ -63,8 +63,8 @@ acct_fetch_args_cleanup(acct_fetch_args* args)
     // This should clean itself when passed to `render_base_page'
     //free(session_hv);
     free(args->args);
-    
-    mstdnt_request_cb_cleanup(&results);
+    mstdnt_request_cb_cleanup(args->pair.acct_data);
+    mstdnt_request_cb_cleanup(args->pair.rels_data);
 }
 
 static char*
@@ -87,7 +87,7 @@ accounts_page(HV* session_hv,
     else ARG_UNDEFINED();
     
     if (accts)
-        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts->len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts->accts, accts->len)));
     else ARG_UNDEFINED();
 
     // perlapi doesn't specify if a string length of 0 calls strlen so calling just to be safe...
@@ -100,6 +100,31 @@ accounts_page(HV* session_hv,
 
     return output;
 }
+
+static void
+generate_account_page(acct_fetch_args* args)
+{
+    HV* session_hv = perlify_session(args->req_args->ssn);
+    args->session_hv = session_hv;
+    
+    char* data = args->callback(args);
+
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = data,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    /* Output */
+    render_base_page(&b, req, ssn, api);
+        
+    tb_free(data);
+    // Cleanup rest of the data from args
+    request_args_cleanup(args->req_args);
+    free(args);
+}
+
 
 // Callback: account_followers_cb
 static int
@@ -138,7 +163,7 @@ account_followers_cb(acct_fetch_args* fetch_args)
         .with_relationships = 0,
     };
     
-    mstdnt_get_followers(api, &m_args,
+    mstdnt_get_followers(fetch_args->req_args->api, &m_args,
                          request_cb_account_followers_page, fetch_args,
                          acct->id, args);
 
@@ -149,9 +174,9 @@ static void
 account_following_cb(acct_fetch_args* fetch_args)
 {
     struct mstdnt_args m_args;
+    struct session* ssn = fetch_args->req_args->ssn;
     set_mstdnt_args(&m_args, ssn);
     char* result;
-    acct_fetch_args* fetch_args = _args;
     
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
@@ -162,9 +187,10 @@ account_following_cb(acct_fetch_args* fetch_args)
         .with_relationships = 0,
     };
     
-    mstdnt_get_following(api, &m_args,
+    mstdnt_get_following(fetch_args->req_args->api, &m_args,
                          NULL, NULL,
-                         acct->id, args);
+                         ((struct mstdnt_account*)
+                          (fetch_args->pair.acct_data->data))->id, args);
 }
 
 // Callback: account_statuses_cb
@@ -278,29 +304,6 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 #endif
 }
 
-static void
-generate_account_page(acct_fetch_args* args)
-{
-    HV* session_hv = perlify_session(args->ssn);
-    args->session_hv = session_hv;
-    
-    char* data = args->callback(args);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = data,
-        .session = session_hv,
-        .sidebar_left = NULL
-    };
-
-    /* Output */
-    render_base_page(&b, req, ssn, api);
-        
-    tb_free(data);
-    // Cleanup rest of the data from args
-    request_args_cleanup(args->req_args);
-    free(args);
-}
 
 // Callback: fetch_account_page
 #if 0
