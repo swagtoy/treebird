@@ -35,30 +35,44 @@ struct account_args
 /// Used to pair accounts and relations for requests
 typedef struct _acct_relations_pair
 {
+    // ->data will give mstdnt_accounts* as void*
     mstdnt_request_cb_data* acct_data;
+    // ->data will give mstdnt_relationships* as void*
     mstdnt_request_cb_data* rels_data;
 } acct_relations_pair;
 
-typedef struct _acct_fetch_args
+struct acct_fetch_args;
+
+typedef void (*account_page_cb)(struct acct_fetch_args* fetch_args);
+
+typedef struct acct_fetch_args
 {
     HV* session_hv;
     struct request_args* req_args;
     acct_relations_pair pair;
-    char* id;
+    const char* id;
     enum account_tab tab;
     account_page_cb callback;
     void* args;
- } acct_fetch_args;
+} acct_fetch_args;
 
-typedef void (*account_page_cb)(acct_fetch_args* fetch_args);
+static void
+acct_fetch_args_cleanup(acct_fetch_args* args)
+{
+    request_args_cleanup(args->req_args);
+    // This should clean itself when passed to `render_base_page'
+    //free(session_hv);
+    free(args->args);
+    
+    mstdnt_request_cb_cleanup(&results);
+}
 
 static char*
 accounts_page(HV* session_hv,
               struct mstdnt_account* acct,
               struct mstdnt_relationship* rel,
               char* header,
-              struct mstdnt_account* accts,
-              size_t accts_len)
+              struct mstdnt_accounts* accts)
 {
     char* output;
 
@@ -72,8 +86,8 @@ accounts_page(HV* session_hv,
         mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
     
-    if (accts && accts_len)
-        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts_len)));
+    if (accts)
+        mXPUSHs(newRV_noinc((SV*)perlify_accounts(accts, accts->len)));
     else ARG_UNDEFINED();
 
     // perlapi doesn't specify if a string length of 0 calls strlen so calling just to be safe...
@@ -94,15 +108,14 @@ request_cb_account_followers_page(mstdnt_request_cb_data* cb_data,
 {
     struct mstdnt_accounts* accts = MSTDNT_CB_DATA(cb_data);
     acct_fetch_args* data = args;
-    
+
     accounts_page(data->session_hv,
                   (data->pair.acct_data ?
                    data->pair.acct_data->data : NULL),
                   (data->pair.rels_data ?
                    data->pair.rels_data->data : NULL),
                   NULL,
-                  accts->accts,
-                  accts->len);
+                  accts->accts);
 
     return MSTDNT_REQUEST_DONE;
 }
@@ -111,9 +124,10 @@ static void
 account_followers_cb(acct_fetch_args* fetch_args)
 {
     struct mstdnt_args m_args;
+    struct session* ssn = fetch_args->req_args->ssn;
+    struct mstdnt_account* acct = fetch_args->pair.acct_data->data;
     set_mstdnt_args(&m_args, ssn);
     char* result;
-    acct_fetch_args* fetch_args = _args;
     
     struct mstdnt_account_args args = {
         .max_id = keystr(ssn->post.max_id),
