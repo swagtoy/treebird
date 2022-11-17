@@ -25,13 +25,6 @@
 
 #define FOLLOWS_YOU_HTML "<span class=\"acct-badge\">%s</span>"
 
-typedef void (*account_page_cb)(HV* ssn_hv,
-                                struct session* ssn,
-                                mastodont_t* api,
-                                struct mstdnt_account* acct,
-                                struct mstdnt_relationship* rel,
-                                void* args);
-
 struct account_args
 {
     mastodont_t* api;
@@ -49,13 +42,15 @@ typedef struct _acct_relations_pair
 typedef struct _acct_fetch_args
 {
     HV* session_hv;
+    struct request_args* req_args;
     acct_relations_pair pair;
     char* id;
     enum account_tab tab;
     account_page_cb callback;
     void* args;
-    struct request_args* req_args;
-} acct_fetch_args;
+ } acct_fetch_args;
+
+typedef void (*account_page_cb)(acct_fetch_args* fetch_args);
 
 static char*
 accounts_page(HV* session_hv,
@@ -113,12 +108,7 @@ request_cb_account_followers_page(mstdnt_request_cb_data* cb_data,
 }
 
 static void
-account_followers_cb(HV* session_hv,
-                     struct session* ssn,
-                     mastodont_t* api,
-                     struct mstdnt_account* acct,
-                     struct mstdnt_relationship* rel, 
-                     void* _args)
+account_followers_cb(acct_fetch_args* fetch_args)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -142,12 +132,7 @@ account_followers_cb(HV* session_hv,
 }
 
 static void
-account_following_cb(HV* session_hv,
-                     struct session* ssn,
-                     mastodont_t* api,
-                     struct mstdnt_account* acct,
-                     struct mstdnt_relationship* rel, 
-                     void* _args)
+account_following_cb(acct_fetch_args* fetch_args)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -168,13 +153,24 @@ account_following_cb(HV* session_hv,
                          acct->id, args);
 }
 
+// Callback: account_statuses_cb
+static int
+request_cb_account_statuses(mstdnt_request_cb_data* cb_data,
+                            void* tbargs)
+{
+    DESTRUCT_TB_ARGS(tbargs);
+
+    acct_fetch_args* data = args;
+    data->pair.acct_data = cb_data;
+
+    generate_account_page(data);
+
+    return MSTDNT_REQUEST_DONE;
+}
+
 static void
-account_statuses_cb(HV* session_hv,
-                    struct session* ssn,
-                    mastodont_t* api,
-                    struct mstdnt_account* acct,
-                    struct mstdnt_relationship* rel, 
-                    void* _args)
+account_statuses_cb(struct session* ssn,
+                    acct_fetch_args* fetch_args)
 
 {
     struct mstdnt_args m_args;
@@ -185,7 +181,7 @@ account_statuses_cb(HV* session_hv,
     size_t statuses_len = 0;
     char* result;
     
-    mstdnt_get_account_statuses(api, &m_args, NULL, NULL, acct->id, args, &storage, &statuses, &statuses_len);
+    mstdnt_get_account_statuses(api, &m_args, request_cb_account_statuses, NULL, acct->id, args);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
@@ -206,34 +202,18 @@ account_statuses_cb(HV* session_hv,
     return result;
 }
 
-static void
-account_scrobbles_cb(HV* session_hv,
-                     struct session* ssn,
-                     mastodont_t* api,
-                     struct mstdnt_account* acct,
-                     struct mstdnt_relationship* rel, 
-                     void* _args)
+static int
+request_cb_account_scrobbles(mstdnt_request_cb_data* cb_data,
+                             void* args)
 {
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_scrobble* scrobbles = NULL;
-    size_t scrobbles_len = 0;
-    char* result;
+    struct mstdnt_scrobbles* scrobbles = MSTDNT_CB_DATA(cb_data);
+    acct_fetch_args* data = args;
 
-    struct mstdnt_get_scrobbles_args args = {
-        .max_id = NULL,
-        .min_id = NULL,
-        .since_id = NULL,
-        .offset = 0,
-        .limit = 20
-    };
-    mstdnt_get_scrobbles(api, &m_args, NULL, NULL, acct->id, &args, &storage, &scrobbles, &scrobbles_len);
 
     PERL_STACK_INIT;
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    mXPUSHs(newRV_noinc((SV*)perlify_account(data->pair.acct_data)));
     if (rel)
         mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
     else ARG_UNDEFINED();
@@ -246,10 +226,32 @@ account_scrobbles_cb(HV* session_hv,
     
     result = PERL_GET_STACK_EXIT;
 
+    
+    return MSTDNT_REQUEST_DONE;
+    
+}
+
+static void
+account_scrobbles_cb(acct_fetch_args* fetch_args)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, fetch_args->req_args->ssn);
+    char* result;
+
+    struct mstdnt_get_scrobbles_args args = {
+        .max_id = NULL,
+        .min_id = NULL,
+        .since_id = NULL,
+        .offset = 0,
+        .limit = 20
+    };
+    mstdnt_get_scrobbles(api, &m_args,
+                         request_cb_account_scrobbles, fetch_args,
+                         acct->id, args);
+
     return result;
 }
 
-// TODO
 void get_account_info(mastodont_t* api, struct session* ssn)
 {
 #if 0
@@ -268,12 +270,7 @@ generate_account_page(acct_fetch_args* args)
     HV* session_hv = perlify_session(args->ssn);
     args->session_hv = session_hv;
     
-    char* data = args->callback(session_hv,
-                                args->ssn,
-                                args->api,
-                                args->pair.acct,
-                                args->pair.rels,
-                                args);
+    char* data = args->callback(args);
 
     struct base_page b = {
         .category = BASE_CAT_NONE,
@@ -282,12 +279,13 @@ generate_account_page(acct_fetch_args* args)
         .sidebar_left = NULL
     };
 
+    /* Output */
     render_base_page(&b, req, ssn, api);
         
-    /* Output */
     tb_free(data);
-    // CLEANUP REST OF TEH DATA
+    // Cleanup rest of the data from args
     request_args_cleanup(args->req_args);
+    free(args);
 }
 
 // Callback: fetch_account_page
@@ -508,7 +506,7 @@ request_cb_content_bookmarks(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
     
-    content_timeline(req, ssn, api, &storage,
+    content_timeline(req, ssn, api,
                      statuses->statuses, statuses->len,
                      BASE_CAT_BOOKMARKS, "Bookmarks", 0, 1);
 
