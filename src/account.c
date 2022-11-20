@@ -67,23 +67,53 @@ acct_fetch_args_cleanup(acct_fetch_args* args)
     mstdnt_request_cb_cleanup(args->pair.rels_data);
 }
 
-static char*
-accounts_page(HV* session_hv,
-              struct mstdnt_account* acct,
-              struct mstdnt_relationship* rel,
+/**
+ * Returns the final account page, and cleans up
+ *
+ * @param args Args, will cleanup.
+ * @param data Page data, will cleanup.
+ */
+static void
+account_page(acct_fetch_args* args, char* data)
+{
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = data,
+        .session = args->session_hv,
+        .sidebar_left = NULL
+    };
+
+    /* Output */
+    render_base_page(&b,
+                     args->req_args->req,
+                     args->req_args->ssn,
+                     args->req_args->api);
+        
+    tb_free(data);
+    // Cleanup rest of the data from args
+    request_args_cleanup(args->req_args);
+    free(args);
+}
+
+static void
+accounts_page(acct_fetch_args* args,
               char* header,
               struct mstdnt_accounts* accts)
 {
     char* output;
 
     PERL_STACK_INIT;
-    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)args->session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    if (acct)
-        mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    
+    if (args->pair.acct_data->data)
+        mXPUSHs(newRV_noinc((SV*)
+                            perlify_account(args->pair.acct_data->data)));
     else ARG_UNDEFINED();
-    if (rel)
-        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    
+    if (args->pair.rels_data->data)
+        mXPUSHs(newRV_noinc((SV*)
+                            perlify_relationship(args->pair.rels_data->data)));
     else ARG_UNDEFINED();
     
     if (accts)
@@ -97,50 +127,20 @@ accounts_page(HV* session_hv,
     PERL_STACK_SCALAR_CALL("account::content_accounts");
     
     output = PERL_GET_STACK_EXIT;
-
-    return output;
+    account_page(args, output);
 }
-
-static void
-generate_account_page(acct_fetch_args* args)
-{
-    HV* session_hv = perlify_session(args->req_args->ssn);
-    args->session_hv = session_hv;
-    
-    char* data = args->callback(args);
-
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = data,
-        .session = session_hv,
-        .sidebar_left = NULL
-    };
-
-    /* Output */
-    render_base_page(&b, req, ssn, api);
-        
-    tb_free(data);
-    // Cleanup rest of the data from args
-    request_args_cleanup(args->req_args);
-    free(args);
-}
-
 
 // Callback: account_followers_cb
 static int
-request_cb_account_followers_page(mstdnt_request_cb_data* cb_data,
-                                  void* args)
+request_cb_account_follow_page(mstdnt_request_cb_data* cb_data,
+                               void* args)
 {
     struct mstdnt_accounts* accts = MSTDNT_CB_DATA(cb_data);
     acct_fetch_args* data = args;
 
-    accounts_page(data->session_hv,
-                  (data->pair.acct_data ?
-                   data->pair.acct_data->data : NULL),
-                  (data->pair.rels_data ?
-                   data->pair.rels_data->data : NULL),
+    accounts_page(data,
                   NULL,
-                  accts->accts);
+                  accts);
 
     return MSTDNT_REQUEST_DONE;
 }
@@ -164,10 +164,8 @@ account_followers_cb(acct_fetch_args* fetch_args)
     };
     
     mstdnt_get_followers(fetch_args->req_args->api, &m_args,
-                         request_cb_account_followers_page, fetch_args,
+                         request_cb_account_follow_page, fetch_args,
                          acct->id, args);
-
-    //return accounts_page(session_hv, api, acct, rel, NULL, accts->accts, accts->len);
 }
 
 static void
@@ -175,6 +173,7 @@ account_following_cb(acct_fetch_args* fetch_args)
 {
     struct mstdnt_args m_args;
     struct session* ssn = fetch_args->req_args->ssn;
+    struct mstdnt_account* acct = fetch_args->pair.acct_data->data;
     set_mstdnt_args(&m_args, ssn);
     char* result;
     
@@ -188,9 +187,8 @@ account_following_cb(acct_fetch_args* fetch_args)
     };
     
     mstdnt_get_following(fetch_args->req_args->api, &m_args,
-                         NULL, NULL,
-                         ((struct mstdnt_account*)
-                          (fetch_args->pair.acct_data->data))->id, args);
+                         request_cb_account_follow_page, fetch_args,
+                         acct->id, args);
 }
 
 // Callback: account_statuses_cb
@@ -198,50 +196,57 @@ static int
 request_cb_account_statuses(mstdnt_request_cb_data* cb_data,
                             void* tbargs)
 {
+    struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
-
-    acct_fetch_args* data = args;
-    data->pair.acct_data = cb_data;
-
-    generate_account_page(data);
-
-    return MSTDNT_REQUEST_DONE;
-}
-
-static void
-account_statuses_cb(struct session* ssn,
-                    acct_fetch_args* fetch_args)
-
-{
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_account_statuses_args* args = _args;
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_status* statuses = NULL;
-    size_t statuses_len = 0;
-    char* result;
     
-    mstdnt_get_account_statuses(api, &m_args, request_cb_account_statuses, NULL, acct->id, args);
+    char* result;
+    acct_fetch_args* data = args;
+    struct mstdnt_account* acct = data->pair.acct_data->data;
+    struct mstdnt_relationships* rel = data->pair.rels_data->data;
 
     PERL_STACK_INIT;
-    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)data->session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     mXPUSHs(newRV_noinc((SV*)perlify_account(acct)));
+    // Assumes one relationship (there should be one)
     if (rel)
-        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel->relationships)));
     else ARG_UNDEFINED();
     
-    if (statuses && statuses_len)
-        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses, statuses_len)));
+    if (statuses)
+        mXPUSHs(newRV_noinc((SV*)perlify_statuses(statuses->statuses,
+                                                  statuses->len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("account::content_statuses");
     
     result = PERL_GET_STACK_EXIT;
-    
-    return result;
+
+    account_page(data, result);
+    return MSTDNT_REQUEST_DONE;
 }
 
+static void
+account_statuses_cb(acct_fetch_args* fetch_args)
+
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, fetch_args->req_args->ssn);
+    struct mstdnt_account* acct = fetch_args->pair.acct_data->data;
+    
+    mstdnt_get_account_statuses(fetch_args->req_args->api,
+                                &m_args,
+                                request_cb_account_statuses,
+                                NULL,
+                                acct->id,
+                                // Malloc'd earlier
+                                *((struct mstdnt_account_statuses_args*)
+                                  fetch_args->args));
+
+    tb_free(fetch_args->args);
+}
+
+// Callback: account_scrobbles_cb
 static int
 request_cb_account_scrobbles(mstdnt_request_cb_data* cb_data,
                              void* args)
@@ -249,23 +254,25 @@ request_cb_account_scrobbles(mstdnt_request_cb_data* cb_data,
     struct mstdnt_scrobbles* scrobbles = MSTDNT_CB_DATA(cb_data);
     acct_fetch_args* data = args;
 
-
     PERL_STACK_INIT;
-    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)data->session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-    mXPUSHs(newRV_noinc((SV*)perlify_account(data->pair.acct_data)));
-    if (rel)
-        mXPUSHs(newRV_noinc((SV*)perlify_relationship(rel)));
+    mXPUSHs(newRV_noinc((SV*)perlify_account(data->pair.acct_data->data)));
+    if (data->pair.rels_data)
+        mXPUSHs(newRV_noinc(
+                    (SV*)perlify_relationship(data->pair.rels_data->data)));
     else ARG_UNDEFINED();
     
-    if (scrobbles && scrobbles_len)
-        mXPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles, scrobbles_len)));
+    if (scrobbles->scrobbles)
+        mXPUSHs(newRV_noinc((SV*)perlify_scrobbles(scrobbles->scrobbles,
+                                                   scrobbles->len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("account::content_scrobbles");
     
-    result = PERL_GET_STACK_EXIT;
-
+    char* result = PERL_GET_STACK_EXIT;
+    // Will free
+    account_page(data, result);
     
     return MSTDNT_REQUEST_DONE;
     
@@ -277,6 +284,7 @@ account_scrobbles_cb(acct_fetch_args* fetch_args)
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, fetch_args->req_args->ssn);
     char* result;
+    struct mstdnt_account* acct = fetch_args->pair.acct_data->data;
 
     struct mstdnt_get_scrobbles_args args = {
         .max_id = NULL,
@@ -285,11 +293,9 @@ account_scrobbles_cb(acct_fetch_args* fetch_args)
         .offset = 0,
         .limit = 20
     };
-    mstdnt_get_scrobbles(api, &m_args,
+    mstdnt_get_scrobbles(fetch_args->req_args->api, &m_args,
                          request_cb_account_scrobbles, fetch_args,
                          acct->id, args);
-
-    return result;
 }
 
 void get_account_info(mastodont_t* api, struct session* ssn)
@@ -304,6 +310,15 @@ void get_account_info(mastodont_t* api, struct session* ssn)
 #endif
 }
 
+static void
+pass_account_info(acct_fetch_args* args)
+{
+    HV* session_hv = perlify_session(args->req_args->ssn);
+    args->session_hv = session_hv;
+
+    // Now get the data we requested originally
+    args->callback(args);
+}
 
 // Callback: fetch_account_page
 #if 0
@@ -318,7 +333,7 @@ request_cb_account_page_relationships(mstdnt_request_cb_data* cb_data,
     // TODO if this fails (it definitely can), then set to 0x1
     if (data->pair.rels_data->data && data->pair.acct_data->data)
     {
-        generate_account_page(data);
+        pass_account_info(data);
     }
 
     return MSTDNT_REQUEST_DATA_NOCLEANUP;
@@ -343,9 +358,9 @@ request_cb_account_page_acct(mstdnt_request_cb_data* cb_data,
                              &(acct.id),
                              1);
 #endif
-    generate_account_page(data);
+    pass_account_info(data);
 
-    return MSTDNT_REQUEST_DONE;
+    return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
 
 /**
@@ -400,21 +415,13 @@ fetch_account_page(FCGX_Request* req,
 
 int content_account_statuses(PATH_ARGS)
 {
-    struct mstdnt_account_statuses_args args = {
-        .pinned = 0,
-        .only_media = 0,
-        .with_muted = 0,
-        .exclude_reblogs = 0,
-        .exclude_replies = 0,
-        .tagged = NULL,
-        .max_id = keystr(ssn->post.max_id),
-        .min_id = keystr(ssn->post.min_id),
-        .since_id = NULL,
-        .offset = keyint(ssn->query.offset),
-        .limit = 20,
-    };
+    struct mstdnt_account_statuses_args* args =
+        tb_calloc(1, sizeof(struct mstdnt_account_statuses_args));
+    args->max_id = keystr(ssn->post.max_id);
+    args->min_id = keystr(ssn->post.min_id);
+    args->offset = keyint(ssn->query.offset);
     
-    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_STATUSES, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], args, ACCT_TAB_STATUSES, account_statuses_cb);
 }
 
 int content_account_followers(PATH_ARGS)
@@ -434,40 +441,26 @@ int content_account_scrobbles(PATH_ARGS)
 
 int content_account_pinned(PATH_ARGS)
 {
-    struct mstdnt_account_statuses_args args = {
-        .pinned = 1,
-        .only_media = 0,
-        .with_muted = 0,
-        .exclude_reblogs = 0,
-        .exclude_replies = 0,
-        .tagged = NULL,
-        .max_id = keystr(ssn->post.max_id),
-        .min_id = keystr(ssn->post.min_id),
-        .since_id = NULL,
-        .offset = 0,
-        .limit = 20,
-    };
+    struct mstdnt_account_statuses_args* args =
+        tb_calloc(1, sizeof(struct mstdnt_account_statuses_args));
+    args->pinned = MSTDNT_TRUE;
+    args->max_id = keystr(ssn->post.max_id);
+    args->min_id = keystr(ssn->post.min_id);
+    args->limit = 20;
     
-    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_PINNED, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], args, ACCT_TAB_PINNED, account_statuses_cb);
 }
 
 int content_account_media(PATH_ARGS)
 {
-    struct mstdnt_account_statuses_args args = {
-        .pinned = 0,
-        .only_media = 1,
-        .with_muted = 0,
-        .exclude_reblogs = 0,
-        .exclude_replies = 0,
-        .tagged = NULL,
-        .max_id = keystr(ssn->post.max_id),
-        .min_id = keystr(ssn->post.min_id),
-        .since_id = NULL,
-        .offset = 0,
-        .limit = 20,
-    };
+    struct mstdnt_account_statuses_args* args =
+        tb_calloc(1, sizeof(struct mstdnt_account_statuses_args));
+    args->only_media = 1;
+    args->max_id = keystr(ssn->post.max_id);
+    args->min_id = keystr(ssn->post.min_id);
+    args->limit = 20;
     
-    return fetch_account_page(req, ssn, api, data[0], &args, ACCT_TAB_MEDIA, account_statuses_cb);
+    return fetch_account_page(req, ssn, api, data[0], args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
 static int
@@ -475,6 +468,7 @@ request_cb_content_account_action(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     mstdnt_relationship* rel = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
+    char* referer = GET_ENV("HTTP_REFERER", req);
     
     redirect(req, REDIRECT_303, referer);
     return MSTDNT_REQUEST_DONE;
@@ -484,7 +478,6 @@ request_cb_content_account_action(mstdnt_request_cb_data* cb_data, void* tbargs)
 int
 content_account_action(PATH_ARGS)
 {
-    char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
 
@@ -633,7 +626,7 @@ int content_account_muted(PATH_ARGS)
 }
 
 // Callback: content_account_favourites
-static void
+static int
 request_cb_content_favorites(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
@@ -666,7 +659,6 @@ content_account_favourites(PATH_ARGS)
                                  request_cb_content_favorites,
                                  cb_args,
                                  args);
-    
 }
 
 PERLIFY_MULTI(account, accounts, mstdnt_account)
