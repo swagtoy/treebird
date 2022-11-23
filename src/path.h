@@ -31,12 +31,28 @@ struct path_args_data
     void* data;
 };
 
+/**
+ * Allocates a path_args_data struct.
+ *
+ * Used for mastodont-c callbacks essentially.
+ *
+ * @param req Request.
+ * @param ssn Session data.
+ * @param api API data. Usually a reference.
+ * @param data Any custom data, must be manually free'd
+ * @return Allocated struct, or NULL on error. Free with path_args_data_destroy
+ */
 struct path_args_data* path_args_data_create(REQUEST_T req,
                                              struct session* ssn,
                                              mastodont_t* api,
                                              void* data);
 
-void path_args_ref_destroy(struct path_args_data* refs);
+/**
+ * Destroys the path args and struct created by @struct path_args_data_create
+ *
+ * @param ref To be destroyed.
+ */
+void path_args_data_destroy(struct path_args_data* ref);
 
 int handle_paths(
     REQUEST_T req,

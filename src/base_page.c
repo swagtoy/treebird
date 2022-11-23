@@ -58,8 +58,16 @@ request_cb_base_page(mstdnt_request_cb_data* cb_data,
                      void* args)
 {
     struct mstdnt_notifications* notifs = MSTDNT_CB_DATA(cb_data);
+    struct path_args_data* path_data = args;
 
-    
+    // ->data is the page data
+    _render_base_page(path_data->data,
+                      path_data->req,
+                      path_data->ssn,
+                      notifs);
+
+    path_args_data_destroy(path_data);
+    return MSTDNT_REQUEST_DONE;
 }
 
 void
@@ -76,10 +84,13 @@ render_base_page(struct base_page* page,
         keystr(ssn->cookies.access_token) &&
         !ssn->config.notif_embed)
     {
+        struct path_args_data* path_data =
+            path_args_data_create(req, ssn, api, page);
+        
         mstdnt_get_notifications(
             api,
             &m_args,
-            request_cb_base_page, NULL,
+            request_cb_base_page, path_data,
             (struct mstdnt_notifications_args)
             {
                 .exclude_types = 0,
@@ -95,7 +106,9 @@ render_base_page(struct base_page* page,
             });
     }
     else {
-
+        // Render it as is, if IFrame is disabled
+        // TODO might get account data at this point
+        _render_base_page(page, req, ssn, NULL);
     }
 }
 
