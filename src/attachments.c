@@ -12,7 +12,6 @@
 #include "attachments.h"
 #include "string_helpers.h"
 
-
 struct attachments_args
 {
     struct session* ssn;
@@ -26,6 +25,7 @@ int try_upload_media(struct mstdnt_storage** storage,
                      struct mstdnt_attachment** attachments,
                      char*** media_ids)
 {
+    #if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     size_t size = keyfile(ssn->post.files).array_size;
@@ -54,10 +54,8 @@ int try_upload_media(struct mstdnt_storage** storage,
         
         if (mstdnt_upload_media(api,
                                 &m_args,
-                                NULL, NULL,
-                                &args,
-                                *storage + i,
-                                *attachments + i))
+                                request_cb_try_upload_media, upload_media_cb_args,
+                                args))
         {
             for (size_t j = 0; j < i; ++j)
             {
@@ -86,23 +84,28 @@ int try_upload_media(struct mstdnt_storage** storage,
     }
     
     return 0;
+#endif
 }
 
 void cleanup_media_storages(struct session* ssn, struct mstdnt_storage* storage)
 {
+#if 0
     if (!FILES_READY(ssn)) return;
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
         mstdnt_storage_cleanup(storage + i);
     tb_free(storage);
+#endif
 }
 
 void cleanup_media_ids(struct session* ssn, char** media_ids)
 {
+#if 0
     if (!FILES_READY(ssn)) return;
     if (!media_ids) return;
     for (size_t i = 0; i < keyfile(ssn->post.files).array_size; ++i)
         tb_free(media_ids[i]);
     tb_free(media_ids);
+#endif
 }
 
 HV* perlify_attachment(const struct mstdnt_attachment* const attachment)
