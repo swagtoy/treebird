@@ -19,56 +19,26 @@
 #include "cgi.h"
 #include "global_cache.h"
 
-
 #define BODY_STYLE "style=\"background:url('%s');\""
 
-
-void render_base_page(struct base_page* page, FCGX_Request* req, struct session* ssn, mastodont_t* api)
+static void
+_render_base_page(struct base_page* page,
+                  FCGX_Request* req,
+                  struct session* ssn,
+                  struct mstdnt_notifications* notifs)
 {
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_notification* notifs = NULL;
-    size_t notifs_len = 0;
-
-    // Fetch notification (if not iFrame)
-    if (keystr(ssn->cookies.logged_in) && keystr(ssn->cookies.access_token) &&
-        !ssn->config.notif_embed)
-    {
-        struct mstdnt_notifications_args args = {
-            .exclude_types = 0,
-            .account_id = NULL,
-            .exclude_visibilities = 0,
-            .include_types = 0,
-            .with_muted = 1,
-            .max_id = NULL,
-            .min_id = NULL,
-            .since_id = NULL,
-            .offset = 0,
-            .limit = 8,
-        };
-        
-        mstdnt_get_notifications(
-            api,
-            &m_args,
-            NULL, NULL,
-            &args,
-            &storage,
-            &notifs,
-            &notifs_len
-            );
-    }
-
     PERL_STACK_INIT;
 
-    HV* real_ssn = page->session ? page->session : perlify_session(ssn);
+    HV* real_ssn = page->session ? page->session :
+        perlify_session(ssn);
     mXPUSHs(newRV_noinc((SV*)real_ssn));
     mXPUSHs(newRV_inc((SV*)template_files));
     mXPUSHs(newSVpv(page->content, 0));
 
-    if (notifs && notifs_len)
+    if (notifs)
     {
-        mXPUSHs(newRV_noinc(perlify_notifications(notifs, notifs_len)));
+        mXPUSHs(newRV_noinc(
+                    (SV*)perlify_notifications(notifs->notifs, notifs->len)));
     }
     else ARG_UNDEFINED();
 
@@ -79,9 +49,54 @@ void render_base_page(struct base_page* page, FCGX_Request* req, struct session*
     
     send_result(req, NULL, "text/html", dup, 0);
     
-    mstdnt_cleanup_notifications(notifs, notifs_len);
-    mstdnt_storage_cleanup(&storage);
     tb_free(dup);
+}
+
+// Callback: render_base_page
+static int
+request_cb_base_page(mstdnt_request_cb_data* cb_data,
+                     void* args)
+{
+    struct mstdnt_notifications* notifs = MSTDNT_CB_DATA(cb_data);
+
+    
+}
+
+void
+render_base_page(struct base_page* page,
+                 FCGX_Request* req,
+                 struct session* ssn,
+                 mastodont_t* api)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+
+    // Fetch notification (if not iFrame)
+    if (keystr(ssn->cookies.logged_in) &&
+        keystr(ssn->cookies.access_token) &&
+        !ssn->config.notif_embed)
+    {
+        mstdnt_get_notifications(
+            api,
+            &m_args,
+            request_cb_base_page, NULL,
+            (struct mstdnt_notifications_args)
+            {
+                .exclude_types = 0,
+                .account_id = NULL,
+                .exclude_visibilities = 0,
+                .include_types = 0,
+                .with_muted = 1,
+                .max_id = NULL,
+                .min_id = NULL,
+                .since_id = NULL,
+                .offset = 0,
+                .limit = 8,
+            });
+    }
+    else {
+
+    }
 }
 
 void send_result(FCGX_Request* req, char* status, char* content_type, char* data, size_t data_len)

@@ -10,6 +10,7 @@
 #include "index.h"
 #include "account.h"
 #include "error.h"
+#include "session.h"
 
 int parse_path(REQUEST_T req,
                struct session* ssn,
@@ -87,6 +88,33 @@ breakpt:
     }
     if (data) tb_free(data);
     return res;
+}
+
+struct path_args_data*
+path_args_data_create(REQUEST_T req,
+                      struct session* ssn,
+                      mastodont_t* api,
+                      void* data)
+{
+    struct path_args_data* _data = malloc(sizeof(struct path_args_data));
+    if (!_data)
+    {
+        perror("malloc");
+    }
+    _data->req = req;
+    _data->ssn = ssn;
+    _data->api = api;
+    _data->data = data;
+
+    return _data;
+}
+
+void
+path_args_data_destroy(struct path_args_data* refs)
+{
+    session_cleanup(refs->ssn);
+    FCGX_Finish_r(refs->req);
+    free(refs->req);
 }
 
 int handle_paths(REQUEST_T req,
