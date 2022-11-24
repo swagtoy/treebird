@@ -14,31 +14,21 @@
 #include "error.h"
 #include "base_page.h"
 
-int content_chats(PATH_ARGS)
+// Callback: request_cb_content_chats
+static int
+request_cb_content_chats(mstdnt_request_cb_data* cb_data,
+                         void* args)
 {
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_chat* chats = NULL;
-    size_t chats_len = 0;
-    struct mstdnt_storage storage = { 0 };
 
-    struct mstdnt_chats_args args = {
-        .with_muted = MSTDNT_TRUE,
-        .max_id = keystr(ssn->post.max_id),
-        .since_id = NULL,
-        .min_id = keystr(ssn->post.min_id),
-        .offset = keyint(ssn->query.offset),
-        .limit = 20,
-    };
-
-    mstdnt_get_chats_v2(api, &m_args, NULL, NULL, &args, &storage, &chats, &chats_len);
+    struct mstdnt_chats* chats = MSTDNT_CB_DATA(cb_data);
+    struct path_args_data* path_data = args;
 
     PERL_STACK_INIT;
-    HV* session_hv = perlify_session(ssn);
+    HV* session_hv = perlify_session(path_data->ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (chats)
-        mXPUSHs(newRV_noinc((SV*)perlify_chats(chats, chats_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_chats(chats->chats, chats->len)));
     else ARG_UNDEFINED();
 
     PERL_STACK_SCALAR_CALL("chat::content_chats");
@@ -54,16 +44,35 @@ int content_chats(PATH_ARGS)
     };
     
     // Outpuot
-    render_base_page(&b, req, ssn, api);
+    render_base_page(&b, path_data->req, path_data->ssn, path_data->api);
 
     // Cleanup
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_cleanup_chats(chats, chats_len);
-    tb_free(dup);
+    path_args_data_destroy(args);
+    return MSTDNT_REQUEST_DONE;
+}
+
+int content_chats(PATH_ARGS)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+
+    mstdnt_get_chats_v2(api, &m_args,
+                        request_cb_content_chats,
+                        path_args_data_create(req, ssn, api, NULL),
+                        (struct mstdnt_chats_args)
+                        {
+                            .with_muted = MSTDNT_TRUE,
+                            .max_id = keystr(ssn->post.max_id),
+                            .since_id = NULL,
+                            .min_id = keystr(ssn->post.min_id),
+                            .offset = keyint(ssn->query.offset),
+                            .limit = 20,
+                        });
 }
 
 int content_chat_view(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_message* messages = NULL;
@@ -116,6 +125,7 @@ int content_chat_view(PATH_ARGS)
     mstdnt_cleanup_chat(&chat);
     mstdnt_cleanup_messages(messages);
     tb_free(dup);
+#endif
 }
 
 HV* perlify_chat(const struct mstdnt_chat* chat)
