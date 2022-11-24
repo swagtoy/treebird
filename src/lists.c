@@ -18,33 +18,19 @@
 #include "string_helpers.h"
 #include "http.h"
 
-int content_lists(PATH_ARGS)
+static int
+request_cb_get_lists(mstdnt_request_cb_data* cb_data,
+                     void* args)
 {
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_list* lists = NULL;
-    size_t lists_len = 0;
-    struct mstdnt_storage storage = { 0 };
-
-    if (ssn->post.title.is_set)
-    {
-        struct mstdnt_storage create_storage = { 0 };
-        struct mstdnt_list_args args = {
-            .title = keystr(ssn->post.title),
-            .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
-        };
-        mstdnt_create_list(api, &m_args, NULL, NULL, &args, &create_storage, NULL);
-        mstdnt_storage_cleanup(&create_storage);
-    }
-
-    mstdnt_get_lists(api, &m_args, NULL, NULL, &storage, &lists, &lists_len);
-
+    struct mstdnt_lists* lists = MSTDNT_CB_DATA(cb_data);
+    struct path_args_data* path_data = args;
+    
     PERL_STACK_INIT;
-    HV* session_hv = perlify_session(ssn);
+    HV* session_hv = perlify_session(path_data->ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
     if (lists)
-        mXPUSHs(newRV_noinc((SV*)perlify_lists(lists, lists_len)));
+        mXPUSHs(newRV_noinc((SV*)perlify_lists(lists->lists, lists->len)));
     
     PERL_STACK_SCALAR_CALL("lists::content_lists");
 
@@ -59,19 +45,45 @@ int content_lists(PATH_ARGS)
     };
 
     // Output
-    render_base_page(&b, req, ssn, api);
+    render_base_page(&b, path_data->req, path_data->ssn, path_data->api);
 
     // Cleanup
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_cleanup_lists(lists);
     tb_free(dup);
+    path_args_data_destroy(args);
+    return MSTDNT_REQUEST_DONE;
+}
+
+int content_lists(PATH_ARGS)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+
+    struct path_args_data* path_data = path_args_data_create(req,
+                                                             ssn,
+                                                             api,
+                                                             NULL);
+
+    if (ssn->post.title.is_set)
+    {
+        struct mstdnt_storage create_storage = { 0 };
+        struct mstdnt_list_args args = {
+            .title = keystr(ssn->post.title),
+            .replies_policy = MSTDNT_LIST_REPLIES_POLICY_LIST,
+        };
+        // TODO 
+        mstdnt_create_list(api, &m_args, NULL, NULL, args);
+        mstdnt_storage_cleanup(&create_storage);
+    }
+
+    mstdnt_get_lists(api, &m_args, request_cb_get_lists, path_data);
+
+    
 }
 
 int list_edit(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
     char* referer = getenv("HTTP_REFERER");
     char* id = data[0];
 
@@ -85,12 +97,9 @@ int list_edit(PATH_ARGS)
                        NULL,
                        NULL,
                        id,
-                       &args,
-                       &storage,
-                       NULL);
+                       args);
 
     redirect(req, REDIRECT_303, referer);
-    mstdnt_storage_cleanup(&storage);
 }
 
 HV* perlify_list(const struct mstdnt_list* list)
