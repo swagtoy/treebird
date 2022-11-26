@@ -14,6 +14,7 @@
 #include "request.h"
 
 #define PATH_ARGS REQUEST_T req, struct session* ssn, mastodont_t* api, char** data
+#define PATH_ARGS_PASS req, ssn, api, data
 
 struct path_info
 {

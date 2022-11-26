@@ -20,7 +20,8 @@
 
 #define LOGIN_SCOPE "read+write+follow+push"
 
-static void apply_access_token(REQUEST_T req, char* token)
+static void
+apply_access_token(REQUEST_T req, char* token)
 {
     PRINTF("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
     PUT("Set-Cookie: logged_in=t; Path=/; Max-Age=31536000\r\n");
@@ -29,13 +30,12 @@ static void apply_access_token(REQUEST_T req, char* token)
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
 }
 
-int content_login_oauth(PATH_ARGS)
+int
+content_login_oauth(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 }, oauth_storage = { 0 };
-    struct mstdnt_app app;
-    struct mstdnt_oauth_token token;
+    
     const char* orig_url = m_args.url;
     char* redirect_url = getenv("SERVER_NAME");
     char* decode_url = NULL;
@@ -111,114 +111,96 @@ int content_login_oauth(PATH_ARGS)
     if (decode_url) curl_free(decode_url);
 }
 
-int content_login(PATH_ARGS)
+// Registers an app, then proceeds to login
+static int
+register_app(PATH_ARGS, struct mstdnt_args* m_args)
+{
+    // Getting the client id/secret
+    struct mstdnt_application_args args_app = {
+        .client_name = "Treebird",
+        .redirect_uris = "http://localhost/",
+        .scopes = LOGIN_SCOPE,
+        .website = NULL
+    };
+
+    // Check if the username contains an @ symbol
+    char* address = strstr(keystr(ssn->post.username), "%40");
+    // If this check fails, we just restore the URL.
+    const char* orig_url = m_args->url;
+    char* url_link = NULL;
+    // If it does, set the instance name
+    if (address)
+    {
+        // Let is viewable as username
+        *address = '\0';
+        address += sizeof("%40")-1;
+        easprintf(&url_link, "https://%s/", address);
+        m_args->url = url_link;
+    }
+    else {
+        // Reset to instance url
+        m_args->url = config_instance_url;
+    }
+
+    mstdnt_register_app(api, m_args,
+                        request_cb_register_app,
+                        path_args_data_create(req, ssn, api, NULL),
+                        args_app);
+        struct mstdnt_application_args args_token = {
+            .grant_type = "password",
+            .client_id = app.client_id,
+            .client_secret = app.client_secret,
+            .redirect_uri = NULL,
+            .scope = LOGIN_SCOPE,
+            .code = NULL,
+            .username = keystr(ssn->post.username),
+            .password = keystr(ssn->post.password)
+        };
+
+        if (mstdnt_obtain_oauth_token(api,
+                                      &m_args,
+                                      NULL, NULL,
+                                      &args_token,
+                                      &oauth_store,
+                                      &token) != 0 && oauth_store.error)
+        {
+            //error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
+        }
+        else {
+            if (url_link)
+            {
+                PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
+            } else
+                // Clear
+                PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
+
+            apply_access_token(req, token.access_token);
+            tb_free(url_link);
+            return;
+        }
+    }
+        
+    if (url_link)
+    {
+        // Restore and cleanup, an error occured
+        m_args.url = orig_url;
+        tb_free(url_link);
+    }
+}
+
+int
+content_login(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 }, oauth_store = { 0 };
-    struct mstdnt_app app;
-    struct mstdnt_oauth_token token;
-    char* error = NULL;
-    char* page;
 
-    if (keystr(ssn->post.username) && keystr(ssn->post.password))
+    // Check if the user logged in
+    if (keystr(ssn->post.username) &&
+        keystr(ssn->post.password))
     {
-        // Getting the client id/secret
-        struct mstdnt_application_args args_app = {
-            .client_name = "Treebird",
-            .redirect_uris = "http://localhost/",
-            .scopes = LOGIN_SCOPE,
-            .website = NULL
-        };
-
-        // Check if the username contains an @ symbol
-        char* address = strstr(keystr(ssn->post.username), "%40");
-        // If it fails, we need to restore
-        const char* orig_url = m_args.url;
-        char* url_link = NULL;
-        if (address)
-        {
-            // Let is viewable as username
-            *address = '\0';
-            address += sizeof("%40")-1;
-            easprintf(&url_link, "https://%s/", address);
-            m_args.url = url_link;
-        }
-        else {
-            // Reset to instance url
-            m_args.url = config_instance_url;
-        }
-
-        if (mstdnt_register_app(api, &m_args, NULL, NULL, &args_app, &storage, &app) != 0)
-        {
-//            error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
-        }
-        else {
-            struct mstdnt_application_args args_token = {
-                .grant_type = "password",
-                .client_id = app.client_id,
-                .client_secret = app.client_secret,
-                .redirect_uri = NULL,
-                .scope = LOGIN_SCOPE,
-                .code = NULL,
-                .username = keystr(ssn->post.username),
-                .password = keystr(ssn->post.password)
-            };
-
-            if (mstdnt_obtain_oauth_token(api,
-                                          &m_args,
-                                          NULL, NULL,
-                                          &args_token,
-                                          &oauth_store,
-                                          &token) != 0 && oauth_store.error)
-            {
-                //error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
-            }
-            else {
-                if (url_link)
-                {
-                    PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
-                } else
-                    // Clear
-                    PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
-
-                apply_access_token(req, token.access_token);
-                tb_free(url_link);
-                return;
-            }
-        }
-        
-        if (url_link)
-        {
-            // Restore and cleanup, an error occured
-            m_args.url = orig_url;
-            tb_free(url_link);
-        }
+        register_app(PATH_ARGS_PASS, &m_args);
     }
-
-    PERL_STACK_INIT;
-    HV* session_hv = perlify_session(ssn);
-    XPUSHs(newRV_noinc((SV*)session_hv));
-    XPUSHs(newRV_noinc((SV*)template_files));
-    if (storage.error || oauth_store.error)
-        mXPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
-
-    PERL_STACK_SCALAR_CALL("login::content_login");
-
-    page = PERL_GET_STACK_EXIT;
-    
-    struct base_page b = {
-        .category = BASE_CAT_NONE,
-        .content = page,
-        .session = session_hv,
-        .sidebar_left = NULL
-    };
-
-    // Output
-    render_base_page(&b, req, ssn, api);
-
-    // Cleanup
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_storage_cleanup(&oauth_store);
-    tb_free(page);
+    else {
+        render_login_page(req, ssn, api);
+    }
 }

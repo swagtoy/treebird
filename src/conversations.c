@@ -14,6 +14,41 @@
 #include "error.h"
 #include "base_page.h"
 
+static void
+render_login_page(REQUEST_T req,
+                struct session* ssn,
+                mastodont_t* api)
+{
+    char* page;
+    
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+#if 0
+    if (storage.error || oauth_store.error)
+        mXPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
+#endif
+
+    PERL_STACK_SCALAR_CALL("login::content_login");
+
+    page = PERL_GET_STACK_EXIT;
+    
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = page,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, req, ssn, api);
+
+    // Cleanup
+    tb_free(page);
+}
+                            
+
 // Callback: request_cb_content_chats
 static int
 request_cb_content_chats(mstdnt_request_cb_data* cb_data,
