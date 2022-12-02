@@ -7,6 +7,7 @@
 #include "login.h"
 #include <string.h>
 #include <stdlib.h>
+#include "fcgiapp.h"
 #include "helpers.h"
 #include "query.h"
 #include "base_page.h"
@@ -79,10 +80,9 @@ content_login_oauth(PATH_ARGS)
 
         if (mstdnt_register_app(api,
                                 &m_args,
-                                NULL, NULL,
-                                &args_app,
-                                &storage,
-                                &app) == 0)
+                                NULL,
+                                NULL,
+                                args_app) == 0)
         {
             char* url;
             char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
@@ -111,9 +111,64 @@ content_login_oauth(PATH_ARGS)
     if (decode_url) curl_free(decode_url);
 }
 
+static int
+request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
+                       void* args)
+{
+    struct mstdnt_oauth_token* token = MSTDNT_CB_DATA(cb_data);
+    struct path_args_data* path_data = args;
+
+    char const* url_link = path_data->ssn->m_args.url;
+
+    // Needed for PRINTF statements, will probably get removed later
+    FCGX_Request* req = path_data->req;
+    if (url_link)
+    {
+        PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
+    }
+    else {
+        // Clears the cookie
+        PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
+    }
+
+    apply_access_token(req, token->access_token);
+    
+    tb_free(url_link);
+
+    path_args_data_destroy(path_data);
+    return MSTDNT_REQUEST_DONE;
+}
+
+// Callback: mstdnt_register_app
+static int
+request_cb_register_app(struct mstdnt_request_cb_data* cb_data,
+                        void* args)
+{
+    struct mstdnt_app* app = MSTDNT_CB_DATA(cb_data);
+    struct path_args_data* path_data = args;
+
+    mstdnt_obtain_oauth_token(path_data->api,
+                              &path_data->ssn->m_args,
+                              request_cb_oauth_token,
+                              path_data,
+                              (struct mstdnt_application_args)
+                              {
+                                  .grant_type = "password",
+                                  .client_id = app->client_id,
+                                  .client_secret = app->client_secret,
+                                  .redirect_uri = NULL,
+                                  .scope = LOGIN_SCOPE,
+                                  .code = NULL,
+                                  .username = keystr(path_data->ssn->post.username),
+                                  .password = keystr(path_data->ssn->post.password)
+                              });
+    
+    return MSTDNT_REQUEST_DONE;
+}
+
 // Registers an app, then proceeds to login
 static int
-register_app(PATH_ARGS, struct mstdnt_args* m_args)
+register_app(PATH_ARGS)
 {
     // Getting the client id/secret
     struct mstdnt_application_args args_app = {
@@ -126,7 +181,7 @@ register_app(PATH_ARGS, struct mstdnt_args* m_args)
     // Check if the username contains an @ symbol
     char* address = strstr(keystr(ssn->post.username), "%40");
     // If this check fails, we just restore the URL.
-    const char* orig_url = m_args->url;
+    const char* orig_url = ssn->m_args.url;
     char* url_link = NULL;
     // If it does, set the instance name
     if (address)
@@ -135,70 +190,30 @@ register_app(PATH_ARGS, struct mstdnt_args* m_args)
         *address = '\0';
         address += sizeof("%40")-1;
         easprintf(&url_link, "https://%s/", address);
-        m_args->url = url_link;
+        ssn->m_args.url = url_link;
     }
     else {
         // Reset to instance url
-        m_args->url = config_instance_url;
+        ssn->m_args.url = config_instance_url;
     }
 
-    mstdnt_register_app(api, m_args,
+    mstdnt_register_app(api,
+                        &ssn->m_args,
                         request_cb_register_app,
                         path_args_data_create(req, ssn, api, NULL),
                         args_app);
-        struct mstdnt_application_args args_token = {
-            .grant_type = "password",
-            .client_id = app.client_id,
-            .client_secret = app.client_secret,
-            .redirect_uri = NULL,
-            .scope = LOGIN_SCOPE,
-            .code = NULL,
-            .username = keystr(ssn->post.username),
-            .password = keystr(ssn->post.password)
-        };
-
-        if (mstdnt_obtain_oauth_token(api,
-                                      &m_args,
-                                      NULL, NULL,
-                                      &args_token,
-                                      &oauth_store,
-                                      &token) != 0 && oauth_store.error)
-        {
-            //error = construct_error(oauth_store.error, E_ERROR, 1, NULL);
-        }
-        else {
-            if (url_link)
-            {
-                PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
-            } else
-                // Clear
-                PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
-
-            apply_access_token(req, token.access_token);
-            tb_free(url_link);
-            return;
-        }
-    }
-        
-    if (url_link)
-    {
-        // Restore and cleanup, an error occured
-        m_args.url = orig_url;
-        tb_free(url_link);
-    }
 }
 
 int
 content_login(PATH_ARGS)
 {
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
+    set_mstdnt_args(&ssn->m_args, ssn);
 
     // Check if the user logged in
     if (keystr(ssn->post.username) &&
         keystr(ssn->post.password))
     {
-        register_app(PATH_ARGS_PASS, &m_args);
+        register_app(PATH_ARGS_PASS);
     }
     else {
         render_login_page(req, ssn, api);

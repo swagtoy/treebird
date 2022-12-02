@@ -12,6 +12,8 @@
 #include "local_config.h"
 #include "cookie.h"
 
+/* One per connection, contains all the data for a connection
+ * as it travels along */
 struct session
 {
     struct post_values post;
@@ -21,6 +23,7 @@ struct session
     int logged_in;
     struct mstdnt_account acct;
     struct mstdnt_storage acct_storage;
+    struct mstdnt_args m_args;
 
     char* cookies_str;
     char* post_str;
