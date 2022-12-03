@@ -6,14 +6,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(treebird
   VERSION 0.7
-  DESCRIPTION "A very lightweight and beautiful Pleroma frontend"
+  DESCRIPTION "A very lightweight and beautiful (subjective) Pleroma frontend"
   LANGUAGES C)
 
 include(cmake/helpers.cmake)
 find_package(FCGI REQUIRED)
 find_package(PERL REQUIRED)
-
-
 
 # Useful for GNU Emacs or VS Code
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
