@@ -9,7 +9,8 @@ project(treebird
   DESCRIPTION "A very lightweight and beautiful (subjective) Pleroma frontend"
   LANGUAGES C)
 
-include(cmake/helpers.cmake)
+include(cmake/os_hacks.cmake)
+include(cmake/set_and_def.cmake)
 find_package(FCGI REQUIRED)
 find_package(PERL REQUIRED)
 
