@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(treebird
   VERSION 0.7
-  DESCRIPTION "A very lightweight and beautiful (subjective) Pleroma frontend"
+  DESCRIPTION "A very lightweight and beautiful Pleroma frontend"
   LANGUAGES C)
 
 include(cmake/os_hacks.cmake)
@@ -15,7 +15,7 @@ include(cmake/os_hacks.cmake)
 include(cmake/append_and_def.cmake)
 find_package(PkgConfig REQUIRED)
 # Link stuff
-pkg_check_modules(CURL libcurl REQUIRED)
+find_package(CURL REQUIRED) # Required for mastodont-c (hack)
 find_package(PerlLibs REQUIRED)
 
 # Useful for GNU Emacs or VS Code
@@ -32,20 +32,29 @@ add_compile_options(
 )
 
 # hack is on me
-add_link_options(
+target_link_options(treebird
   -lmastodont
-  ${CURL_LDFLAGS_OTHER}
 )
-
-include_directories(include)
 
 # Read CMakeLists.txt in test file
 #add_subdirectory(test)
 
 set(SRC_FILES
+  src/main.c
+  src/types.c
   src/file-to-c/main.c
-  )
+  src/cookie.c
+  src/error.c
+  src/memory.c
+  src/helpers.c
+  src/key.c
+  src/local_config.c
+  src/local_config_set.c
+  src/string.c
+  src/string_helpers.c
+)
 
+# Pages
 append_and_def(SRC_FILES
   src/about.c
   src/account.c
@@ -53,24 +62,16 @@ append_and_def(SRC_FILES
   src/attachments.c
   src/base_page.c
   src/conversations.c
-  src/cookie.c
   src/easprintf.c
   src/emoji.c
   src/emoji_reaction.c
-  src/error.c
   src/global_cache.c
   src/global_perl.c
   src/hashtag.c
-  src/helpers.c
   src/http.c
   src/index.c
-  src/key.c
   src/lists.c
-  src/local_config.c
-  src/local_config_set.c
   src/login.c
-  src/main.c
-  src/memory.c
   src/memory_page.c
   src/mime.c
   src/notifications.c
@@ -82,20 +83,8 @@ append_and_def(SRC_FILES
   src/search.c
   src/session.c
   src/status.c
-  src/string.c
-  src/string_helpers.c
   src/timeline.c
-  src/types.c
 )
-
-# Compile with X11
-if(X11_FOUND)
-  set(SRC_FILES ${SRC_FILES}
-    src/x11/treebird_x11_context.c
-    src/x11/treebird_x11_window.c
-  )
-  add_definitions(-DTREEBIRD_USE_X11_BACKEND)
-endif(X11_FOUND)
 
 add_executable(treebird ${SRC_FILES})
 target_include_directories(treebird PUBLIC
