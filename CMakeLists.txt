@@ -10,10 +10,20 @@ project(treebird
   DESCRIPTION "A very lightweight and beautiful Pleroma frontend"
   LANGUAGES C)
 
+# Import local build
+if(EXISTS "mastodont-c/")
+  include(mastodont-c/mastodont-config.cmake)
+endif()
+
+add_executable(treebird ${SRC_FILES})
+
+# Useful
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(cmake/os_hacks.cmake)
 # List helper
 include(cmake/append_and_def.cmake)
-find_package(PkgConfig REQUIRED)
+#find_package(PkgConfig REQUIRED)
 # Link stuff
 find_package(CURL REQUIRED) # Required for mastodont-c (hack)
 find_package(PerlLibs REQUIRED)
@@ -22,7 +32,7 @@ find_package(PerlLibs REQUIRED)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Setup compile options
-add_compile_options(
+target_compile_options(treebird PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
   ${PERL_EXTRA_C_FLAGS}
@@ -32,7 +42,7 @@ add_compile_options(
 )
 
 # hack is on me
-target_link_options(treebird
+target_link_options(treebird PUBLIC
   -lmastodont
 )
 
@@ -86,13 +96,14 @@ append_and_def(SRC_FILES
   src/timeline.c
 )
 
-add_executable(treebird ${SRC_FILES})
+target_sources(treebird PUBLIC ${SRC_FILES})
+
 target_include_directories(treebird PUBLIC
   ${PERL_INCLUDE_PATH}
-  ${CURL_INCLUDE_PATH})
+  ${CURL_INCLUDE_DIRS})
 
 # Build! Note the mastodont hack, this _should_ change soon.
 target_link_libraries(treebird PUBLIC
-  ${PERL_LIBRARIES}
+  ${PERL_LIBRARY}
   ${CURL_LIBRARIES}
   mastodont-c/libmastodont.a)
