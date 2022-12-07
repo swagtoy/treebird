@@ -34,7 +34,6 @@ CFLAGS += -DDEBUG
 endif
 
 all:
-	$(MAKE) dep_build
 	$(MAKE) filec
 	$(MAKE) make_tmpls
 	$(MAKE) $(TARGET)
@@ -69,9 +68,6 @@ install: $(TARGET)
 test: all $(UNIT_TESTS)
 	@echo " ... Tests ready"
 	@./test/test.pl
-
-dep_build:
-	make -C $(MASTODONT_DIR)
 
 %.o: %.c %.h $(PAGES)
 	$(CC) $(CFLAGS) -c $< -o $@

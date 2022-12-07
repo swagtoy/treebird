@@ -20,7 +20,6 @@ else()
 endif()
 
 
-
 add_executable(treebird ${SRC_FILES})
 
 # Useful
@@ -29,10 +28,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(cmake/os_hacks.cmake)
 # List helper
 include(cmake/append_and_def.cmake)
-#find_package(PkgConfig REQUIRED)
+find_package(PkgConfig REQUIRED)
 # Link stuff
 find_package(CURL REQUIRED) # Required for mastodont-c (hack)
+
+# For some reason the arguments from Perl are stored as a full string
+# Blame CMake(?), not me...
 find_package(PerlLibs REQUIRED)
+
+# It returns in CMake terms, "the command", but we want ("the" "command").
+#   `target_compile_options' wants this.
+# I'm still learning CMake, don't know why it stores lists like this, but it's
+#   whatever
+string(REPLACE " " ";" _PERL_EXTRA_C_FLAGS ${PERL_EXTRA_C_FLAGS})
+# We could also use this somehow:
+#    separate_arguments(_PERL_EXTRA_C_FLAGS UNIX_COMMAND
+#      "${PERL_EXTRA_C_FLAGS}")
 
 # Useful for GNU Emacs or VS Code
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -41,11 +52,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 target_compile_options(treebird PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
-  ${PERL_EXTRA_C_FLAGS}
+  ${_PERL_EXTRA_C_FLAGS}
   $<$<CONFIG:DEBUG>:-Og>
   $<$<CONFIG:DEBUG>:-g>
   $<$<CONFIG:RELEASE>:-O2>
 )
+
+
 
 # hack is on me
 target_link_options(treebird PUBLIC
@@ -71,7 +84,7 @@ set(SRC_FILES
 )
 
 # Pages
-append_and_def(SRC_FILES
+append_and_def(treebird PUBLIC SRC_FILES
   src/about.c
   src/account.c
   src/applications.c
@@ -101,19 +114,18 @@ append_and_def(SRC_FILES
   src/status.c
   src/timeline.c
 )
+message("${COMPILE_DEFINITIONS}")
 
 target_sources(treebird PUBLIC ${SRC_FILES})
 
-message(${MASTODONT_INCLUDE_DIRS})
-
 target_include_directories(treebird PUBLIC
-  ${PERL_INCLUDE_PATH}
+  ${PERL_INCLUDE_DIRS}
   ${MASTODONT_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS})
 
 # Build! Note the mastodont hack, this _should_ change soon.
 target_link_libraries(treebird PUBLIC
-  ${PERL_LIBRARY}
+  ${PERL_LIBRARIES}
   ${CURL_LIBRARIES}
   ${MASTODONT_LIBRARIES}
   mastodont-c/libmastodont.a)

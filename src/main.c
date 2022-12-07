@@ -52,12 +52,24 @@ static int exit_treebird(PATH_ARGS)
  *  Path handling  *
  ******************/
 static struct path_info paths[] = {
+#ifdef CMP_ENABLE_CONFIG
     { "/config/general", content_config_general },
     { "/config/appearance", content_config_appearance },
-    /* { "/config/account", content_config_account }, */
+    //{ "/config/account", content_config_account },
     { "/config", content_config },
+#endif
+
+#ifdef CMP_ENABLE_ATTACHMENTS
+    // API
+    { "/treebird_api/v1/attachment", api_attachment_create },
+#endif
+    
+#ifdef CMP_ENABLE_LOGIN
     { "/login/oauth", content_login_oauth },
     { "/login", content_login },
+#endif
+
+#ifdef CMP_ENABLE_ACCOUNT
     { "/user/:/action/:", content_account_action },
     { "/user/:", content_account_statuses },
     { "/@:/scrobbles", content_account_scrobbles },
@@ -67,6 +79,12 @@ static struct path_info paths[] = {
     { "/@:/followers", content_account_followers },
     { "/@:/statuses", content_account_statuses },
     { "/@:", content_account_statuses },
+    { "/favourites", content_account_favourites },
+    { "/blocked", content_account_blocked },
+    { "/muted", content_account_muted },
+#endif
+
+#ifdef CMP_ENABLE_STATUS
     { "/status/:/react/:", content_status_react },
     { "/status/:/react", status_emoji },
     { "/status/create", content_status_create },
@@ -76,44 +94,64 @@ static struct path_info paths[] = {
     { "/status/:/boosted_by", status_view_reblogs },
     { "/status/:/reblogged_by", status_view_reblogs },
     { "/status/:", status_view },
-#if 0
     { "/notice/:", notice_redirect },
+    { "/treebird_api/v1/interact", api_status_interact },
+#endif
+
+#ifdef CMP_ENABLE_ABOUT
     { "/about/license", content_about_license },
     { "/about", content_about },
+#endif
+
+#ifdef CMP_ENABLE_SEARCH
     { "/search/statuses", content_search_statuses },
     { "/search/accounts", content_search_accounts },
     { "/search/hashtags", content_search_hashtags },
     { "/search", content_search_all },
+#endif
+
+#if defined(CMP_ENABLE_EMOJI) && defined(CMP_ENABLE_EMOJI_REACTION)
     { "/emoji_picker", content_emoji_picker },
+#endif
+
+#ifdef CMP_ENABLE_LISTS
     { "/lists/edit/:", list_edit },
     { "/lists/for/:", content_tl_list },
     { "/lists", content_lists },
+#endif
+
+#ifdef CMP_ENABLE_TIMELINE
     { "/local", content_tl_local },
     { "/federated", content_tl_federated },
     { "/direct", content_tl_direct },
     { "/bookmarks", content_account_bookmarks },
-    { "/favourites", content_account_favourites },
-    { "/blocked", content_account_blocked },
-    { "/muted", content_account_muted },
+#endif
+
+#ifdef CMP_ENABLE_NOTIFICATIONS
     { "/notifications_compact", content_notifications_compact },
     { "/notification/:/read", content_notifications_read },
     { "/notification/:/delete", content_notifications_clear },
     { "/notifications/read", content_notifications_read },
     { "/notifications/clear", content_notifications_clear },
     { "/notifications", content_notifications },
+    { "/treebird_api/v1/notifications", api_notifications },
+#endif
+
+#ifdef CMP_ENABLE_HASHTAG
     { "/tag/:", content_tl_tag },
+#endif
+
+#ifdef CMP_ENABLE_CONVERSATIONS
     { "/chats/:", content_chat_view },
     { "/chats", content_chats },
+#endif
+    
 #ifdef DEBUG
     { "/quit", exit_treebird },
     { "/exit", exit_treebird },
 #endif
     // Debug, but cool to see
     { "/memory_stats", content_memory_stats },
-    // API
-    { "/treebird_api/v1/notifications", api_notifications },
-    { "/treebird_api/v1/interact", api_status_interact },
-    { "/treebird_api/v1/attachment", api_attachment_create },
 };
 
 static int application(mastodont_t* api, REQUEST_T req)
