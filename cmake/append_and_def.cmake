@@ -2,20 +2,25 @@
 # the code doesn't compile correctly, for which you can do an `#ifdef' with the
 # C Preprocessor
 
-macro(append_and_def TARGET SCOPE NAME ...)
-  
-  foreach(X IN ITEMS ${ARGN})
+# ugly btw, just wanted to let you know
+function(append_and_def TARGET SCOPE NAME ...)
+  set(Y)
+  foreach(I RANGE 3 ${ARGC})
     # Convert to uppercase for the definition
+    list(GET ARGV ${I} X)
     get_filename_component(TEMP ${X} NAME_WE)
     string(TOUPPER _TEMP ${TEMP})
 
-    get_target_property(
-      targ_comp
-      ${TARGET}
-      INTERFACE_COMPILE_DEFINITIONS)
-    message(${_TEMP})
-    target_compile_definitions(${TARGET} ${SCOPE}
-      ${targ_comp} -DCMP_ENABLE_${_TEMP})
-    list(APPEND X ${_TEMP})
+    # get_target_property(
+    #   targ_comp
+    #   ${TARGET}
+    #   INTERFACE_COMPILE_DEFINITIONS)
+
+    # target_compile_definitions(${TARGET} ${SCOPE}
+#      ${targ_comp} -DCMP_ENABLE_${_TEMP})
+    
+    list(APPEND Y ${_TEMP})
   endforeach()
-endmacro()
+
+  return(PROPAGATE ${Y} ${SCOPE} ${X})
+endfunction()
