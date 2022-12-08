@@ -15,10 +15,8 @@ project(treebird
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/mastodont-c")
   include(mastodont-c/cmake/mastodont-config.cmake)
 else()
-  # 
   find_package(MASTODONT REQUIRED)
 endif()
-
 
 add_executable(treebird ${SRC_FILES})
 
@@ -57,8 +55,6 @@ target_compile_options(treebird PUBLIC
   $<$<CONFIG:DEBUG>:-g>
   $<$<CONFIG:RELEASE>:-O2>
 )
-
-
 
 # hack is on me
 target_link_options(treebird PUBLIC
@@ -114,7 +110,6 @@ append_and_def(treebird PUBLIC SRC_FILES
   src/status.c
   src/timeline.c
 )
-message("${COMPILE_DEFINITIONS}")
 
 target_sources(treebird PUBLIC ${SRC_FILES})
 

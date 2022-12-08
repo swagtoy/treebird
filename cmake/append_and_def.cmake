@@ -7,9 +7,10 @@ function(append_and_def TARGET SCOPE NAME ...)
   set(Y)
   foreach(I RANGE 3 ${ARGC})
     # Convert to uppercase for the definition
-    list(GET ARGV ${I} X)
-    get_filename_component(TEMP ${X} NAME_WE)
-    string(TOUPPER _TEMP ${TEMP})
+    list(GET ARGV ${I} I)
+    math(EXPR I "${I} - 1")
+    get_filename_component(I ${X} NAME_WE)
+    string(TOUPPER _TEMP ${I})
 
     # get_target_property(
     #   targ_comp
