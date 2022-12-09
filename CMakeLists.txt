@@ -61,6 +61,7 @@ target_link_options(treebird PUBLIC
   -lmastodont
 )
 
+
 # Read CMakeLists.txt in test file
 #add_subdirectory(test)
 
@@ -69,6 +70,7 @@ set(SRC_FILES
   src/types.c
   src/file-to-c/main.c
   src/cookie.c
+  src/easprintf.c
   src/error.c
   src/memory.c
   src/helpers.c
@@ -87,7 +89,6 @@ append_and_def(treebird PUBLIC SRC_FILES
   src/attachments.c
   src/base_page.c
   src/conversations.c
-  src/easprintf.c
   src/emoji.c
   src/emoji_reaction.c
   src/global_cache.c

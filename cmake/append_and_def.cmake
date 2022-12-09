@@ -2,26 +2,36 @@
 # the code doesn't compile correctly, for which you can do an `#ifdef' with the
 # C Preprocessor
 
-# ugly btw, just wanted to let you know
-function(append_and_def TARGET SCOPE NAME ...)
-  set(Y)
-  foreach(I RANGE 3 ${ARGC})
-    # Convert to uppercase for the definition
-    list(GET ARGV ${I} I)
-    math(EXPR I "${I} - 1")
-    get_filename_component(I ${X} NAME_WE)
-    string(TOUPPER _TEMP ${I})
+function(append_and_def TARGET SCOPE NAME)
+  math(EXPR LEN "${ARGC}-1")
+  foreach(I RANGE 3 ${LEN})
+    list(GET ARGV ${I} filename)
+    # Convert name partto uppercase for the definition
+    get_filename_component(name ${filename} NAME_WE)
+    string(TOUPPER ${name} file_up)
 
-    # get_target_property(
-    #   targ_comp
-    #   ${TARGET}
-    #   INTERFACE_COMPILE_DEFINITIONS)
+    get_target_property(
+      targ_comp
+      ${TARGET}
+      COMPILE_DEFINITIONS
+    )
 
-    # target_compile_definitions(${TARGET} ${SCOPE}
-#      ${targ_comp} -DCMP_ENABLE_${_TEMP})
+    if ("${targ_comp}" STREQUAL "targ_comp-NOTFOUND")
+      set_target_properties(
+        ${TARGET}
+        PROPERTIES COMPILE_DEFINITIONS "${file_up}"
+      )
+    else()
+      set_target_properties(
+        ${TARGET}
+        PROPERTIES COMPILE_DEFINITIONS "${targ_comp};${file_up}"
+      )
+    endif()
     
-    list(APPEND Y ${_TEMP})
+    # Will return copy of files
+    list(APPEND out_list ${filename})
   endforeach()
 
-  return(PROPAGATE ${Y} ${SCOPE} ${X})
+  # Return
+  set(${NAME} ${out_list} PARENT_SCOPE)
 endfunction()
