@@ -58,7 +58,7 @@ target_compile_options(treebird PUBLIC
 
 # hack is on me
 target_link_options(treebird PUBLIC
-  -lmastodont
+  # -lmastodont
 )
 
 
@@ -77,12 +77,17 @@ set(SRC_FILES
   src/key.c
   src/local_config.c
   src/local_config_set.c
+  src/query.c
   src/string.c
   src/string_helpers.c
+  src/request.c
+  src/session.c
+  src/path.c
+  src/mime.c
 )
 
 # Pages
-append_and_def(treebird PUBLIC SRC_FILES
+append_and_def(treebird PUBLIC ${SRC_FILES}
   src/about.c
   src/account.c
   src/applications.c
@@ -97,19 +102,14 @@ append_and_def(treebird PUBLIC SRC_FILES
   src/http.c
   src/index.c
   src/lists.c
-  src/login.c
-  src/memory_page.c
-  src/mime.c
-  src/notifications.c
-  src/page_config.c
-  src/path.c
-  src/query.c
-  src/request.c
-  src/scrobble.c
-  src/search.c
-  src/session.c
-  src/status.c
-  src/timeline.c
+  # src/login.c
+  # src/memory_page.c
+  # src/notifications.c
+  # src/page_config.c
+  # src/scrobble.c
+  # src/search.c
+  # src/status.c
+  # src/timeline.c
 )
 
 target_sources(treebird PUBLIC ${SRC_FILES})
@@ -123,5 +123,5 @@ target_include_directories(treebird PUBLIC
 target_link_libraries(treebird PUBLIC
   ${PERL_LIBRARIES}
   ${CURL_LIBRARIES}
-  ${MASTODONT_LIBRARIES}
-  mastodont-c/libmastodont.a)
+
+  ${MASTODONT_LIBRARIES})

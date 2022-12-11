@@ -13,7 +13,8 @@
 #include "mime.h"
 #include "string.h"
 
-char* get_mime_boundary(char* content_type_str, char** bound)
+char*
+get_mime_boundary(char* content_type_str, char** bound)
 {
     // If neither values are set, get out
     if (!content_type_str)
@@ -59,14 +60,16 @@ error:
     return NULL;
 }
 
-static char* strnws(char* str)
+static char*
+strnws(char* str)
 {
     for (; isblank(*str); ++str);
     return str;
 }
 
 // Function assumes character is at ';' char
-static char* read_key(char** r, char* key)
+static char*
+read_key(char** r, char* key)
 {
     char* val, *read_val;
     size_t key_len = strlen(key);
