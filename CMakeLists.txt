@@ -10,13 +10,15 @@ project(treebird
   DESCRIPTION "A very lightweight and beautiful Pleroma frontend"
   LANGUAGES C)
 
+
 # Import local build if it exists.
 # This is a current solution unless distributions provide their own packages
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/mastodont-c")
-  include(mastodont-c/cmake/mastodont-config.cmake)
+#  include(mastodont-c/cmake/mastodont-config.cmake)
 else()
-  find_package(MASTODONT REQUIRED)
+  find_package(Mastodont REQUIRED CONFIG)
 endif()
+message("${CMAKE_PREFIX_PATH}  ${MASTODONT_INCLUDE_DIR}")
 
 add_executable(treebird ${SRC_FILES})
 
@@ -123,5 +125,4 @@ target_include_directories(treebird PUBLIC
 target_link_libraries(treebird PUBLIC
   ${PERL_LIBRARIES}
   ${CURL_LIBRARIES}
-
   ${MASTODONT_LIBRARIES})

@@ -134,7 +134,7 @@ int handle_paths(REQUEST_T req,
         for (size_t i = 0; i < paths_len; ++i)
         {
             if ((res = parse_path(req, ssn, api, paths + i)) != -1)
-                return;
+                return res;
         }
 
         // Fell out, return 404
