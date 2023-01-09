@@ -3,6 +3,10 @@
 #   cmake -DCMAKE_BUILD_TYPE=Debug ..
 #   cmake -DCMAKE_BUILD_TYPE=Release ..
 
+# Things to perfect here: [ REMOVE WHEN DONE ]
+#  - Make sure the Mastodont-c folder can be linked/used directly again
+#  - Finish TODO's in here
+
 # TODO Poke at this
 cmake_minimum_required(VERSION 3.14)
 project(treebird
@@ -10,19 +14,23 @@ project(treebird
   DESCRIPTION "A very lightweight and beautiful Pleroma frontend"
   LANGUAGES C)
 
+if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+  # Shitty hack with Perl libraries :-(
+  set(CLANG_ONLY_HACK "-Wno-compound-token-split-by-macro -W")
+endif()
 
 # Import local build if it exists.
 # This is a current solution unless distributions provide their own packages
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/mastodont-c")
-#  include(mastodont-c/cmake/mastodont-config.cmake)
+  include(mastodont-c/cmake/mastodont-config.cmake)
 else()
-  find_package(Mastodont REQUIRED CONFIG)
+  find_package(MASTODONT REQUIRED CONFIG)
 endif()
-message("${CMAKE_PREFIX_PATH}  ${MASTODONT_INCLUDE_DIR}")
+#message("${CMAKE_PREFIX_PATH}  ${MASTODONT_INCLUDE_DIR}")
 
 add_executable(treebird ${SRC_FILES})
 
-# Useful
+# Useful for most text editors, doesn't hurt *shrugs*
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/os_hacks.cmake)
@@ -30,7 +38,12 @@ include(cmake/os_hacks.cmake)
 include(cmake/append_and_def.cmake)
 find_package(PkgConfig REQUIRED)
 # Link stuff
-find_package(CURL REQUIRED) # Required for mastodont-c (hack)
+### find_package(CURL REQUIRED) # Required for mastodont-c
+
+# Note: See cmake/os_hacks.cmake as imported before!
+#  There's an issue with FreeBSD (possible others) where... well, FCGI doesn't have a pkg-config file...
+#  So we have to "emulate" a package here ourselves. :-)
+pkg_check_modules(FCGI fcgi)
 
 # For some reason the arguments from Perl are stored as a full string
 # Blame CMake(?), not me...
@@ -52,6 +65,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 target_compile_options(treebird PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
+  ${CLANG_ONLY_HACK}
   ${_PERL_EXTRA_C_FLAGS}
   $<$<CONFIG:DEBUG>:-Og>
   $<$<CONFIG:DEBUG>:-g>
@@ -59,10 +73,9 @@ target_compile_options(treebird PUBLIC
 )
 
 # hack is on me
-target_link_options(treebird PUBLIC
-  # -lmastodont
-)
-
+# target_link_options(treebird PUBLIC
+#   # -lmastodont
+# )
 
 # Read CMakeLists.txt in test file
 #add_subdirectory(test)
@@ -70,7 +83,6 @@ target_link_options(treebird PUBLIC
 set(SRC_FILES
   src/main.c
   src/types.c
-  src/file-to-c/main.c
   src/cookie.c
   src/easprintf.c
   src/error.c
@@ -113,6 +125,9 @@ append_and_def(treebird PUBLIC ${SRC_FILES}
   # src/status.c
   # src/timeline.c
 )
+
+add_executable(file-to-c src/file-to-c/main.c)
+
 
 target_sources(treebird PUBLIC ${SRC_FILES})
 
