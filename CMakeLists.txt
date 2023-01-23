@@ -43,7 +43,7 @@ find_package(PkgConfig REQUIRED)
 # Note: See cmake/os_hacks.cmake as imported before!
 #  There's an issue with FreeBSD (possible others) where... well, FCGI doesn't have a pkg-config file...
 #  So we have to "emulate" a package here ourselves. :-)
-pkg_check_modules(FCGI fcgi)
+pkg_check_modules(FCGI fcgi REQUIRED)
 
 # For some reason the arguments from Perl are stored as a full string
 # Blame CMake(?), not me...
@@ -133,6 +133,7 @@ target_sources(treebird PUBLIC ${SRC_FILES})
 
 target_include_directories(treebird PUBLIC
   ${PERL_INCLUDE_DIRS}
+  ${FCGI_INCLUDE_DIRS}
   ${MASTODONT_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS})
 
@@ -140,4 +141,5 @@ target_include_directories(treebird PUBLIC
 target_link_libraries(treebird PUBLIC
   ${PERL_LIBRARIES}
   ${CURL_LIBRARIES}
+  ${FCGI_LIBRARIES}
   ${MASTODONT_LIBRARIES})
