@@ -1,16 +1,85 @@
-solution "Treebird"
+premake.gcc.cc = os.getenv("CC") or 'cc';
+
+if not os.isfile('config.h') then
+	print("Note: `config.h' not found, until a new Treebird release comes out,");
+	print("      please copy `config.def.h' and edit it.");
+	os.exit(1);
+end
+
+solution "Treebird";
 configurations { "Debug", "Release" };
+
+local c_files = {
+	'main.c',
+	'types.c',
+	'cookie.c',
+	'easprintf.c',
+	'error.c',
+	'memory.c',
+	'helpers.c',
+	'key.c',
+	'local_config.c',
+	'local_config_set.c',
+	'query.c',
+	'string.c',
+	'string_helpers.c',
+	'request.c',
+	'session.c',
+	'path.c',
+	'mime.c'
+};
+
+-- Not actually real 'pages', but the ones we compile in / create definitions
+local pages = {
+	'about.c',
+	'account.c',
+	'applications.c',
+	'attachments.c',
+	'base_page.c',
+	'conversations.c',
+	'emoji.c',
+	'emoji_reaction.c',
+	'global_cache.c',
+	'global_perl.c',
+	'hashtag.c',
+	'http.c',
+	'index.c',
+	'lists.c',
+--	'login.c',
+--	'memory_page.c',
+--	'notifications.c',
+--	'page_config.c',
+--	'scrobble.c',
+--	'search.c',
+--	'status.c',
+--	'timeline.c',
+};
+
+local definitions = {};
+
+-- Create definitions for page enabling
+for i=1, table.getn(pages)  do
+	local def = 'CMP_ENABLE_' .. string.upper(string.sub(pages[i], 0, -3));
+	table.insert(definitions, def);
+end
+
+-- Prepend with 'src/'
+for i=1, table.getn(c_files) do c_files[i] = 'src/'.. c_files[i] end
+for i=1, table.getn(pages) do pages[i] = 'src/'.. pages[i] end
 
 -- BEGIN Mastodont project
 project("treebird");
 kind("ConsoleApp");
 language("C");
-cdialect("C99");
-files { "src/*.h", "src/*.c" };
+--files { table.unpack(c_files), table.unpack(pages) };
+files(c_files);
+files(pages);
 includedirs { "include/" };
+defines(definitions);
 
 configuration { "linux", "bsd", "gmake" };
 linkoptions { "`pkg-config --libs mastodont`" };
+-- TODO figure out perl...
 
 configuration { "Debug" };
 defines { "DEBUG" };
