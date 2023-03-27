@@ -76,7 +76,6 @@ for _, v in ipairs(pages) do
 	table.insert(c_files, v);
 end
 files(c_files);
---files(pages);
 includedirs { "include/" };
 defines(definitions);
 
@@ -95,7 +94,6 @@ links{"fcgi"};
 if premake.gcc.cc ~= 'clang' then
 	buildoptions{"-Wno-compound-token-split-by-macro"};
 end
--- TODO figure out perl...
 
 configuration { "Debug" };
 defines { "DEBUG" };
