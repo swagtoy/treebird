@@ -7,7 +7,7 @@
 #ifndef GLOBAL_PERL_H
 #define GLOBAL_PERL_H
 
-// Hack on my system... if this breaks anything, plz dig deeper
+/* Libperl has lots of warnings... */
 #include <EXTERN.h>
 #include <perl.h>
 #include "memory.h"

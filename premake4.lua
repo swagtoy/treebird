@@ -77,8 +77,21 @@ files(pages);
 includedirs { "include/" };
 defines(definitions);
 
-configuration { "linux", "bsd", "gmake" };
-linkoptions { "`pkg-config --libs mastodont`" };
+-- For some reason this one doesn't have a pkg-config file
+local libfcgi = os.findlib("libfcgi");
+if not libfcgi then
+	print("Couldn't find libfcgi (aka fcgi-devkit). Probably gonna need that.\n");
+	os.exit(1);
+end
+
+configuration { "gmake" };
+linkoptions{ "`pkg-config --libs mastodont` `perl -MExtUtils::Embed -e ldopts`" };
+buildoptions{ "`pkg-config --cflags mastodont` `perl -MExtUtils::Embed -e ccopts`" };
+links{"fcgi"};
+
+if premake.gcc.cc ~= 'clang' then
+	buildoptions{"-Wno-compound-token-split-by-macro"};
+end
 -- TODO figure out perl...
 
 configuration { "Debug" };
