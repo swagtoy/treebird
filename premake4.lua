@@ -26,7 +26,7 @@ local c_files = {
 	'request.c',
 	'session.c',
 	'path.c',
-	'mime.c'
+	'mime.c',
 };
 
 -- Not actually real 'pages', but the ones we compile in / create definitions
@@ -71,9 +71,12 @@ for i=1, table.getn(pages) do pages[i] = 'src/'.. pages[i] end
 project("treebird");
 kind("ConsoleApp");
 language("C");
---files { table.unpack(c_files), table.unpack(pages) };
+-- Merge pages into c_files
+for _, v in ipairs(pages) do
+	table.insert(c_files, v);
+end
 files(c_files);
-files(pages);
+--files(pages);
 includedirs { "include/" };
 defines(definitions);
 
