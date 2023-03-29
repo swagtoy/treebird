@@ -8,6 +8,7 @@ emojitoc
 static/*.ctmpl
 static/*.c
 mastodont-c
+treebird.make
 config.h
 treebird
 test/tests

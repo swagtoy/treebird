@@ -72,7 +72,7 @@ request_cb_tl_home(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_HOME, NULL, 1, 0);
 
@@ -87,7 +87,7 @@ request_cb_tl_local(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_LOCAL, NULL, 1, 0);
 
@@ -102,7 +102,7 @@ request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_FEDERATED, NULL, 1, 0);
 
@@ -117,7 +117,7 @@ request_cb_tl_list(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_LISTS, NULL, 0, 0);
 
@@ -132,7 +132,7 @@ request_cb_tl_direct(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_DIRECT, NULL, 0, 0);
 
@@ -147,7 +147,7 @@ request_cb_tl_tags(mstdnt_request_cb_data* cb_data, void* tbargs)
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
 
-    content_timeline(req, ssn, api, cb_data->storage,
+    content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_NONE, NULL, 0, 0);
 
@@ -183,7 +183,7 @@ tl_home(REQUEST_T req, struct session* ssn, mastodont_t* api, int local)
         request_args_create(req, ssn, api, NULL);
         
     return mstdnt_timeline_home(api, &m_args, request_cb_tl_home,
-                                cb_args, &args);
+                                cb_args, args);
 }
 
 int
@@ -211,7 +211,7 @@ tl_direct(REQUEST_T req, struct session* ssn, mastodont_t* api)
         request_args_create(req, ssn, api, NULL);
     
     return mstdnt_timeline_direct(api, &m_args, request_cb_tl_direct,
-                                  cb_args, &args);
+                                  cb_args, args);
 }
 
 int
@@ -245,7 +245,7 @@ tl_public(REQUEST_T req,
         request_args_create(req, ssn, api, NULL);
     
     return mstdnt_timeline_public(api, &m_args, request_cb_tl_public,
-                                  cb_args, &args);
+                                  cb_args, args);
 }
 
 int
@@ -275,7 +275,7 @@ tl_list(REQUEST_T req,
         request_args_create(req, ssn, api, NULL);
     
     return mstdnt_timeline_list(api, &m_args, request_cb_tl_list, cb_args,
-                                list_id, &args);
+                                list_id, args);
 }
 
 
@@ -305,7 +305,7 @@ tl_tag(REQUEST_T req,
         request_args_create(req, ssn, api, NULL);
 
     return mstdnt_timeline_tag(api, &m_args, request_cb_tl_tags, cb_args,
-                               tag_id, &args);
+                               tag_id, args);
 }
 
 int

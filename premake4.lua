@@ -52,7 +52,7 @@ local pages = {
 --	'scrobble.c',
 --	'search.c',
 --	'status.c',
---	'timeline.c',
+	'timeline.c',
 };
 
 local definitions = {};

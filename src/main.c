@@ -116,7 +116,6 @@ static struct path_info paths[] = {
 
 #ifdef CMP_ENABLE_LISTS
     { "/lists/edit/:", list_edit },
-    { "/lists/for/:", content_tl_list },
     { "/lists", content_lists },
 #endif
 
@@ -125,6 +124,10 @@ static struct path_info paths[] = {
     { "/federated", content_tl_federated },
     { "/direct", content_tl_direct },
     { "/bookmarks", content_account_bookmarks },
+    { "/lists/for/:", content_tl_list },
+#	ifdef CMP_ENABLE_HASHTAG
+    	{ "/tag/:", content_tl_tag },
+#	endif
 #endif
 
 #ifdef CMP_ENABLE_NOTIFICATIONS
@@ -137,9 +140,6 @@ static struct path_info paths[] = {
     { "/treebird_api/v1/notifications", api_notifications },
 #endif
 
-#ifdef CMP_ENABLE_HASHTAG
-    { "/tag/:", content_tl_tag },
-#endif
 
 #ifdef CMP_ENABLE_CONVERSATIONS
     { "/chats/:", content_chat_view },
@@ -151,7 +151,9 @@ static struct path_info paths[] = {
     { "/exit", exit_treebird },
 #endif
     // Debug, but cool to see
+#ifdef CMP_ENABLE_MEMORY
     { "/memory_stats", content_memory_stats },
+#endif
 };
 
 static int application(mastodont_t* api, REQUEST_T req)
