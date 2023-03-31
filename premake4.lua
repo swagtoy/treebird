@@ -30,6 +30,7 @@ local c_files = {
 };
 
 -- Not actually real 'pages', but the ones we compile in / create definitions
+-- This setup is pretty jank, but it helped me transition the Async refactor
 local pages = {
 	'about.c',
 	'account.c',
@@ -47,11 +48,11 @@ local pages = {
 	'lists.c',
 --	'login.c',
 --	'memory_page.c',
---	'notifications.c',
+	'notifications.c',
 --	'page_config.c',
---	'scrobble.c',
+	'scrobble.c',
 --	'search.c',
---	'status.c',
+	'status.c',
 	'timeline.c',
 };
 

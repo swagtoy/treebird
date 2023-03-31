@@ -447,7 +447,7 @@ int content_account_pinned(PATH_ARGS)
     args->max_id = keystr(ssn->post.max_id);
     args->min_id = keystr(ssn->post.min_id);
     args->limit = 20;
-    
+
     return fetch_account_page(req, ssn, api, data[0], args, ACCT_TAB_PINNED, account_statuses_cb);
 }
 
@@ -459,7 +459,7 @@ int content_account_media(PATH_ARGS)
     args->max_id = keystr(ssn->post.max_id);
     args->min_id = keystr(ssn->post.min_id);
     args->limit = 20;
-    
+
     return fetch_account_page(req, ssn, api, data[0], args, ACCT_TAB_MEDIA, account_statuses_cb);
 }
 
@@ -469,7 +469,7 @@ request_cb_content_account_action(mstdnt_request_cb_data* cb_data, void* tbargs)
     mstdnt_relationship* rel = MSTDNT_CB_DATA(cb_data);
     DESTRUCT_TB_ARGS(tbargs);
     char* referer = GET_ENV("HTTP_REFERER", req);
-    
+
     redirect(req, REDIRECT_303, referer);
     return MSTDNT_REQUEST_DONE;
 }
@@ -483,7 +483,7 @@ content_account_action(PATH_ARGS)
 
     struct request_args* cb_args =
         request_args_create(req, ssn, api, NULL);
-    
+
     if (strcmp(data[1], "follow") == 0)
         return mstdnt_follow_account(api, &m_args,
                               request_cb_content_account_action, cb_args, data[0]);
