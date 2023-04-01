@@ -18,15 +18,49 @@
 #include "error.h"
 #include "emoji.h"
 #include "account.h"
+#include "types.h"
 #include "../config.h"
+
+// Callback: content_notifications
+static int
+request_cb_content_notifications(mstdnt_request_cb_data* cb_data,
+                                 void* tbargs)
+{
+    struct mstdnt_notifications* notifs = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    mXPUSHs(newRV_inc((SV*)session_hv));
+    mXPUSHs(newRV_inc((SV*)template_files));
+    if (notifs)
+        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs->notifs,
+                                                       notifs->len)));
+
+    // ARGS
+    PERL_STACK_SCALAR_CALL("notifications::content_notifications");
+
+    // Duplicate so we can free the TMPs
+    char* dup = PERL_GET_STACK_EXIT;
+
+    struct base_page b = {
+        .category = BASE_CAT_NOTIFICATIONS,
+        .content = dup,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, req, ssn, api);
+    tb_free(dup);
+	finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
+}
 
 int content_notifications(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_notification* notifs = NULL;
-    size_t notifs_len = 0;
     
     struct mstdnt_notifications_args args = {
         .exclude_types = 0,
@@ -41,44 +75,49 @@ int content_notifications(PATH_ARGS)
         .limit = 20,
     };
 
-    if (keystr(ssn->cookies.logged_in))
-        mstdnt_get_notifications(api, &m_args, NULL, NULL, &args, &storage, &notifs, &notifs_len);
+    struct request_args* cb_args =
+        request_args_create(req, ssn, api, NULL);
 
-    PERL_STACK_INIT;
+    if (keystr(ssn->cookies.logged_in))
+    {
+        mstdnt_get_notifications(api, &m_args, request_cb_content_notifications,
+                                 cb_args, args);
+        return 1;
+    }
+	return 0;
+}
+
+int
+request_cb_content_notifications_compact(mstdnt_request_cb_data* cb_data,
+                                         void* tbargs)
+{
+    struct mstdnt_notifications* notifs = MSTDNT_CB_DATA(cb_data);
+    DESTRUCT_TB_ARGS(tbargs);
+    char* page;
+
+	PERL_STACK_INIT;
     HV* session_hv = perlify_session(ssn);
-    mXPUSHs(newRV_inc((SV*)session_hv));
+    mXPUSHs(newRV_noinc((SV*)session_hv));
     mXPUSHs(newRV_inc((SV*)template_files));
     if (notifs)
-        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
-    
-    // ARGS
-    PERL_STACK_SCALAR_CALL("notifications::content_notifications");
+        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs->notifs,
+                                                       notifs->len)));
 
-    // Duplicate so we can free the TMPs
-    char* dup = PERL_GET_STACK_EXIT;
-    
-    struct base_page b = {
-        .category = BASE_CAT_NOTIFICATIONS,
-        .content = dup,
-        .session = session_hv,
-        .sidebar_left = NULL
-    };
+    PERL_STACK_SCALAR_CALL("notifications::embed_notifications");
 
-    // Output
-    render_base_page(&b, req, ssn, api);
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_cleanup_notifications(notifs, notifs_len);
-    tb_free(dup);
+    page = PERL_GET_STACK_EXIT;
+
+    send_result(req, NULL, NULL, page, 0);
+
+    tb_free(page);
+    finish_free_request(req);
+    return MSTDNT_REQUEST_DONE;
 }
 
 int content_notifications_compact(PATH_ARGS)
 {
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    char* page;
-    struct mstdnt_storage storage = { 0 };
-    struct mstdnt_notification* notifs = NULL;
-    size_t notifs_len = 0;
 
     if (keystr(ssn->cookies.logged_in))
     {
@@ -95,25 +134,17 @@ int content_notifications_compact(PATH_ARGS)
             .limit = 20,
         };
 
-        mstdnt_get_notifications(api, &m_args, NULL, NULL, &args, &storage, &notifs, &notifs_len);
+		struct request_args* cb_args =
+			request_args_create(req, ssn, api, NULL);
+
+        mstdnt_get_notifications(api,
+                                 &m_args,
+                                 request_cb_content_notifications_compact,
+                                 cb_args,
+                                 args);
+        return 1;
     }
-
-    PERL_STACK_INIT;
-    HV* session_hv = perlify_session(ssn);
-    mXPUSHs(newRV_noinc((SV*)session_hv));
-    mXPUSHs(newRV_inc((SV*)template_files));
-    if (notifs)
-        mXPUSHs(newRV_noinc((SV*)perlify_notifications(notifs, notifs_len)));
-
-    PERL_STACK_SCALAR_CALL("notifications::embed_notifications");
-
-    page = PERL_GET_STACK_EXIT;
-
-    send_result(req, NULL, NULL, page, 0);
-
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_cleanup_notifications(notifs, notifs_len);
-    tb_free(page);
+    return 0;
 }
 
 int content_notifications_clear(PATH_ARGS)
@@ -121,18 +152,15 @@ int content_notifications_clear(PATH_ARGS)
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
 
+    // User wants to remove a specific notification
     if (data)
-    {
-        mstdnt_notification_dismiss(api, &m_args, NULL, NULL, &storage, data[0]);
-    }
-    else {
-        mstdnt_notifications_clear(api, &m_args, NULL, NULL, &storage);
-    }
+        mstdnt_notification_dismiss(api, &m_args, NULL, NULL, data[0]);
+    else
+        mstdnt_notifications_clear(api, &m_args, NULL, NULL);
 
-    mstdnt_storage_cleanup(&storage);
     redirect(req, REDIRECT_303, referer);
+    return 0;
 }
 
 int content_notifications_read(PATH_ARGS)
@@ -140,20 +168,21 @@ int content_notifications_read(PATH_ARGS)
     char* referer = GET_ENV("HTTP_REFERER", req);
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
-    struct mstdnt_storage storage = { 0 };
 
     if (data)
     {
         struct mstdnt_notifications_args args = { .id = data[0] };
-        mstdnt_notifications_read(api, &m_args, NULL, NULL, &args, &storage, NULL);
+        mstdnt_notifications_read(api, &m_args, NULL, NULL,
+                                  (struct mstdnt_notifications_args){ 0 });
     }
     else {
         struct mstdnt_notifications_args args = { .max_id = keystr(ssn->post.max_id) };
-        mstdnt_notifications_read(api, &m_args, NULL, NULL, &args, &storage, NULL);
+        mstdnt_notifications_read(api, &m_args, NULL, NULL,
+                                  (struct mstdnt_notifications_args){ 0 });
     }
 
-    mstdnt_storage_cleanup(&storage);
     redirect(req, REDIRECT_303, referer);
+    return 0;
 }
 
 // Converts it into a perl struct
@@ -188,6 +217,7 @@ HV* perlify_notification(const struct mstdnt_notification* const notif)
 
 PERLIFY_MULTI(notification, notifications, mstdnt_notification)
 
+// TODO
 int api_notifications(PATH_ARGS)
 {
     send_result(req, NULL, "application/json", "{\"status\":0}", 0);
