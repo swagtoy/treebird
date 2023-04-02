@@ -113,6 +113,7 @@ newaction {
 	execute = function()
 		os.copyfile("treebird", prefix .. "/bin");
 		os.mkdir(prefix .. "/share/treebird");
-		os.execute("install -d dist/ " .. prefix .. "/share/treebird");
+		os.execute("cp -r dist/ " .. prefix .. "/share/treebird/dist/");
+		os.execute("cp -r perl/ " .. prefix .. "/share/treebird/perl/");
 	end
 }

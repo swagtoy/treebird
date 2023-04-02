@@ -284,11 +284,20 @@ void xs_init(pTHX)
 
 int main(int argc, char **argv, char **env)
 {
+#ifndef NO_EASTER_EGG
+    if (getenv("TERM"))
+    {
+        print_treebird_logo();
+    }
+
+#endif
+
     // Global init
     mstdnt_global_curl_init();
 #ifndef CGI_MODE
     FCGX_Init();
 #endif
+
 
     // Initialize Perl
     PERL_SYS_INIT3(&argc, &argv, &env);

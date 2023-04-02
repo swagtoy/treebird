@@ -10,5 +10,6 @@
 #include "session.h"
 
 void set_mstdnt_args(struct mstdnt_args* args, struct session* ssn);
+void print_treebird_logo();
 
 #endif /* HELPERS_H */

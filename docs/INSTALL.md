@@ -1,18 +1,16 @@
 # Installing Treebird
 
-This is a stub and isn't complete, please update it!
-
 ## Compiling
 
-For the following GNU/Linux distributions, you will need the following libraries/packages:
+For the following UNIX-like system, you will need the following libraries/packages:
 
 ###### Debian
 
-`# apt install libcurl4-gnutls-dev libpcre2-dev libfcgi-dev build-essential perl libperl-dev libtemplate-perl`
+`# apt install libcurl4-gnutls-dev libfcgi-dev build-essential perl libperl-dev libtemplate-perl`
 
 ###### Void GNU/Linux
 
-`# xbps-install libcurl libcurl-devel base-devel pcre2 pcre2-devel fcgi fcgi-devel perl-Template-Toolkit`
+`# xbps-install libcurl libcurl-devel base-devel fcgi fcgi-devel perl-Template-Toolkit`
 
 ###### Arch
 
@@ -22,11 +20,20 @@ For the following GNU/Linux distributions, you will need the following libraries
 
 TODO
 
+###### FreeBSD
+
+`# pkg install p5-Template-Toolkit fcgi-devkit curl gmake`
+
+Install mastodont-c. `fossil clone https://code.nekobit.net/fossil/mastodont-c`,
+`premake4 gmake`, `make`, `make install`.
+
 Create a copy of `config.def.h` at `config.h`, edit the file with your information
+(Premake will remind you of this). Note that this setup will change in the
+future.
 
-Run `make`. (**hint:** Pass -j3 to speed up compilation). This will also clone mastodont-c, and compile both it and Treebird.
+Run `premake4 gmake`. This will generate a gmake build file.
 
-If you `fossil update` any changes, `make update` should be run after updating
+Then run `make`. (**hint:** Pass -j3 to speed up compilation).
 
 ## Perl dependencies manual install
 
@@ -53,7 +60,7 @@ Run `# make install`
 
 If this succeeds (assuming you used default variables), you can now find Treebird at the following
 
-- `/usr/local/share/treebird/` - Contains CSS, images, and other meta files
+- `/usr/local/share/treebird/` - Contains CSS, images, perl, and other meta files
 - `/usr/local/bin/treebird` - Regular executable CGI file, test it by running it as is, it shouldn't spit anything out
 
 ## Development
