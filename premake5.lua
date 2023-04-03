@@ -1,12 +1,10 @@
-premake.gcc.cc = os.getenv("CC") or 'cc';
-
 if not os.isfile('config.h') then
 	print("Note: `config.h' not found, until a new Treebird release comes out,");
 	print("      please copy `config.def.h' and edit it.");
 	os.exit(1);
 end
 
-solution "Treebird";
+workspace "Treebird";
 configurations { "Debug", "Release" };
 
 local c_files = {
@@ -59,14 +57,14 @@ local pages = {
 local definitions = {};
 
 -- Create definitions for page enabling
-for i=1, table.getn(pages)  do
+for i=1, #pages  do
 	local def = 'CMP_ENABLE_' .. string.upper(string.sub(pages[i], 0, -3));
 	table.insert(definitions, def);
 end
 
 -- Prepend with 'src/'
-for i=1, table.getn(c_files) do c_files[i] = 'src/'.. c_files[i] end
-for i=1, table.getn(pages) do pages[i] = 'src/'.. pages[i] end
+for i=1, #c_files do c_files[i] = 'src/'.. c_files[i] end
+for i=1, #pages   do pages[i] = 'src/'.. pages[i] end
 
 -- BEGIN Mastodont project
 project("treebird");
@@ -87,22 +85,21 @@ if not libfcgi then
 	os.exit(1);
 end
 
-configuration { "gmake" };
-linkoptions{ "`pkg-config --libs mastodont` `perl -MExtUtils::Embed -e ldopts`" };
-buildoptions{ "`pkg-config --cflags mastodont` `perl -MExtUtils::Embed -e ccopts`" };
-links{"fcgi"};
+filter { "action:gmake*" };
+	linkoptions{ "`pkg-config --libs mastodont` `perl -MExtUtils::Embed -e ldopts`" };
+	buildoptions{ "`pkg-config --cflags mastodont` `perl -MExtUtils::Embed -e ccopts`" };
+	links{"fcgi"};
 
-if premake.gcc.cc ~= 'clang' then
+filter { "toolset:clang" };
 	buildoptions{"-Wno-compound-token-split-by-macro"};
-end
 
-configuration { "Debug" };
+filter { "configurations:Debug" };
 defines { "DEBUG" };
-flags("Symbols");
+symbols("On");
 
-configuration { "Release" };
+filter { "configurations:Release" };
 defines { "NDEBUG" };
-flags("Optimize");
+optimize("On");
 -- END Mastodont-c
 
 local prefix = os.getenv("PREFIX") or "/usr/local";
