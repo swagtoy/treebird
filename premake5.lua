@@ -5,6 +5,12 @@ if not os.isfile('config.h') then
 end
 
 workspace "Treebird";
+
+project("file-to-c");
+kind("ConsoleApp");
+language("C");
+files { "src/file-to-c/main.c" };
+
 configurations { "Debug", "Release" };
 
 local c_files = {
@@ -68,6 +74,7 @@ for i=1, #pages   do pages[i] = 'src/'.. pages[i] end
 
 -- BEGIN Mastodont project
 project("treebird");
+dependson("file-to-c");
 kind("ConsoleApp");
 language("C");
 -- Merge pages into c_files
@@ -85,6 +92,13 @@ if not libfcgi then
 	os.exit(1);
 end
 
+rule "filec"
+	display "filec"
+	fileextension ".ctt"
+	buildmessage "Building %(filename)"
+	buildcommands 'filec -c "%(FullPath)" -o "%(IntDir)/%(Filename).obj"'
+	buildoutputs '%(IntDir)/%(Filename).obj'
+
 filter { "action:gmake*" };
 	linkoptions{ "`pkg-config --libs mastodont` `perl -MExtUtils::Embed -e ldopts`" };
 	buildoptions{ "`pkg-config --cflags mastodont` `perl -MExtUtils::Embed -e ccopts`" };
@@ -94,12 +108,12 @@ filter { "toolset:clang" };
 	buildoptions{"-Wno-compound-token-split-by-macro"};
 
 filter { "configurations:Debug" };
-defines { "DEBUG" };
-symbols("On");
+	defines { "DEBUG" };
+	symbols("On");
 
 filter { "configurations:Release" };
-defines { "NDEBUG" };
-optimize("On");
+	defines { "NDEBUG" };
+	optimize("On");
 -- END Mastodont-c
 
 local prefix = os.getenv("PREFIX") or "/usr/local";
