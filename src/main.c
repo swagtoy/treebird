@@ -52,24 +52,17 @@ static int exit_treebird(PATH_ARGS)
  *  Path handling  *
  ******************/
 static struct path_info paths[] = {
-#ifdef CMP_ENABLE_CONFIG
     { "/config/general", content_config_general },
     { "/config/appearance", content_config_appearance },
     //{ "/config/account", content_config_account },
     { "/config", content_config },
-#endif
 
-#ifdef CMP_ENABLE_ATTACHMENTS
     // API
     { "/treebird_api/v1/attachment", api_attachment_create },
-#endif
     
-#ifdef CMP_ENABLE_LOGIN
     { "/login/oauth", content_login_oauth },
     { "/login", content_login },
-#endif
 
-#ifdef CMP_ENABLE_ACCOUNT
     { "/user/:/action/:", content_account_action },
     { "/user/:", content_account_statuses },
     { "/@:/scrobbles", content_account_scrobbles },
@@ -82,9 +75,7 @@ static struct path_info paths[] = {
     { "/favourites", content_account_favourites },
     { "/blocked", content_account_blocked },
     { "/muted", content_account_muted },
-#endif
 
-#ifdef CMP_ENABLE_STATUS
     { "/status/:/react/:", content_status_react },
     { "/status/:/react", status_emoji },
     { "/status/create", content_status_create },
@@ -96,41 +87,27 @@ static struct path_info paths[] = {
     { "/status/:", status_view },
     { "/notice/:", notice_redirect },
     { "/treebird_api/v1/interact", api_status_interact },
-#endif
 
-#ifdef CMP_ENABLE_ABOUT
     { "/about/license", content_about_license },
     { "/about", content_about },
-#endif
 
-#ifdef CMP_ENABLE_SEARCH
     { "/search/statuses", content_search_statuses },
     { "/search/accounts", content_search_accounts },
     { "/search/hashtags", content_search_hashtags },
     { "/search", content_search_all },
-#endif
 
-#if defined(CMP_ENABLE_EMOJI) && defined(CMP_ENABLE_EMOJI_REACTION)
     { "/emoji_picker", content_emoji_picker },
-#endif
 
-#ifdef CMP_ENABLE_LISTS
     { "/lists/edit/:", list_edit },
     { "/lists", content_lists },
-#endif
 
-#ifdef CMP_ENABLE_TIMELINE
     { "/local", content_tl_local },
     { "/federated", content_tl_federated },
     { "/direct", content_tl_direct },
     { "/bookmarks", content_account_bookmarks },
     { "/lists/for/:", content_tl_list },
-#	ifdef CMP_ENABLE_HASHTAG
-    	{ "/tag/:", content_tl_tag },
-#	endif
-#endif
+   	{ "/tag/:", content_tl_tag },
 
-#ifdef CMP_ENABLE_NOTIFICATIONS
     { "/notifications_compact", content_notifications_compact },
     { "/notification/:/read", content_notifications_read },
     { "/notification/:/delete", content_notifications_clear },
@@ -138,20 +115,14 @@ static struct path_info paths[] = {
     { "/notifications/clear", content_notifications_clear },
     { "/notifications", content_notifications },
     { "/treebird_api/v1/notifications", api_notifications },
-#endif
 
-
-#ifdef CMP_ENABLE_CONVERSATIONS
     { "/chats/:", content_chat_view },
     { "/chats", content_chats },
-#endif
     
 #ifdef DEBUG
     { "/quit", exit_treebird },
     { "/exit", exit_treebird },
-#endif
     // Debug, but cool to see
-#ifdef CMP_ENABLE_MEMORY
     { "/memory_stats", content_memory_stats },
 #endif
 };
@@ -229,24 +200,28 @@ static void fcgi_start(mastodont_t* api)
     while (1)
     {
         req = malloc(sizeof(FCGX_Request));
-        FCGX_InitRequest(req, 0, 0);
+        if (FCGX_InitRequest(req, 0, 0) != 0)
+        {
+            free(req);
+            continue;
+        }
 
         struct mstdnt_fd fds = {
             // The docs says not to use this directly, but we don't care
-            // what the docs say
+            // what the docs say :^)
             .fd = req->listen_sock,
             .events = MSTDNT_POLLIN,
             .revents = 0
         };
 
         // Will poll until we get a request 
-        mstdnt_await(api, 0, &fds, 1);
+        int res = mstdnt_await(api, 0, &fds, 1);
 
         if (fds.revents != 0)
         {
             rc = FCGX_Accept_r(req);
             if (rc < 0) break;
-
+            
             rc = application(api, req);
 
             if (rc == 0)
@@ -254,6 +229,10 @@ static void fcgi_start(mastodont_t* api)
                 FCGX_Finish_r(req);
                 free(req);
             }
+        }
+        else {
+            FCGX_Finish_r(req);
+            free(req);
         }
             
     }
@@ -295,7 +274,10 @@ int main(int argc, char **argv, char **env)
     // Global init
     mstdnt_global_curl_init();
 #ifndef CGI_MODE
-    FCGX_Init();
+    if (FCGX_Init() != 0)
+    {
+        exit(1);
+    }
 #endif
 
 

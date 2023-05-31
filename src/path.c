@@ -139,5 +139,6 @@ int handle_paths(REQUEST_T req,
 
         // Fell out, return 404
         content_not_found(req, ssn, api, path);
+        return 0;
     }
 }

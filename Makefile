@@ -8,7 +8,7 @@ MASTODONT = $(MASTODONT_DIR)/bin/Debug/
 endif
 
 
-CFLAGS += -Wall -I $(MASTODONT_DIR)/include/ -Wno-unused-variable -Wno-ignored-qualifiers \
+CFLAGS += -Wall -g -I $(MASTODONT_DIR)/include/ -Wno-unused-variable -Wno-ignored-qualifiers \
            -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libcjson) \
            `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
 LDFLAGS += -L$(MASTODONT) -lmastodont $(shell pkg-config --libs libcurl libcjson) -lfcgi      \
