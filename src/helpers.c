@@ -5,7 +5,9 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 
+/* These following two functions use the classic printf to stdout. */
 void
 print_treebird_logo(void)
 {
@@ -46,6 +48,19 @@ print_treebird_logo(void)
            "             Thank you for trying this software!\n"
            "      To use it, it must be 'deployed' with an FCGI daemon.\n"
            "                      Press ^C to quit.\n");
+}
+
+int
+debug(char const* msg, ...)
+{
+	int res;
+	va_list ap;
+	va_start(ap, msg);
+	printf("[DEBUG] ");
+	res = vprintf(msg, ap);
+	puts("");
+	va_end(ap);
+	return res;
 }
 
 #include "../config.h"

@@ -11,5 +11,6 @@
 
 void set_mstdnt_args(struct mstdnt_args* args, struct session* ssn);
 void print_treebird_logo();
+int debug(char const* msg, ...);
 
 #endif /* HELPERS_H */

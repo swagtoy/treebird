@@ -11,6 +11,7 @@
 #include "account.h"
 #include "error.h"
 #include "session.h"
+#include "helpers.h"
 
 int parse_path(REQUEST_T req,
                struct session* ssn,
@@ -125,12 +126,13 @@ int handle_paths(REQUEST_T req,
 {
     int res;
     char* path = GET_ENV("PATH_INFO", req);
-    // "default" path
-    if (path == NULL || (path && strcmp(path, "/") == 0))
+    // "default" path            OpenBSD httpd likes to return this one  vv
+    if (path == NULL || (path && (strcmp(path, "/") == 0 || strcmp(path, "") == 0)))
     {
         return content_index(req, ssn, api);
     }
     else {   // Generic path
+        debug("Path: %s", path);
         for (size_t i = 0; i < paths_len; ++i)
         {
             if ((res = parse_path(req, ssn, api, paths + i)) != -1)

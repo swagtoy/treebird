@@ -185,6 +185,7 @@ static int application(mastodont_t* api, REQUEST_T req)
     // This is a direct page, no requests made, so cleanup now
     if (rc == 0)
     {
+        debug("Direct page, cleaning up...");
         session_cleanup(ssn);
     }
 
