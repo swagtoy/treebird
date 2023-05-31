@@ -1,0 +1,103 @@
+CC ?= cc
+MASTODONT_DIR = mastodont-c
+
+ifneq ($(wildcard $(MASTODONT_DIR)/bin/Release),)
+MASTODONT = $(MASTODONT_DIR)/bin/Release/
+else ifneq ($(wildcard $(MASTODONT_DIR)/bin/Debug),)
+MASTODONT = $(MASTODONT_DIR)/bin/Debug/
+endif
+
+
+CFLAGS += -Wall -I $(MASTODONT_DIR)/include/ -Wno-unused-variable -Wno-ignored-qualifiers \
+           -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl) \
+           `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
+LDFLAGS += -L$(MASTODONT) -lmastodont $(shell pkg-config --libs libcurl) -lfcgi      \
+            -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
+# libpcre2-8 (?)
+SRC = $(wildcard src/*.c)
+OBJ = $(patsubst %.c,%.o,$(SRC))
+HEADERS = $(wildcard src/*.h) config.h
+TMPL_DIR = templates
+TMPLS = $(wildcard $(TMPL_DIR)/*.tt)
+TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))
+TEST_DIR = test/unit
+TESTS = $(wildcard $(TEST_DIR)/t*.c)
+UNIT_TESTS = $(patsubst %.c,%.bin,$(TESTS))
+DIST = dist/
+PREFIX ?= /usr/local
+TARGET = treebird
+# For tests
+OBJ_NO_MAIN = $(filter-out src/main.o,$(OBJ))
+
+MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
+
+# Not parallel friendly
+#all: $(MASTODONT_DIR) dep_build $(TARGET)
+
+
+ifneq ($(strip $(DEBUG)),)
+CFLAGS += -DDEBUG
+endif
+
+all:
+ifeq ($(wildcard $(MASTODONT_DIR)),)
+	@echo "[ERROR] Mastodont-c/ not found. Link it with  ln -s  in this directory."
+	@exit 1
+endif
+	$(MAKE) filec
+	$(MAKE) make_tmpls
+	$(MAKE) $(TARGET)
+
+install_deps:
+	cpan Template::Toolkit
+
+$(TARGET): $(HEADERS) $(OBJ)
+	$(CC) -o $(TARGET) $(OBJ) $(PAGES_C_OBJ) $(LDFLAGS)
+
+filec: src/file-to-c/main.o
+	$(CC) $(LDFLAGS) -o filec $<
+
+emojitoc: scripts/emoji-to.o
+	$(CC) -o emojitoc $< $(LDFLAGS)
+	./emojitoc meta/emoji.json > src/emoji_codes.h
+
+$(TMPL_DIR)/%.ctt: $(TMPL_DIR)/%.tt
+	./filec $< data_$(notdir $*)_tt > $@
+
+make_tmpls: $(TMPLS_C)
+
+$(MASTODONT_DIR): 
+	cd ..; fossil clone $(MASTODONT_URL) || true
+	cd treebird; ln -s ../mastodont-c .
+
+install: $(TARGET)
+	install -m 755 treebird $(PREFIX)/bin/
+	install -d $(PREFIX)/share/treebird/
+	cp -r dist/ $(PREFIX)/share/treebird/
+
+test: all $(UNIT_TESTS)
+	@echo " ... Tests ready"
+	@./test/test.pl
+
+%.o: %.c %.h $(PAGES)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# For tests
+%.bin: %.c
+	@$(CC) $(CFLAGS) $< -o $@ $(OBJ_NO_MAIN) $(PAGES_C_OBJ) $(LDFLAGS)
+	@echo -n " $@"
+
+clean:
+	rm -f $(OBJ) src/file-to-c/main.o
+	rm -f $(TMPLS_C)
+	rm -f test/unit/*.bin
+	rm -f filec ctemplate
+	rm $(TARGET) || true
+	make -C $(MASTODONT_DIR) clean
+
+clean_deps:
+	rm -r $(MASTODONT_DIR)
+
+clean_all: clean clean_deps
+
+.PHONY: all filec clean update clean clean_deps clean_all test install_deps
