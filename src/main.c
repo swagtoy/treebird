@@ -8,7 +8,7 @@
 #include <pthread.h>
 #include <string.h>
 #include "memory.h"
-#include <mastodont/mastodont.h>
+#include <mastodont.h>
 #include <stdlib.h>
 #include "../config.h"
 #include "index.h"

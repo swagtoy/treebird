@@ -31,86 +31,6 @@ apply_access_token(REQUEST_T req, char* token)
              config_url_prefix[0] != '\0' ? config_url_prefix : "/");
 }
 
-int
-content_login_oauth(PATH_ARGS)
-{
-    struct mstdnt_args m_args;
-    set_mstdnt_args(&m_args, ssn);
-    
-    const char* orig_url = m_args.url;
-    char* redirect_url = getenv("SERVER_NAME");
-    char* decode_url = NULL;
-    char* urlify_redirect_url = NULL;
-    easprintf(&urlify_redirect_url, "http%s://%s/login/oauth",
-              config_host_url_insecure ? "" : "s",
-              config_host_url ? config_host_url : redirect_url );
-
-    if (keystr(ssn->query.code))
-    {
-        struct mstdnt_application_args args_token = {
-            .grant_type = "authorization_code",
-            .client_id = keystr(ssn->cookies.client_id),
-            .client_secret = keystr(ssn->cookies.client_secret),
-            .redirect_uri = urlify_redirect_url,
-            .scope = LOGIN_SCOPE,
-            .code = keystr(ssn->query.code),
-        };
-
-        if (mstdnt_obtain_oauth_token(api,
-                                      &m_args,
-                                      NULL, NULL,
-                                      &args_token,
-                                      &oauth_storage,
-                                      &token) == 0)
-        {
-            apply_access_token(req, token.access_token);
-        }
-    }
-    else if (keystr(ssn->post.instance))
-    {
-        decode_url = curl_easy_unescape(api->curl, keystr(ssn->post.instance), 0, NULL);
-        m_args.url = decode_url;
-        
-        struct mstdnt_application_args args_app = {
-            .client_name = "Treebird",
-            .redirect_uris = urlify_redirect_url,
-            .scopes = "read+write+follow+push",
-            .website = keystr(ssn->post.instance)
-        };
-
-        if (mstdnt_register_app(api,
-                                &m_args,
-                                NULL,
-                                NULL,
-                                args_app) == 0)
-        {
-            char* url;
-            char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
-            easprintf(&url, "%s/oauth/authorize?response_type=code&scope=" LOGIN_SCOPE "&client_id=%s&redirect_uri=%s",
-                      decode_url, encode_id, urlify_redirect_url);
-
-            // Set cookie and redirect
-            PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
-            PRINTF("Set-Cookie: client_id=%s; Path=/; Max-Age=3153600\r\n", app.client_id);
-            PRINTF("Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
-            
-            redirect(req, REDIRECT_303, url);
-            tb_free(url);
-            curl_free(encode_id);
-        }
-    }
-
-    m_args.url = orig_url;
-    
-    redirect(req, REDIRECT_303, config_url_prefix &&
-             config_url_prefix[0] != '\0' ? config_url_prefix : "/");
-
-    mstdnt_storage_cleanup(&storage);
-    mstdnt_storage_cleanup(&oauth_storage);
-    if (urlify_redirect_url) tb_free(urlify_redirect_url);
-    if (decode_url) curl_free(decode_url);
-}
-
 static int
 request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
                        void* args)
@@ -204,6 +124,84 @@ register_app(PATH_ARGS)
                         args_app);
 }
 
+
+
+int
+content_login_oauth(PATH_ARGS)
+{
+    struct mstdnt_args m_args;
+    set_mstdnt_args(&m_args, ssn);
+    
+    const char* orig_url = m_args.url;
+    char* redirect_url = getenv("SERVER_NAME");
+    char* decode_url = NULL;
+    char* urlify_redirect_url = NULL;
+    easprintf(&urlify_redirect_url, "http%s://%s/login/oauth",
+              config_host_url_insecure ? "" : "s",
+              config_host_url ? config_host_url : redirect_url );
+
+    if (keystr(ssn->query.code))
+    {
+        mstdnt_obtain_oauth_token(api,
+                                  &m_args,
+                                  request_cb_oauth_token,
+                                  path_args_data_create(req, ssn, api, NULL),
+                                  (struct mstdnt_application_args)
+                                  {
+                                    .grant_type = "authorization_code",
+                                    .client_id = keystr(ssn->cookies.client_id),
+                                    .client_secret = keystr(ssn->cookies.client_secret),
+                                    .redirect_uri = urlify_redirect_url,
+                                    .scope = LOGIN_SCOPE,
+                                    .code = keystr(ssn->query.code),
+                                  });
+    }
+    else if (keystr(ssn->post.instance))
+    {
+        decode_url = curl_easy_unescape(api->curl, keystr(ssn->post.instance), 0, NULL);
+        m_args.url = decode_url;
+        
+#if 0
+        struct mstdnt_application_args args_app = {
+            .client_name = "Treebird",
+            .redirect_uris = urlify_redirect_url,
+            .scopes = "read+write+follow+push",
+            .website = keystr(ssn->post.instance)
+        };
+
+        if (mstdnt_register_app(api,
+                                &m_args,
+                                NULL,
+                                NULL,
+                                args_app) == 0)
+        {
+            char* url;
+            char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
+            easprintf(&url, "%s/oauth/authorize?response_type=code&scope=" LOGIN_SCOPE "&client_id=%s&redirect_uri=%s",
+                      decode_url, encode_id, urlify_redirect_url);
+
+            // Set cookie and redirect
+            PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=3153600\r\n", decode_url);
+            PRINTF("Set-Cookie: client_id=%s; Path=/; Max-Age=3153600\r\n", app.client_id);
+            PRINTF("Set-Cookie: client_secret=%s; Path=/; Max-Age=3153600\r\n", app.client_secret);
+            
+            redirect(req, REDIRECT_303, url);
+            tb_free(url);
+            curl_free(encode_id);
+        }
+#endif
+    }
+
+    m_args.url = orig_url;
+    
+    redirect(req, REDIRECT_303, config_url_prefix &&
+             config_url_prefix[0] != '\0' ? config_url_prefix : "/");
+
+    if (urlify_redirect_url) tb_free(urlify_redirect_url);
+    if (decode_url) curl_free(decode_url);
+}
+
+
 int
 content_login(PATH_ARGS)
 {
@@ -216,6 +214,6 @@ content_login(PATH_ARGS)
         register_app(PATH_ARGS_PASS);
     }
     else {
-        render_login_page(req, ssn, api);
+        //render_login_page(req, ssn, api);
     }
 }

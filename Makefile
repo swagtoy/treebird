@@ -9,9 +9,9 @@ endif
 
 
 CFLAGS += -Wall -I $(MASTODONT_DIR)/include/ -Wno-unused-variable -Wno-ignored-qualifiers \
-           -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl) \
+           -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libcjson) \
            `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
-LDFLAGS += -L$(MASTODONT) -lmastodont $(shell pkg-config --libs libcurl) -lfcgi      \
+LDFLAGS += -L$(MASTODONT) -lmastodont $(shell pkg-config --libs libcurl libcjson) -lfcgi      \
             -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
 # libpcre2-8 (?)
 SRC = $(wildcard src/*.c)

@@ -5,7 +5,6 @@
  */
 
 #include <stdlib.h>
-#include <malloc.h>
 #include "memory.h"
 
 #ifdef __GLIBC__

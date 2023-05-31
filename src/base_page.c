@@ -57,6 +57,7 @@ static int
 request_cb_base_page(mstdnt_request_cb_data* cb_data,
                      void* args)
 {
+#if 0
     struct mstdnt_notifications* notifs = MSTDNT_CB_DATA(cb_data);
     struct path_args_data* path_data = args;
 
@@ -67,6 +68,7 @@ request_cb_base_page(mstdnt_request_cb_data* cb_data,
                       notifs);
 
     path_args_data_destroy(path_data);
+#endif
     return MSTDNT_REQUEST_DONE;
 }
 

@@ -19,6 +19,7 @@
 
 int content_search_all(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
@@ -88,10 +89,12 @@ int content_search_all(PATH_ARGS)
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
     tb_free(dup);
+#endif
 }
 
 int content_search_statuses(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     char* statuses_html;
@@ -135,10 +138,12 @@ int content_search_statuses(PATH_ARGS)
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
     tb_free(dup);
+#endif
 }
 
 int content_search_accounts(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
@@ -181,10 +186,12 @@ int content_search_accounts(PATH_ARGS)
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
     tb_free(dup);
+#endif
 }
 
 int content_search_hashtags(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     struct mstdnt_storage storage = { 0 };
@@ -209,10 +216,12 @@ int content_search_hashtags(PATH_ARGS)
     mstdnt_cleanup_search_results(&results);
     mstdnt_storage_cleanup(&storage);
 //    tb_free(dup);
+#endif
 }
 
 HV* perlify_search_results(struct mstdnt_search_results* results)
 {
+#if 0
     if (!results) return NULL;
     
     HV* search_hv = newHV();
@@ -221,4 +230,5 @@ HV* perlify_search_results(struct mstdnt_search_results* results)
     // TODO tags
 
     return search_hv;
+#endif
 }
