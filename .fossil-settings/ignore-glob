@@ -13,6 +13,8 @@ test/tests
 scripts/*.o
 templates/*.ctt
 test/unit/*.bin
+treebird.core
+filec.core
 compile_commands.json
 build/
 obj/

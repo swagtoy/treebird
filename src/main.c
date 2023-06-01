@@ -5,6 +5,9 @@
  */
 
 #include "global_perl.h"
+#ifdef __OpenBSD__
+#	include <unistd.h>
+#endif 
 #include <pthread.h>
 #include <string.h>
 #include "memory.h"
@@ -272,6 +275,14 @@ int main(int argc, char **argv, char **env)
 
 #endif
 
+#ifdef __OpenBSD__
+    if (pledge("stdio rpath inet dns unveil prot_exec", "") == -1)
+    {
+        perror("pledge");
+        exit(2);
+    }
+#endif
+
     // Global init
     mstdnt_global_curl_init();
 #ifndef CGI_MODE
@@ -280,7 +291,6 @@ int main(int argc, char **argv, char **env)
         exit(1);
     }
 #endif
-
 
     // Initialize Perl
     PERL_SYS_INIT3(&argc, &argv, &env);
