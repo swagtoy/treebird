@@ -79,18 +79,18 @@ request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
     if (url_link)
     {
         PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
+        tb_free(url_link);
     }
     else {
         // Clears the cookie
         PUT("Set-Cookie: instance_url=; Path=/; Max-Age=-1\r\n");
     }
-
+    
     apply_access_token(req, token->access_token);
     
-    tb_free(url_link);
 
     path_args_data_destroy(path_data);
-    return MSTDNT_REQUEST_DONE;
+    return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
 
 // Callback: mstdnt_register_app
@@ -116,8 +116,9 @@ request_cb_register_app(struct mstdnt_request_cb_data* cb_data,
                                   .username = keystr(path_data->ssn->post.username),
                                   .password = keystr(path_data->ssn->post.password)
                               });
-    
-    return MSTDNT_REQUEST_DONE;
+    debug("Login from username: %s", keystr(path_data->ssn->post.username));
+    //path_args_data_destroy(path_data);
+    return MSTDNT_REQUEST_DATA_NOCLEANUP;
 }
 
 // Registers an app, then proceeds to login
@@ -131,6 +132,7 @@ register_app(PATH_ARGS)
         .scopes = LOGIN_SCOPE,
         .website = NULL
     };
+    
 
     // Check if the username contains an @ symbol
     char* address = strstr(keystr(ssn->post.username), "%40");
@@ -245,8 +247,10 @@ content_login(PATH_ARGS)
         keystr(ssn->post.password))
     {
         register_app(PATH_ARGS_PASS);
+        return 1;
     }
     else {
         render_login_page(req, ssn, api);
+        return 0;
     }
 }
