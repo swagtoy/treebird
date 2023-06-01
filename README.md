@@ -1,5 +1,3 @@
-# NOTE: This software is not finished. Any bugs are likely noted
-
 # Treebird
 
 ![Treebird logo](./meta/treebird.png)
@@ -11,8 +9,7 @@ usable enough to improve the experience with JS.
 
 Treebird uses C with FCGI, mastodont-c (library designed for Treebird, but can be used
 for other applications as well), Perl, and **optional** JavaScript for the frontend (100% functional without
-javascript, it only helps). Uses [RE:DOM](https://redom.js.org/) (2kb JS library) to assist with DOM
-creation and native JS apis. (Already bundled)
+javascript, it only helps).
 
 ## Why?
 

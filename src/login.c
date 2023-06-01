@@ -24,7 +24,8 @@
 static void
 render_login_page(REQUEST_T req,
                   struct session* ssn,
-                  mastodont_t* api)
+                  mastodont_t* api,
+                  char const* error)
 {
     char* page;
     
@@ -32,10 +33,9 @@ render_login_page(REQUEST_T req,
     HV* session_hv = perlify_session(ssn);
     XPUSHs(newRV_noinc((SV*)session_hv));
     XPUSHs(newRV_noinc((SV*)template_files));
-#if 0
-    if (storage.error || oauth_store.error)
-        mXPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
-#endif
+    
+    if (error)
+        mXPUSHs(newSVpv(error, 0));
 
     PERL_STACK_SCALAR_CALL("login::content_login");
 
@@ -72,6 +72,14 @@ request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
     struct mstdnt_oauth_token* token = MSTDNT_CB_DATA(cb_data);
     struct path_args_data* path_data = args;
 
+    if (cb_data->storage.error)
+    {
+        debug("Error: %s", cb_data->storage.error);
+        render_login_page(path_data->req, path_data->ssn, path_data->api, cb_data->storage.error);        
+        path_args_data_destroy(path_data);
+        return MSTDNT_REQUEST_DONE;
+    }
+    
     char const* url_link = path_data->ssn->m_args.url;
 
     // Needed for PRINTF statements, will probably get removed later
@@ -79,7 +87,6 @@ request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
     if (url_link)
     {
         PRINTF("Set-Cookie: instance_url=%s; Path=/; Max-Age=31536000\r\n", url_link);
-        tb_free(url_link);
     }
     else {
         // Clears the cookie
@@ -249,7 +256,7 @@ content_login(PATH_ARGS)
         return 1;
     }
     else {
-        render_login_page(req, ssn, api);
+        render_login_page(req, ssn, api, NULL);
         return 0;
     }
 }

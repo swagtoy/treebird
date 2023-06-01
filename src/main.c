@@ -276,7 +276,7 @@ int main(int argc, char **argv, char **env)
 #endif
 
 #ifdef __OpenBSD__
-    if (pledge("stdio rpath inet dns unveil prot_exec tmppath", "") == -1)
+    if (pledge("stdio rpath inet dns unveil prot_exec", "") == -1)
     {
         perror("pledge");
         exit(2);

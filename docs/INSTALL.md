@@ -16,6 +16,12 @@ For the following UNIX-like system, you will need the following libraries/packag
 
 `# pacman -S curl base-devel perl perl-template-toolkit`
 
+###### OpenBSD
+
+`# pkg_add curl fcgi spawn-fcgi p5-Template cjson gmake`
+
+(**Note:** Treebird supports Pledge and Unveil!)
+
 ###### Gentoo
 
 TODO
@@ -24,16 +30,16 @@ TODO
 
 `# pkg install p5-Template-Toolkit fcgi-devkit curl gmake`
 
+---
+
 Install mastodont-c. `fossil clone https://code.nekobit.net/fossil/mastodont-c`,
 `premake4 gmake`, `make`, `make install`.
 
-Create a copy of `config.def.h` at `config.h`, edit the file with your information
-(Premake will remind you of this). Note that this setup will change in the
+Create a copy of `config.def.h` at `config.h`, edit the file with your
+information. Note that this setup will change in the
 future.
 
-Run `premake4 gmake`. This will generate a gmake build file.
-
-Then run `make`. (**hint:** Pass -j3 to speed up compilation).
+Run `make` (or `gmake`). 
 
 ## Perl dependencies manual install
 
@@ -82,9 +88,14 @@ spawn-fcgi in `scripts/fcgistarter.sh`.
 
 An example Apache configuration is available in [treebird.apache.conf](./sample/treebird.apache.conf).
 
+## OpenHTTPd / httpd(8)
+
+OpenBSD's httpd config file is available. Bare in mind that `slowcgi` *WILL*
+not work (for now). Please use `spawn-fcgi`.
+
 #### spawn-fcgi
 
-`spawn-fcgi` can be used for both Apache and Nginx. Read the manual for it to see how to work it, or view
+`spawn-fcgi` can be used for both Apache, OpenHTTPd (httpd(8)) and Nginx. Read the manual for it to see how to work it, or view
 the testing script at `scripts/fcgistarter.sh`
 
 - Please, at all costs, avoid FCGIWrap. It's caused nothing but headaches and has proved no real use other than
