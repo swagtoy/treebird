@@ -31,7 +31,6 @@
 
 int try_post_status(struct session* ssn, mastodont_t* api)
 {
-#if 0
     if (!(keystr(ssn->post.content))) return 1;
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
@@ -41,6 +40,7 @@ int try_post_status(struct session* ssn, mastodont_t* api)
     // a MIME post request
     m_args.flags ^= MSTDNT_FLAG_NO_URI_SANITIZE;
 
+#if 0
     char** files = NULL;
     size_t files_len = 0;
     struct mstdnt_attachment* attachments = NULL;
@@ -72,30 +72,34 @@ int try_post_status(struct session* ssn, mastodont_t* api)
         }
     }
 
+#endif
     // Cookie copy and read
-    struct mstdnt_status_args args = {
-        .content_type = "text/plain",
-        .expires_in = 0,
-        .in_reply_to_conversation_id = NULL,
-        .in_reply_to_id = keystr(ssn->post.replyid),
-        .language = NULL,
-        .media_ids = media_ids,
-        .media_ids_len = (!ssn->post.file_ids.is_set ? keyfile(ssn->post.files).array_size :
+    mstdnt_create_status(api, &m_args, NULL, NULL,
+                         (struct mstdnt_status_args)
+                         {
+                           .content_type = "text/plain",
+                           .expires_in = 0,
+                           .in_reply_to_conversation_id = NULL,
+                           .in_reply_to_id = keystr(ssn->post.replyid),
+                           .language = NULL,
+                           /*
+                           .media_ids = media_ids,
+                           .media_ids_len = (!ssn->post.file_ids.is_set ? keyfile(ssn->post.files).array_size :
                           (json_ids ? json_ids_len : 0)),
-        .poll = NULL,
-        .preview = 0,
-        .scheduled_at = NULL,
-        .sensitive = 0,
-        .spoiler_text = NULL,
-        .status = keystr(ssn->post.content),
-        .visibility = keystr(ssn->post.visibility),
-    };
+                           */
+                           .media_ids = NULL,
+                           .media_ids_len = 0,
+                           .poll = NULL,
+                           .preview = 0,
+                           .scheduled_at = NULL,
+                           .sensitive = 0,
+                           .spoiler_text = NULL,
+                           .status = keystr(ssn->post.content),
+                           .visibility = keystr(ssn->post.visibility),
+                         });
 
+#if 0
     // Finally, create (no error checking)
-    mstdnt_create_status(api, &m_args, NULL, NULL, args);
-
-    mstdnt_storage_cleanup(&storage);
-    
     if (att_storage)
         cleanup_media_storages(ssn, att_storage);
     

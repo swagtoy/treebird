@@ -88,9 +88,8 @@ request_cb_oauth_token(struct mstdnt_request_cb_data* cb_data,
     
     apply_access_token(req, token->access_token);
     
-
     path_args_data_destroy(path_data);
-    return MSTDNT_REQUEST_DATA_NOCLEANUP;
+    return MSTDNT_REQUEST_DONE;
 }
 
 // Callback: mstdnt_register_app
