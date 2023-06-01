@@ -22,6 +22,40 @@
 #define LOGIN_SCOPE "read+write+follow+push"
 
 static void
+render_login_page(REQUEST_T req,
+                  struct session* ssn,
+                  mastodont_t* api)
+{
+    char* page;
+    
+    PERL_STACK_INIT;
+    HV* session_hv = perlify_session(ssn);
+    XPUSHs(newRV_noinc((SV*)session_hv));
+    XPUSHs(newRV_noinc((SV*)template_files));
+#if 0
+    if (storage.error || oauth_store.error)
+        mXPUSHs(newSVpv(storage.error ? storage.error : oauth_store.error, 0));
+#endif
+
+    PERL_STACK_SCALAR_CALL("login::content_login");
+
+    page = PERL_GET_STACK_EXIT;
+    
+    struct base_page b = {
+        .category = BASE_CAT_NONE,
+        .content = page,
+        .session = session_hv,
+        .sidebar_left = NULL
+    };
+
+    // Output
+    render_base_page(&b, req, ssn, api);
+
+    // Cleanup
+    tb_free(page);
+}
+
+static void
 apply_access_token(REQUEST_T req, char* token)
 {
     PRINTF("Set-Cookie: access_token=%s; Path=/; Max-Age=31536000\r\n", token);
@@ -129,6 +163,7 @@ register_app(PATH_ARGS)
 int
 content_login_oauth(PATH_ARGS)
 {
+#if 0
     struct mstdnt_args m_args;
     set_mstdnt_args(&m_args, ssn);
     
@@ -161,19 +196,17 @@ content_login_oauth(PATH_ARGS)
         decode_url = curl_easy_unescape(api->curl, keystr(ssn->post.instance), 0, NULL);
         m_args.url = decode_url;
         
-#if 0
-        struct mstdnt_application_args args_app = {
-            .client_name = "Treebird",
-            .redirect_uris = urlify_redirect_url,
-            .scopes = "read+write+follow+push",
-            .website = keystr(ssn->post.instance)
-        };
-
-        if (mstdnt_register_app(api,
-                                &m_args,
-                                NULL,
-                                NULL,
-                                args_app) == 0)
+        mstdnt_register_app(api,
+                            &m_args,
+                            NULL,
+                            NULL,
+                            (struct mstdnt_application_rags)
+                            {
+                              .client_name = "Treebird",
+                              .redirect_uris = urlify_redirect_url,
+                              .scopes = "read+write+follow+push",
+                              .website = keystr(ssn->post.instance)
+                            });
         {
             char* url;
             char* encode_id = curl_easy_escape(api->curl, app.client_id, 0);
@@ -189,7 +222,6 @@ content_login_oauth(PATH_ARGS)
             tb_free(url);
             curl_free(encode_id);
         }
-#endif
     }
 
     m_args.url = orig_url;
@@ -199,6 +231,7 @@ content_login_oauth(PATH_ARGS)
 
     if (urlify_redirect_url) tb_free(urlify_redirect_url);
     if (decode_url) curl_free(decode_url);
+#endif
 }
 
 
@@ -214,6 +247,6 @@ content_login(PATH_ARGS)
         register_app(PATH_ARGS_PASS);
     }
     else {
-        //render_login_page(req, ssn, api);
+        render_login_page(req, ssn, api);
     }
 }
