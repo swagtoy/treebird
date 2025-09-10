@@ -285,7 +285,6 @@ int main(int argc, char **argv, char **env)
 	
 	if (parse_config(cfg) == 2)
 	{
-		printf("Failed to parse config!\n");
 		exit(1);
 	}
 #ifndef NO_EASTER_EGG

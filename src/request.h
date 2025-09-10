@@ -7,10 +7,11 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 #include <pthread.h>
+#include "cgi.h"
 
 #ifdef CGI_MODE
-#define PRINTF(str, ...) printf(str, __VA_ARGS__)
-#define PUT(str) printf(str)
+#define PRINTF(str, ...) FCGI_printf(str, __VA_ARGS__)
+#define PUT(str) FCGI_printf(str)
 #define REQUEST_T void*
 #else
 #include <fcgiapp.h>
