@@ -8,23 +8,23 @@ For the following UNIX-like system, you will need the following libraries/packag
 
 `# apt install libcurl4-gnutls-dev libfcgi-dev build-essential perl libperl-dev libtemplate-perl`
 
-###### Void GNU/Linux
-
-`# xbps-install libcurl libcurl-devel base-devel fcgi fcgi-devel perl-Template-Toolkit`
-
 ###### Arch
 
 `# pacman -S curl base-devel perl perl-template-toolkit`
+
+###### Gentoo
+
+`# emerge -a dev-perl/Template-Toolkit dev-libs/cJSON www-servers/spawn-fcgi`
+
+###### Void GNU/Linux
+
+`# xbps-install libcurl libcurl-devel base-devel fcgi fcgi-devel perl-Template-Toolkit`
 
 ###### OpenBSD
 
 `# pkg_add curl fcgi spawn-fcgi p5-Template cjson gmake`
 
 (**Note:** Treebird supports Pledge and Unveil!)
-
-###### Gentoo
-
-TODO
 
 ###### FreeBSD
 
