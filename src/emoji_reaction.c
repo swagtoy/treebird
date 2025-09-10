@@ -4,7 +4,7 @@
  * Licensed under the BSD 3-Clause License
  */
 
-#include "../config.h"
+#include "config.h"
 #include "string_helpers.h"
 #include "emoji_reaction.h"
 #include <stdlib.h>

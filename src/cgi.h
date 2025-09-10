@@ -7,7 +7,8 @@
 /* #ifndef IMPORT_CGI_H */
 /* #define IMPORT_CGI_H */
 
-#ifndef NO_FCGI
+#ifndef NO_FCGI_DEFINES
+#define 
 #include <fcgi_stdio.h>
 #endif // NO_FCGI
 
@@ -16,3 +17,4 @@
 #endif // SINGLE_THREADED
 
 // #endif
+

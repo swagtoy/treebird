@@ -20,7 +20,7 @@
 #include "error.h"
 #include "attachments.h"
 #include "emoji_reaction.h"
-#include "../config.h"
+#include "config.h"
 #include "string.h"
 #include "emoji.h"
 #include "types.h"

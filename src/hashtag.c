@@ -8,7 +8,7 @@
 #include "hashtag.h"
 #include "string_helpers.h"
 #include "easprintf.h"
-#include "../config.h"
+#include "config.h"
 
 
 #define TAG_SIZE_INITIAL 12

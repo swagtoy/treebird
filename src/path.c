@@ -12,6 +12,7 @@
 #include "error.h"
 #include "session.h"
 #include "helpers.h"
+#include "logger.h"
 
 int parse_path(REQUEST_T req,
                struct session* ssn,

@@ -10,7 +10,7 @@
 #include <string.h>
 #include "http.h"
 #include "base_page.h"
-#include "../config.h"
+#include "config.h"
 #include "easprintf.h"
 #include "query.h"
 #include "cookie.h"

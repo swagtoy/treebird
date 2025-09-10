@@ -13,7 +13,7 @@
 #include "base_page.h"
 #include "error.h"
 #include "easprintf.h"
-#include "../config.h"
+#include "config.h"
 #include "http.h"
 #include <curl/curl.h>
 #include "cgi.h"

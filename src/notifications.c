@@ -19,7 +19,7 @@
 #include "emoji.h"
 #include "account.h"
 #include "types.h"
-#include "../config.h"
+#include "config.h"
 
 // Callback: content_notifications
 static int

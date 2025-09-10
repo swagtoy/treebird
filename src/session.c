@@ -6,7 +6,7 @@
 
 #include "account.h"
 #include "session.h"
-#include "../config.h"
+#include "config.h"
 
 const char* const get_instance(struct session* ssn)
 {

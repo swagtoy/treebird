@@ -13,7 +13,7 @@
 #include "cookie.h"
 #include "notifications.h"
 #include "string_helpers.h"
-#include "../config.h"
+#include "config.h"
 #include "local_config_set.h"
 #include "account.h"
 #include "cgi.h"
@@ -118,7 +118,7 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
 {
     if (data_len == 0) data_len = strlen(data);
 #ifdef CGI_MODE
-    printf(
+    FCGI_printf(
 #else
     FCGX_FPrintF(req->out,
 #endif
@@ -129,7 +129,7 @@ void send_result(FCGX_Request* req, char* status, char* content_type, char* data
                  content_type ? content_type : "text/html",
                  data_len);
 #ifdef CGI_MODE
-    puts(data);
+    FCGI_puts(data);
 #else
     FCGX_PutStr(data, data_len, req->out);
 #endif

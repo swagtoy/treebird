@@ -50,20 +50,8 @@ print_treebird_logo(void)
            "                      Press ^C to quit.\n");
 }
 
-int
-debug(char const* msg, ...)
-{
-	int res;
-	va_list ap;
-	va_start(ap, msg);
-	fprintf(stderr, "[DEBUG] ");
-	res = vfprintf(stderr, msg, ap);
-	fprintf(stderr, "\n");
-	va_end(ap);
-	return res;
-}
 
-#include "../config.h"
+#include "config.h"
 #include "helpers.h"
 
 void set_mstdnt_args(struct mstdnt_args* args, struct session* ssn)

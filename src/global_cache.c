@@ -5,7 +5,7 @@
  */
 
 #if 0
-#include "../config.h"
+#include "config.h"
 #include "global_cache.h"
 
 struct global_cache g_cache = { {} };

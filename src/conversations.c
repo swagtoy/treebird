@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "account.h"
 #include "emoji.h"
-#include "../config.h"
+#include "config.h"
 #include "conversations.h"
 #include "helpers.h"
 #include "string_helpers.h"

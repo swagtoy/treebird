@@ -4,6 +4,9 @@
  * Licensed under the BSD 3-Clause License
  */
 
+#define NO_FCGI_DEFINES
+#include <stdio.h>
+#include "config.h"
 #include "global_perl.h"
 #if defined(__OpenBSD__) || !defined(__WIN32)
 #	include <unistd.h>
@@ -13,7 +16,6 @@
 #include "memory.h"
 #include <mastodont.h>
 #include <stdlib.h>
-#include "../config.h"
 #include "index.h"
 #include "page_config.h"
 #include "path.h"
@@ -268,6 +270,24 @@ void xs_init(pTHX)
 
 int main(int argc, char **argv, char **env)
 {
+	char buf[256];
+	FILE* cfg;
+	cfg = fopen("treebird.conf", "r");
+	if (!cfg) cfg = fopen("../treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/local/share/treebird/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/local/share/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/local/etc/treebird/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/local/etc/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/share/treebird/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/usr/share/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/etc/treebird/treebird.conf", "r");
+	if (!cfg) cfg = fopen("/etc/treebird.conf", "r");
+	
+	if (parse_config(cfg) == 2)
+	{
+		printf("Failed to parse config!\n");
+		exit(1);
+	}
 #ifndef NO_EASTER_EGG
     if (getenv("TERM"))
     {

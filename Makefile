@@ -14,7 +14,7 @@ LDFLAGS += $(shell pkg-config --libs libcurl) $(shell pkg-config --libs libcjson
 # libpcre2-8 (?)
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
-HEADERS = $(wildcard src/*.h) config.h
+HEADERS = $(wildcard src/*.h)
 TMPL_DIR = templates
 TMPLS = $(wildcard $(TMPL_DIR)/*.tt)
 TMPLS_C = $(patsubst %.tt,%.ctt,$(TMPLS))

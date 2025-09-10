@@ -10,7 +10,7 @@
 #include "helpers.h"
 #include "base_page.h"
 #include "error.h"
-#include "../config.h"
+#include "config.h"
 #include "account.h"
 #include "easprintf.h"
 #include "status.h"

@@ -9,7 +9,7 @@
 #include "http.h"
 #include "helpers.h"
 #include "easprintf.h"
-#include "../config.h"
+#include "config.h"
 #include "string_helpers.h"
 #include "base_page.h"
 #include "status.h"
