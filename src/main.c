@@ -37,6 +37,7 @@
 #include "conversations.h"
 #include "request.h"
 #include "cgi.h"
+#include "helpers.h"
 
 // Allow dynamic loading for Perl
 static void xs_init (pTHX);
