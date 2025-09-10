@@ -1,6 +1,6 @@
 /*
  * Treebird - Lightweight frontend for Pleroma
- * Copyright (C) 2022 Nekobit
+ * Copyright (C) 2025 Hyland B. <me@ow.swag.toys>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

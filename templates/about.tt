@@ -7,20 +7,20 @@
 
         <p>Treebird was created in response to PleromaFE performance issues and ironically a lack of PleromaAPI backend support. Treebird resembles GNU Social in appearance by default, but keeps the familiarity that many are used to of PleromaFE.</p>
 
-        <p>Treebird was created by <a href="/@nekobit@rdrama.cc">Nekobit</a>, who created <a href="https://fossil.nekobit.net/mastodont-c/home">mastodont-c</a>, a library that can communicate with Revolver's, Pleroma's, and Mastodon's REST APIs.</p>
+        <p>Treebird was created by <b>Swagtoy</b>, who created <a href="https://github.com/swagtoy/mastodont-c/">mastodont-c</a>, a library that can communicate with Pleroma's and Mastodon's REST APIs.</p>
 
         <h3>Other contributors</h3>
         <ul>
-            <li><a href="/@coyote@pl.lain.sh" alt="Created Solarized themes for Treebird">Coyote</a></li>
-            <li><a href="/@grumbulon@freecumextremist.com" alt="Helped with the original dark theme, and created the original treebird.dev website">Grumbulon</a></li>
-            <li><a href="/@khan@sleepy.cafe" alt="Started idea of treebird">Khan</a></li>
+            <li><span alt="Created Solarized themes for Treebird">Coyote</span></li>
+            <li><a href="/@grumbulon@froth.zone" alt="Helped with the original dark theme, and created the original treebird.dev website">Grumbulon</a></li>
+            <li><span alt="Started idea of treebird">Khan</span></li>
             <li><a href="/@sam@froth.zone" alt="Testing with Nginx and documentation">SamTherapy</a></li>
             <li><a href="/@pch_xyz@seediqbale.xyz" alt="Chinese (Traditional) translations">Pacific Coast Highway (pch_xyz)</a></li>
         </ul>
 
-        <p>Treebird is licensed in AGPLv3, and mastodont-c is LGPLv3 licensed. Other licenses apply to libraries as well. <a href="/about/license">View the AGPLv3 license here.</a></p>
+        <p>Treebird is licensed in AGPLv3, and mastodont-c is BSDv3 licensed. Other licenses apply to libraries as well. <a href="/about/license">View the AGPLv3 license here.</a></p>
 
-        <a class="btn btn-single" href="https://fossil.nekobit.net/treebird/home">View the Fossil Repository</a> <a class="btn btn-single" href="/about/license">View the License</a>
+        <a class="btn btn-single" href="https://github.com/swagtoy/treebird">View the Fossil Repository</a> <a class="btn btn-single" href="/about/license">View the License</a>
     </div>
 </div>
 
