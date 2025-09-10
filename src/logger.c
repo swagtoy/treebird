@@ -11,6 +11,7 @@
 uint8_t
 log_level_from_str(char* str)
 {
+	if (!str) return LOG_WARN;
 	if (strcmp(str, "warn") == 0) return LOG_WARN | LOG_ERROR;
 	if (strcmp(str, "info") == 0) return LOG_INFO | LOG_WARN | LOG_ERROR;
 	if (strcmp(str, "debug") == 0) return LOG_DEBUG | LOG_INFO | LOG_WARN | LOG_ERROR;
@@ -20,6 +21,7 @@ log_level_from_str(char* str)
 uint8_t
 log_type_from_str(char* str)
 {
+	if (!str) return LOG_CONSOLE;
 	if (strcmp(str, "console") == 0) return LOG_CONSOLE;
 	if (strcmp(str, "syslog") == 0) return LOG_SYSLOG;
 	// This works for config.c
