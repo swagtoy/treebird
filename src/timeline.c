@@ -70,12 +70,15 @@ static int
 request_cb_tl_home(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_HOME, NULL, 1, 0);
 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }
@@ -85,12 +88,15 @@ static int
 request_cb_tl_local(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_LOCAL, NULL, 1, 0);
 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }
@@ -100,12 +106,15 @@ static int
 request_cb_tl_public(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_FEDERATED, NULL, 1, 0);
 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }
@@ -115,12 +124,15 @@ static int
 request_cb_tl_list(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_LISTS, NULL, 0, 0);
 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }
@@ -130,12 +142,15 @@ static int
 request_cb_tl_direct(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_DIRECT, NULL, 0, 0);
 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }
@@ -145,12 +160,15 @@ static int
 request_cb_tl_tags(mstdnt_request_cb_data* cb_data, void* tbargs)
 {
     struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+		goto end;
     DESTRUCT_TB_ARGS(tbargs);
 
     content_timeline(req, ssn, api,// cb_data->storage,
                      statuses->statuses, statuses->len,
                      BASE_CAT_NONE, NULL, 0, 0);
-
+					 
+end:
     finish_free_request(req);
     return MSTDNT_REQUEST_DONE;
 }

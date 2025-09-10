@@ -56,9 +56,9 @@ debug(char const* msg, ...)
 	int res;
 	va_list ap;
 	va_start(ap, msg);
-	printf("[DEBUG] ");
-	res = vprintf(msg, ap);
-	puts("");
+	fprintf(stderr, "[DEBUG] ");
+	res = vfprintf(stderr, msg, ap);
+	fprintf(stderr, "\n");
 	va_end(ap);
 	return res;
 }

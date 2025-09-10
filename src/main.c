@@ -5,7 +5,7 @@
  */
 
 #include "global_perl.h"
-#ifdef __OpenBSD__
+#if defined(__OpenBSD__) || !defined(__WIN32)
 #	include <unistd.h>
 #endif 
 #include <pthread.h>
@@ -189,7 +189,7 @@ static int application(mastodont_t* api, REQUEST_T req)
     // This is a direct page, no requests made, so cleanup now
     if (rc == 0)
     {
-        debug("Direct page, cleaning up...");
+        debug("direct page, cleaning up...");
         session_cleanup(ssn);
     }
 
@@ -273,8 +273,14 @@ int main(int argc, char **argv, char **env)
     {
         print_treebird_logo();
     }
-
 #endif
+
+	char cwd[256] = { 0 };
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		cwd[255] = '\0';
+		debug("Current directory: %s", cwd);
+	}
 
 #ifdef __OpenBSD__
     if (pledge("stdio rpath inet dns unveil prot_exec", "") == -1)
