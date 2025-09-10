@@ -1,5 +1,6 @@
 template
 .cache
+treebird.conf
 ctemplate
 filec
 emojitoc
@@ -8,7 +9,6 @@ emojitoc
 static/*.ctmpl
 static/*.c
 mastodont-c
-config.h
 treebird
 test/tests
 scripts/*.o
