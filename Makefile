@@ -1,17 +1,15 @@
 CC ?= cc
 MASTODONT_DIR = mastodont-c
 
-ifneq ($(wildcard $(MASTODONT_DIR)/bin/Release),)
-MASTODONT = $(MASTODONT_DIR)/bin/Release/
-else ifneq ($(wildcard $(MASTODONT_DIR)/bin/Debug),)
-MASTODONT = $(MASTODONT_DIR)/bin/Debug/
+ifneq ($(wildcard $(MASTODONT_DIR)/build),)
+MASTODONT = $(MASTODONT_DIR)/build/
 endif
 
 
 CFLAGS += -Wall -g -I $(MASTODONT_DIR)/include/ -Wno-unused-variable -Wno-ignored-qualifiers \
-           -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl libcjson) \
+           -I/usr/include/ -I $(MASTODONT_DIR)/libs $(shell pkg-config --cflags libcurl) $(shell pkg-config --cflags libcjson) \
            `perl -MExtUtils::Embed -e ccopts` -DDEBUGGING_MSTATS
-LDFLAGS += -L$(MASTODONT) -lmastodont $(shell pkg-config --libs libcurl libcjson) -lfcgi      \
+LDFLAGS += $(shell pkg-config --libs libcurl) $(shell pkg-config --libs libcjson) -L$(MASTODONT) -lmastodont -lfcgi      \
             -lpthread `perl -MExtUtils::Embed -e ldopts` -DDEBUGGING_MSTATS
 # libpcre2-8 (?)
 SRC = $(wildcard src/*.c)
@@ -27,7 +25,7 @@ DIST = dist/
 PREFIX ?= /usr/local
 TARGET = treebird
 # For tests
-OBJ_NO_MAIN = $(filter-out src/main.o,$(OBJ))
+OBJ_NO_MAIN = $(filteer-out src/main.o,$(OBJ))
 
 MASTODONT_URL = https://fossil.nekobit.net/mastodont-c
 
